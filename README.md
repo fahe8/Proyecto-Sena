@@ -1,13 +1,13 @@
-Como Clonar repositorio
+**Como Clonar repositorio**
 1. Descargar git, tambien descarguen github desktop para mas facil la manera de usar
 2. En github desktop le dan a "File", luego a "Clone repository"
-3. Seleccionan donde dice url y pegan lo siguiente:
+3. Seleccionan donde dice url y pegan lo siguiente: https://github.com/fahe8/Proyecto-Sena.git
 4. En local path es donde desean guardar ese clon del repositorio
 5. Le dan a clonar
 
 El proyecto está divido en dos carpetas, el backend y el frontend
 
-Para usar el frontend:
+**Para usar el frontend:**
 Antes que nada deben tener instalado Nodejs la version LTS
 1. Abren la carpeta frontend en visualStudio
 2. En el terminal escriben: npm install    //Esto es para que se les instale el tailwind, puedan usarlo y verlo
