@@ -9,16 +9,11 @@ export class UsuarioService {
     return await UsuarioRepository.obtenerUsuarioPorId(id);
   }
 
-  static async crearUsuario(usuarioData) {
-    const { nombre, email, telefono, password, rol } = usuarioData;
-    const passwordEncriptada = await bcrypt.hash(password, 10);
-
-    return await UsuarioRepository.crearUsuario(
-      nombre,
-      email,
-      telefono,
-      passwordEncriptada,
-      rol
+  static async eliminarUsuario(id_usuario) {
+    const usuarioEliminado = await UsuarioRepository.eliminarUsuario(
+      id_usuario
     );
+    console.log(usuarioEliminado);
+    return usuarioEliminado;
   }
 }

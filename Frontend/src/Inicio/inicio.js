@@ -212,3 +212,4 @@ loginLink.addEventListener("click", function () {
   localStorage.setItem("seleccion", "inicioSesion");
   window.location.href = "/src/Registro/registro.html";
 });
+

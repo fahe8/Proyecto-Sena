@@ -4,6 +4,19 @@ import jwtConfig from "../../config/jwtConfig.js";
 import bcrypt from "bcrypt";
 
 export class AuthService {
+  static async crearUsuario(usuarioData) {
+    const { nombre, email, telefono, password } = usuarioData;
+    const rol = "usuario";
+    const passwordEncriptada = await bcrypt.hash(password, 10);
+    return await UsuarioRepository.crearUsuario(
+      nombre,
+      email,
+      telefono,
+      passwordEncriptada,
+      rol
+    );
+  }
+
   static async iniciarSesion(loginData) {
     const { email, password } = loginData;
 

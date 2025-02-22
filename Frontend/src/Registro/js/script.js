@@ -1,3 +1,5 @@
+import { loginUser, registerUser } from "./logicaAuth.js";
+
 document
   .getElementById("btn__iniciar-sesion")
   .addEventListener("click", iniciarSesion);
@@ -70,3 +72,22 @@ function register() {
     caja_trasera_login.style.opacity = "1";
   }
 }
+document.getElementById("formLogin").addEventListener("submit", function (e) {
+  e.preventDefault(); // Evitar que el formulario se envíe y recargue la página
+  const email = document.getElementById("emailLogin").value;
+  const password = document.getElementById("passwordLogin").value;
+  console.log(email, password);
+  loginUser(email, password);
+});
+
+document
+  .getElementById("formRegister")
+  .addEventListener("submit", function (e) {
+    e.preventDefault(); // Evitar que el formulario se envíe y recargue la página
+    const nombre = document.getElementById("nombreRegister").value;
+    const telefono = document.getElementById("telefonoRegister").value;
+    const email = document.getElementById("emailRegister").value;
+    const password = document.getElementById("passwordRegister").value;
+    console.log(nombre, telefono, email, password);
+    registerUser(nombre, telefono, email, password);
+  });

@@ -1,6 +1,15 @@
 import { AuthService } from "../services/AuthService.js";
 
 export class AuthController {
+  static async crearUsuario(req, res) {
+    try {
+      const usuarioId = await AuthService.crearUsuario(req.body);
+      res.json(usuarioId);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
   static async iniciarSesion(req, res) {
     try {
       const usuario = await AuthService.iniciarSesion(req.body);

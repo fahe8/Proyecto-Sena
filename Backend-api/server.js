@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import routerUsuarios from "./src/Usuarios/routes/UsuarioRoutes.js";
 import routerEmpresa from "./src/Empresa/routes/EmpresaRoutes.js";
 import routerCancha from "./src/Cancha/routes/CanchaRoutes.js";
@@ -11,6 +12,12 @@ import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
+const corsOptions = {
+  origin: "http://127.0.0.1:5500",
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 

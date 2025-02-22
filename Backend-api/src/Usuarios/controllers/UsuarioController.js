@@ -9,13 +9,4 @@ export class UsuarioController {
       res.status(500).json({ message: "Error al obtener usuarios" });
     }
   }
-
-  static async crearUsuario(req, res) {
-    try {
-      const usuarioId = await UsuarioService.crearUsuario(req.body);
-      res.json(usuarioId);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  }
 }

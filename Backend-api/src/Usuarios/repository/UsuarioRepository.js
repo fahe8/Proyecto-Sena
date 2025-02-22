@@ -23,4 +23,8 @@ export class UsuarioRepository {
   static async obtenerUsuarioPorEmail(email) {
     return await Usuario.findOne({ where: { email } });
   }
+
+  static async eliminarUsuario(id_usuario) {
+    return await Usuario.destroy({ where: id_usuario });
+  }
 }
