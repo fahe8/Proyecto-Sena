@@ -2,9 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import routerUsuarios from "./src/Usuarios/routes/UsuarioRoutes.js";
-import routerEmpresa from "./src/Empresa/routes/EmpresaRoutes.js";
-import routerCancha from "./src/Cancha/routes/CanchaRoutes.js";
-import routerReserva from "./src/Reserva/routes/ReservaRoutes.js";
+// import routerEmpresa from "./src/Empresa/routes/EmpresaRoutes.js";
+// import routerCancha from "./src/Cancha/routes/CanchaRoutes.js";
+// import routerReserva from "./src/Reserva/routes/ReservaRoutes.js";
 import routerAuth from "./src/Auth/routes/AuthRoutes.js";
 import sequelize from "./src/config/db.js";
 import iniciarAsociaciones from "./src/config/asociaciones.js";
@@ -23,9 +23,9 @@ app.use(cookieParser());
 
 // Rutas
 app.use("/api/usuarios", routerUsuarios);
-app.use("/api/empresas", routerEmpresa);
-app.use("/api/canchas", routerCancha);
-app.use("/api/reservas", routerReserva);
+// app.use("/api/empresas", routerEmpresa);
+// app.use("/api/canchas", routerCancha);
+// app.use("/api/reservas", routerReserva);
 app.use("/api/auth", routerAuth);
 
 // Configurar asociaciones

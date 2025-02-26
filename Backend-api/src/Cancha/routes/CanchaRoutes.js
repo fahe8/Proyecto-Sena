@@ -1,10 +1,10 @@
-import express from "express";
-import { CanchaController } from "../controllers/CanchaController.js";
+// import express from "express";
+// import { CanchaController } from "../controllers/CanchaController.js";
 
-const router = express.Router();
+// const router = express.Router();
 
-router.get("/", CanchaController.obtenerTodasCanchas);
-router.get("/:id", CanchaController.obtenerCanchaPorId);
-router.post("/", CanchaController.crearCancha);
+// router.get("/", CanchaController.obtenerTodasCanchas);
+// router.get("/:id", CanchaController.obtenerCanchaPorId);
+// router.post("/", CanchaController.crearCancha);
 
-export default router;
+// export default router;

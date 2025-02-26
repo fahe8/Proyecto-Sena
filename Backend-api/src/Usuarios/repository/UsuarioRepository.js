@@ -1,8 +1,22 @@
+import { Persona } from "../../models/Persona.js";
 import { Usuario } from "../../models/Usuario.js";
 
 export class UsuarioRepository {
   static async obtenerTodosUsuarios() {
-    return await Usuario.findAll();
+    return await Usuario.findAll({
+      attributes: ["id_usuario"],
+      include: {
+        model: Persona,
+        attributes: [
+          "nombre",
+          "apellido",
+          "telefono",
+          "email",
+          "id_tipoDocumento",
+          "num_documento",
+        ],
+      },
+    });
   }
 
   static async obtenerUsuarioPorId(id_usuario) {

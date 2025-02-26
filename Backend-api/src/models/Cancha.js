@@ -1,17 +1,16 @@
-import { DataTypes } from "sequelize";
-import sequelize from "../config/db.js";
+// import sequelize from "../config/db.js";
+// import { DataTypes } from "sequelize";
+// import { EstadoCancha } from "./EstadoCancha.js";
 
-export const Cancha = sequelize.define(
-  "Cancha",
-  {
-    id_cancha: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    estado: { type: DataTypes.TINYINT, allowNull: true, defaultValue: 1 },
-    id_empresa: { type: DataTypes.INTEGER, allowNull: false },
-    creado_en: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-  },
-  { tableName: "cancha", timestamps: false }
-);
+// export const Cancha = sequelize.define("cancha", {
+//   id_cancha: {
+//     type: DataTypes.INTEGER,
+//     primaryKey: true,
+//     autoIncrement: true,
+//   },
+
+//   id_estado_cancha: {
+//     type: DataTypes.INTEGER,
+//     references: { model: EstadoCancha, key: "id_estado_cancha" },
+//   },
+// });

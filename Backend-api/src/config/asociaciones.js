@@ -1,13 +1,16 @@
+import { TipoDocumento } from "../models/TipoDocumento.js";
+import { Persona } from "../models/Persona.js";
+import { Credencial } from "../models/Credencial.js";
+import { Propietario } from "../models/Propietario.js";
 import { Usuario } from "../models/Usuario.js";
-import { Empresa } from "../models/Empresa.js";
-import { Cancha } from "../models/Cancha.js";
-import { Reserva } from "../models/Reserva.js";
+import { Administrador } from "../models/Administrador.js";
 
 // ✅ Define relaciones después de importar los modelos
-Empresa.belongsTo(Usuario, { foreignKey: "id_usuario" });
-Cancha.belongsTo(Empresa, { foreignKey: "id_empresa" });
-Reserva.belongsTo(Cancha, { foreignKey: "id_cancha" });
-Reserva.belongsTo(Usuario, { foreignKey: "id_usuario" });
+Persona.belongsTo(TipoDocumento, { foreignKey: "id_tipoDocumento" });
+Credencial.belongsTo(Persona, { foreignKey: "id_persona" });
+Administrador.belongsTo(Persona, { foreignKey: "id_persona" });
+Propietario.belongsTo(Persona, { foreignKey: "id_persona" });
+Usuario.belongsTo(Persona, { foreignKey: "id_persona" });
 
 export default function iniciarAsociaciones() {
   console.log("Asociaciones configuradas correctamente.");

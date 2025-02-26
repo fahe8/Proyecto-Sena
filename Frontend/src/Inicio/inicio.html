@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <title>Document</title>
     <link rel="stylesheet" href="../output.css" />
   </head>
@@ -11,37 +11,56 @@
     <header class="bg-white shadow-md sticky top-0 z-10">
       <div class="container flex justify-between items-center p-4 mx-auto">
         <div class="text-xl font-bold">LOGO</div>
-
-        <form class="relative w-1/3 flex">
-          <input
-            type="text"
-            placeholder="Busca alguna cancha que conozcas..."
-            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-l-full focus:outline-none focus:ring-2 focus:ring-green-600"
-          />
+        <div class="flex gap-6">
           <button
-            class="border border-gray-300 rounded-r-full flex items-center justify-center py-2 pl-2 pr-3"
+            class="w-24 flex shadow-md py-2 justify-center border border-gray-300 rounded-md hover:border-black hover:bg-gray-200 transition-all duration-300 ease-in-out"
           >
             <svg
-              class="w-5 h-5 text-gray-500"
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
               fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              class="size-6"
             >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+              />
             </svg>
+            <span>Filtros</span>
           </button>
-        </form>
-
+          <form class="relative w-[500px] flex">
+            <input
+              type="text"
+              placeholder="Busca alguna cancha que conozcas..."
+              class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-l-full focus:outline-none focus:ring-2 focus:ring-green-600"
+            />
+            <button
+              class="border border-gray-300 rounded-r-full flex items-center justify-center py-2 pl-2 pr-3"
+            >
+              <svg
+                class="w-5 h-5 text-gray-500"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </button>
+          </form>
+        </div>
         <div class="relative">
-          <!-- Botón de perfil con peer -->
+          <!-- Botón de perfil -->
           <button
             id="profileButton"
-            class="text-xl flex items-center py-2 px-4 bg-green-400 rounded-2xl peer"
+            class="text-lg flex items-center py-2 px-4 bg-green-400 rounded-2xl peer"
           >
             <span>Perfil</span>
             <svg
@@ -91,33 +110,15 @@
     </header>
 
     <main class="">
-      <section class="grid grid-cols-[20%_80%] container mx-auto pt-8">
+      <section class="grid lg:grid-cols-[20%_80%] container mx-auto pt-8">
         <div
-          class="pr-2 mx-2 border-r-2 border-gray-300 flex flex-col gap-4 items-center sticky top-24 self-start h-[600px] overflow-y-auto"
+          class="pr-2 mx-44 border-r-2 border-gray-300 flex flex-col gap-4 items-center lg:sticky top-24 self-start h-[600px] overflow-y-auto"
         >
-          <button
-            class="w-24 flex shadow-md py-4 justify-center border border-gray-300 rounded-md hover:border-black hover:bg-gray-200 transition-all duration-300 ease-in-out"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
-              />
-            </svg>
-            <span>Filtros</span>
-          </button>
           <ul class="bg-gray-200 rounded-2xl" id="menu-lista"></ul>
         </div>
+        <!-- listado de canchas -->
         <div
-          class="grid grid-cols-4 gap-6 justify-self-center"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-self-center"
           id="canchas-seccion"
         ></div>
       </section>

@@ -1,11 +1,10 @@
 import sequelize from "../config/db.js";
 import { DataTypes } from "sequelize";
 import { Persona } from "./Persona.js";
-
-export const Usuario = sequelize.define(
-  "usuario",
+export const Administrador = sequelize.define(
+  "administrador",
   {
-    id_usuario: {
+    id_administrador: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -16,7 +15,7 @@ export const Usuario = sequelize.define(
     },
   },
   {
-    tableName: "usuario",
+    tableName: "administrador",
     freezeTableName: true,
     timestamps: false,
   }
