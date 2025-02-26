@@ -5,7 +5,17 @@
 4. En local path es donde desean guardar ese clon del repositorio
 5. Le dan a clonar
 
-El proyecto está divido en dos carpetas, el backend y el frontend
+El proyecto está divido en dos carpetas, el backend, frontend que es solo html y js vanilla, y FrontendReact
+
+
+**Para usar el FrontendReact:**
+Antes que nada deben tener instalado Nodejs la version LTS
+1. Abran la carpeta en visual
+2. En el terminal escriben: npm install
+3. Para correrlo en el terminal escriben: npm run dev
+
+
+
 
 **Para usar el frontend:**
 Antes que nada deben tener instalado Nodejs la version LTS
