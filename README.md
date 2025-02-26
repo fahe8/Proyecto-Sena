@@ -6,6 +6,8 @@
 5. Le dan a clonar
 
 El proyecto está divido en dos carpetas, el backend, frontend que es solo html y js vanilla, y FrontendReact
+
+
 **Para usar el FrontendReact:**
 Antes que nada deben tener instalado Nodejs la version LTS
 1. Abran la carpeta en visual
