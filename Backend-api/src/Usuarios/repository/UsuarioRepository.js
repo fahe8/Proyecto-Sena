@@ -7,14 +7,7 @@ export class UsuarioRepository {
       attributes: ["id_usuario"],
       include: {
         model: Persona,
-        attributes: [
-          "nombre",
-          "apellido",
-          "telefono",
-          "email",
-          "id_tipoDocumento",
-          "num_documento",
-        ],
+        attributes: ["nombre", "apellido", "telefono", "email"],
       },
     });
   }

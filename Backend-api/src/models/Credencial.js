@@ -13,7 +13,7 @@ export const Credencial = sequelize.define(
       type: DataTypes.INTEGER,
       references: { model: Persona, key: "id_persona" },
     },
-    contrasena: { type: DataTypes.STRING },
+    password: { type: DataTypes.STRING },
     bloqueado: { type: DataTypes.BOOLEAN },
   },
   {

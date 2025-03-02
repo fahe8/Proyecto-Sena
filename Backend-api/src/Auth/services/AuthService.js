@@ -1,59 +1,53 @@
-import { UsuarioRepository } from "../../Usuarios/repository/UsuarioRepository.js";
-import jwt from "jsonwebtoken";
-import jwtConfig from "../../config/jwtConfig.js";
+import sequelize from "../../config/db.js";
 import bcrypt from "bcrypt";
+import { AuthRepository } from "../repository/AuthRepository.js";
 
 export class AuthService {
-  static async crearUsuario(usuarioData) {
-    const { nombre, email, telefono, password } = usuarioData;
-    const rol = "usuario";
-    const passwordEncriptada = await bcrypt.hash(password, 10);
-    return await UsuarioRepository.crearUsuario(
-      nombre,
-      email,
-      telefono,
-      passwordEncriptada,
-      rol
-    );
-  }
+  static async registrarUsuario(datos) {
+    const { nombre, apellido, telefono, email, password } = datos;
 
-  static async iniciarSesion(loginData) {
-    const { email, password } = loginData;
-
-    const usuario = await UsuarioRepository.obtenerUsuarioPorEmail(email);
-    bcrypt;
-    const esContrasenaCorrecta = await bcrypt.compare(
-      password,
-      usuario.password
-    );
-    if (!esContrasenaCorrecta) {
-      throw new Error("Contraseña Incorrecta");
+    // Verificar si el email ya está registrado
+    const personaExistente = await AuthRepository.buscarPersonaPorEmail(email);
+    if (personaExistente) {
+      throw new Error("El email ya está registrado.");
     }
 
-    const token = jwt.sign(
-      {
-        id_usuario: usuario.id_usuario,
-        rol: usuario.rol,
-      },
-      jwtConfig.secret,
-      {
-        expiresIn: jwtConfig.expiresIn,
-      }
-    );
+    // Iniciar transacción
+    const t = await sequelize.transaction();
 
-    const infoEnviar = {
-      usuario: usuario,
-      token: token,
-    };
+    try {
+      // Crear Persona
+      const nuevaPersona = await AuthRepository.crearPersona(
+        nombre,
+        apellido,
+        telefono,
+        email,
+        t
+      );
 
-    return infoEnviar;
-  }
+      // Crear Usuario
+      const nuevoUsuario = await AuthRepository.crearUsuario(
+        nuevaPersona.id_persona,
+        t
+      );
 
-  static async rutaProtegida(req) {
-    return req.usuario;
-  }
+      // Hashear la contraseña
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-  static async cerrarSesion(res) {
-    res.clearCookie("access_token");
+      // Crear Credencial
+      await AuthRepository.crearCredencial(
+        nuevaPersona.id_persona,
+        hashedPassword,
+        t
+      );
+
+      // Confirmar transacción
+      await t.commit();
+
+      return { usuario: nuevoUsuario, persona: nuevaPersona };
+    } catch (error) {
+      await t.rollback();
+      throw error;
+    }
   }
 }
