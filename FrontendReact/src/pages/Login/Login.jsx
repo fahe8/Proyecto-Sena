@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import "./Login.css";
-import { auth, signInWithGoogle, signInWithFacebook } from "./firebaseconfig";
+import {useNavigate} from 'react-router-dom';
+import { auth, signInWithGoogle} from "./firebaseconfig";
 import { onAuthStateChanged } from "firebase/auth";
-import logogoogle from "../../assets/simbolo-de-google.png";
-import logofacebook from "../../assets/facebook-logo.png";
+import logogoogle from "../../assets/LogIn/simbolo-de-google.png";
 import Listoftodo from './components/ListOfTodo';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     password: '',
@@ -24,12 +25,13 @@ const [token, setToken] = useState('');
         window.localStorage.setItem('auth', 'true');
         user.getIdToken().then((token) => {
           setToken(token);
+          navigate ('/');
         });
       } else {
         console.log('Usuario no autenticado');
       }
     });
-  }, []);
+  }, [navigate ('/')]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -54,21 +56,11 @@ const [token, setToken] = useState('');
       const result = await signInWithGoogle();
       console.log("Inicio de sesión exitoso:", result.user);
       window.localStorage.setItem('auth', 'true');
+      navigate('/');
     } catch (error) {
       console.error("Error al iniciar sesión con Google:", error);
     }
   };
-
-  const handleFacebookLogin = async () => {
-    try {
-      const result = await signInWithFacebook();
-      console.log("Inicio de sesión exitoso:", result.user);
-    } catch (error) {
-      console.error("Error al iniciar sesión con Facebook:", error);
-    }
-  };
-  
-
 
   const EyeIcon = () => (
     <svg 
@@ -121,11 +113,6 @@ const [token, setToken] = useState('');
             <a id="google-button" className="social-button" onClick={handleGoogleLogin}>
               <img src={logogoogle} alt="logo-google" />
               Continuar con Google
-            </a>
-
-            <a id="facebook-button" className="social-button" onClick={handleFacebookLogin}>
-              <img src={logofacebook} alt="logo-facebook" />
-              Continuar con Facebook
             </a>
 
           </div>

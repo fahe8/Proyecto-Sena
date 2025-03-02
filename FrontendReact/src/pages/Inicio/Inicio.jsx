@@ -1,6 +1,6 @@
 import React from "react";
 import Header, { BusquedaFiltros } from "../../Header/header";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { empresas } from "./dataPrueba";
 import iconHistorialReserva from "../../assets/Inicio/recent.svg";
 import iconPendiente from "../../assets/Inicio/archive.svg";
@@ -8,7 +8,7 @@ import iconFavoritos from "../../assets/Inicio/corazon.svg";
 import iconNoRecomendar from "../../assets/Inicio/thumb-down.svg";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
+//import Slider from "react-slick";
 const Inicio = () => {
   return (
     <>
