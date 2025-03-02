@@ -17,7 +17,7 @@ const Inicio = () => {
         <div className="lg:hidden">
           <BusquedaFiltros />
         </div>
-        <section class="grid lg:grid-cols-[20%_80%] container mx-auto pt-8">
+        <section class="grid lg:grid-cols-[20%_80%] container mx-auto pt-5">
           {/* <!-- Seccion lateral izquierda --> */}
           <SeccionHerramientas />
 
