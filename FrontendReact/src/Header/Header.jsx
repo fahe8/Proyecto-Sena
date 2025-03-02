@@ -22,7 +22,7 @@ const Header = () => {
   }, [mostrarMenu]);
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-10">
+    <header className="bg-white sticky top-0 z-10">
       <div className="container flex justify-between items-center p-4 mx-auto">
         <div className="text-xl font-bold">LOGO</div>
         {/* <!-- Barra de busqueda y boton filtros--> */}
@@ -34,10 +34,9 @@ const Header = () => {
           {/* <!-- Botón de perfil --> */}
           <button
             onClick={() => {
-              console.log(mostrarMenu);
               setMostrarMenu(!mostrarMenu);
             }}
-            className=" text-sm lg:text-lg flex items-center py-2 px-4 bg-green-400 rounded-2xl peer"
+            className=" text-sm lg:text-lg flex items-center py-2 px-4 bg-green-400 rounded-2xl"
           >
             <span>Perfil</span>
             <svg
@@ -60,7 +59,7 @@ const Header = () => {
           {mostrarMenu && (
             <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg cursor-pointer">
               <Link
-                to={"/registrar"}
+                to={"/login"}
                 className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-t-lg"
               >
                 Registrarse
