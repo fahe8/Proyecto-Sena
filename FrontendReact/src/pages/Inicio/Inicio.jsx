@@ -8,12 +8,12 @@ import iconFavoritos from "../../assets/Inicio/corazon.svg";
 import iconNoRecomendar from "../../assets/Inicio/thumb-down.svg";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-//import Slider from "react-slick";
+import Slider from "react-slick";
 const Inicio = () => {
   return (
     <>
       <Header />
-      <main class="">
+      <main>
         <div className="lg:hidden">
           <BusquedaFiltros />
         </div>
@@ -51,6 +51,7 @@ const ListaEmpresas = () => {
             <Slider {...settings}>
               {empresa.imagenes.map((imagen, index) => (
                 <img
+                  key={index + "ca"}
                   src={imagen}
                   alt={`Imagen ${index + 1} de ${empresa.nombre}`}
                   className="object-cover  h-40"
