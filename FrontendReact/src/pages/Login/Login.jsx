@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import "./Login.css";
 import {useNavigate} from 'react-router-dom';
-import { auth, signInWithGoogle} from "./firebaseconfig";
+import { auth, signInWithGoogle, signUpWithEmailAndPassword, iniciarSesionConEmail} from "./firebaseconfig";
 import { onAuthStateChanged } from "firebase/auth";
 import logogoogle from "../../assets/LogIn/simbolo-de-google.png";
 import Listoftodo from './components/ListOfTodo';
 
 const Login = () => {
   const navigate = useNavigate();
+  const [register,setRegister] = useState(true)
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     password: '',
@@ -22,16 +23,14 @@ const [token, setToken] = useState('');
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        window.localStorage.setItem('auth', 'true');
         user.getIdToken().then((token) => {
           setToken(token);
-          navigate ('/');
         });
       } else {
         console.log('Usuario no autenticado');
       }
     });
-  }, [navigate ('/')]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -41,10 +40,25 @@ const [token, setToken] = useState('');
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    // Aquí pondré la lógica para enviar los datos al servidor
+    if (register) {
+     try {
+      await signUpWithEmailAndPassword(formData.email, formData.password)
+      navigate('/');
+     } catch (error) {
+      console.log(error)
+     }
+    } else {
+      //Iniciar sesion
+     try {
+      await iniciarSesionConEmail(formData.email, formData.password)
+      navigate('/');
+     } catch (error) {
+      console.log(error)
+     }
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -107,9 +121,10 @@ const [token, setToken] = useState('');
        
       ) : (
         <>
-          <h2 className="register-tittle">Regístrate</h2>
+        {register? <h2 className="register-tittle">Regístrate</h2> :  <h2 className="register-tittle">Inicia sesión</h2>}
+          
 
-          <div className="social-buttons">
+          <div className="social-buttons ">
             <a id="google-button" className="social-button" onClick={handleGoogleLogin}>
               <img src={logogoogle} alt="logo-google" />
               Continuar con Google
@@ -146,7 +161,7 @@ const [token, setToken] = useState('');
             </div>
 
             <div className="aditional-options">
-              <a href="#" className="forgot-password">Olvidó su contraseña</a>
+              <a href="#" className={`forgot-password ${register?"hidden-button":"block-button"}`}>Olvidó su contraseña</a>
               <div className='remember-me'>
                 <input 
                   type="checkbox" 
@@ -159,14 +174,16 @@ const [token, setToken] = useState('');
               </div>
             </div>
 
-            <button type="submit" className="register-button">Registrarse</button>
+            <button type="submit" className="register-button">{register?"Registrarse":"Iniciar Sesión"}</button>
           </form>
 
           <div className="bottom-divider"></div>
-
-          <p className="login-prompt">¿Ya tienes una cuenta?</p>
-
-          <a href="#" className="login-button">Iniciar sesión</a>
+          <div  className='changeSign'>
+            <p className={`login-prompt`}>{register ? "¿Ya tienes una cuenta?":"¿Eres nuevo aquí?"}</p>
+            <a onClick={() => {setRegister(!register)}} className={`login-button `}>{register?"Iniciar sesión":"Registrarse"}</a>
+          </div>
+          
+        
         </>
       )}
     </div>
