@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import iconSearch from "../assets/Inicio/search.svg";
 
 const Header = () => {

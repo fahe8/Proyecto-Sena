@@ -13,6 +13,8 @@ body {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   font-family: Arial, sans-serif;
   box-sizing: border-box;
+  max-height: 70vh;
+  margin-top: 10vh;
 }
 
 .register-tittle {
@@ -146,7 +148,6 @@ body {
 
 .register-button {
   width: 100%;
-  padding: 12px;
   height: 46px;
   background-color: #009a3a;
   color: white;
@@ -154,7 +155,7 @@ body {
   border-radius: 25px;
   font-size: 16px;
   cursor: pointer;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .register-button:hover {
@@ -164,36 +165,46 @@ body {
 .bottom-divider {
   border-bottom: 1px solid #ddd;
   margin-bottom: 20px;
+  margin-top: 15px;
+}
+
+.changeSign {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-size: 17px;
+  color: #555;
+  margin-bottom: 20px;
 }
 
 .login-prompt {
-  text-align: center;
-  margin-bottom: 15px;
-  font-size: 15px;
   color: #555;
+  
 }
 
 .login-button {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  height: 46px;
-  text-align: center;
   color: #009a3a;
-  background-color: white;
-  border: 1px solid #009a3a;
-  border-radius: 25px;
-  text-decoration: none;
-  font-size: 16px;
+  text-decoration:underline;
+  cursor: pointer;
 }
 
 .login-button:hover {
   background-color: rgba(0, 154, 58, 0.05);
 }
+.bottom-divider {
+  margin-top: 15px;
+}
+
+.remember-me input {
+  accent-color: rgba(9, 167, 46, 0.912);
+  margin-left: 2px;
+}
+/*Solo media querys :) */
 @media (max-height: 800px) {
   .login-container {
     margin: auto;
     padding: 30px 25px;
+    min-height: 80vh;
   }
 
   .register-tittle {
@@ -222,17 +233,14 @@ body {
     margin: 15px auto;
     padding: 20px;
   }
-
   .register-tittle {
     font-size: 22px;
     margin-bottom: 20px;
   }
-
   .social-buttons {
     gap: 8px;
     margin-bottom: 15px;
   }
-
   .social-button,
   .form-group input,
   .register-button,
@@ -240,11 +248,9 @@ body {
     height: 40px;
     padding: 10px;
   }
-
   .form-group {
     margin-bottom: 15px;
   }
-
   .eye-icon {
     top: 35px;
   }
@@ -255,7 +261,6 @@ body {
     max-width: 500px;
   }
 }
-
 @media (max-width: 480px) {
   .login-container {
     width: 95%;
@@ -263,10 +268,16 @@ body {
     padding: 25px 20px;
     font-size: 7px;
   }
-
   .social-button img {
     margin-right: 8px;
   }
+}
+
+.block-button {
+  display: block;
+}
+.hidden-button {
+  display: none;
 }
 
 @media (max-height: 600px) and (min-width: 768px) {
@@ -295,5 +306,52 @@ body {
 
   form {
     width: 48%;
+  }
+}
+
+@media screen and (max-width: 1024px) and (max-height: 600px) {
+  .login-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 50%;
+    margin: 0 auto; 
+    padding: 15px;
+    min-height: 550px;
+  }
+  .login-container form {
+    width: 70%;
+  }
+  .register-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px; 
+  }
+  
+  .social-buttons {
+    flex-direction: column;
+    gap: 10px;
+    width: 70%;
+  }
+
+  input[type="text"], 
+  input[type="password"],
+  input[type="email"] {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+  
+  .changeSign {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+  }
+  .login-prompt {
+    padding:0;
+  }
+  .login-button{
+    margin: 0;
   }
 }

@@ -8,7 +8,7 @@ import iconFavoritos from "../../assets/Inicio/corazon.svg";
 import iconNoRecomendar from "../../assets/Inicio/thumb-down.svg";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-//import Slider from "react-slick";
+import Slider from "react-slick";
 const Inicio = () => {
   return (
     <>
@@ -111,8 +111,8 @@ const SeccionHerramientas = () => {
   ];
 
   return (
-    <div class="pr-2 lg:border-r-2 border-gray-300 flex flex-col gap-4 items-center lg:sticky top-24 self-start lg:h-[600px] overflow-y-auto">
-      <ul class="bg-gray-200 rounded-2xl" id="menu-lista">
+    <div class="px-2 lg:pr-2 lg:border-r-2 border-gray-300 flex flex-col gap-4 items-center lg:sticky top-24 self-start lg:h-[600px] overflow-y-auto">
+      <ul class=" rounded-2xl grid grid-cols-4 lg:grid-cols-1 gap-4 lg:gap-0 justify-around mb-4" id="menu-lista">
         {menuItems?.map((item, index) => {
           const borderClass =
             index === menuItems.length - 1 ? "" : "border-b-2 border-gray-300";
@@ -120,7 +120,7 @@ const SeccionHerramientas = () => {
             <li key={index + "b"}>
               <Link
                 to={item.ref}
-                className={`flex lg:text-sm  lg:px-4 lg:py-6  xl:px-6 xl:py-8 gap-2 justify-center items-center ${borderClass} 
+                className={` lg:bg-white text-center flex text-[11px] lg:text-sm  lg:px-4 lg:py-6  xl:px-6 xl:py-8 gap-2 justify-center items-center ${borderClass} 
             hover:bg-gray-200 hover:text-green-500 
             transition-colors duration-300`}
               >
@@ -129,6 +129,7 @@ const SeccionHerramientas = () => {
                   src={item.icon}
                   alt="iconos correspondientes a la seccion"
                   width={20}
+                  className="hidden lg:block"
                 />
               </Link>
             </li>
