@@ -13,7 +13,7 @@ const Inicio = () => {
   return (
     <>
       <Header />
-      <main class="">
+      <main>
         <div className="lg:hidden">
           <BusquedaFiltros />
         </div>
@@ -51,6 +51,7 @@ const ListaEmpresas = () => {
             <Slider {...settings}>
               {empresa.imagenes.map((imagen, index) => (
                 <img
+                  key={index + "ca"}
                   src={imagen}
                   alt={`Imagen ${index + 1} de ${empresa.nombre}`}
                   className="object-cover  h-40"
