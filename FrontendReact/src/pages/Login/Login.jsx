@@ -143,6 +143,7 @@ const [token, setToken] = useState('');
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
+                required
               />
             </div>
             
