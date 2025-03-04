@@ -13,20 +13,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        if (!user.emailVerified) {
-          console.log(
-            "Correo no verificado, se procederá a verificar más tarde."
-          );
-          console.log(user);
-          const wasDeleted = await checkAndDeleteUnverifiedUser(user);
-          if (wasDeleted) {
-            setIsAuthenticated(false);
-            setToken("");
-          }
-          return;
-        }
-
-        console.log(user);
         setIsAuthenticated(true);
         const token = await user.getIdToken();
         setToken(token);
