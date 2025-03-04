@@ -51,7 +51,7 @@ const Login = () => {
     console.log("Form submitted:", formData);
     if (register) {
       try {
-        await signUpWithEmailAndPassword(formData.email, formData.password);
+        signUpWithEmailAndPassword(formData.email, formData.password);
         navigate("/");
       } catch (error) {
         console.log(error);
@@ -59,7 +59,7 @@ const Login = () => {
     } else {
       //Iniciar sesion
       try {
-        await iniciarSesionConEmail(formData.email, formData.password);
+        iniciarSesionConEmail(formData.email, formData.password);
         navigate("/");
       } catch (error) {
         console.log(error);

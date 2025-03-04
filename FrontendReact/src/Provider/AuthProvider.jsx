@@ -1,5 +1,6 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { checkAndDeleteUnverifiedUser } from "../pages/Login/firebaseconfig";
 
 const AuthContext = createContext();
 
@@ -10,14 +11,29 @@ export const AuthProvider = ({ children }) => {
   const auth = getAuth();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setIsAuthenticated(!!user);
-        user.getIdToken().then((token) => {
-          setToken(token);
-        });
+        if (!user.emailVerified) {
+          console.log(
+            "Correo no verificado, se procederá a verificar más tarde."
+          );
+          console.log(user);
+          const wasDeleted = await checkAndDeleteUnverifiedUser(user);
+          if (wasDeleted) {
+            setIsAuthenticated(false);
+            setToken("");
+          }
+          return;
+        }
+
+        console.log(user);
+        setIsAuthenticated(true);
+        const token = await user.getIdToken();
+        setToken(token);
       } else {
         console.log("Usuario no autenticado");
+        setIsAuthenticated(false);
+        setToken("");
       }
     });
   }, [auth]);
