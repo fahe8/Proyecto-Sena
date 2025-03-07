@@ -4,6 +4,7 @@ import "./App.css";
 import Inicio from "./pages/Inicio/Inicio";
 import Calendario from "./pages/Calendario/calendario";
 import Login from "./pages/Login/LogIn";
+import Cliente from "./pages/Cliente/PerfilUsuario";
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Inicio />} />
         <Route path="/calendario" element={<Calendario />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/perfil" element={<Cliente/>} />
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
       </Routes>
     </Router>
