@@ -20,4 +20,13 @@ export class UsuarioController {
       res.status(400).json({ error: error.message });
     }
   }
+
+  static async actualizarUsuario(req, res) {
+    try {
+      await UsuarioService.actualizarUsuario(req.body);
+      res.status(200).json({ message: "Usuario actualizado" });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
 }
