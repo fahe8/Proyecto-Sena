@@ -12,7 +12,7 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 const app = express();
 const corsOptions = {
-  origin: "http://127.0.0.1:5500",
+  origin: "http://localhost:5173",
   credentials: true,
 };
 
@@ -27,7 +27,7 @@ app.use("/api/usuarios", routerUsuarios);
 iniciarAsociaciones();
 
 //Correr servidor
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => {

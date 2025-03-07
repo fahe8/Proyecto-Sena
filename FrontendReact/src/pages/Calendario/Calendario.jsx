@@ -42,10 +42,10 @@ const Calendario = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="max-w-[320px] p-3 rounded-lg bg-gray-300 flex flex-col items-center">
-        <p>Fecha: {reserva.fecha.toLocaleDateString()}</p>
+      <div className="max-w-[320px] p-3 rounded-lg shadow-2xl flex flex-col items-center">
+        {/* <p>Fecha: {reserva.fecha.toLocaleDateString()}</p>
         <p>Inicio: {reserva.horaInicio.toLocaleTimeString()}</p>
-        <p>Fin: {reserva.horaFinal.toLocaleTimeString()}</p>
+        <p>Fin: {reserva.horaFinal.toLocaleTimeString()}</p> */}
         <DatePicker
           selected={reserva.fecha}
           startDate={reserva.fecha}
@@ -83,7 +83,7 @@ const Calendario = () => {
                 timeCaption="Hora"
                 dateFormat="h:mm aa"
                 onKeyDown={(e) => e.preventDefault()}
-                className="w-20 bg-gray-200 rounded-lg px-2 cursor-pointer border-none"
+                className="w-20 bg-gray-200 rounded-lg px-2 cursor-pointer border-none border-white "
               />
             </div>
           </div>
