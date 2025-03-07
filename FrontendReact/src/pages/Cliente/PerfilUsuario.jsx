@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import cancha from "./imagen/canchasin.png";
-import cancha2 from "./imagen/cancha2.jpg";
+import React, { useState, useEffect } from "react";
+import cancha2  from "./imagen/cancha2.jpg";
+import canchasi from "./imagen/canchasin.png";
+;
 
 const imagen = {
   gps: (
@@ -40,7 +41,6 @@ const imagen = {
       />
     </svg>
   ),
-
   estrella: (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -71,6 +71,107 @@ const imagen = {
       />
     </svg>
   ),
+  flecha: (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+      className="size-5"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M8.25 4.5l7.5 7.5-7.5 7.5"
+      />
+    </svg>
+  ),
+  flechaIzq: (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+      className="size-5"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15.75 19.5L8.25 12l7.5-7.5"
+      />
+    </svg>
+  )
+};
+
+// implemento este componente para el Carrusel
+const Carousel = ({ images }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // Función para moverse a la siguiente imagen
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => 
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+  
+  // Función para moverse a la imagen anterior
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => 
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+    );
+  };
+
+  // aca le coloco  cambio automático de imágenes cada 5 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  return (
+    <div className="relative w-full rounded-lg overflow-hidden mb-6">
+     <div className="w-full h-64 bg-gray-200">
+        <img 
+          src={images[currentIndex]} 
+          alt={`Slide ${currentIndex + 1}`} 
+          className="w-full h-full object-cover"
+        />
+      </div>
+      
+      {/* Botones de navegación */}
+      <button 
+        onClick={prevSlide}
+        className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white/90 rounded-full p-2 shadow-md"
+        aria-label="Anterior"
+      >
+        {imagen.flechaIzq}
+      </button>
+      
+      <button 
+        onClick={nextSlide}
+        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white/90 rounded-full p-2 shadow-md"
+        aria-label="Siguiente"
+      >
+        {imagen.flecha}
+      </button>
+      
+      {/* Indicadores */}
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
+        {images.map((_, index) => (
+          <button 
+            key={index}
+            onClick={() => setCurrentIndex(index)}
+            className={`w-2 h-2 rounded-full ${currentIndex === index ? 'bg-white' : 'bg-white/50'}`}
+            aria-label={`Ir a diapositiva ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 const Perfil = () => {
@@ -115,6 +216,13 @@ const Perfil = () => {
     comment: "",
   });
   const [showAllReviews, setShowAllReviews] = useState(false);
+  
+  // Imágenes que implementarios al carrusel
+  const carouselImages = [
+    cancha2,
+    canchasi
+    
+  ];
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -129,8 +237,6 @@ const Perfil = () => {
   const toggleOpenStatus = () => {
     setIsOpen(!isOpen);
   };
-
-  
 
   const handleReviewSubmit = (e) => {
     e.preventDefault();
@@ -161,8 +267,6 @@ const Perfil = () => {
   const handlePayment = () => {
     setShowBookingSummary(true);
   };
-
-  
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -220,24 +324,20 @@ const Perfil = () => {
                 </div>
               </div>
 
-              {/* carrusel */}
+              {/* Carrusel - reemplaza el grid de 2 columnas */}
+              <Carousel images={carouselImages} />
 
-
-
-
-
-              {/* */}
-              <div className="grid grid-cols-2 gap-2 mb-6">
-                <div className="aspect-w-4 aspect-h-3 bg-gray-200 rounded-md overflow-hidden">
-                  <div className="w-full h-32 flex items-center justify-center">
-                    
+              {/* Thumbnails de imágenes pequeñas debajo del carrusel */}
+              <div className="grid grid-cols-4 gap-2 mb-6">
+                {carouselImages.map((img, index) => (
+                  <div key={index} className="aspect-w-4 aspect-h-3 bg-gray-200 rounded-md overflow-hidden">
+                    <img 
+                      src={img} 
+                      alt={`Thumbnail ${index + 1}`} 
+                      className="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                    />
                   </div>
-                </div>
-                <div className="aspect-w-4 aspect-h-3 bg-gray-200 rounded-md overflow-hidden">
-                  <div className="w-full h-32 flex items-center justify-center">
-                    
-                  </div>
-                </div>
+                ))}
               </div>
 
               {/* Informacion del empresario */}
@@ -390,7 +490,9 @@ const Perfil = () => {
                                   ? "text-yellow-500"
                                   : "text-gray-300"
                               }
-                            ></span>
+                            >
+                              ★
+                            </span>
                           </button>
                         ))}
                       </div>
