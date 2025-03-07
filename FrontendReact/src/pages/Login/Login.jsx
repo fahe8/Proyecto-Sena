@@ -6,10 +6,15 @@ import {
   signInWithGoogle,
   signUpWithEmailAndPassword,
   iniciarSesionConEmail,
+  recuperarContrasena,
 } from "./firebaseconfig";
 import { onAuthStateChanged } from "firebase/auth";
 import logogoogle from "../../assets/LogIn/simbolo-de-google.png";
 import Listoftodo from "./components/ListOfTodo";
+import {
+  actualizarDatosUsuario,
+  crearUsuarioConEmail,
+} from "./fetchBackendLogin";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -38,6 +43,8 @@ const Login = () => {
     });
   }, []);
 
+
+  //Guardar la informacion de los inputs en el state
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -46,13 +53,28 @@ const Login = () => {
     });
   };
 
+  
+  //Ver o ocultar la contraseña
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  
+  //Registrar el usuario correo y contraseña al firebaseAuth y crear el usuario en la base de datos
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
     if (register) {
       try {
-        signUpWithEmailAndPassword(formData.email, formData.password);
-        navigate("/");
+        const usuarioCreado = await signUpWithEmailAndPassword(
+          formData.email,
+          formData.password
+        );
+        if (usuarioCreado) {
+          const email = { email: formData.email };
+          const usuarioCreado = await crearUsuarioConEmail(email);
+          if (usuarioCreado) {
+            navigate("/");
+          }
+        }
       } catch (error) {
         console.log(error);
       }
@@ -61,25 +83,41 @@ const Login = () => {
       try {
         iniciarSesionConEmail(formData.email, formData.password);
         navigate("/");
+        
       } catch (error) {
         console.log(error);
       }
     }
   };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
+  //Iniciar sesion con google y crear el usuario en la base de datos
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithGoogle();
-      console.log("Inicio de sesión exitoso:", result.user);
       window.localStorage.setItem("auth", "true");
-      navigate("/");
+
+      if (result) {
+        const { displayName, telefono, email } = result.user;
+        const nombreCompleto = displayName.split(" ");
+        const datosActualizar = {
+          email,
+          nombre: nombreCompleto[0],
+          apellido: nombreCompleto[1],
+          telefono: telefono || "",
+        };
+        const creado = await crearUsuarioConEmail(datosActualizar);
+        console.log(creado.message);
+        if (creado) {
+          navigate("/");
+        }
+      }
     } catch (error) {
       console.error("Error al iniciar sesión con Google:", error);
     }
+  };
+
+  //Recuperar contrasena
+  const recuperarContrasenia = async () => {
+    await recuperarContrasena(formData.email);
   };
 
   const EyeIcon = () => (
@@ -118,103 +156,96 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      {isAuthenticated ? (
-        token ? (
-          <Listoftodo token={token} />
+      <>
+        {register ? (
+          <h2 className="register-tittle">Regístrate</h2>
         ) : (
-          <p>Cargando...</p>
-        )
-      ) : (
-        <>
-          {register ? (
-            <h2 className="register-tittle">Regístrate</h2>
-          ) : (
-            <h2 className="register-tittle">Inicia sesión</h2>
-          )}
+          <h2 className="register-tittle">Inicia sesión</h2>
+        )}
 
-          <div className="social-buttons ">
-            <a
-              id="google-button"
-              className="social-button"
-              onClick={handleGoogleLogin}
-            >
-              <img src={logogoogle} alt="logo-google" />
-              Continuar con Google
-            </a>
+        <div className="social-buttons ">
+          <a
+            id="google-button"
+            className="social-button"
+            onClick={handleGoogleLogin}
+          >
+            <img src={logogoogle} alt="logo-google" />
+            Continuar con Google
+          </a>
+        </div>
+
+        <div className="divider">o</div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="email">
+              Correo electrónico o nombre de usuario
+            </label>
+            <input
+              type="text"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
           </div>
 
-          <div className="divider">o</div>
-
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="email">
-                Correo electrónico o nombre de usuario
-              </label>
-              <input
-                type="text"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-              />
+          <div className="form-group password-container">
+            <label htmlFor="password">Contraseña</label>
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <div className="eye-icon" onClick={togglePasswordVisibility}>
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
             </div>
-
-            <div className="form-group password-container">
-              <label htmlFor="password">Contraseña</label>
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              <div className="eye-icon" onClick={togglePasswordVisibility}>
-                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-              </div>
-            </div>
-
-            <div className="aditional-options">
-              <a
-                href="#"
-                className={`forgot-password ${
-                  register ? "hidden-button" : "block-button"
-                }`}
-              >
-                Olvidó su contraseña
-              </a>
-              <div className="remember-me">
-                <input
-                  type="checkbox"
-                  id="rememberMe"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleChange}
-                />
-                <label htmlFor="rememberMe">Recuérdame</label>
-              </div>
-            </div>
-
-            <button type="submit" className="register-button">
-              {register ? "Registrarse" : "Iniciar Sesión"}
-            </button>
-          </form>
-
-          <div className="bottom-divider"></div>
-          <div className="changeSign">
-            <p className={`login-prompt`}>
-              {register ? "¿Ya tienes una cuenta?" : "¿Eres nuevo aquí?"}
-            </p>
-            <a
-              onClick={() => {
-                setRegister(!register);
-              }}
-              className={`login-button `}
-            >
-              {register ? "Iniciar sesión" : "Registrarse"}
-            </a>
           </div>
-        </>
-      )}
+
+          <div className="aditional-options">
+            <a
+              href="#"
+              onClick={recuperarContrasenia}
+              className={`forgot-password ${
+                register ? "hidden-button" : "block-button"
+              }`}
+            >
+              Olvidó su contraseña
+            </a>
+            <div className="remember-me">
+              <input
+                type="checkbox"
+                id="rememberMe"
+                name="rememberMe"
+                checked={formData.rememberMe}
+                onChange={handleChange}
+              />
+              <label htmlFor="rememberMe">Recuérdame</label>
+            </div>
+          </div>
+
+          <button type="submit" className="register-button">
+            {register ? "Registrarse" : "Iniciar Sesión"}
+          </button>
+        </form>
+
+        <div className="bottom-divider"></div>
+        <div className="changeSign">
+          <p className={`login-prompt`}>
+            {register ? "¿Ya tienes una cuenta?" : "¿Eres nuevo aquí?"}
+          </p>
+          <a
+            onClick={() => {
+              setRegister(!register);
+            }}
+            className={`login-button `}
+          >
+            {register ? "Iniciar sesión" : "Registrarse"}
+          </a>
+        </div>
+      </>
     </div>
   );
 };

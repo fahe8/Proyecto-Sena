@@ -1,27 +1,26 @@
-import { Persona } from "../../models/Persona.js";
 import { Usuario } from "../../models/Usuario.js";
 import { Credencial } from "../../models/Credencial.js";
-
+import { pool } from "../../config/db.js";
 export class UsuarioRepository {
   static async obtenerTodosUsuarios() {
-    return await Usuario.findAll({
-      attributes: ["id_usuario"],
-      include: {
-        model: Persona,
-        attributes: ["nombre", "apellido", "telefono", "email"],
-      },
-    });
+    const query = `
+      SELECT 
+        u.id_usuario AS usuario_id,
+        p.id_persona,
+        p.nombre AS nombre,
+        p.apellido AS apellido,
+        p.telefono AS telefono,
+        p.email AS email
+      FROM Usuarios u
+      JOIN Personas  p ON u.id_persona = p.id_persona;
+    `;
+
+    const [rows] = await pool.execute(query);
+    return rows;
   }
 
   static async obtenerUsuarioPorId(id_usuario) {
     return await Usuario.findByPk(id_usuario);
-  }
-
-  static async crearPersona(nombre, apellido, telefono, email, transaction) {
-    return await Persona.create(
-      { nombre, apellido, telefono, email },
-      { transaction }
-    );
   }
 
   static async crearUsuario(id_persona, transaction) {
@@ -29,11 +28,7 @@ export class UsuarioRepository {
     return await Usuario.create({ id_persona }, { transaction });
   }
 
-  static async crearCredencial(id_persona, contrasena, transaction) {
-    return await Credencial.create({ id_persona, contrasena }, { transaction });
-  }
-
-  static async buscarPersonaPorEmail(email) {
-    return await Persona.findOne({ where: { email } });
+  static async crearCredencial(id_persona, transaction) {
+    return await Credencial.create({ id_persona }, { transaction });
   }
 }

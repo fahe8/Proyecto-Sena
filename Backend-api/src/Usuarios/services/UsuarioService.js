@@ -1,51 +1,30 @@
 import sequelize from "../../config/db.js";
+import { PersonaService } from "../../Persona/PersonaService.js";
 import { UsuarioRepository } from "../repository/UsuarioRepository.js";
 import bcrypt from "bcrypt";
 
-export class UsuarioService {
+export class UsuarioService extends PersonaService {
   static async obtenerTodosUsuarios() {
     return await UsuarioRepository.obtenerTodosUsuarios();
   }
 
   static async registrarUsuario(datos) {
-    const { nombre, apellido, telefono, email, password } = datos;
-
-    // Verificar si el email ya está registrado
-    const personaExistente = await UsuarioRepository.buscarPersonaPorEmail(
-      email
-    );
-    if (personaExistente) {
-      throw new Error("El email ya está registrado.");
-    }
-
+    const { email } = datos;
     // Iniciar transacción
     const t = await sequelize.transaction();
 
     try {
-      // Crear Persona
-      const nuevaPersona = await UsuarioRepository.crearPersona(
-        nombre,
-        apellido,
-        telefono,
-        email,
-        t
-      );
-
+      //Buscar y crear Persona
+      const nuevaPersona = await this.crearPersona(datos, t);
+      console.log("Nueva persona", nuevaPersona);
       // Crear Usuario
       const nuevoUsuario = await UsuarioRepository.crearUsuario(
         nuevaPersona.id_persona,
         t
       );
 
-      // Hashear la contraseña
-      const hashedPassword = await bcrypt.hash(password, 10);
-
       // Crear Credencial
-      await UsuarioRepository.crearCredencial(
-        nuevaPersona.id_persona,
-        hashedPassword,
-        t
-      );
+      await UsuarioRepository.crearCredencial(nuevaPersona.id_persona, t);
 
       // Confirmar transacción
       await t.commit();
@@ -55,5 +34,14 @@ export class UsuarioService {
       await t.rollback();
       throw error;
     }
+  }
+
+  static async actualizarUsuario(datosActualizados) {
+    const { email } = datosActualizados;
+    if (!email) {
+      throw new Error("Falta agregar el email");
+    }
+
+    return await this.actualizarPersona(datosActualizados);
   }
 }

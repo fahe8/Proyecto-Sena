@@ -1,22 +1,13 @@
 import sequelize from "../config/db.js";
 import { DataTypes } from "sequelize";
-
-export const Persona = sequelize.define(
-  "persona",
-  {
-    id_persona: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    nombre: { type: DataTypes.STRING },
-    apellido: { type: DataTypes.STRING },
-    telefono: { type: DataTypes.STRING },
-    email: { type: DataTypes.STRING },
+export const Persona = sequelize.define("persona", {
+  id_persona: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
   },
-  {
-    tableName: "persona",
-    freezeTableName: true,
-    timestamps: false,
-  }
-);
+  nombre: { type: DataTypes.STRING, defaultValue: "" },
+  apellido: { type: DataTypes.STRING, defaultValue: "" },
+  telefono: { type: DataTypes.STRING, defaultValue: "" },
+  email: DataTypes.STRING,
+});

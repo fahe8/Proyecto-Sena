@@ -7,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   sendEmailVerification,
   deleteUser,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -33,11 +34,9 @@ const iniciarSesionConEmail = async (email, password) => {
     );
     const user = userCredential.user;
 
-    console.log(user);
-    alert("Inició sesión:" + user.email);
+    return userCredential;
   } catch (error) {
     console.error(error.code, error.message);
-    alert("Error: " + error.message);
   }
 };
 
@@ -49,17 +48,10 @@ const signUpWithEmailAndPassword = async (email, password) => {
       password
     );
     const user = userCredential.user;
-
-    console.log(user);
     await sendEmailVerification(user);
-
-    // Guardar la fecha de creación en Firestore o localStorage (con cuidado)
-    localStorage.setItem("userCreatedAt", Date.now());
-
-    alert("Usuario registrado, verifica el email.");
+    return userCredential;
   } catch (error) {
     console.error(error.code, error.message);
-    alert("Error: " + error.message);
   }
 };
 
@@ -78,7 +70,6 @@ const checkAndDeleteUnverifiedUser = async (user) => {
 
       await deleteUser(user);
       console.log("Cuenta eliminada por falta de verificación.");
-      alert("Tu cuenta ha sido eliminada por no verificar el correo.");
       return true; // Indica que el usuario fue eliminado.
     }
 
@@ -89,10 +80,22 @@ const checkAndDeleteUnverifiedUser = async (user) => {
   }
 };
 
+const recuperarContrasena = async (email) => {
+  try {
+    const reiniciarContrasena = await sendPasswordResetEmail(auth, email);
+    return reiniciarContrasena;
+  } catch (error) {
+    const errorMessage = error.message;
+    const errorCode = error.code;
+    console.log(errorMessage, errorCode);
+  }
+};
+
 export {
   auth,
   signInWithGoogle,
   signUpWithEmailAndPassword,
   iniciarSesionConEmail,
   checkAndDeleteUnverifiedUser,
+  recuperarContrasena,
 };
