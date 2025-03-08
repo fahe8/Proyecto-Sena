@@ -34,7 +34,12 @@ const iniciarSesionConEmail = async (email, password) => {
     );
     return { success: true, userCredential };
   } catch (error) {
-    console.error("Error en el inicio de sesión:", error.code, error.message);
+    console.error(
+      "Error en el inicio de sesión:",
+      error.code,
+      "--",
+      error.message
+    );
     return { success: false, code: error.code, message: error.message };
   }
 };

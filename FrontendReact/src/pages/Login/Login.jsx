@@ -17,6 +17,7 @@ import {
   crearUsuarioConEmail,
 } from "./fetchBackendLogin";
 import Loading from "./components/Loading";
+import { manejarErroresFirebase } from "./manejarErroresFirebase";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -51,16 +52,17 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if (register) {
-      try {
-        const result = await signUpWithEmailAndPassword(
+    let result;
+
+    try {
+      if (register) {
+        // Registrar usuario
+        result = await signUpWithEmailAndPassword(
           formData.email,
           formData.password
         );
         if (!result.success) {
-          console.log("Error:", result.message);
-          alert(`Error: ${result.message}`);
-          return;
+          throw result; // Lanzar el objeto result completo en lugar de un Error vacío.
         }
 
         const email = { email: formData.email };
@@ -70,23 +72,33 @@ const Login = () => {
           setPopupSubText("Tu usuario se creó correctamente.");
           setShowPopUp(true);
         }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      //Iniciar sesion
-      try {
-        iniciarSesionConEmail(formData.email, formData.password);
+      } else {
+        // Iniciar sesión
+        result = await iniciarSesionConEmail(formData.email, formData.password);
+        if (!result.success) {
+          throw result;
+        }
+
         setPopupMessage("Bienvenido!");
         setPopupSubText("Has iniciado sesión correctamente");
         setShowPopUp(true);
-      } catch (error) {
-        console.log(error);
       }
+    } catch (error) {
+      console.log("El error que llega es:", error);
+
+      // Asegurar que el error tenga un código válido antes de pasarlo a manejarErroresFirebase
+      const mensajeError = error.code
+        ? manejarErroresFirebase(error)
+        : "Ocurrió un error inesperado.";
+
+      setPopupMessage("Error");
+      setPopupSubText(mensajeError);
+      setShowPopUp(true);
+    } finally {
+      setLoading(false);
     }
   };
+
   //Iniciar sesion con google y crear el usuario en la base de datos
   const handleGoogleLogin = async () => {
     try {
