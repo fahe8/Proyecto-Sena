@@ -9,8 +9,9 @@ import {
   recuperarContrasena,
 } from "./firebaseconfig";
 import { onAuthStateChanged } from "firebase/auth";
+import LogPopUp from "./components/logPopUp";
 import logogoogle from "../../assets/LogIn/simbolo-de-google.png";
-import Listoftodo from "./components/ListOfTodo";
+
 import {
   actualizarDatosUsuario,
   crearUsuarioConEmail,
@@ -53,12 +54,15 @@ const Login = () => {
     });
   };
 
-  
   //Ver o ocultar la contraseña
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
   
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupSubText, setPopupSubText] = useState ("");
+
   //Registrar el usuario correo y contraseña al firebaseAuth y crear el usuario en la base de datos
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,7 +76,9 @@ const Login = () => {
           const email = { email: formData.email };
           const usuarioCreado = await crearUsuarioConEmail(email);
           if (usuarioCreado) {
-            navigate("/");
+            setPopupMessage ("Felicidades!");
+            setPopupSubText ("Tu usuario se creó correctamente.");
+            setShowPopUp(true);
           }
         }
       } catch (error) {
@@ -82,8 +88,9 @@ const Login = () => {
       //Iniciar sesion
       try {
         iniciarSesionConEmail(formData.email, formData.password);
-        navigate("/");
-        
+        setPopupMessage("Bienvenido!");
+        setPopupSubText("Has iniciado sesión correctamente");
+        setShowPopUp (true);
       } catch (error) {
         console.log(error);
       }
@@ -107,7 +114,10 @@ const Login = () => {
         const creado = await crearUsuarioConEmail(datosActualizar);
         console.log(creado.message);
         if (creado) {
-          navigate("/");
+          setPopupMessage("Bienvenido!");
+          setPopupSubText("Has iniciado sesión correctamente con Google");
+          setShowPopUp(true);
+          
         }
       }
     } catch (error) {
@@ -187,6 +197,7 @@ const Login = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
+              required
             />
           </div>
 
@@ -198,6 +209,7 @@ const Login = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              required
             />
             <div className="eye-icon" onClick={togglePasswordVisibility}>
               {showPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -244,8 +256,15 @@ const Login = () => {
           >
             {register ? "Iniciar sesión" : "Registrarse"}
           </a>
+          
+          {showPopUp && <LogPopUp setShowPopUp={setShowPopUp} 
+          message={popupMessage} 
+          subText={popupSubText}
+          onClose={() => navigate("/")} />}
+            
         </div>
       </>
+      
     </div>
   );
 };
