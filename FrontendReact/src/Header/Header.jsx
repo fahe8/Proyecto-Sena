@@ -7,7 +7,7 @@ import { BusquedaFiltros } from "./Componentes/BusquedaFiltros";
 
 const Header = () => {
   return (
-    <header className="bg-white sticky top-0 z-10">
+    <header className="bg-white sticky top-0 z-10 shadow-sm">
       <div className="container flex justify-between items-center p-4 mx-auto">
         <div className="text-xl font-bold">LOGO</div>
         {/* <!-- Barra de busqueda y boton filtros--> */}

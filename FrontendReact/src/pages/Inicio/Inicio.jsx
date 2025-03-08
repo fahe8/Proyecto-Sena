@@ -12,7 +12,10 @@ import Slider from "react-slick";
 import { useAuth } from "../../Provider/AuthProvider";
 import Header from "../../Header/Header";
 import { BusquedaFiltros } from "../../Header/Componentes/BusquedaFiltros";
+
+
 const Inicio = () => {
+ 
   return (
     <>
       <Header />
