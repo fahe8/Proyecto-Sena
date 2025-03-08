@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import cancha2  from "./imagen/cancha2.jpg";
 import canchasi from "./imagen/canchasin.png";
+import Header from "../../Header/Header";
 ;
 
 const imagen = {
@@ -11,7 +12,7 @@ const imagen = {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="size-6"
+      className="size-5"
     >
       <path
         strokeLinecap="round"
@@ -271,21 +272,14 @@ const Perfil = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* encabezado de navegacion */}
-      <nav className="bg-white p-4 shadow-md flex justify-between items-center">
-        <button className="bg-[#00b04b] text-gray-700 px-4 py-2 rounded-md text-sm transition duration-400 ease-in-out hover:bg-[#71fe8e] ">
-          Logo
-        </button>
-        <button className="bg-[#00b04b] text-gray-700 px-4 py-2 rounded-md text-sm flex items-center transition duration-400 ease-in-out hover:bg-[#71fe8e] ">
-          Profile <span className="ml-1">👤</span>
-        </button>
-      </nav>
+      <Header />
 
       {/* Contenido principal*/}
       <div className="container mx-auto ">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Left column: Venue info */}
           <div className="md:col-span-2">
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div className="bg-white shadow-md pr-25 pl-25 pt-10 mb-6 ">
               {/* Venue header */}
               <div className="flex items-start mb-4">
                 <div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center mr-3">
@@ -327,18 +321,7 @@ const Perfil = () => {
               {/* Carrusel - reemplaza el grid de 2 columnas */}
               <Carousel images={carouselImages} />
 
-              {/* Thumbnails de imágenes pequeñas debajo del carrusel */}
-              <div className="grid grid-cols-4 gap-2 mb-6">
-                {carouselImages.map((img, index) => (
-                  <div key={index} className="aspect-w-4 aspect-h-3 bg-gray-200 rounded-md overflow-hidden">
-                    <img 
-                      src={img} 
-                      alt={`Thumbnail ${index + 1}`} 
-                      className="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
-                    />
-                  </div>
-                ))}
-              </div>
+
 
               {/* Informacion del empresario */}
               <div className="flex items-center mb-4">
