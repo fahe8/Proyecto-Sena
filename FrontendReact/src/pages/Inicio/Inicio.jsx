@@ -51,7 +51,7 @@ const ListaEmpresas = () => {
       {empresas?.map((empresa, index) => (
         <div
           key={index + "a"}
-          className="w-56 h-[280px] bg-white rounded-2xl shadow-lg cursor-pointer overflow-hidden hover:scale-105 transition-transform duration-300"
+          className="w-56 h-[280px] bg-white rounded-2xl shadow-lg cursor-pointer overflow-hidden hover:scale-103 transition-transform duration-300"
         >
           <div className="relative h-[60%]">
             <Slider {...settings}>

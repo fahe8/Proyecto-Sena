@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Inicio from "./pages/Inicio/Inicio";
 import Calendario from "./pages/Calendario/calendario";
-import Login from "./pages/Login/LogIn";
+import Login from "./pages/Login/Login";
 import Cliente from "./pages/Cliente/PerfilUsuario";
 
 

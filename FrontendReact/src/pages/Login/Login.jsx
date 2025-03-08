@@ -189,7 +189,7 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">
-              Correo electrónico o nombre de usuario
+              Correo electrónico
             </label>
             <input
               type="text"

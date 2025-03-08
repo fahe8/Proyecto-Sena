@@ -347,7 +347,7 @@ const Perfil = () => {
               {/* Canchas disponibles que los usuarios visualizan */}
               <div className="mb-6">
                 <h3 className="font-medium mb-2">Canchas disponibles:</h3>
-                <div className="space-y-2">
+                <div className="space-y-2 max-w-70">
                   <div className="flex justify-between bg-gray-100 px-3 py-2 rounded-md">
                     <span className="text-sm">Fútbol 5</span>
                     <span className="text-sm text-gray-500">(3)</span>
