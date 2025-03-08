@@ -16,6 +16,8 @@ import {
   actualizarDatosUsuario,
   crearUsuarioConEmail,
 } from "./fetchBackendLogin";
+import Loading from "./components/Loading";
+import { manejarErroresFirebase } from "./manejarErroresFirebase";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,23 +29,10 @@ const Login = () => {
     rememberMe: true,
   });
 
-  const [isAuthenticated] = useState(
-    false || window.localStorage.getItem("auth") === "true"
-  );
-  const [token, setToken] = useState("");
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        user.getIdToken().then((token) => {
-          setToken(token);
-        });
-      } else {
-        console.log("Usuario no autenticado");
-      }
-    });
-  }, []);
-
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupSubText, setPopupSubText] = useState("");
+  const [loading, setLoading] = useState(false);
 
   //Guardar la informacion de los inputs en el state
   const handleChange = (e) => {
@@ -58,51 +47,64 @@ const Login = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [popupMessage, setPopupMessage] = useState("");
-  const [popupSubText, setPopupSubText] = useState ("");
 
   //Registrar el usuario correo y contraseña al firebaseAuth y crear el usuario en la base de datos
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (register) {
-      try {
-        const usuarioCreado = await signUpWithEmailAndPassword(
+    setLoading(true);
+    let result;
+
+    try {
+      if (register) {
+        // Registrar usuario
+        result = await signUpWithEmailAndPassword(
           formData.email,
           formData.password
         );
-        if (usuarioCreado) {
-          const email = { email: formData.email };
-          const usuarioCreado = await crearUsuarioConEmail(email);
-          if (usuarioCreado) {
-            setPopupMessage ("Felicidades!");
-            setPopupSubText ("Tu usuario se creó correctamente.");
-            setShowPopUp(true);
-          }
+        if (!result.success) {
+          throw result; // Lanzar el objeto result completo en lugar de un Error vacío.
         }
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      //Iniciar sesion
-      try {
-        iniciarSesionConEmail(formData.email, formData.password);
+
+        const email = { email: formData.email };
+        const usuarioCreado = await crearUsuarioConEmail(email);
+        if (usuarioCreado) {
+          setPopupMessage("Felicidades!");
+          setPopupSubText("Tu usuario se creó correctamente.");
+          setShowPopUp(true);
+        }
+      } else {
+        // Iniciar sesión
+        result = await iniciarSesionConEmail(formData.email, formData.password);
+        if (!result.success) {
+          throw result;
+        }
+
         setPopupMessage("Bienvenido!");
         setPopupSubText("Has iniciado sesión correctamente");
-        setShowPopUp (true);
-      } catch (error) {
-        console.log(error);
+        setShowPopUp(true);
       }
+    } catch (error) {
+      console.log("El error que llega es:", error);
+
+      // Asegurar que el error tenga un código válido antes de pasarlo a manejarErroresFirebase
+      const mensajeError = error.code
+        ? manejarErroresFirebase(error)
+        : "Ocurrió un error inesperado.";
+
+      setPopupMessage("Error");
+      setPopupSubText(mensajeError);
+      setShowPopUp(true);
+    } finally {
+      setLoading(false);
     }
   };
+
   //Iniciar sesion con google y crear el usuario en la base de datos
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithGoogle();
-      window.localStorage.setItem("auth", "true");
-
       if (result) {
+        //si result obtiene al usuario se muestra el popup
         const { displayName, telefono, email } = result.user;
         const nombreCompleto = displayName.split(" ");
         const datosActualizar = {
@@ -117,7 +119,6 @@ const Login = () => {
           setPopupMessage("Bienvenido!");
           setPopupSubText("Has iniciado sesión correctamente con Google");
           setShowPopUp(true);
-          
         }
       }
     } catch (error) {
@@ -165,14 +166,18 @@ const Login = () => {
   );
 
   return (
-    <div className="login-container">
+    <div className="login-container relative">
       <>
         {register ? (
           <h2 className="register-tittle">Regístrate</h2>
         ) : (
           <h2 className="register-tittle">Inicia sesión</h2>
         )}
-
+        {loading && (
+          <div className="absolute left-1/2 top-0 translate-x-[-50%] bg-black/50 w-screen h-screen z-50 flex items-center">
+            <Loading />
+          </div>
+        )}
         <div className="social-buttons ">
           <a
             id="google-button"
@@ -256,15 +261,17 @@ const Login = () => {
           >
             {register ? "Iniciar sesión" : "Registrarse"}
           </a>
-          
-          {showPopUp && <LogPopUp setShowPopUp={setShowPopUp} 
-          message={popupMessage} 
-          subText={popupSubText}
-          onClose={() => navigate("/")} />}
-            
+
+          {showPopUp && (
+            <LogPopUp
+              setShowPopUp={setShowPopUp}
+              message={popupMessage}
+              subText={popupSubText}
+              onClose={() => navigate("/")}
+            />
+          )}
         </div>
       </>
-      
     </div>
   );
 };
