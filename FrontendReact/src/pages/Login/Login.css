@@ -1,6 +1,7 @@
 body {
   padding: 0;
   margin: 0px;
+  background-color: #f9f9f9;
 }
 .login-container {
   max-width: 450px;
@@ -189,7 +190,7 @@ body {
 }
 
 .login-button:hover {
-  background-color: rgba(0, 154, 58, 0.05);
+ color: #094f09;
 }
 .bottom-divider {
   margin-top: 15px;
