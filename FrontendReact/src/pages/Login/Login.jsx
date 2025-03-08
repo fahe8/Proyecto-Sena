@@ -16,6 +16,7 @@ import {
   actualizarDatosUsuario,
   crearUsuarioConEmail,
 } from "./fetchBackendLogin";
+import Loading from "./components/Loading";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,23 +28,10 @@ const Login = () => {
     rememberMe: true,
   });
 
-  const [isAuthenticated] = useState(
-    false || window.localStorage.getItem("auth") === "true"
-  );
-  const [token, setToken] = useState("");
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        user.getIdToken().then((token) => {
-          setToken(token);
-        });
-      } else {
-        console.log("Usuario no autenticado");
-      }
-    });
-  }, []);
-
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupSubText, setPopupSubText] = useState("");
+  const [loading, setLoading] = useState(false);
 
   //Guardar la informacion de los inputs en el state
   const handleChange = (e) => {
@@ -58,31 +46,34 @@ const Login = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [popupMessage, setPopupMessage] = useState("");
-  const [popupSubText, setPopupSubText] = useState ("");
 
   //Registrar el usuario correo y contraseña al firebaseAuth y crear el usuario en la base de datos
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (register) {
       try {
-        const usuarioCreado = await signUpWithEmailAndPassword(
+        const result = await signUpWithEmailAndPassword(
           formData.email,
           formData.password
         );
+        if (!result.success) {
+          console.log("Error:", result.message);
+          alert(`Error: ${result.message}`);
+          return;
+        }
+
+        const email = { email: formData.email };
+        const usuarioCreado = await crearUsuarioConEmail(email);
         if (usuarioCreado) {
-          const email = { email: formData.email };
-          const usuarioCreado = await crearUsuarioConEmail(email);
-          if (usuarioCreado) {
-            setPopupMessage ("Felicidades!");
-            setPopupSubText ("Tu usuario se creó correctamente.");
-            setShowPopUp(true);
-          }
+          setPopupMessage("Felicidades!");
+          setPopupSubText("Tu usuario se creó correctamente.");
+          setShowPopUp(true);
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     } else {
       //Iniciar sesion
@@ -90,7 +81,7 @@ const Login = () => {
         iniciarSesionConEmail(formData.email, formData.password);
         setPopupMessage("Bienvenido!");
         setPopupSubText("Has iniciado sesión correctamente");
-        setShowPopUp (true);
+        setShowPopUp(true);
       } catch (error) {
         console.log(error);
       }
@@ -100,8 +91,6 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithGoogle();
-      window.localStorage.setItem("auth", "true");
-
       if (result) {
         //si result obtiene al usuario se muestra el popup
         const { displayName, telefono, email } = result.user;
@@ -118,7 +107,6 @@ const Login = () => {
           setPopupMessage("Bienvenido!");
           setPopupSubText("Has iniciado sesión correctamente con Google");
           setShowPopUp(true);
-          
         }
       }
     } catch (error) {
@@ -166,14 +154,18 @@ const Login = () => {
   );
 
   return (
-    <div className="login-container">
+    <div className="login-container relative">
       <>
         {register ? (
           <h2 className="register-tittle">Regístrate</h2>
         ) : (
           <h2 className="register-tittle">Inicia sesión</h2>
         )}
-
+        {loading && (
+          <div className="absolute left-1/2 top-0 translate-x-[-50%] bg-black/50 w-screen h-screen z-50 flex items-center">
+            <Loading />
+          </div>
+        )}
         <div className="social-buttons ">
           <a
             id="google-button"
@@ -257,15 +249,17 @@ const Login = () => {
           >
             {register ? "Iniciar sesión" : "Registrarse"}
           </a>
-          
-          {showPopUp && <LogPopUp setShowPopUp={setShowPopUp} 
-          message={popupMessage} 
-          subText={popupSubText}
-          onClose={() => navigate("/")} />}
-            
+
+          {showPopUp && (
+            <LogPopUp
+              setShowPopUp={setShowPopUp}
+              message={popupMessage}
+              subText={popupSubText}
+              onClose={() => navigate("/")}
+            />
+          )}
         </div>
       </>
-      
     </div>
   );
 };
