@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import cancha2  from "./imagen/cancha2.jpg";
 import canchasi from "./imagen/canchasin.png";
 import Header from "../../Header/Header";
-;
+import insignia from "./imagen/insignia.png"
 
 const imagen = {
   gps: (
@@ -26,21 +26,8 @@ const imagen = {
       />
     </svg>
   ),
-  trofeo: (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="size-6"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0"
-      />
-    </svg>
+  insignia: (
+    <img src={insignia} alt="Insignia"/>
   ),
   estrella: (
     <svg
@@ -280,8 +267,12 @@ const Perfil = () => {
           {/* Left column: Venue info */}
           <div className="md:col-span-2">
             <div className="bg-white shadow-md pr-25 pl-25 pt-10 mb-6 ">
+
+
               {/* Venue header */}
-              <div className="flex items-start mb-4">
+              <div className="flex items-start mb-4"> 
+
+
                 <div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center mr-3">
                   <span className="text-gray-600">🏟️</span>
                 </div>
@@ -294,21 +285,22 @@ const Perfil = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col items-center">
-                  <div className="bg-white p-2 rounded-md border border-gray-200">
-                    <span className="flex items-center text-sm">
-                      <span className="text-yellow-500 mr-1">
-                        {imagen.trofeo}
+
+                <div className="flex flex-row items-center justify-between text-center">
+                  
+                    <span className="flex flex-col items-center text-xs mr-5 ml-6">
+                      <span className="text-yellow-500 mr-1 w-8 h-auto">
+                        {imagen.insignia}
                       </span>
-                      Preferido
+                      <p className="font-semibold">Preferido</p>
                     </span>
-                  </div>
-                  <div className="mt-3 text-sm text-gray-600">
+                 
+                  <div className=" text-sm text-gray-600">
                     <button
-                      className={`text-white px-4 py-2 rounded-md text-sm transition duration-400 ease-in-out ${
+                      className={`text-white px-4 py-2 w-16 rounded-md text-sm transition duration-100 ease-in-out ${
                         isOpen
-                          ? "bg-[#00b04b] hover:bg-[#009040]"
-                          : "bg-red-500 hover:bg-red-600"
+                          ? " text-green-400 dark:text-green-500"
+                          : "text-red-500 dark:text-red-500"
                       }`}
                       onClick={toggleOpenStatus}
                     >
@@ -485,12 +477,14 @@ const Perfil = () => {
                     <textarea
                       className="w-full border rounded-md p-2 text-sm"
                       rows="3"
+                     
                       placeholder="Comparte tu experiencia con esta cancha..."
                       value={newReview.comment}
                       onChange={(e) =>
                         setNewReview({ ...newReview, comment: e.target.value })
                       }
                       required
+                    
                     ></textarea>
                   </div>
                   <div className="text-right">

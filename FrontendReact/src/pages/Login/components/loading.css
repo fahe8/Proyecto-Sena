@@ -2,9 +2,9 @@
   --hue: 210;
   --bg: hsl(var(--hue), 10%, 85%);
   --fg: hsl(var(--hue), 10%, 15%);
-  --red: hsl(344, 75%, 40%);
+  --green: hsl(112, 71%, 41%);
   --white: hsl(0, 0%, 100%);
-  --blue: hsl(213, 81%, 21%);
+  --green: hsl(112, 71%, 41%);
   --trans-dur: 0.3s;
   font-size: clamp(1rem, 0.95rem + 0.25vw, 1.25rem);
 }
@@ -13,7 +13,7 @@
   --dur: 3s;
   display: block;
   margin: auto;
-  width: 14em;
+  width: 8em;
   height: auto;
 }
 
@@ -118,7 +118,6 @@
   animation-name: stripe-rotate;
 }
 
-/* Animation */
 @keyframes ball {
   from {
     transform: rotate(0) translate(0, -15.75px);

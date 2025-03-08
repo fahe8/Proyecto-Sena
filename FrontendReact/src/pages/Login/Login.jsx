@@ -33,6 +33,9 @@ const Login = () => {
   const [popupMessage, setPopupMessage] = useState("");
   const [popupSubText, setPopupSubText] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  const stayThere = () => { navigate(0);};
+  const goToHome = () => {navigate("/");};
 
   //Guardar la informacion de los inputs en el state
   const handleChange = (e) => {
@@ -267,7 +270,8 @@ const Login = () => {
               setShowPopUp={setShowPopUp}
               message={popupMessage}
               subText={popupSubText}
-              onClose={() => navigate("/")}
+              onClose={popupMessage === "Error" ? stayThere : goToHome}
+
             />
           )}
         </div>
