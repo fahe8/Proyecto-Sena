@@ -82,6 +82,7 @@ const Login = () => {
       //Iniciar sesion
       try {
         iniciarSesionConEmail(formData.email, formData.password);
+        //popup
         navigate("/");
         
       } catch (error) {
@@ -96,6 +97,7 @@ const Login = () => {
       window.localStorage.setItem("auth", "true");
 
       if (result) {
+        //si result obtiene al usuario se muestra el popup
         const { displayName, telefono, email } = result.user;
         const nombreCompleto = displayName.split(" ");
         const datosActualizar = {
