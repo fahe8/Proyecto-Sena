@@ -8,7 +8,7 @@ import { BusquedaFiltros } from "./Componentes/BusquedaFiltros";
 const Header = () => {
   return (
     <header className="bg-white sticky top-0 z-10 shadow-sm">
-      <div className="container flex justify-between items-center p-4 mx-auto">
+      <div className="container flex justify-around items-center p-4 mx-auto">
         <div className="text-xl font-bold">LOGO</div>
         {/* <!-- Barra de busqueda y boton filtros--> */}
         <div className="hidden lg:block">
@@ -100,16 +100,16 @@ export const BotonPerfil = () => {
 
       {mostrarMenu &&
         (isAuthenticated ? (
-          <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg cursor-pointer z-50">
-            <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-              Pon tus canchas
+          <div className="absolute right-0 w-40 bg-white shadow-lg rounded-t-lg rounded-b-lg cursor-pointer z-50">
+            <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center rounded-t-lg">
+              Eres una empresa?
             </Link>
-            <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+            <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center">
               Centro de ayuda
             </Link>
             <button
               onClick={handleLogout}
-              className="w-full block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-b-lg"
+              className="w-full block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm rounded-b-lg"
             >
               Cerrar Sesión
             </button>

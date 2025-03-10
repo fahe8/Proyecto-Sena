@@ -28,3 +28,4 @@ export const empresas = [
     imagenes: [imagenCancha, imagenCancha2, imagenCancha3],
   },
 ];
+
