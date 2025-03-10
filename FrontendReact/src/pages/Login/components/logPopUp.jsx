@@ -1,14 +1,7 @@
 import React, {useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import "./logPopUp.css";
-
-const LogPopUp = ({ setShowPopUp, message, subText }) => {
-    const navigate = useNavigate();
-
-    const handleClose = () => {
-        setShowPopUp(false);
-        navigate("/");
-    };
+const LogPopUp = ({ setShowPopUp, message, subText,onClose }) => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -18,7 +11,13 @@ const LogPopUp = ({ setShowPopUp, message, subText }) => {
         return () => clearTimeout(timer); // Limpiar el temporizador si el componente se desmonta
     }, []);
 
+    const handleClose = () => {
+        setShowPopUp(false);
+        onClose();
+    };
+
     return (
+        
         <div className="card">
             <svg className="wave" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
                 <path

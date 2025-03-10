@@ -1,4 +1,4 @@
-.card {
+.card{
     display: flex;
     min-width: 350px;
     min-height: 80px;
@@ -85,4 +85,23 @@
     to {
         width: 0;
     }
+}
+.card.error .wave {
+  fill: #e400003a;
+}
+
+.card.error .icon-container {
+  background-color: #e4000048;
+}
+
+.card.error .icon {
+  color: #e40000;
+}
+
+.card.error .message-text {
+  color: #e40000;
+}
+
+.card.error .progress-bar {
+  background-color: #e40000;
 }

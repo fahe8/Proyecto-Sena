@@ -1,3 +1,4 @@
+
 import React from "react";
 import "./loading.css"
 const Loading = () => {
@@ -40,7 +41,7 @@ const Loading = () => {
             <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
         </filter>
         <g transform="translate(28,28)">
-            <g class="pl__stripe-dot-group" fill="var(--red)">
+            <g class="pl__stripe-dot-group" fill="var(--green)">
                 <circle class="pl__stripe-dot" transform="rotate(32) translate(-18.25,0)" />
                 <circle class="pl__stripe-dot" transform="rotate(87) translate(-18.25,0)" />
                 <circle class="pl__stripe-dot" transform="rotate(103) translate(-18.25,0)" />
@@ -59,7 +60,7 @@ const Loading = () => {
                 <circle class="pl__stripe-dot" transform="rotate(314) translate(-15.75,0)" />
                 <circle class="pl__stripe-dot" transform="rotate(340) translate(-15.75,0)" />
             </g>
-            <g class="pl__stripe-dot-group" fill="var(--blue)">
+            <g class="pl__stripe-dot-group" fill="var(--green)">
                 <circle class="pl__stripe-dot" transform="rotate(20) translate(-13.25,0)" />
                 <circle class="pl__stripe-dot" transform="rotate(55) translate(-13.25,0)" />
                 <circle class="pl__stripe-dot" transform="rotate(77) translate(-13.25,0)" />
@@ -70,13 +71,13 @@ const Loading = () => {
             </g>
             <g fill="none" stroke-linecap="round" stroke-width="2.5" transform="rotate(-90)">
                 <g class="pl__stripe-rotate">
-                    <circle class="pl__stripe pl__stripe--1" r="18.25" stroke="var(--red)" stroke-dasharray="114.7 114.7" />
+                    <circle class="pl__stripe pl__stripe--1" r="18.25" stroke="var(--green)" stroke-dasharray="114.7 114.7" />
                 </g>
                 <g class="pl__stripe-rotate">
                     <circle class="pl__stripe pl__stripe--2" r="15.75" stroke="var(--white)" stroke-dasharray="106.8 106.8" />
                 </g>
                 <g class="pl__stripe-rotate">
-                    <circle class="pl__stripe pl__stripe--3" r="13.25" stroke="var(--blue)" stroke-dasharray="99 99" />
+                    <circle class="pl__stripe pl__stripe--3" r="13.25" stroke="var(--green)" stroke-dasharray="99 99" />
                 </g>
             </g>
             <g class="pl__ball" transform="translate(0,-15.75)">
