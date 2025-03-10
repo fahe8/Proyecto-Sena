@@ -1,0 +1,156 @@
+
+.main_emp {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+}
+
+.canchas_container {
+  flex-grow: 1;
+  padding: 0 20px;
+}
+
+.canchas_title {
+  font-weight: bold;
+  font-size: 26px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 10px;
+}
+
+.no_canchas {
+  color: #000000;
+  text-align: center;  
+  padding: 20px;
+}
+
+.canchas_grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.cancha_card {
+  width: 240px;
+  background-color: #f2f2f2;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cancha_info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.imagen_cancha1{
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.cancha_info h3 {
+  font-weight: 700;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.star {
+  color: gold;
+}
+
+.contenerdor_info{
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 10px 10px 10px;
+}
+.cancha_actions {
+  display: flex;
+  gap: 10px;
+  padding: 0px 0px 10px 10px ;
+}
+
+.btn_modificar, .btn_eliminar {
+  padding: 6px 12px ;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  color: white;
+}
+
+.btn_modificar {
+  background-color: #06c509;
+}
+
+.btn_eliminar {
+  background-color: #e63946;
+}
+
+.perfil_container {
+  position: relative;
+}
+
+.perfil_emp {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 15px;
+  background-color: #39de02;
+  color: rgb(0, 0, 0);
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.perfil_dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.dropdown_content {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.config_perfil, .cerrar_sesion {
+  padding: 8px 12px;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.config_perfil:hover, .cerrar_sesion:hover {
+  background-color: #f3f4f6;
+}
+
+.header_empresario {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 19px 20px;
+}
+
+.agregar_can {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 15px;
+  background-color: #39de02;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
