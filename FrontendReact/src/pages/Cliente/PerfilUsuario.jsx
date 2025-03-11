@@ -262,10 +262,10 @@ const Perfil = () => {
 
       {/* Contenido principal*/}
       <div className="container mx-auto ">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left column: Venue info */}
           <div className="md:col-span-2">
-            <div className="bg-white shadow-md pr-25 pl-25 pt-10 mb-6 ">
+            <div className="bg-white shadow-md lg:px-15 xl:px-25 pt-10 mb-6 ">
               {/* Venue header */}
               <div className="flex items-start mb-4">
                 <div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center mr-3">
@@ -295,7 +295,7 @@ const Perfil = () => {
 
                   <div className=" text-sm text-gray-600">
                     <button
-                      className={`text-white px-4 py-2 w-16 rounded-md text-sm transition duration-100 ease-in-out ${
+                      className={`px-4 py-2 w-16 rounded-md text-sm transition duration-100 ease-in-out ${
                         isOpen
                           ? " text-green-400 dark:text-green-500"
                           : "text-red-500 dark:text-red-500"
@@ -542,7 +542,7 @@ const Perfil = () => {
           </div>
           {/*aca fabian coloca el calendario */}
           <div className="flex justify-center ">
-            <div className="fixed">
+            <div className="lg:fixed">
               <Calendario />
             </div>
           </div>
