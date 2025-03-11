@@ -15,7 +15,9 @@ import { Pago } from "../models/Pago.js";
 import { EstadoPago } from "../models/EstadoPago.js";
 import { Servicio } from "../models/Servicio.js";
 import { EmpresaServicio } from "../models/EmpresaServicio.js";
-import { EmpresaTipoCancha } from "../models/EmpresaTipoCancha.js";
+
+import { TipoDocumento } from "../models/TipoDocumento.js";
+import { Tarifa } from "../models/Tarifa.js";
 
 // ✅ Define relaciones después de importar los modelos
 Persona.hasOne(Credencial, { foreignKey: "id_persona" });
@@ -26,6 +28,9 @@ Propietario.belongsTo(Persona, { foreignKey: "id_persona" });
 
 Persona.hasOne(Administrador, { foreignKey: "id_persona" });
 Administrador.belongsTo(Persona, { foreignKey: "id_persona" });
+
+TipoDocumento.hasMany(Propietario, { foreignKey: "id_tipoDocumento" });
+Propietario.belongsTo(TipoDocumento, { foreignKey: "id_tipoDocumento" });
 
 Persona.hasOne(Usuario, { foreignKey: "id_persona" });
 Usuario.belongsTo(Persona, { foreignKey: "id_persona" });
@@ -75,10 +80,8 @@ Servicio.belongsToMany(Empresa, {
   foreignKey: "id_servicio",
 });
 
-Empresa.belongsToMany(TipoCancha, {
-  through: EmpresaTipoCancha,
-  foreignKey: "id_empresa",
-});
+Tarifa.belongsTo(Empresa, { foreignKey: "id_empresa" });
+Tarifa.belongsTo(TipoCancha, { foreignKey: "id_tipo" });
 
 export default function iniciarAsociaciones() {
   console.log("Asociaciones configuradas correctamente.");

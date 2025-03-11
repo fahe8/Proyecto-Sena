@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get("/", UsuarioController.obtenerTodosUsuarios);
 router.post("/registrar", UsuarioController.registrar);
-router.put("/actualizar", UsuarioController.actualizarUsuario);
+router.put("/actualizar/:id", UsuarioController.actualizarUsuario);
 
 export default router;

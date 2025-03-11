@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import cancha2  from "./imagen/cancha2.jpg";
+import cancha2 from "./imagen/cancha2.jpg";
 import canchasi from "./imagen/canchasin.png";
 import Header from "../../Header/Header";
-import insignia from "./imagen/insignia.png"
+import insignia from "./imagen/insignia.png";
+import Calendario from "./Calendario/Calendario";
 
 const imagen = {
   gps: (
@@ -26,9 +27,7 @@ const imagen = {
       />
     </svg>
   ),
-  insignia: (
-    <img src={insignia} alt="Insignia"/>
-  ),
+  insignia: <img src={insignia} alt="Insignia" />,
   estrella: (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -90,23 +89,23 @@ const imagen = {
         d="M15.75 19.5L8.25 12l7.5-7.5"
       />
     </svg>
-  )
+  ),
 };
 
 // implemento este componente para el Carrusel
 const Carousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  
+
   // Función para moverse a la siguiente imagen
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
     );
   };
-  
+
   // Función para moverse a la imagen anterior
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? images.length - 1 : prevIndex - 1
     );
   };
@@ -116,44 +115,46 @@ const Carousel = ({ images }) => {
     const interval = setInterval(() => {
       nextSlide();
     }, 5000);
-    
+
     return () => clearInterval(interval);
   }, []);
-  
+
   return (
     <div className="relative w-full rounded-lg overflow-hidden mb-6">
-     <div className="w-full h-64 bg-gray-200">
-        <img 
-          src={images[currentIndex]} 
-          alt={`Slide ${currentIndex + 1}`} 
+      <div className="w-full h-64 bg-gray-200">
+        <img
+          src={images[currentIndex]}
+          alt={`Slide ${currentIndex + 1}`}
           className="w-full h-full object-cover"
         />
       </div>
-      
+
       {/* Botones de navegación */}
-      <button 
+      <button
         onClick={prevSlide}
         className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white/90 rounded-full p-2 shadow-md"
         aria-label="Anterior"
       >
         {imagen.flechaIzq}
       </button>
-      
-      <button 
+
+      <button
         onClick={nextSlide}
         className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white/90 rounded-full p-2 shadow-md"
         aria-label="Siguiente"
       >
         {imagen.flecha}
       </button>
-      
+
       {/* Indicadores */}
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
         {images.map((_, index) => (
-          <button 
+          <button
             key={index}
             onClick={() => setCurrentIndex(index)}
-            className={`w-2 h-2 rounded-full ${currentIndex === index ? 'bg-white' : 'bg-white/50'}`}
+            className={`w-2 h-2 rounded-full ${
+              currentIndex === index ? "bg-white" : "bg-white/50"
+            }`}
             aria-label={`Ir a diapositiva ${index + 1}`}
           />
         ))}
@@ -166,7 +167,9 @@ const Perfil = () => {
   const [selectedField, setSelectedField] = useState("Fútbol 7");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
- 
+
+
+
   const [showBookingSummary, setShowBookingSummary] = useState(false);
   const [reviews, setReviews] = useState([
     {
@@ -204,13 +207,9 @@ const Perfil = () => {
     comment: "",
   });
   const [showAllReviews, setShowAllReviews] = useState(false);
-  
+
   // Imágenes que implementarios al carrusel
-  const carouselImages = [
-    cancha2,
-    canchasi
-    
-  ];
+  const carouselImages = [cancha2, canchasi];
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -267,12 +266,8 @@ const Perfil = () => {
           {/* Left column: Venue info */}
           <div className="md:col-span-2">
             <div className="bg-white shadow-md pr-25 pl-25 pt-10 mb-6 ">
-
-
               {/* Venue header */}
-              <div className="flex items-start mb-4"> 
-
-
+              <div className="flex items-start mb-4">
                 <div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center mr-3">
                   <span className="text-gray-600">🏟️</span>
                 </div>
@@ -287,14 +282,13 @@ const Perfil = () => {
                 </div>
 
                 <div className="flex flex-row items-center justify-between text-center">
-                  
-                    <span className="flex flex-col items-center text-xs mr-5 ml-6">
-                      <span className="text-yellow-500 mr-1 w-8 h-auto">
-                        {imagen.insignia}
-                      </span>
-                      <p className="font-semibold">Preferido</p>
+                  <span className="flex flex-col items-center text-xs mr-5 ml-6">
+                    <span className="text-yellow-500 mr-1 w-8 h-auto">
+                      {imagen.insignia}
                     </span>
-                 
+                    <p className="font-semibold">Preferido</p>
+                  </span>
+
                   <div className=" text-sm text-gray-600">
                     <button
                       className={`text-white px-4 py-2 w-16 rounded-md text-sm transition duration-100 ease-in-out ${
@@ -312,8 +306,6 @@ const Perfil = () => {
 
               {/* Carrusel - reemplaza el grid de 2 columnas */}
               <Carousel images={carouselImages} />
-
-
 
               {/* Informacion del empresario */}
               <div className="flex items-center mb-4">
@@ -477,14 +469,12 @@ const Perfil = () => {
                     <textarea
                       className="w-full border rounded-md p-2 text-sm"
                       rows="3"
-                     
                       placeholder="Comparte tu experiencia con esta cancha..."
                       value={newReview.comment}
                       onChange={(e) =>
                         setNewReview({ ...newReview, comment: e.target.value })
                       }
                       required
-                    
                     ></textarea>
                   </div>
                   <div className="text-right">
@@ -547,6 +537,11 @@ const Perfil = () => {
             <div className="text-center text-sm text-gray-500 mb-6"></div>
           </div>
           {/*aca fabian coloca el calendario */}
+          <div className="flex justify-center ">
+            <div className="fixed">
+              <Calendario />
+            </div>
+          </div>
         </div>
       </div>
     </div>

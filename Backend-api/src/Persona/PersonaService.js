@@ -22,14 +22,17 @@ export class PersonaService {
   static async buscarPersonaPorEmail(email) {
     return await PersonaRepository.buscarPersonaPorEmail(email);
   }
-  static async actualizarPersona(datosActualizados) {
-    const { email } = datosActualizados;
-    const persona = await PersonaRepository.buscarPersonaPorEmail(email);
+
+  static async actualizarPersona(id_persona,datosActualizados) {
+    const persona = await PersonaRepository.buscarPersonaPorId(
+     id_persona
+    );
+
     if (!persona) {
-      throw new Error("No se encontró una persona con ese email");
+      throw new Error("No se encontró una persona con esa Id");
     }
     return await PersonaRepository.actualizarPersona(
-      persona.id_persona,
+      id_persona,
       datosActualizados
     );
   }

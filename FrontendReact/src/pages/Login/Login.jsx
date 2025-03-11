@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   auth,
   signInWithGoogle,
@@ -33,9 +33,13 @@ const Login = () => {
   const [popupMessage, setPopupMessage] = useState("");
   const [popupSubText, setPopupSubText] = useState("");
   const [loading, setLoading] = useState(false);
-  
-  const stayThere = () => { navigate(0);};
-  const goToHome = () => {navigate("/");};
+
+  const stayThere = () => {
+    navigate(0);
+  };
+  const goToHome = () => {
+    navigate("/");
+  };
 
   //Guardar la informacion de los inputs en el state
   const handleChange = (e) => {
@@ -122,6 +126,7 @@ const Login = () => {
           setPopupMessage("Bienvenido!");
           setPopupSubText("Has iniciado sesión correctamente con Google");
           setShowPopUp(true);
+          navigate(-1);
         }
       }
     } catch (error) {
@@ -167,9 +172,10 @@ const Login = () => {
       <line x1="1" y1="1" x2="23" y2="23"></line>
     </svg>
   );
-
+  const location = useLocation();
   return (
     <div className="login-container relative">
+      {console.log(location)}
       <>
         {register ? (
           <h2 className="register-tittle">Regístrate</h2>
@@ -196,9 +202,7 @@ const Login = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="email">
-              Correo electrónico
-            </label>
+            <label htmlFor="email">Correo electrónico</label>
             <input
               type="text"
               id="email"
@@ -271,7 +275,6 @@ const Login = () => {
               message={popupMessage}
               subText={popupSubText}
               onClose={popupMessage === "Error" ? stayThere : goToHome}
-
             />
           )}
         </div>
