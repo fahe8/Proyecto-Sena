@@ -282,21 +282,16 @@ const Perfil = () => {
                 </div>
 
                 <div className="flex flex-row items-center justify-between text-center">
-<<<<<<< HEAD
                   
                     <span className="flex flex-col items-center text-xs mr-5 ml-6">
                       <span className="mr-1 w-8 h-auto">
                         {imagen.insignia}
                       </span>
                       <p className="font-semibold">Preferido</p>
-=======
-                  <span className="flex flex-col items-center text-xs mr-5 ml-6">
-                    <span className="text-yellow-500 mr-1 w-8 h-auto">
-                      {imagen.insignia}
->>>>>>> b53d44968450edf5a51f3c5f8839b92c33a5404e
-                    </span>
+                       </span>
                     <p className="font-semibold">Preferido</p>
-                  </span>
+                      
+                
 
                   <div className=" text-sm text-gray-600">
                     <button
