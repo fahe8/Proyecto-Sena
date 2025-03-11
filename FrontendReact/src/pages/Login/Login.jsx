@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   auth,
   signInWithGoogle,
@@ -56,13 +56,6 @@ const Login = () => {
   
   const stayThere = () => { navigate(0);};
   const goToHome = () => {navigate("/");};
-
-  const stayThere = () => {
-    navigate(0);
-  };
-  const goToHome = () => {
-    navigate("/");
-  };
 
   //Guardar la informacion de los inputs en el state
   const handleChange = (e) => {
@@ -177,7 +170,6 @@ const Login = () => {
           setPopupMessage("Bienvenido!");
           setPopupSubText("Has iniciado sesión correctamente con Google");
           setShowPopUp(true);
-          // navigate(-1);
         }
       }
     } catch (error) {
@@ -386,18 +378,6 @@ const Login = () => {
                   required
                 />
               </div>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">Correo electrónico</label>
-            <input
-              type="text"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
 
               <div className="form-group password-container">
                 <label htmlFor="password">Contraseña</label>
@@ -469,21 +449,11 @@ const Login = () => {
             setShowPopUp={setShowPopUp}
             message={popupMessage}
             subText={popupSubText}
-            onClose={popupMessage === "Error" ? stayThere : goToHome}
+            onClose={() => (popupMessage === "Error" ? stayThere() : goToHome())}
           />
         )}
-          {showPopUp && (
-            <LogPopUp
-              setShowPopUp={setShowPopUp}
-              message={popupMessage}
-              subText={popupSubText}
-              onClose={popupMessage === "Error" ? stayThere : goToHome}
-            />
-          )}
-        </div>
       </>
     </div>
   );
-};
-
+}
 export default Login;
