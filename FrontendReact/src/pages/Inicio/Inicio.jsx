@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { empresas } from "./dataPrueba";
 import iconHistorialReserva from "../../assets/Inicio/recent.svg";
 import iconPendiente from "../../assets/Inicio/archive.svg";
@@ -13,9 +13,7 @@ import { useAuth } from "../../Provider/AuthProvider";
 import Header from "../../Header/Header";
 import { BusquedaFiltros } from "../../Header/Componentes/BusquedaFiltros";
 
-
 const Inicio = () => {
- 
   return (
     <>
       <Header />
@@ -23,7 +21,7 @@ const Inicio = () => {
         <div className="lg:hidden">
           <BusquedaFiltros />
         </div>
-        <section className="grid lg:grid-cols-[20%_80%] container mx-auto pt-5">
+        <section className="grid container mx-auto pt-5">
           {/* <!-- Seccion lateral izquierda --> */}
           <SeccionHerramientas />
 
@@ -36,6 +34,8 @@ const Inicio = () => {
 };
 
 const ListaEmpresas = () => {
+  const navigate = useNavigate();
+
   const settings = {
     dots: true,
     infinite: true,
@@ -51,24 +51,25 @@ const ListaEmpresas = () => {
       {empresas?.map((empresa, index) => (
         <div
           key={index + "a"}
-          className="w-56 h-[330px] bg-white rounded-2xl shadow-lg cursor-pointer overflow-hidden hover:scale-103 transition-transform duration-300"
+          className="w-64  bg-white rounded-2xl shadow-lg cursor-pointer overflow-hidden hover:scale-103 transition-transform duration-300"
+          onClick={() => navigate(`/${empresa.nombre}`)}
         >
-          <div className="relative h-[60%]">
+          <div className="relative">
             <Slider {...settings}>
               {empresa.imagenes.map((imagen, index) => (
                 <img
                   key={index + "ca"}
                   src={imagen}
                   alt={`Imagen ${index + 1} de ${empresa.nombre}`}
-                  className="object-cover  h-40"
+                  className="object-cover  h-64 w-64 "
                 />
               ))}
             </Slider>
           </div>
 
-          <div className="bg-white p-3 h-[40%]">
+          <div className="bg-white px-3 py-2 ">
+            <div className=" flex justify-between">
             <h3 className=" font-bold">{empresa.nombre}</h3>
-            <p className="text-gray-800 text-sm">{empresa.tiposCanchas}</p>
             <div className="flex items-center mt-1 ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -86,6 +87,10 @@ const ListaEmpresas = () => {
               </svg>
               <span className="ml-1">{empresa.calificacion}</span>
             </div>
+            </div>
+            
+            <p className="text-gray-800 text-sm">{empresa.tiposCanchas}</p>
+           
           </div>
         </div>
       ))}
@@ -99,48 +104,38 @@ const SeccionHerramientas = () => {
     {
       text: "Historial de reservas",
       ref: "/",
-      icon: iconHistorialReserva,
     },
     {
       text: "Reservas pendientes",
       ref: "/",
-      icon: iconPendiente,
     },
     {
       text: "Mis favoritos",
       ref: "/",
-      icon: iconFavoritos,
     },
     {
       text: "No recomendarme",
       ref: "/",
-      icon: iconNoRecomendar,
     },
   ];
   return (
-    <div className="px-2 lg:pr-2 lg:border-r-2 border-gray-300 flex flex-col gap-4 items-center lg:sticky top-24 self-start lg:h-[600px] overflow-y-auto">
+    <div className="px-2  border-gray-300 flex flex-col gap-4 items-center self-start overflow-y-auto">
       <ul
-        className=" rounded-2xl grid grid-cols-4 lg:grid-cols-1 gap-4 lg:gap-0 justify-around mb-4"
+        className=" rounded-2xl grid grid-cols-4 justify-around mb-4 border"
         id="menu-lista"
       >
         {menuItems?.map((item, index) => {
           const borderClass =
-            index === menuItems.length - 1 ? "" : "border-b-2 border-gray-300";
+            index === menuItems.length - 1 ? "" : "border-r-2 border-gray-300";
           return (
             <li key={index + "b"}>
               <Link
                 to={isAuthenticated ? "" : "/login"}
-                className={` lg:bg-white text-center flex text-[11px] lg:text-sm  lg:px-4 lg:py-6  xl:px-6 xl:py-8 gap-2 justify-center items-center ${borderClass} 
-            hover:bg-gray-200 hover:text-green-500 
+                className={`  text-center flex text-[11px] lg:text-sm  lg:px-4 lg:py-6  xl:px-6 xl:py-8 gap-2 justify-center items-center ${borderClass} 
+            hover:bg-gray-200 hover:text-green-500 ${index === menuItems.length -1 ?"rounded-r-2xl":""} ${index === 0 ?"rounded-l-2xl":""}  
             transition-colors duration-300`}
               >
                 <span>{item.text}</span>
-                <img
-                  src={item.icon}
-                  alt="iconos correspondientes a la seccion"
-                  width={20}
-                  className="hidden lg:block"
-                />
               </Link>
             </li>
           );
