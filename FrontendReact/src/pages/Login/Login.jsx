@@ -126,7 +126,7 @@ const Login = () => {
           setPopupMessage("Bienvenido!");
           setPopupSubText("Has iniciado sesión correctamente con Google");
           setShowPopUp(true);
-          navigate(-1);
+          // navigate(-1);
         }
       }
     } catch (error) {
