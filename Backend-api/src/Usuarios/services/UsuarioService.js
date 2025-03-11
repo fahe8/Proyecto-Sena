@@ -9,14 +9,12 @@ export class UsuarioService extends PersonaService {
   }
 
   static async registrarUsuario(datos) {
-    const { email } = datos;
     // Iniciar transacción
     const t = await sequelize.transaction();
 
     try {
       //Buscar y crear Persona
       const nuevaPersona = await this.crearPersona(datos, t);
-      console.log("Nueva persona", nuevaPersona);
       // Crear Usuario
       const nuevoUsuario = await UsuarioRepository.crearUsuario(
         nuevaPersona.id_persona,
@@ -36,12 +34,11 @@ export class UsuarioService extends PersonaService {
     }
   }
 
-  static async actualizarUsuario(datosActualizados) {
-    const { email } = datosActualizados;
-    if (!email) {
-      throw new Error("Falta agregar el email");
+  static async actualizarUsuario(id_persona,datosPersona) {
+    if (!id_persona) {
+      throw new Error("Falta agregar el id persona");
     }
 
-    return await this.actualizarPersona(datosActualizados);
+    return await this.actualizarPersona(id_persona,datosPersona);
   }
 }

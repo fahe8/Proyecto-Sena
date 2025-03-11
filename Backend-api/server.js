@@ -2,7 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import routerUsuarios from "./src/Usuarios/routes/UsuarioRoutes.js";
-// import routerEmpresa from "./src/Empresa/routes/EmpresaRoutes.js";
+import routerPropieatarios from "./src/Propietario/PropietarioRoutes.js";
+import routerEmpresa from "./src/Empresa/routes/EmpresaRoutes.js";
 // import routerCancha from "./src/Cancha/routes/CanchaRoutes.js";
 // import routerReserva from "./src/Reserva/routes/ReservaRoutes.js";
 import sequelize from "./src/config/db.js";
@@ -22,6 +23,8 @@ app.use(cookieParser());
 
 // Rutas
 app.use("/api/usuarios", routerUsuarios);
+app.use("/api/propietarios", routerPropieatarios);
+app.use("/api/empresas", routerEmpresa);
 
 // Configurar asociaciones
 iniciarAsociaciones();
