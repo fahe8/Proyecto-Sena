@@ -62,9 +62,10 @@ export const BotonPerfil = () => {
           onClick={() => {
             setMostrarMenu(!mostrarMenu);
           }}
-          className=" text-sm lg:text-lg flex items-center py-2 px-4 bg-green-400 rounded-2xl hover:bg-green-300 cursor-pointer"
+          
+          className=" text-sm lg:text-lg flex items-center py-2 px-4 bg-green-400 rounded-2xl hover:bg-green-500 cursor-pointer"
         >
-          <span>Perfil</span>
+          <span className="mr-2">Perfil</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -92,7 +93,7 @@ export const BotonPerfil = () => {
             to="/login"
             className=" text-sm lg:text-lg flex items-center py-2 px-4 border-2  border-green-400 hover:bg-green-500 rounded-2xl  cursor-pointer"
           >
-            Iniciar Sesión
+            Iniciar sesión
           </Link>
         </div>
       )}

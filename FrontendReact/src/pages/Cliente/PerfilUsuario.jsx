@@ -289,7 +289,7 @@ const Perfil = () => {
                 <div className="flex flex-row items-center justify-between text-center">
                   
                     <span className="flex flex-col items-center text-xs mr-5 ml-6">
-                      <span className="text-yellow-500 mr-1 w-8 h-auto">
+                      <span className="mr-1 w-8 h-auto">
                         {imagen.insignia}
                       </span>
                       <p className="font-semibold">Preferido</p>

@@ -1,5 +1,5 @@
 import React from "react";
-
+import {useNavigate} from "react-router-dom"
 import { Link } from "react-router-dom";
 import { empresas } from "./dataPrueba";
 import iconHistorialReserva from "../../assets/Inicio/recent.svg";
@@ -43,6 +43,8 @@ const ListaEmpresas = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
+  const navigate = useNavigate();
+
   return (
     <div
       className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-self-center"
@@ -51,16 +53,18 @@ const ListaEmpresas = () => {
       {empresas?.map((empresa, index) => (
         <div
           key={index + "a"}
-          className="w-56 h-[330px] bg-white rounded-2xl shadow-lg cursor-pointer overflow-hidden hover:scale-103 transition-transform duration-300"
+          className="w-56 h-[330px] bg-white rounded-2xl shadow-lg cursor-pointer overflow-hidden hover:scale-105 transition-transform duration-300"
         >
           <div className="relative h-[60%]">
             <Slider {...settings}>
               {empresa.imagenes.map((imagen, index) => (
+                
                 <img
                   key={index + "ca"}
                   src={imagen}
                   alt={`Imagen ${index + 1} de ${empresa.nombre}`}
                   className="object-cover  h-40"
+                  onClick={() => navigate(`/perfil`)} // cuando toquen las imagenes de la empresa va a la info de la empresa
                 />
               ))}
             </Slider>

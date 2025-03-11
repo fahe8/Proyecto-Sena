@@ -8,8 +8,10 @@ import {
   sendEmailVerification,
   deleteUser,
   sendPasswordResetEmail,
-} from "firebase/auth";
+  confirmPasswordReset,
+} from "firebase/auth"; //Importacion de todo lo necesario de firebase
 
+// Configuracion de la app Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDLHB29MlI_1RgwlcFQEXhaEIWOwpSqN5s",
   authDomain: "sample-firebase-ai-app-847ed.firebaseapp.com",
@@ -18,6 +20,7 @@ const firebaseConfig = {
   messagingSenderId: "857937483062",
   appId: "1:857937483062:web:464bf11ac04eb34578cf97",
 };
+
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -84,6 +87,8 @@ const checkAndDeleteUnverifiedUser = async (user) => {
   }
 };
 
+
+//Funcion que envia un correo para recuperar la contraseña
 const recuperarContrasena = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);
@@ -91,6 +96,18 @@ const recuperarContrasena = async (email) => {
   } catch (error) {
     console.error("Error al recuperar contraseña:", error.code, error.message);
     return { success: false, code: error.code, message: error.message };
+  }
+};
+
+
+// Función para confirmar el cambio de contraseña con el token
+export const confirmarCambioContrasena = async (oobCode, newPassword) => {
+  try {
+    await confirmPasswordReset(auth, oobCode, newPassword);
+    return { success: true };
+  } catch (error) {
+    console.error("Error al confirmar el cambio de contraseña:", error);
+    return { success: false, error };
   }
 };
 

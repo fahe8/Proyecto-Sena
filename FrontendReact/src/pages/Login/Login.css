@@ -150,7 +150,7 @@ body {
 .register-button {
   width: 100%;
   height: 46px;
-  background-color: #009a3a;
+  background-color: #00C951;
   color: white;
   border: none;
   border-radius: 25px;
@@ -160,7 +160,8 @@ body {
 }
 
 .register-button:hover {
-  background-color: #008530;
+  background-color: #05983b;
+  transition: ease 0.2s;
 }
 
 .bottom-divider {
@@ -175,7 +176,7 @@ body {
   margin-top: 20px;
   font-size: 17px;
   color: #555;
-  margin-bottom: 20px;
+
 }
 
 .login-prompt {
@@ -184,13 +185,14 @@ body {
 }
 
 .login-button {
-  color: #009a3a;
+  color: #00C951;
   text-decoration:underline;
   cursor: pointer;
+  max-height: 20px;
 }
 
 .login-button:hover {
- color: #094f09;
+ color: #029d02;
 }
 .bottom-divider {
   margin-top: 15px;
@@ -200,10 +202,11 @@ body {
   accent-color: rgba(9, 167, 46, 0.912);
   margin-left: 2px;
 }
+
 /*Solo media querys :) */
 @media (max-height: 800px) {
   .login-container {
-    margin: auto;
+    margin: 8vh auto;
     padding: 30px 25px;
     min-height: 80vh;
   }
@@ -231,7 +234,7 @@ body {
 
 @media (max-height: 640px) {
   .login-container {
-    margin: 15px auto;
+    margin: 20px auto;
     padding: 20px;
   }
   .register-tittle {
@@ -260,12 +263,13 @@ body {
 @media (min-width: 1200px) {
   .login-container {
     max-width: 500px;
+    margin: 40px auto;
   }
 }
 @media (max-width: 480px) {
   .login-container {
     width: 95%;
-    margin: 10px auto;
+    margin: 8vh auto;
     padding: 25px 20px;
     font-size: 7px;
   }
@@ -284,7 +288,7 @@ body {
 @media (max-height: 600px) and (min-width: 768px) {
   .login-container {
     max-width: 500px;
-    margin: 10px auto;
+    margin: 8vh auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -318,7 +322,7 @@ body {
     justify-content: center;
     align-items: center;
     max-width: 50%;
-    margin: 0 auto; 
+    margin: 8vh auto; 
     padding: 15px;
     min-height: 550px;
   }
