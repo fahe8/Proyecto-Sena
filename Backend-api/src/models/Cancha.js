@@ -1,16 +1,14 @@
-// import sequelize from "../config/db.js";
-// import { DataTypes } from "sequelize";
-// import { EstadoCancha } from "./EstadoCancha.js";
+import sequelize from "../config/db.js";
+import { DataTypes } from "sequelize";
+import { Empresa } from "./Empresa.js";
+import { TipoCancha } from "./TipoCancha.js";
 
-// export const Cancha = sequelize.define("cancha", {
-//   id_cancha: {
-//     type: DataTypes.INTEGER,
-//     primaryKey: true,
-//     autoIncrement: true,
-//   },
+export const Cancha = sequelize.define(
+  "cancha",
+  {
+    id_cancha: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    nombre: { type: DataTypes.STRING, allowNull: false },
+  },
+  { timestamps: false }
+);
 
-//   id_estado_cancha: {
-//     type: DataTypes.INTEGER,
-//     references: { model: EstadoCancha, key: "id_estado_cancha" },
-//   },
-// });

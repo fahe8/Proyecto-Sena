@@ -2,10 +2,10 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import routerUsuarios from "./src/Usuarios/routes/UsuarioRoutes.js";
-// import routerEmpresa from "./src/Empresa/routes/EmpresaRoutes.js";
+import routerPropieatarios from "./src/Propietario/PropietarioRoutes.js";
+import routerEmpresa from "./src/Empresa/routes/EmpresaRoutes.js";
 // import routerCancha from "./src/Cancha/routes/CanchaRoutes.js";
 // import routerReserva from "./src/Reserva/routes/ReservaRoutes.js";
-import routerAuth from "./src/Auth/routes/AuthRoutes.js";
 import sequelize from "./src/config/db.js";
 import iniciarAsociaciones from "./src/config/asociaciones.js";
 import cookieParser from "cookie-parser";
@@ -13,7 +13,7 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 const app = express();
 const corsOptions = {
-  origin: "http://127.0.0.1:5500",
+  origin: "http://localhost:5173",
   credentials: true,
 };
 
@@ -23,16 +23,14 @@ app.use(cookieParser());
 
 // Rutas
 app.use("/api/usuarios", routerUsuarios);
-// app.use("/api/empresas", routerEmpresa);
-// app.use("/api/canchas", routerCancha);
-// app.use("/api/reservas", routerReserva);
-app.use("/api/auth", routerAuth);
+app.use("/api/propietarios", routerPropieatarios);
+app.use("/api/empresas", routerEmpresa);
 
 // Configurar asociaciones
 iniciarAsociaciones();
 
 //Correr servidor
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8001;
 
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => {

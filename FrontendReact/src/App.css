@@ -1,8 +1,18 @@
 .slick-prev {
   left: 0 !important;
-  z-index: 10 !important;
+  z-index: 1 !important;
 }
 .slick-next {
   right: 0 !important;
-  z-index: 10 !important;
+  z-index: 1 !important;
+}
+
+.slick-dots {
+  bottom: 0 !important;
+}
+.slick-dots button:before {
+  color: white !important;
+}
+.slick-dots li.slick-active button:before {
+  color: white !important;
 }

@@ -1,8 +1,11 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Inicio from "./pages/Inicio/Inicio";
-import NuevaPagina from "./pages/nuevapagina/NuevaPagina"
+
+import Login from "./pages/Login/Login";
+import Cliente from "./pages/Cliente/PerfilUsuario";
+
 
 function App() {
   return (
@@ -10,6 +13,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Inicio />} />
         <Route path="/nueva" element={<NuevaPagina />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/:nombre" element={<Cliente/>} />
+        <Route path="*" element={<h1>404: Página no encontrada</h1>} />
       </Routes>
     </Router>
   );
