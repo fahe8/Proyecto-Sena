@@ -93,6 +93,7 @@ const ListaEmpresas = () => {
           <div className="relative">
             <Slider {...settings}>
               {empresa.imagenes.map((imagen, index) => (
+                
                 <img
                   key={index + "ca"}
                   src={imagen}

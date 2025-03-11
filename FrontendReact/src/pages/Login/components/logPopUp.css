@@ -23,7 +23,7 @@
     left: -31px;
     top: 32px;
     width: 80px;
-    fill: #04e4003a;
+    fill: #04e400b5;
   }
   .icon-container {
     width: 35px;
@@ -87,7 +87,7 @@
     }
 }
 .card.error .wave {
-  fill: #e400003a;
+  fill: #fa1f1f;
 }
 
 .card.error .icon-container {
@@ -100,8 +100,4 @@
 
 .card.error .message-text {
   color: #e40000;
-}
-
-.card.error .progress-bar {
-  background-color: #e40000;
 }
