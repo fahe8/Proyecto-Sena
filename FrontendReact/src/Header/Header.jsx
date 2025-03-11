@@ -4,12 +4,16 @@ import { useAuth } from "../Provider/AuthProvider";
 import { signOut } from "firebase/auth";
 import { auth } from "../pages/Login/firebaseconfig";
 import { BusquedaFiltros } from "./Componentes/BusquedaFiltros";
-
+import logo from "../assets/logo.png";
 const Header = () => {
   return (
     <header className="bg-white sticky top-0 z-10 shadow-sm">
       <div className="container flex justify-around items-center p-4 mx-auto">
-        <div className="text-xl font-bold">LOGO</div>
+        <div className="flex items-center gap-2 font-bold">
+          {" "}
+          <img src={logo} alt="Logo de mi cancha ya" className="w-12" />
+          <p>MiCanchaYa</p>
+        </div>
         {/* <!-- Barra de busqueda y boton filtros--> */}
         <div className="hidden lg:block">
           <BusquedaFiltros />
@@ -62,7 +66,6 @@ export const BotonPerfil = () => {
           onClick={() => {
             setMostrarMenu(!mostrarMenu);
           }}
-          
           className=" text-sm lg:text-lg flex items-center py-2 px-4 bg-green-400 rounded-2xl hover:bg-green-500 cursor-pointer"
         >
           <span className="mr-2">Perfil</span>
