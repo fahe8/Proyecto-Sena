@@ -288,9 +288,10 @@ const Perfil = () => {
                         {imagen.insignia}
                       </span>
                       <p className="font-semibold">Preferido</p>
-                    </span>
-
-                  
+                       </span>
+                    <p className="font-semibold">Preferido</p>
+                      
+                
 
                   <div className=" text-sm text-gray-600">
                     <button

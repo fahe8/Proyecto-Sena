@@ -449,13 +449,11 @@ const Login = () => {
             setShowPopUp={setShowPopUp}
             message={popupMessage}
             subText={popupSubText}
-            onClose={stayThere} // Cambiar a stayThere para permanecer en la misma página
+            onClose={() => (popupMessage === "Error" ? stayThere() : goToHome())}
           />
         )}
       </>
     </div>
   );
-};
-
+}
 export default Login;
-
