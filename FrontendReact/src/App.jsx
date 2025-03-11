@@ -5,6 +5,7 @@ import Inicio from "./pages/Inicio/Inicio";
 
 import Login from "./pages/Login/Login";
 import Cliente from "./pages/Cliente/PerfilUsuario";
+import NuevaPagina from "./pages/nuevapagina/NuevaPagina";
 
 
 function App() {

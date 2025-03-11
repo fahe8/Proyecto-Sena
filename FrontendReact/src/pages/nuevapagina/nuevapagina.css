@@ -1,8 +1,14 @@
-
 .main_emp {
   display: flex;
   padding: 20px;
   gap: 20px;
+}
+
+.rueda {
+  background: rgb(255, 7, 214);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
 }
 
 .canchas_container {
@@ -20,7 +26,7 @@
 
 .no_canchas {
   color: #000000;
-  text-align: center;  
+  text-align: center;
   padding: 20px;
 }
 
@@ -28,10 +34,13 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  position: absolute;
 }
 
+
+
 .cancha_card {
-  width: 240px;
+  width: 210px;
   background-color: #f2f2f2;
   border-radius: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -45,7 +54,7 @@
   margin-bottom: 15px;
 }
 
-.imagen_cancha1{
+.imagen_cancha1 {
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
 }
@@ -64,7 +73,7 @@
   color: gold;
 }
 
-.contenerdor_info{
+.contenerdor_info {
   display: flex;
   justify-content: space-between;
   padding: 0px 10px 10px 10px;
@@ -72,13 +81,14 @@
 .cancha_actions {
   display: flex;
   gap: 10px;
-  padding: 0px 0px 10px 10px ;
+  padding: 0px 0px 10px 10px;
 }
 
-.btn_modificar, .btn_eliminar {
-  padding: 6px 12px ;
+.btn_modificar,
+.btn_eliminar {
+  padding: 6px 14px;
   border-radius: 5px;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   border: none;
   color: white;
@@ -100,10 +110,10 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 8px 15px;
+  padding: 7px 13px;
   background-color: #39de02;
   color: rgb(0, 0, 0);
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
 }
@@ -124,7 +134,8 @@
   padding: 10px;
 }
 
-.config_perfil, .cerrar_sesion {
+.config_perfil,
+.cerrar_sesion {
   padding: 8px 12px;
   text-align: left;
   border: none;
@@ -133,7 +144,8 @@
   border-radius: 4px;
 }
 
-.config_perfil:hover, .cerrar_sesion:hover {
+.config_perfil:hover,
+.cerrar_sesion:hover {
   background-color: #f3f4f6;
 }
 
@@ -141,16 +153,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 19px 20px;
+  padding: 19px 30px;
+  background-color: #f2f2f2;
 }
 
 .agregar_can {
   display: flex;
   align-items: center;
   gap: 5px;
-  padding: 8px 15px;
+  padding: 6px 12px;
   background-color: #39de02;
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
 }
