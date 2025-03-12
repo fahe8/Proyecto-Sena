@@ -12,3 +12,9 @@
     border: none;
   }
 }
+
+@theme {
+  --color-primary: #00C951;
+  --color-secundary: #003044;
+  --color-text-white: #ffffff;
+}

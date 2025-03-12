@@ -1,7 +1,7 @@
 import axios from "axios"; // Importamos la librería Axios para realizar solicitudes HTTP (Protocolo de transferencia de datos)
 
 // Función asincrónica para crear un usuario con email
-const crearUsuarioConEmail = async (datos) => {
+const crearUsuarioEnBackend = async (datos) => {
   try {
     // Realizamos una solicitud POST a la API para registrar un usuario con los datos proporcionados
     const usuarioCreado = await axios.post(
@@ -25,4 +25,4 @@ const actualizarDatosUsuario = async (datosActualizar) => {
 };
 
 // Exportamos las funciones para que puedan ser utilizadas en otros archivos
-export { crearUsuarioConEmail, actualizarDatosUsuario };
+export { crearUsuarioEnBackend, actualizarDatosUsuario };

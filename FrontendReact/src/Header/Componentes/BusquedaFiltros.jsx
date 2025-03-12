@@ -3,7 +3,7 @@ import iconSearch from "../../assets/Inicio/search.svg";
 
 export const BusquedaFiltros = () => {
   return (
-    <div className="flex gap-1 px-2 lg:gap-6 w-full justify-start lg:justify-center pt-4 lg:pt-0">
+    <div className="flex gap-1 px-1 lg:gap-6 w-full justify-center pt-4 lg:pt-0">
       <button className="w-12 lg:w-24 flex shadow-md py-2 justify-center border border-gray-300 rounded-md hover:border-black hover:bg-gray-200 transition-all duration-300 ease-in-out">
         <svg
           xmlns="http://www.w3.org/2000/svg"

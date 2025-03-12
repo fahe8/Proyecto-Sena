@@ -13,14 +13,14 @@ const Header = () => {
   return (
     <header className="bg-white sticky top-0 z-10 shadow-sm">
       {/* Contenedor del header con estilos */}
-      <div className="container flex justify-around items-center p-4 mx-auto">
+      <div className="container flex justify-around items-center p-2 mx-auto">
         {/* Logo y nombre de la aplicación, al hacer clic redirige a la página principal */}
         <div
           className="flex items-center gap-2 font-bold cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <img src={logo} alt="Logo de mi cancha ya" className="w-12" />
-          <p>MiCanchaYa</p>
+          <img src={logo} alt="Logo de mi cancha ya" className="w-8 md:w-12" />
+          <p className="text-sm md:text-base">MiCanchaYa</p>
         </div>
 
         {/* Barra de búsqueda y filtros (visible solo en pantallas grandes) */}
@@ -82,7 +82,7 @@ export const BotonPerfil = () => {
           onClick={() => {
             setMostrarMenu(!mostrarMenu); // Muestra/oculta el menú al hacer clic en el botón
           }}
-          className=" text-sm lg:text-lg flex items-center py-2 px-4 bg-green-400 rounded-2xl hover:bg-green-500 cursor-pointer"
+          className=" text-sm lg:text-lg flex items-center py-1 px-4 bg-green-400 rounded-2xl hover:bg-green-500 cursor-pointer"
         >
           <span className="mr-2">Perfil</span>
           {/* Ícono del usuario */}
@@ -106,13 +106,13 @@ export const BotonPerfil = () => {
         <div className="flex gap-2">
           <Link
             to="/login"
-            className=" text-sm lg:text-lg flex items-center py-2 px-4 bg-green-400 rounded-2xl hover:bg-green-500 cursor-pointer"
+            className=" text-sm lg:text-lg flex items-center py-1 px-1.5 md:px-4 bg-green-400 rounded-2xl hover:bg-green-500 cursor-pointer"
           >
             Registrarse
           </Link>
           <Link
             to="/login"
-            className=" text-sm lg:text-lg flex items-center py-2 px-4 border-2  border-green-400 hover:bg-green-500 rounded-2xl  cursor-pointer"
+            className=" text-sm lg:text-lg flex items-center py-1 px-1.5 md:px-4 border-2  border-green-400 hover:bg-green-500 rounded-2xl  cursor-pointer"
           >
             Iniciar sesión
           </Link>
@@ -140,7 +140,7 @@ export const BotonPerfil = () => {
         ) : (
           // Menú para usuarios no autenticados
           <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg cursor-pointer z-50">
-            <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+            <Link to={"/nueva"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
               Pon tus canchas
             </Link>
             <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-b-lg">

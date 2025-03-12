@@ -112,6 +112,7 @@ const Carousel = ({ images }) => {
 
   // aca le coloco  cambio automático de imágenes cada 5 segundos
   useEffect(() => {
+
     const interval = setInterval(() => {
       nextSlide();
     }, 5000);

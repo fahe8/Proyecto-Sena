@@ -161,10 +161,10 @@ const SeccionHerramientas = () => {
           const borderClass =
             index === menuItems.length - 1 ? "" : "border-r-2 border-gray-300";
           return (
-            <li key={index + "b"}>
+            <li className="grid items-center" key={index + "b"}>
               <Link
                 to={isAuthenticated ? "" : "/login"}
-                className={`  text-center flex text-[11px] lg:text-sm  lg:px-4 lg:py-4  xl:px-6  gap-2 justify-center items-center ${borderClass} 
+                className={`  text-center flex  text-[11px] lg:text-sm  p-2 lg:px-4 lg:py-4  xl:px-6  gap-2 justify-center items-center ${borderClass} 
             hover:bg-gray-200 hover:text-green-500 ${index === menuItems.length -1 ?"rounded-r-2xl":""} ${index === 0 ?"rounded-l-2xl":""}  
             transition-colors duration-300`}
               >

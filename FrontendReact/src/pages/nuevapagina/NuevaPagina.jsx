@@ -47,6 +47,7 @@ const NuevaPagina = () => {
 
   return (
     <div className="contenedor_empresario">
+
       <div className="container_header shadow-md">
         <div className="header_empresario">
           <div className="nom_empresa flex items-center gap-3 ">
