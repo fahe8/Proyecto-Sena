@@ -2,10 +2,6 @@ import React from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 import { empresas } from "./dataPrueba";
-import iconHistorialReserva from "../../assets/Inicio/recent.svg";
-import iconPendiente from "../../assets/Inicio/archive.svg";
-import iconFavoritos from "../../assets/Inicio/corazon.svg";
-import iconNoRecomendar from "../../assets/Inicio/thumb-down.svg";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
@@ -22,7 +18,7 @@ const Inicio = () => {
           <BusquedaFiltros />
         </div>
         <section className="grid container mx-auto pt-5">
-          {/* <!-- Seccion lateral izquierda --> */}
+          {/* <!-- Seccion superior --> */}
           <SeccionHerramientas />
 
           {/* <!-- listado de canchas --> */}
@@ -98,13 +94,13 @@ const ListaEmpresas = () => {
                   key={index + "ca"}
                   src={imagen}
                   alt={`Imagen ${index + 1} de ${empresa.nombre}`}
-                  className="object-cover  h-64 w-64 "
+                  className="object-cover  h-48 w-64 "
                 />
               ))}
             </Slider>
           </div>
 
-          <div className="bg-white px-3 py-2 ">
+          <div className="bg-white px-4 py-4 ">
             <div className=" flex justify-between">
             <h3 className=" font-bold">{empresa.nombre}</h3>
             <div className="flex items-center mt-1 ">
@@ -159,7 +155,7 @@ const SeccionHerramientas = () => {
   return (
     <div className="px-2  border-gray-300 flex flex-col gap-4 items-center self-start overflow-y-auto">
       <ul
-        className=" rounded-2xl grid grid-cols-4 justify-around mb-4 border"
+        className=" rounded-2xl grid grid-cols-4 justify-around mb-4 shadow-sm"
         id="menu-lista"
       >
         {menuItems?.map((item, index) => {
@@ -169,7 +165,7 @@ const SeccionHerramientas = () => {
             <li key={index + "b"}>
               <Link
                 to={isAuthenticated ? "" : "/login"}
-                className={`  text-center flex text-[11px] lg:text-sm  lg:px-4 lg:py-6  xl:px-6 xl:py-8 gap-2 justify-center items-center ${borderClass} 
+                className={`  text-center flex text-[11px] lg:text-sm  lg:px-4 lg:py-4  xl:px-6  gap-2 justify-center items-center ${borderClass} 
             hover:bg-gray-200 hover:text-green-500 ${index === menuItems.length -1 ?"rounded-r-2xl":""} ${index === 0 ?"rounded-l-2xl":""}  
             transition-colors duration-300`}
               >

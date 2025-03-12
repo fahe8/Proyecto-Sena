@@ -14,10 +14,10 @@ const NuevaPagina = () => {
   const [canchas, setCanchas] = useState([
     { id: 1, image: ImagenCancha, nombre: "Futbol 7", rating: 4.8 },
     { id: 2, image: ImagenCancha, nombre: "Futbol 5", rating: 4.8 },
-    { id: 2, image: ImagenCancha, nombre: "Futbol 5", rating: 4.8 },
-    { id: 2, image: ImagenCancha, nombre: "Futbol 5", rating: 4.8 },
-    { id: 2, image: ImagenCancha, nombre: "Futbol 5", rating: 4.8 },
-    { id: 2, image: ImagenCancha, nombre: "Futbol 5", rating: 4.8 },
+    { id: 3, image: ImagenCancha, nombre: "Futbol 5", rating: 4.8 },
+    { id: 4, image: ImagenCancha, nombre: "Futbol 5", rating: 4.8 },
+    { id: 5, image: ImagenCancha, nombre: "Futbol 5", rating: 4.8 },
+    { id: 6, image: ImagenCancha, nombre: "Futbol 5", rating: 4.8 },
   ]);
 
   // Función para eliminar cancha pero con swet
@@ -77,7 +77,7 @@ const NuevaPagina = () => {
           
             <div className="perfil_container">
               <button onClick={mostraropciones} className="perfil_emp">
-                <span>Profile</span>
+                <span>Perfil</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
