@@ -135,6 +135,7 @@ const ListaEmpresas = () => {
   );
 };
 
+
 const SeccionHerramientas = () => {
   const { isAuthenticated } = useAuth;
   const menuItems = [

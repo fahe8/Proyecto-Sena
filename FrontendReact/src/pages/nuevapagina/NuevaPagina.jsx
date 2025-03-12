@@ -38,9 +38,8 @@ const NuevaPagina = () => {
       }
     });
   };
-
+// FUNCION PARA DROP DE PERIL     
   const [mostrar, setMostrar] = useState(false);
-
   const mostraropciones = () => {
     setMostrar(!mostrar);
   };
@@ -75,7 +74,7 @@ const NuevaPagina = () => {
                 <span>Agregar canchas</span>
               </div>
             </button>
-
+          
             <div className="perfil_container">
               <button onClick={mostraropciones} className="perfil_emp">
                 <span>Profile</span>
@@ -108,6 +107,7 @@ const NuevaPagina = () => {
       </div>
       <section className="main_emp">
         <div>
+          {/* Sección lateral izquierdo - HERRAMIENTAS */}
           <SeccionHerramientas />
         </div>
         {/* Sección lateral derecho - Canchas */}
