@@ -1,7 +1,6 @@
 import sequelize from "../../config/db.js";
 import { PersonaService } from "../../Persona/PersonaService.js";
 import { UsuarioRepository } from "../repository/UsuarioRepository.js";
-import bcrypt from "bcrypt";
 
 export class UsuarioService extends PersonaService {
   static async obtenerTodosUsuarios() {
