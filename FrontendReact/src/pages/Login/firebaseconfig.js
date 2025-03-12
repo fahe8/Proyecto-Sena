@@ -1,5 +1,14 @@
 import { initializeApp } from "firebase/app";
-// Importa la función para inicializar una aplicación Firebase
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+  deleteUser,
+  sendPasswordResetEmail,
+} from "firebase/auth"; //Importacion de todo lo necesario de firebase
 
 import {
   getAuth, // Obtiene la instancia de autenticación de Firebase
@@ -113,18 +122,6 @@ const recuperarContrasena = async (email) => {
   }
 };
 
-// Función para confirmar el cambio de contraseña con un token de recuperación
-export const confirmarCambioContrasena = async (oobCode, newPassword) => {
-  try {
-    await confirmPasswordReset(auth, oobCode, newPassword); // Confirma el cambio en Firebase
-    return { success: true }; // Retorna éxito si el cambio fue exitoso
-  } catch (error) {
-    console.error("Error al confirmar el cambio de contraseña:", error);
-    return { success: false, error }; // Retorna error en caso de fallo
-  }
-};
-
-// Exporta todas las funciones y objetos para que puedan ser utilizadas en otros archivos
 export {
   auth, // Instancia de autenticación de Firebase
   signInWithGoogle, // Función para iniciar sesión con Google
