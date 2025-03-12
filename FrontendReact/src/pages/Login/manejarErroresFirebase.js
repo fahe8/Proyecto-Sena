@@ -18,13 +18,6 @@ export const manejarErroresFirebase = (error) => {
     "auth/weak-password": "La contraseña debe tener al menos 6 caracteres.",
     "auth/invalid-verification-code": "Código de verificación inválido.",
     "auth/invalid-verification-id": "ID de verificación inválido.",
-
-    "auth/expired-action-code": "El enlace de recuperación de contraseña ha expirado. Por favor, solicita uno nuevo.",
-    "auth/invalid-action-code":"El enlace de recuperación de contraseña es inválido. Por favor, solicita uno nuevo.",
-    "auth/user-disabled":"Esta cuenta ha sido deshabilitada. Por favor, contacta con soporte.",
-    "auth/user-not-found":"No existe una cuenta con este correo electrónico.",
-    "auth/weak-password":"La contraseña debe tener al menos 6 caracteres.",
-    "auth/passwords-dont-match":"Las contraseñas no coinciden. Por favor, inténtalo de nuevo."
   };
 
   return errores[error.code] || "Error inesperado. Inténtalo de nuevo.";
