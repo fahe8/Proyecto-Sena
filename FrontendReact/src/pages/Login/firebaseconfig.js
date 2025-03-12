@@ -8,7 +8,6 @@ import {
   sendEmailVerification,
   deleteUser,
   sendPasswordResetEmail,
-  confirmPasswordReset,
 } from "firebase/auth"; //Importacion de todo lo necesario de firebase
 
 // Configuracion de la app Firebase
@@ -99,17 +98,6 @@ const recuperarContrasena = async (email) => {
   }
 };
 
-
-// Función para confirmar el cambio de contraseña con el token
-export const confirmarCambioContrasena = async (oobCode, newPassword) => {
-  try {
-    await confirmPasswordReset(auth, oobCode, newPassword);
-    return { success: true };
-  } catch (error) {
-    console.error("Error al confirmar el cambio de contraseña:", error);
-    return { success: false, error };
-  }
-};
 
 export {
   auth,
