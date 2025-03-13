@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import {
-  auth,
   signInWithGoogle,
   signUpWithEmailAndPassword,
   iniciarSesionConEmail,
-  recuperarContrasena,
-  confirmarCambioContrasena,
 } from "./firebaseconfig";
-import { onAuthStateChanged } from "firebase/auth";
+
 import LogPopUp from "./components/logPopUp";
 import logogoogle from "../../assets/LogIn/simbolo-de-google.png";
 
@@ -37,6 +34,7 @@ const Login = () => {
 
   const stayThere = () => { navigate(0);};
   const goToHome = () => {navigate("/");};
+
 
   //Guardar la informacion de los inputs en el state
   const handleChange = (e) => {
@@ -130,17 +128,6 @@ const Login = () => {
     }
   };
 
-  //Recuperar contraseña
-  const recuperarContrasenia = async () => {
-    await recuperarContrasena(formData.email);
-  };
-  
-  // Nueva función para activar el modo de recuperación de contraseña
-  const handleForgotPassword = (e) => {
-    e.preventDefault();
-    setResetPasswordMode(true);
-    setPasswordResetEmailSent(false);
-  };
 
   const EyeIcon = () => (
     <svg
