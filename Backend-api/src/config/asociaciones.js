@@ -23,9 +23,6 @@ import { Tarifa } from "../models/Tarifa.js";
 Persona.hasOne(Credencial, { foreignKey: "id_persona" });
 Credencial.belongsTo(Persona, { foreignKey: "id_persona" });
 
-Persona.hasOne(Propietario, { foreignKey: "id_persona" });
-Propietario.belongsTo(Persona, { foreignKey: "id_persona" });
-
 Persona.hasOne(Administrador, { foreignKey: "id_persona" });
 Administrador.belongsTo(Persona, { foreignKey: "id_persona" });
 
@@ -39,16 +36,15 @@ Propietario.hasMany(Empresa, { foreignKey: "id_propietario" });
 Empresa.belongsTo(Propietario, { foreignKey: "id_propietario" });
 
 Empresa.belongsTo(EstadoEmpresa, { foreignKey: "id_estado_empresa" });
-Empresa.belongsTo(TipoCancha, { foreignKey: "id_tipo_cancha" });
 
 Usuario.hasMany(Resena, { foreignKey: "id_usuario" });
 Resena.belongsTo(Usuario, { foreignKey: "id_usuario" });
 
-Empresa.hasMany(Resena, { foreignKey: "id_empresa" });
-Resena.belongsTo(Empresa, { foreignKey: "id_empresa" });
+Empresa.hasMany(Resena, { foreignKey: "NIT" });
+Resena.belongsTo(Empresa, { foreignKey: "NIT" });
 
-Empresa.hasMany(Cancha, { foreignKey: "id_empresa" });
-Cancha.belongsTo(Empresa, { foreignKey: "id_empresa" });
+Empresa.hasMany(Cancha, { foreignKey: "NIT" });
+Cancha.belongsTo(Empresa, { foreignKey: "NIT" });
 
 TipoCancha.hasMany(Cancha, { foreignKey: "id_tipo_cancha" });
 Cancha.belongsTo(TipoCancha, { foreignKey: "id_tipo_cancha" });
@@ -73,14 +69,14 @@ Pago.belongsTo(Reserva, { foreignKey: "id_reserva" });
 
 Empresa.belongsToMany(Servicio, {
   through: EmpresaServicio,
-  foreignKey: "id_empresa",
+  foreignKey: "NIT",
 });
 Servicio.belongsToMany(Empresa, {
   through: EmpresaServicio,
   foreignKey: "id_servicio",
 });
 
-Tarifa.belongsTo(Empresa, { foreignKey: "id_empresa" });
+Tarifa.belongsTo(Empresa, { foreignKey: "NIT" });
 Tarifa.belongsTo(TipoCancha, { foreignKey: "id_tipo" });
 
 export default function iniciarAsociaciones() {

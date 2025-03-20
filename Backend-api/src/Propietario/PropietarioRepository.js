@@ -3,19 +3,21 @@ import { Propietario } from "../models/Propietario.js";
 
 export class PropietarioRepository {
   static async crearPropietario(
-    id_persona,
+    nombre,
+    apellido,
+    telefono,
+    email,
     id_tipoDocumento,
-    num_documento,
-    transaction
+    num_documento
   ) {
-    return await Propietario.create(
-      {
-        id_persona,
-        id_tipoDocumento,
-        num_documento,
-      },
-      { transaction }
-    );
+    return await Propietario.create({
+      nombre,
+      apellido,
+      telefono,
+      email,
+      id_tipoDocumento,
+      num_documento,
+    });
   }
 
   static async obtenerPropietarioPorIdPersona(id_persona) {
@@ -28,9 +30,9 @@ export class PropietarioRepository {
     return await Credencial.create({ id_persona }, { transaction });
   }
 
-  static async actualizarPropietario(id_persona, datosActualizados) {
+  static async actualizarPropietario(id_propietario, datosActualizados) {
     return await Propietario.update(datosActualizados, {
-      where: { id_persona },
+      where: { id_propietario },
     });
   }
 }

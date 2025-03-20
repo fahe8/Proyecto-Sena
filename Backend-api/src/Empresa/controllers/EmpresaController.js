@@ -58,4 +58,20 @@ export class EmpresaController {
       });
     }
   }
+
+  static async actualizarEmpresa(req,res) {
+    try {
+      const empresaActualizada = await EmpresaService.actualizarEmpresa(req.body)
+      res.status(201).json({
+        success: true,
+        message: "Empresa actualizada exitosamente",
+        data: { id: empresaActualizada },
+      });
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
 }

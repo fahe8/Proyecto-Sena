@@ -1,9 +1,9 @@
 import { Persona } from "../models/Persona.js";
 
 export class PersonaRepository {
-  static async crearPersona(datos, transaction) {  
+  static async crearPersona(datos) {  
     console.log(datos);
-    return await Persona.create(datos, { transaction });  //Equivalente a INSERT INTO persona VALUES(datos de la perosna)
+    return await Persona.create(datos);  //Equivalente a INSERT INTO persona VALUES(datos de la perosna)
   }
 
   static async buscarPersonaPorEmail(email) {

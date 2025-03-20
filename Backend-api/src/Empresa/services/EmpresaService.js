@@ -1,3 +1,4 @@
+import { where } from "sequelize";
 import { EmpresaRepository } from "../repository/EmpresaRepository.js";
 
 export class EmpresaService {
@@ -10,6 +11,18 @@ export class EmpresaService {
   }
 
   static async crearEmpresa(empresa) {
+    this.validarDatosEmpresa(empresa);
+
+    return await EmpresaRepository.crearEmpresa(empresa);
+  }
+
+  static async actualizarEmpresa(empresa) {
+    this.validarDatosEmpresa(empresa);
+    
+    return await EmpresaRepository.actualizarEmpresa(empresa.NIT,empresa);
+  }
+
+  static validarDatosEmpresa(empresa) {
     const camposObligatorios = [
       "nombre",
       "direccion",
@@ -19,9 +32,7 @@ export class EmpresaService {
       "hora_cierre",
       "id_propietario",
       "id_estado_empresa",
-      "id_tipo_cancha",
     ];
-
     for (const campo of camposObligatorios) {
       if (!empresa[campo]) {
         throw new Error(`El campo ${campo} es obligatorio`);
@@ -55,7 +66,5 @@ export class EmpresaService {
     if (!horaRegex.test(empresa.hora_cierre)) {
       throw new Error("La hora de cierre debe estar en formato HH:mm:ss.");
     }
-
-    return await EmpresaRepository.crearEmpresa(empresa);
   }
 }

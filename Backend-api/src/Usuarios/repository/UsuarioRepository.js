@@ -23,12 +23,12 @@ export class UsuarioRepository {
     return await Usuario.findByPk(id_usuario);
   }
 
-  static async crearUsuario(id_persona, transaction) { //Equivalente a INSERT INTO usuario VALUES(id_persona)
+  static async crearUsuario(id_persona) { //Equivalente a INSERT INTO usuario VALUES(id_persona)
     console.log(id_persona);
-    return await Usuario.create({ id_persona }, { transaction });  
+    return await Usuario.create({ id_persona });  
   }
 
-  static async crearCredencial(id_persona, transaction) {  //Equivalente a INSERT INTO credencial VALUES(id_persona)
-    return await Credencial.create({ id_persona }, { transaction });
+  static async crearCredencial(id_persona) {  //Equivalente a INSERT INTO credencial VALUES(id_persona)
+    return await Credencial.create({ id_persona });
   }
 }
