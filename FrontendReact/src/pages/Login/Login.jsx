@@ -2,7 +2,12 @@
 import React, { useState } from "react"; // Importa React y los hooks useState y useEffect
 import "./Login.css"; // Importa los estilos CSS para este componente
 import { useNavigate } from "react-router-dom"; // Hook para la navegación entre rutas
-import { EyeIcon, EyeOffIcon, LetterIcon, KeyIcon } from "./IconosSVG/iconos.jsx"
+import {
+  EyeIcon,
+  EyeOffIcon,
+  LetterIcon,
+  KeyIcon,
+} from "./IconosSVG/iconos.jsx";
 // Importaciones relacionadas con Firebase Authentication
 import {
   signInWithGoogle, // Función para iniciar sesión con Google
@@ -20,6 +25,7 @@ import {
 } from "./fetchBackendLogin"; // Archivo con funciones para comunicarse con el backend
 import Loading from "./components/Loading"; // Componente de carga
 import { manejarErroresFirebase } from "./manejarErroresFirebase"; // Función para manejar errores de Firebase
+import LazyBackground from "../../utils/LazyBackground.jsx";
 
 // Definición del componente Login
 const Login = () => {
@@ -150,9 +156,8 @@ const Login = () => {
     }
   };
 
-
   return (
-    <div className="container-login w-screen h-screen">
+    <LazyBackground  imageUrl="/src/assets/LogIn/fondo.jpg" className="container-login w-screen h-screen">
       {" "}
       <div className="w-screen h-screen filtro flex items-center">
         <div className="login-container relative">
@@ -269,7 +274,7 @@ const Login = () => {
           />
         )}
       </div>
-    </div>
+    </LazyBackground>
   );
 };
 export default Login;

@@ -6,7 +6,7 @@ import iconBloqueado from "../../assets/Inicio/bloqueado.svg";
 import iconReservaCancelada from "../../assets/Inicio/Reserva_cancelado.svg";
 import iconReporteIngreso from "../../assets/Inicio/Reporte_ingreso.svg";
 import ImagenCancha from "../../assets/Inicio/cancha.jpeg";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 
 const NuevaPagina = () => {

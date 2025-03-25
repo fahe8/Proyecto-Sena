@@ -1,7 +1,6 @@
 .container-login {
   padding: 0;
   margin: 0px;
-  background-image: url("/src/assets/LogIn/fondo.jpg");
   background-size: cover;
   position: relative;
 }
