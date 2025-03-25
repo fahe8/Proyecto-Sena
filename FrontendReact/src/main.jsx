@@ -4,11 +4,14 @@ import "./index.css";
 import App from "./App.jsx";
 import "../src/pages/Login/firebaseconfig.js";
 import { AuthProvider } from "./Provider/AuthProvider.jsx";
+import { EmpresasProvider } from "./Provider/EmpresasProvider.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+    <EmpresasProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </EmpresasProvider>
   </StrictMode>
 );

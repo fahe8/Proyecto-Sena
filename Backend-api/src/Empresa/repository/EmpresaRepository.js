@@ -11,6 +11,12 @@ export class EmpresaRepository {
 
   static async crearEmpresa(empresa) {
     const nuevaEmpresa = await Empresa.create(empresa); // Crea una nueva empresa
-    return nuevaEmpresa.id_empresa; // Retorna el ID de la empresa creada
+    return nuevaEmpresa; // Retorna la empresa creada
+  }
+
+  static async actualizarEmpresa(NIT,empresa) {
+    return await Empresa.update( empresa,  {
+      where: { NIT },
+    } );
   }
 }
