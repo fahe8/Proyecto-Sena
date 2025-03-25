@@ -6,6 +6,7 @@ import { auth } from "../pages/Login/firebaseconfig"; // Importamos la configura
 import { BusquedaFiltros } from "./Componentes/BusquedaFiltros"; // Importamos el componente de búsqueda con filtros
 import logo from "../assets/logo.png"; // Importamos el logo de la aplicación
 
+
 // Componente Header
 const Header = () => {
   const navigate = useNavigate(); // Hook para redireccionar a diferentes rutas
@@ -25,7 +26,7 @@ const Header = () => {
 
         {/* Barra de búsqueda y filtros (visible solo en pantallas grandes) */}
         <div className="hidden lg:block">
-          <BusquedaFiltros />
+          <BusquedaFiltros/>
         </div>
 
         {/* Botón de perfil */}
@@ -104,17 +105,12 @@ export const BotonPerfil = () => {
       ) : (
         // Botones de iniciar sesión y registrarse (cuando el usuario no está autenticado)
         <div className="flex gap-2">
-          <Link
-            to="/login"
-            className=" text-sm lg:text-lg flex items-center py-1 px-1.5 md:px-4 bg-green-400 rounded-2xl hover:bg-green-500 cursor-pointer"
-          >
-            Registrarse
-          </Link>
+         
           <Link
             to="/login"
             className=" text-sm lg:text-lg flex items-center py-1 px-1.5 md:px-4 border-2  border-green-400 hover:bg-green-500 rounded-2xl  cursor-pointer"
           >
-            Iniciar sesión
+            Ingresar
           </Link>
         </div>
       )}

@@ -77,7 +77,7 @@ Servicio.belongsToMany(Empresa, {
 });
 
 Tarifa.belongsTo(Empresa, { foreignKey: "NIT" });
-Tarifa.belongsTo(TipoCancha, { foreignKey: "id_tipo" });
+Tarifa.belongsTo(TipoCancha, { foreignKey: "id_tipo_cancha" });
 
 export default function iniciarAsociaciones() {
   console.log("Asociaciones configuradas correctamente.");
