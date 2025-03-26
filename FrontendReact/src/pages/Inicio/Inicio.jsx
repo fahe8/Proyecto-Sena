@@ -53,11 +53,11 @@ const ListaEmpresas = ({ empresas }) => {
 };
 
 const SeccionHerramientas = () => {
-  const { isAuthenticated } = useAuth;
+  const { isAuthenticated } = useAuth();
   const menuItems = [
     {
       text: "Historial de reservas",
-      ref: "/",
+      ref: "/reservas",
     },
     {
       text: "Reservas pendientes",
@@ -65,7 +65,7 @@ const SeccionHerramientas = () => {
     },
     {
       text: "Mis favoritos",
-      ref: "/",
+      ref: "/favoritos",
     },
     {
       text: "No recomendarme",
@@ -84,7 +84,7 @@ const SeccionHerramientas = () => {
           return (
             <li className="grid items-center" key={index + "b"}>
               <Link
-                to={isAuthenticated ? "" : "/login"}
+                to={isAuthenticated ? item.ref : "/login"}
                 className={`  text-center flex  text-[11px] lg:text-sm  p-2 lg:px-4 lg:py-4  xl:px-6  gap-2 justify-center items-center ${borderClass} 
             hover:bg-gray-200 hover:text-green-500 ${
               index === menuItems.length - 1 ? "rounded-r-2xl" : ""

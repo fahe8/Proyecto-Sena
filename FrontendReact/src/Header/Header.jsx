@@ -120,8 +120,8 @@ export const BotonPerfil = () => {
         (isAuthenticated ? (
           // Menú para usuarios autenticados
           <div className="absolute right-0 w-40 bg-white shadow-lg rounded-t-lg rounded-b-lg cursor-pointer z-50">
-            <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center rounded-t-lg">
-              Eres una empresa?
+            <Link to={"/perfil"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center rounded-t-lg">
+              Mi Perfil
             </Link>
             <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center">
               Centro de ayuda
