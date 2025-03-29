@@ -1,13 +1,5 @@
 import { initializeApp } from "firebase/app";
 import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendEmailVerification,
-  deleteUser,
-  sendPasswordResetEmail,
 } from "firebase/auth"; //Importacion de todo lo necesario de firebase
 
 import {
@@ -19,7 +11,6 @@ import {
   sendEmailVerification, // Envía un correo de verificación al usuario
   deleteUser, // Elimina un usuario
   sendPasswordResetEmail, // Envía un correo para restablecer la contraseña
-  confirmPasswordReset, // Confirma el restablecimiento de la contraseña
 } from "firebase/auth"; // Importa todas las funciones necesarias de autenticación
 
 // Configuración de la aplicación Firebase con las credenciales proporcionadas

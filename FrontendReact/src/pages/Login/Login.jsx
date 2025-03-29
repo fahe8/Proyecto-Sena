@@ -9,8 +9,6 @@ import {
   signInWithGoogle,  // Función para iniciar sesión con Google
   signUpWithEmailAndPassword,  // Función para registrarse con email y contraseña
   iniciarSesionConEmail,  // Función para iniciar sesión con email
-  recuperarContrasena,  // Función para recuperar contraseña
-  confirmarCambioContrasena,  // Función para confirmar el cambio de contraseña
 } from "./firebaseconfig";  // Archivo que contiene la configuración de Firebase
 
 // Importaciones de otros componentes y recursos
@@ -62,9 +60,9 @@ const Login = () => {
 
   // Función principal para manejar el envío del formulario
   const handleSubmit = async (e) => {
-    e.preventDefault();  // Previene el comportamiento por defecto del formulario
+    e.preventDefault(); // Previene el comportamiento por defecto del formulario
     setLoading(true);  // Muestra el indicador de carga
-    let result;  // Variable para almacenar el resultado de las operaciones
+    let result; // Variable para almacenar el resultado de las operaciones
 
     try {
       //Si register es true, vamos a registrar el usuario
@@ -124,7 +122,7 @@ const Login = () => {
         const { displayName, telefono, email } = result.user;  // Extrae datos del usuario
 
         const nombreCompleto = displayName.split(" ");  // Divide el nombre completo en partes separadas
-
+        
         // Prepara los datos para enviar al backend
         const datosActualizar = {
           email,
