@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
+        console.log(user)
         setIsAuthenticated(true);
         const token = await user.getIdToken();
         setToken(token);
