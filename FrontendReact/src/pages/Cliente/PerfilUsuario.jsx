@@ -350,7 +350,7 @@ const Perfil = () => {
                   </div>
                   <div className="flex justify-between bg-gray-100 px-3 py-2 rounded-md">
                     <span className="text-sm">Fútbol 11</span>
-                    <span className="text-sm text-gray-500">(1)</span>
+                    <span className="tgitext-sm text-gray-500">(1)</span>
                   </div>
                 </div>
               </div>

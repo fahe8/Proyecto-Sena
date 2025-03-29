@@ -10,21 +10,25 @@ import {
 import LogPopUp from "./components/logPopUp";
 import logogoogle from "../../assets/LogIn/simbolo-de-google.png";
 
+// Importaciones de funciones para interactuar con el backend
 import {
-  crearUsuarioConEmail,
-} from "./fetchBackendLogin";
-import Loading from "./components/Loading";
-import { manejarErroresFirebase } from "./manejarErroresFirebase";
+  crearUsuarioConEmail,  // Función para crear un usuario en el backend usando email
+} from "./fetchBackendLogin";  // Archivo con funciones para comunicarse con el backend
+import Loading from "./components/Loading";  // Componente de carga
+import { manejarErroresFirebase } from "./manejarErroresFirebase";  // Función para manejar errores de Firebase
 
+// Definición del componente Login
 const Login = () => {
-  const navigate = useNavigate();
-  const [register, setRegister] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();  // Hook para navegar entre páginas
+  const [register, setRegister] = useState(true);  // Estado para controlar si estamos en modo registro o inicio de sesión
+  const [showPassword, setShowPassword] = useState(false);  // Estado para mostrar/ocultar la contraseña
+  
+  // Estado para almacenar los datos del formulario
   const [formData, setFormData] = useState({
-    password: "",
-    email: "",
-    confirmPassword: "",
-    rememberMe: true,
+    password: "",  // Contraseña
+    email: "",  // Email
+    confirmPassword: "",  // Confirmación de contraseña (para registro)
+    rememberMe: true,  // Opción "Recuérdame"
   });
 
   const [showPopUp, setShowPopUp] = useState(false);
@@ -35,100 +39,111 @@ const Login = () => {
   const stayThere = () => { navigate(0);};
   const goToHome = () => {navigate("/");};
 
-
-  //Guardar la informacion de los inputs en el state
+  // Función para manejar cambios en los inputs del formulario
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked } = e.target;  // Extrae propiedades del evento
     setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
+      ...formData,  // Mantiene los valores actuales
+      [name]: type === "checkbox" ? checked : value,  // Actualiza el campo específico (manejo especial para checkboxes)
     });
   };
 
-  //Ver o ocultar la contraseña
+  // Función para alternar la visibilidad de la contraseña
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+    setShowPassword(!showPassword);  // Invierte el estado actual
   };
 
-  //Registrar el usuario correo y contraseña al firebaseAuth y crear el usuario en la base de datos
+  // Función principal para manejar el envío del formulario
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    let result;
+    e.preventDefault();  // Previene el comportamiento por defecto del formulario
+    setLoading(true);  // Muestra el indicador de carga
+    let result;  // Variable para almacenar el resultado de las operaciones
 
     try {
-     if (register) {
+      //Si register es true, vamos a registrar el usuario
+    if (register) {
+        // Registrar usuario nuevo con email y contraseña
         result = await signUpWithEmailAndPassword(
           formData.email,
           formData.password
         );
         if (!result.success) {
-          throw result; // Lanzar el objeto result completo en lugar de un Error vacío.
+          throw result;  // Si hay un error, lanza el resultado completo
         }
 
+        // Crea el usuario en la base de datos del backend
         const email = { email: formData.email };
         const usuarioCreado = await crearUsuarioConEmail(email);
         if (usuarioCreado) { 
-          //Si el usuario se crea correctamente se muestra lo siguiente
+          // Si el usuario se crea correctamente se muestra el mensaje de éxito
           setPopupMessage("Felicidades!");
           setPopupSubText("Tu usuario se creó correctamente.");
           setShowPopUp(true);
         }
       } else {
-        // Iniciar sesión
+        // Iniciar sesión con email y contraseña existentes
         result = await iniciarSesionConEmail(formData.email, formData.password);
         if (!result.success) {
-          throw result;
+          throw result;  // Si hay error, lanza el resultado
         }
 
+        // Configura el popup de bienvenida
         setPopupMessage("Bienvenido!");
         setPopupSubText("Has iniciado sesión correctamente");
         setShowPopUp(true);
       }
     } catch (error) {
-      console.log("El error que llega es:", error);
+      console.log("El error que llega es:", error);  // Muestra el error en la consola para depuración
 
-      // Asegurar que el error tenga un código válido antes de pasarlo a manejarErroresFirebase
+      // Asegura que el error tenga un código válido antes de procesarlo
       const mensajeError = error.code
-        ? manejarErroresFirebase(error)
-        : "Ocurrió un error inesperado.";
+        ? manejarErroresFirebase(error)  // Usa la función para obtener un mensaje de error amigable
+        : "Ocurrió un error inesperado.";  // Mensaje genérico para errores sin código
 
+      // Configura el popup de error
       setPopupMessage("Error");
       setPopupSubText(mensajeError);
       setShowPopUp(true);
     } finally {
-      setLoading(false);
+      setLoading(false);  // Oculta el indicador de carga al terminar, independientemente del resultado
     }
   };
 
-  //Iniciar sesion con google y crear el usuario en la base de datos
+  // Función para iniciar sesión con Google
   const handleGoogleLogin = async () => {
     try {
-      const result = await signInWithGoogle();
+      const result = await signInWithGoogle();  // Llama a la función de autenticación con Google
       if (result) {
-        //si result obtiene al usuario se muestra el popup
-        const { displayName, telefono, email } = result.user;
-        const nombreCompleto = displayName.split(" ");
+        const { displayName, telefono, email } = result.user;  // Extrae datos del usuario
+
+        const nombreCompleto = displayName.split(" ");  // Divide el nombre completo en partes separadas
+
+        // Prepara los datos para enviar al backend
         const datosActualizar = {
           email,
-          nombre: nombreCompleto[0],
-          apellido: nombreCompleto[1],
-          telefono: telefono || "",
+          nombre: nombreCompleto[0],  // Primera parte (nombre)
+          apellido: nombreCompleto[1],  // Segunda parte (apellido)
+          telefono: telefono || "",  // Teléfono o cadena vacía si no existe
         };
+        
+        // Envía los datos al backend para crear/actualizar el usuario
         const creado = await crearUsuarioConEmail(datosActualizar);
-        console.log(creado.message);
+        console.log(creado.message);  // Muestra el mensaje de respuesta en la consola
+        
         if (creado) {
+          // Si se creó/actualizó el usuario, muestra el popup de bienvenida
           setPopupMessage("Bienvenido!");
           setPopupSubText("Has iniciado sesión correctamente con Google");
           setShowPopUp(true);
         }
       }
     } catch (error) {
-      console.error("Error al iniciar sesión con Google:", error);
+      console.error("Error al iniciar sesión con Google:", error);  // Muestra errores en la consola
     }
   };
 
 
+  // Componente para el icono de ojo abierto (mostrar contraseña)
   const EyeIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -146,6 +161,7 @@ const Login = () => {
     </svg>
   );
 
+  // Componente para el icono de ojo cerrado (ocultar contraseña)
   const EyeOffIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -216,7 +232,6 @@ const Login = () => {
           <div className="aditional-options">
             <a
               href="#"
-              onClick={handleForgotPassword}
               className={`forgot-password ${
                 register ? "hidden-button" : "block-button"
               }`}
