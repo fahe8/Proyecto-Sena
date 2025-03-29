@@ -17,6 +17,8 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
   logging: false,
 });
 
+
+
 //Conexión usando solo mysql2, para hacer consultar con Queries
 export const pool = mysql.createPool({
   host: DB_HOST,

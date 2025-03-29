@@ -1,6 +1,4 @@
 import { initializeApp } from "firebase/app";
-import {
-} from "firebase/auth"; //Importacion de todo lo necesario de firebase
 
 import {
   getAuth, // Obtiene la instancia de autenticación de Firebase

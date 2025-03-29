@@ -7,7 +7,10 @@ export const Propietario = sequelize.define("propietario", {
     primaryKey: true,
     autoIncrement: true,
   },
-  id_persona: { type: DataTypes.INTEGER, allowNull: false },
+  nombre: { type: DataTypes.STRING, defaultValue: "" },
+  apellido: { type: DataTypes.STRING, defaultValue: "" },
+  telefono: { type: DataTypes.STRING, defaultValue: "" },
+  email: DataTypes.STRING,
   id_tipoDocumento: { type: DataTypes.STRING, allowNull: false },
   num_documento: DataTypes.BIGINT,
 });

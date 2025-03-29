@@ -100,6 +100,7 @@ const Carousel = ({ images }) => {
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
+    
     );
   };
 
@@ -112,6 +113,7 @@ const Carousel = ({ images }) => {
 
   // aca le coloco  cambio automático de imágenes cada 5 segundos
   useEffect(() => {
+
     const interval = setInterval(() => {
       nextSlide();
     }, 5000);
