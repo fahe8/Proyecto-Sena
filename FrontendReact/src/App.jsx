@@ -18,7 +18,7 @@ function App() {
         <Route path="/" element={<Inicio />} />
         <Route path="/nueva" element={<NuevaPagina />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/:nombre" element={<Cliente />} />
+        <Route path="/empresa/:nombre" element={<Cliente />} />
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
 
         {/* Seccion perfil con el mismo SideBar */}
@@ -27,6 +27,7 @@ function App() {
           <Route path="/favoritos" element={<Favoritos />} />
           <Route path="/perfil" element={<PerfilPage />} />
           <Route path="/reservas" element={<Reservas />} />
+          
         </Route>
       </Routes>
     </Router>

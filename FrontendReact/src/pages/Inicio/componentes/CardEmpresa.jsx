@@ -48,7 +48,7 @@ const CardEmpresa = ({ empresa }) => {
   return (
     <div
       className="w-64  bg-white rounded-2xl shadow-lg cursor-pointer overflow-hidden hover:scale-103 transition-transform duration-300"
-      onClick={() => navigate(`/${empresa?.nombre}`)}
+      onClick={() => navigate(`/empresa/${empresa?.slug}`)}
     >
       <div className="relative">
         <Slider {...settings}>
