@@ -9,6 +9,7 @@ export class UsuarioController {
         message: "Usuarios obtenidos correctamente",
         data: usuarios,
       });
+
     } catch (error) {
       res.status(500).json({ success: false, message: "Error al obtener usuarios" });
     }

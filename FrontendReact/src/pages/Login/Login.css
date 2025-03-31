@@ -1,7 +1,17 @@
-body {
+.container-login {
   padding: 0;
   margin: 0px;
-  background-color: #f1f1f1;
+  background-size: cover;
+  position: relative;
+}
+.filtro {
+  position: absolute;
+  /* transform: translateY(50%,50%); */
+  background-color: #00000037;
+  /* top: ; */
+  width: 100vw;
+  height: 100vh;
+  z-index: 400;
 }
 .login-container {
   max-width: 450px;
@@ -14,8 +24,9 @@ body {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   font-family: Arial, sans-serif;
   box-sizing: border-box;
-  max-height: 70vh;
+  /* max-height: 70vh; */
   margin-top: 10vh;
+  z-index: 10;
 }
 
 .register-tittle {
@@ -40,7 +51,7 @@ body {
   padding: 12px 15px;
   height: 46px;
   border-radius: 25px;
-  border: 1px solid #00C951;
+  border: 1px solid #00c951;
   cursor: pointer;
   font-size: 15px;
   transition: background-color 0.2s;
@@ -96,7 +107,7 @@ body {
 
 .form-group input {
   width: 100%;
-  padding: 12px 15px;
+  padding: 12px 15px 12px 40px;
   height: 46px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -108,6 +119,17 @@ body {
   position: relative;
 }
 
+.icon-input {
+  position: absolute;
+  top: 35px;
+  left: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #777;
+  padding-top: 5px;
+}
+
+
 .eye-icon {
   position: absolute;
   top: 38px;
@@ -117,6 +139,8 @@ body {
   color: #777;
   padding-top: 5px;
 }
+
+
 
 .eye-icon svg {
   margin-right: 5px;
@@ -150,7 +174,7 @@ body {
 .register-button {
   width: 100%;
   height: 46px;
-  background-color: #00C951;
+  background-color: #00c951;
   color: white;
   border: none;
   border-radius: 25px;
@@ -176,23 +200,21 @@ body {
   margin-top: 20px;
   font-size: 17px;
   color: #555;
-
 }
 
 .login-prompt {
   color: #555;
-  
 }
 
 .login-button {
-  color: #00C951;
-  text-decoration:underline;
+  color: #00c951;
+  text-decoration: underline;
   cursor: pointer;
   max-height: 20px;
 }
 
 .login-button:hover {
- color: #029d02;
+  color: #029d02;
 }
 .bottom-divider {
   margin-top: 15px;
@@ -206,8 +228,8 @@ body {
 /*Solo media querys :) */
 @media (max-height: 800px) {
   .login-container {
-    margin: 8vh auto;
-    padding: 30px 25px;
+    margin: 0 auto;
+    padding: 30px 50px;
     min-height: 80vh;
   }
 
@@ -234,7 +256,7 @@ body {
 
 @media (max-height: 640px) {
   .login-container {
-    margin: 20px auto;
+    margin: 0 auto;
     padding: 20px;
   }
   .register-tittle {
@@ -263,14 +285,15 @@ body {
 @media (min-width: 1200px) {
   .login-container {
     max-width: 500px;
-    margin: 40px auto;
+    margin: 0 auto;
+    padding: 20px 50px;
   }
 }
 @media (max-width: 480px) {
   .login-container {
     width: 95%;
     margin: 8vh auto;
-    padding: 25px 20px;
+    padding: 25px 40px;
     font-size: 7px;
   }
   .social-button img {
@@ -322,7 +345,7 @@ body {
     justify-content: center;
     align-items: center;
     max-width: 50%;
-    margin: 8vh auto; 
+    margin: 8vh auto;
     padding: 15px;
     min-height: 550px;
   }
@@ -331,22 +354,22 @@ body {
   }
   .register-title {
     font-size: 1.5rem;
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
   }
-  
+
   .social-buttons {
     flex-direction: column;
     gap: 10px;
     width: 70%;
   }
 
-  input[type="text"], 
+  input[type="text"],
   input[type="password"],
   input[type="email"] {
     padding: 8px;
     font-size: 0.9rem;
   }
-  
+
   .changeSign {
     display: flex;
     justify-content: center;
@@ -354,9 +377,9 @@ body {
     font-size: 15px;
   }
   .login-prompt {
-    padding:0;
+    padding: 0;
   }
-  .login-button{
+  .login-button {
     margin: 0;
   }
 }

@@ -23,24 +23,24 @@ const canchas = [
 // Reservas no disponibles como debe llegar desde el backend
 const reservasNoDisponibles = [
   {
-    fecha: "2025-03-11",
-    horaInicio: "2025-03-11 06:00:00",
-    horaFinal: "2025-03-11 09:59:00",
+    fecha: "2025-03-13",
+    horaInicio: "2025-03-13 06:00:00",
+    horaFinal: "2025-03-13 09:59:00",
   },
   {
-    fecha: "2025-03-11",
-    horaInicio: "2025-03-11 11:00:00",
-    horaFinal: "2025-03-11 11:59:00",
+    fecha: "2025-03-13",
+    horaInicio: "2025-03-13 11:00:00",
+    horaFinal: "2025-03-13 11:59:00",
   },
   {
-    fecha: "2025-03-11",
-    horaInicio: "2025-03-11 15:00:00",
-    horaFinal: "2025-03-11 17:59:00",
+    fecha: "2025-03-13",
+    horaInicio: "2025-03-13 15:00:00",
+    horaFinal: "2025-03-13 17:59:00",
   },
   {
-    fecha: "2025-03-12",
-    horaInicio: "2025-03-12 09:00:00",
-    horaFinal: "2025-03-12 12:59:00",
+    fecha: "2025-03-13",
+    horaInicio: "2025-03-13 09:00:00",
+    horaFinal: "2025-03-13 12:59:00",
   },
   {
     fecha: "2025-03-12",
