@@ -38,7 +38,6 @@ const SideBarPerfil = () => {
   useEffect(() => {
     const updateWidth = () => {
       if (sidebarRef.current) {
-        console.log(sidebarRef.current.offsetWidth);
         setSidebarWidth(sidebarRef.current.offsetWidth + 2);
       }
     };
@@ -53,7 +52,7 @@ const SideBarPerfil = () => {
     <div className="flex flex-row relative h-screen">
       <div
         ref={sidebarRef}
-        className=" absolute h-screen p-2 w-auto group-hover:max-w-xs  bg-gray-300 group flex flex-col justify-between "
+        className=" absolute h-screen p-2 w-auto group-hover:max-w-xs bg-gray-300 group flex flex-col justify-between z-50 "
       >
         <ul className="space-y-4">
           {opciones.map((opcion, index) => (
