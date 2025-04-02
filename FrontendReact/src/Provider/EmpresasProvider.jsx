@@ -13,6 +13,7 @@ export const EmpresasProvider = ({ children }) => {
       imagenes: [imagenCancha, imagenCancha2, imagenCancha3],
       tipoCanchas: ["Futbol 5", "Futbol 7"],
       servicios: ["baños", "tienda", "parqueadero", "wifi"],
+      slug:"Canchas-la-64"
     },
     {
       nombre: "Canchas el triangulo",
@@ -20,6 +21,7 @@ export const EmpresasProvider = ({ children }) => {
       imagenes: [imagenCancha, imagenCancha2, imagenCancha3],
       tipoCanchas: ["Futbol 5", "Futbol 7"],
       servicios: ["baños", "tienda", "parqueadero", "wifi"],
+      slug:"Canchas-el-triangulo"
     },
     {
       nombre: "Canchas la estacion",
@@ -27,6 +29,7 @@ export const EmpresasProvider = ({ children }) => {
       imagenes: [imagenCancha, imagenCancha2, imagenCancha3],
       tipoCanchas: ["Futbol 11", "Futbol 9"],
       servicios: ["baños", "tienda", "parqueadero", "wifi"],
+      slug:"Canchas-la-estacion"
     },
     {
       nombre: "Canchas de Futbol Calarca Junior",
@@ -34,6 +37,7 @@ export const EmpresasProvider = ({ children }) => {
       imagenes: [imagenCancha, imagenCancha2, imagenCancha3],
       tipoCanchas: ["Futbol 5", "Futbol 8"],
       servicios: ["baños", "tienda", "parqueadero", "wifi"],
+      slug:"Canchas-de-Futbol-Calarca-Junior"
     },
     {
       nombre: "Garzagol",
@@ -41,6 +45,7 @@ export const EmpresasProvider = ({ children }) => {
       imagenes: [imagenCancha, imagenCancha2, imagenCancha3],
       tipoCanchas: ["Futbol 5", "Futbol 7", "Futbol 8"],
       servicios: ["baños", "tienda", "parqueadero", "wifi"],
+      slug:"Garzagol"
     },
     {
       nombre: "Canchas sintéticas chelsea fútbol club",
@@ -48,6 +53,7 @@ export const EmpresasProvider = ({ children }) => {
       imagenes: [imagenCancha, imagenCancha2, imagenCancha3],
       tipoCanchas: ["Futbol 5", "Futbol 7", "Futbol 8", "Futbol 11"],
       servicios: ["baños", "parqueadero", "wifi", "restaurante"],
+      slug:"Canchas-sintéticas-chelsea-fútbol-club"
     },
   ];
 
