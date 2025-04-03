@@ -1,23 +1,14 @@
-// Importaciones iniciales de React y componentes necesarios
-import React, { useState } from "react"; // Importa React y los hooks useState y useEffect
-import "./Login.css"; // Importa los estilos CSS para este componente
-import { useNavigate } from "react-router-dom"; // Hook para la navegación entre rutas
+import React, { useState } from "react";
+import "./Login.css";
+import { useNavigate } from "react-router-dom";
 import {
-  EyeIcon,
-  EyeOffIcon,
-  LetterIcon,
-  KeyIcon,
-} from "./IconosSVG/iconos.jsx";
-// Importaciones relacionadas con Firebase Authentication
-import {
-  signInWithGoogle, // Función para iniciar sesión con Google
-  signUpWithEmailAndPassword, // Función para registrarse con email y contraseña
-  iniciarSesionConEmail, // Función para iniciar sesión con email
-} from "./firebaseconfig"; // Archivo que contiene la configuración de Firebase
+  signInWithGoogle,
+  signUpWithEmailAndPassword,
+  iniciarSesionConEmail,
+} from "./firebaseconfig";
 
-// Importaciones de otros componentes y recursos
-import LogPopUp from "./components/logPopUp"; // Componente para mostrar popups
-import logogoogle from "../../assets/LogIn/simbolo-de-google.png"; // Imagen del logo de Google
+import LogPopUp from "./components/logPopUp";
+import logogoogle from "../../assets/LogIn/simbolo-de-google.png";
 
 // Importaciones de funciones para interactuar con el backend
 import {
@@ -26,6 +17,7 @@ import {
 import Loading from "./components/Loading"; // Componente de carga
 import { manejarErroresFirebase } from "./manejarErroresFirebase"; // Función para manejar errores de Firebase
 import LazyBackground from "../../utils/LazyBackground.jsx";
+import { LetterIcon, KeyIcon, EyeIcon, EyeOffIcon } from "./IconosSVG/iconos.jsx"; // Iconos para el formulario
 
 // Definición del componente Login
 const Login = () => {
@@ -276,5 +268,5 @@ const Login = () => {
       </div>
     </LazyBackground>
   );
-};
-export default Login;
+}
+  export default Login;
