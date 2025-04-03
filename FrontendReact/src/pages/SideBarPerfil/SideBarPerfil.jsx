@@ -19,7 +19,7 @@ const SideBarPerfil = () => {
     {
       nombre: "Reservas Activas",
       icono: iconoReciente,
-      url: "/reservasActivas",
+      url: "/reservasactivas",
     },
     {
       nombre: "Historial de Reservas",

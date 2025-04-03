@@ -291,7 +291,7 @@ const Perfil = () => {
                       </span>
                       <p className="font-semibold">Preferido</p>
                        </span>
-                    <p className="font-semibold">Preferido</p>
+                
                       
                 
 
@@ -442,57 +442,6 @@ const Perfil = () => {
 
               <hr className="my-6" />
 
-              {/* agregar reseña */}
-              <div className="mb-6 bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-medium mb-3">Deja tu reseña</h3>
-                <form onSubmit={handleReviewSubmit}>
-                  <div className="mb-3">
-                    <div className="flex items-center mb-2">
-                      <label className="mr-4 text-sm">Calificación:</label>
-                      <div className="flex">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            type="button"
-                            className="text-2xl focus:outline-none"
-                            onClick={() => handleRatingChange(star)}
-                          >
-                            <span
-                              className={
-                                star <= newReview.rating
-                                  ? "text-yellow-500"
-                                  : "text-gray-300"
-                              }
-                            >
-                              ★
-                            </span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mb-3">
-                    <textarea
-                      className="w-full border rounded-md p-2 text-sm"
-                      rows="3"
-                      placeholder="Comparte tu experiencia con esta cancha..."
-                      value={newReview.comment}
-                      onChange={(e) =>
-                        setNewReview({ ...newReview, comment: e.target.value })
-                      }
-                      required
-                    ></textarea>
-                  </div>
-                  <div className="text-right">
-                    <button
-                      type="submit"
-                      className="bg-[#00b04b] text-white px-4 py-2 rounded-md text-sm hover:bg-[#009040]"
-                    >
-                      Publicar reseña
-                    </button>
-                  </div>
-                </form>
-              </div>
 
               {/* opiniones de usuarios  */}
               <div className="space-y-6">

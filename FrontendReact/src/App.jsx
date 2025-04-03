@@ -8,8 +8,8 @@ import Cliente from "./pages/Cliente/PerfilUsuario";
 import NuevaPagina from "./pages/nuevapagina/NuevaPagina";
 import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
-import Reservas from "./pages/Reservas/Reservas";
 import PerfilPage from "./pages/Perfil/Perfil";
+import ReservasActivas from "./pages/Reservas/ReservasActivas";
 
 function App() {
   return (
@@ -26,7 +26,7 @@ function App() {
         <Route element={<SideBarPerfil />}>
           <Route path="/favoritos" element={<Favoritos />} />
           <Route path="/perfil" element={<PerfilPage />} />
-          <Route path="/reservas" element={<Reservas />} />
+          <Route path="/reservasactivas" element={<ReservasActivas />} />
           
         </Route>
       </Routes>
