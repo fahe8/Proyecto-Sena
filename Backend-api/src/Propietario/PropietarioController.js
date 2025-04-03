@@ -39,14 +39,10 @@ export class PropietarioController {
   static async actualizarPropietario(req, res) {
     try {
       const { id } = req.params;
-      const { datosPersona, datosPropietario } = req.body;
+      const { datosPropietario } = req.body;
 
       const propietarioActualizado =
-        await PropietarioService.actualizarPropietario(
-          id,
-          datosPersona,
-          datosPropietario
-        );
+        await PropietarioService.actualizarPropietario(id, datosPropietario);
 
       if (!propietarioActualizado) {
         return res.status(404).json({

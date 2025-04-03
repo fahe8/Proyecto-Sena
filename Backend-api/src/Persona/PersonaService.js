@@ -1,7 +1,7 @@
 import { PersonaRepository } from "./PersonaRepository.js";
 
 export class PersonaService {
-  static async crearPersona(datos, t) {
+  static async crearPersona(datos) {
     const { email } = datos;
     const personaExistente = await PersonaRepository.buscarPersonaPorEmail(
       email
@@ -16,7 +16,7 @@ export class PersonaService {
       apellido: datos.apellido || "",
       telefono: datos.telefono || "",
     };
-    return await PersonaRepository.crearPersona(nuevosDatos, t);
+    return await PersonaRepository.crearPersona(nuevosDatos);
   }
 
   static async buscarPersonaPorEmail(email) {

@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import "./Calendario.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { setHours, setMinutes, format } from "date-fns";
+import { es } from "date-fns/locale";
 const redondearSiguienteHora = (date) => {
   const nuevaFecha = new Date(date);
   nuevaFecha.setMinutes(0, 0, 0);
@@ -19,27 +20,27 @@ const canchas = [
   { tipo: "Fútbol 11", precio: "180000" },
 ];
 
-// Reservas no disponibles
+// Reservas no disponibles como debe llegar desde el backend
 const reservasNoDisponibles = [
   {
-    fecha: "2025-03-11",
-    horaInicio: "2025-03-11 06:00:00",
-    horaFinal: "2025-03-11 09:59:00",
+    fecha: "2025-03-13",
+    horaInicio: "2025-03-13 06:00:00",
+    horaFinal: "2025-03-13 09:59:00",
   },
   {
-    fecha: "2025-03-11",
-    horaInicio: "2025-03-11 11:00:00",
-    horaFinal: "2025-03-11 11:59:00",
+    fecha: "2025-03-13",
+    horaInicio: "2025-03-13 11:00:00",
+    horaFinal: "2025-03-13 11:59:00",
   },
   {
-    fecha: "2025-03-11",
-    horaInicio: "2025-03-11 15:00:00",
-    horaFinal: "2025-03-11 17:59:00",
+    fecha: "2025-03-13",
+    horaInicio: "2025-03-13 15:00:00",
+    horaFinal: "2025-03-13 17:59:00",
   },
   {
-    fecha: "2025-03-12",
-    horaInicio: "2025-03-12 09:00:00",
-    horaFinal: "2025-03-12 12:59:00",
+    fecha: "2025-03-13",
+    horaInicio: "2025-03-13 09:00:00",
+    horaFinal: "2025-03-13 12:59:00",
   },
   {
     fecha: "2025-03-12",
@@ -115,11 +116,12 @@ const Calendario = () => {
           selected={reserva.fecha}
           onChange={(date) => handleDateChange(date, "fecha")}
           minDate={new Date()}
+          locale={es}
           inline
         />
 
         <div className="w-full flex justify-between gap-2 text-sm">
-          <div className="w-[160px] flex gap-2">
+          <div className=" w-[130px] md:w-[160px] flex gap-2">
             <span>Desde:</span>
             <div className="relative">
               <DatePicker
@@ -128,9 +130,11 @@ const Calendario = () => {
                 showTimeSelect
                 showTimeSelectOnly
                 timeIntervals={60}
+                locale={es}
                 dateFormat="HH:mm"
                 timeFormat="HH:mm"
                 excludeTimes={buscarHorasPorFecha(reserva.fecha)}
+                
                 className="w-16 bg-gray-200 rounded-lg px-2 cursor-pointer"
               />
               <svg
@@ -150,7 +154,7 @@ const Calendario = () => {
             </div>
           </div>
 
-          <div className="w-[160px] flex gap-2">
+          <div className="w-[130px] md:w-[160px] flex gap-2">
             <span>Hasta:</span>
             <div className="relative">
               <DatePicker
@@ -159,6 +163,7 @@ const Calendario = () => {
                 showTimeSelect
                 showTimeSelectOnly
                 timeIntervals={60}
+                locale={es}
                 dateFormat="HH:mm"
                 timeFormat="HH:mm"
                 excludeTimes={buscarHorasPorFecha(reserva.fecha)}

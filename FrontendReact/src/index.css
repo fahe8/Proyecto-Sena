@@ -4,11 +4,17 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    
+    /* border: 1px solid red; */
   }
 
   input:focus {
     outline: none;
     border: none;
   }
+}
+
+@theme {
+  --color-primary: #00C951;
+  --color-secundary: #003044;
+  --color-text-white: #ffffff;
 }

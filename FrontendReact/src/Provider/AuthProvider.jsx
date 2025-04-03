@@ -1,18 +1,19 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { checkAndDeleteUnverifiedUser } from "../pages/Login/firebaseconfig";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(true); // Nuevo estado de carga
 
   const auth = getAuth();
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        console.log("Usuario autenticado:", user);
         setIsAuthenticated(true);
         const token = await user.getIdToken();
         setToken(token);
@@ -21,11 +22,14 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
         setToken("");
       }
+      setLoading(false); // Marcar como finalizada la verificación
     });
+
+    return () => unsubscribe(); // Limpiar el listener al desmontar
   }, [auth]);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, token }}>
+    <AuthContext.Provider value={{ isAuthenticated, token, loading }}>
       {children}
     </AuthContext.Provider>
   );

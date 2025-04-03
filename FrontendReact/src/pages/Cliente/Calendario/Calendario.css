@@ -29,6 +29,10 @@
   line-height: 1.8rem !important;
 }
 
+.react-datepicker__month-container {
+  float: none;
+}
+
 
 .react-datepicker__time-container {
   width: 100px !important;
@@ -38,8 +42,3 @@
   width: 100% !important;
 }
 
-.ubicar {
-
-  top: 40px;
-  right: 0;
-}
