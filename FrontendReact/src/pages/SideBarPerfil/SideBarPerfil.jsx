@@ -40,7 +40,6 @@ const SideBarPerfil = () => {
   useEffect(() => {
     const updateWidth = () => {
       if (sidebarRef.current) {
-        console.log(sidebarRef.current.offsetWidth);
         setSidebarWidth(sidebarRef.current.offsetWidth + 2);
       }
     };

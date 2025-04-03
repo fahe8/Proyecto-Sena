@@ -58,16 +58,14 @@ const NoRecomendadas = () => {
   return (
     <div className="bg-[#fbfbfb] w-full py-15 px-20">
       <h1 className="text-center font-bold text-lg">NO RECOMENDADAS</h1>
-      <hr className="w-full text-green-500 mx-auto my-4" />
+      <hr className="w-full  mx-auto my-4 border-[1.5px]" />
 
       <div className="flex text-xs items-center justify-between mb-8 ">
         {/* Botón para mostrar las opciones */}
         <button
           className="bg-gray-200 rounded-full flex items-center justify-start px-4 py-1 cursor-pointer"
           onClick={() => setMostrarOpciones(!mostrarOpciones)}
-        >
-          Seleccionar
-        </button>
+        > Seleccionar</button>
 
         {mostrarOpciones && (
           <div className="flex items-center">

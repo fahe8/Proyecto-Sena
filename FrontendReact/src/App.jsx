@@ -10,7 +10,9 @@ import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
 import NoRecomendadas from "./pages/NoRecomendadas/NoRecomendadas"; 
-import Reservas from "./pages/Reservas/ReservasActivas"; // Asegúrate de que la ruta sea correcta
+import Reservas from "./pages/Reservas/ReservasActivas";
+import RutasProtegidas from "./utils/rutasProtegidas";
+
 function App() {
   return (
     <Router>
@@ -22,7 +24,6 @@ function App() {
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
 
         {/* Seccion perfil con el mismo SideBar */}
-
         <Route element={<SideBarPerfil />}>
           <Route path="/favoritos" element={<Favoritos />} />
           <Route path="/perfil" element={<PerfilPage />} />
