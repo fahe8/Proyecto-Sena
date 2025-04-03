@@ -10,6 +10,7 @@ import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
 import ReservasActivas from "./pages/Reservas/ReservasActivas";
+import RutasProtegidas from "./utils/rutasProtegidas";
 
 function App() {
   return (
@@ -23,11 +24,12 @@ function App() {
 
         {/* Seccion perfil con el mismo SideBar */}
 
-        <Route element={<SideBarPerfil />}>
-          <Route path="/favoritos" element={<Favoritos />} />
-          <Route path="/perfil" element={<PerfilPage />} />
-          <Route path="/reservasactivas" element={<ReservasActivas />} />
-          
+        <Route element={<RutasProtegidas/>}>
+          <Route element={<SideBarPerfil />}>
+            <Route path="/favoritos" element={<Favoritos />} />
+            <Route path="/perfil" element={<PerfilPage />} /> 
+            <Route path="/reservasactivas" element={<ReservasActivas />} />
+          </Route>
         </Route>
       </Routes>
     </Router>
