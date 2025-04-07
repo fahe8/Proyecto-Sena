@@ -5,7 +5,9 @@ import iconoCorazon from "../../assets/Perfil/corazon.svg";
 import iconoArchivo from "../../assets/Perfil/archive.svg";
 import iconoReciente from "../../assets/Perfil/recent.svg";
 import iconoPerfil from "../../assets/Perfil/iconoPerfil.svg";
+import logo from "../../assets/logo.png";
 import iconoCerrarSesion from "../../assets/Perfil/cerrarSesion.svg";
+import iconoUnlike from "../../assets/Perfil/Unlike.svg";
 
 const SideBarPerfil = () => {
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ const SideBarPerfil = () => {
     {
       nombre: "Reservas Activas",
       icono: iconoReciente,
-      url: "/reservasactivas",
+      url: "/ReservasActivas",
     },
     {
       nombre: "Historial de Reservas",
@@ -27,7 +29,7 @@ const SideBarPerfil = () => {
       url: "/historialReservas",
     },
     { nombre: "Canchas Favoritas", icono: iconoCorazon, url: "/favoritos" },
-    { nombre: "No Recomendado", icono: iconoCorazon, url: "/noRecomendado" },
+    { nombre: "No Recomendado", icono: iconoUnlike, url: "/norecomendadas" },
   ];
 
   const cambiarRutas = (url) => {
@@ -50,43 +52,45 @@ const SideBarPerfil = () => {
 
   return (
     <div className="flex flex-row relative h-screen">
+      
       <div
         ref={sidebarRef}
-        className=" absolute h-screen p-2 w-auto group-hover:max-w-xs bg-gray-300 group flex flex-col justify-between z-50 "
+        className="fixed h-screen py-3 w-auto group-hover:max-w-xs bg-[#003044] group flex flex-col justify-between z-20"
       >
-        <ul className="space-y-4">
+        <div className="flex items-center justify-center cursor-pointer" onClick={() => navigate("/")}>
+          <img src={logo} className="w-8 h-auto" alt="Logo-MiCanchaYa" />
+        </div>
+        <ul className="space-y-15  flex-col justify-center items-center  ">
           {opciones.map((opcion, index) => (
             <li
               key={index}
               onClick={() => cambiarRutas(opcion.url)}
-              className={`flex items-center p-2 rounded-lg hover:bg-gray-400 cursor-pointer ${
-                urlActual == opcion.url && "bg-gray-500"
+              className={`flex items-center p-2 hover:bg-[#1a6079] cursor-pointer ${
+                urlActual == opcion.url && "bg-[#1a6079]"
               }`}
             >
-              {/* Imagen con tamaño fijo */}
-
-              <img
-                src={opcion.icono}
-                alt={opcion.nombre}
-                className="w-6 h-6 shrink-0"
-              />
-
-              {/* Texto oculto inicialmente pero que aparece suavemente */}
-              <span className=" text-gray-800 font-medium overflow-hidden whitespace-nowrap transition-all duration-500 max-w-0 group-hover:max-w-xs group-hover:ml-3">
-                {opcion.nombre}
-              </span>
+              <a href="" className="flex items-center w-full ">
+                <img
+                  src={opcion.icono}
+                  alt={opcion.nombre}
+                  className="w-6 h-6 mx-1 justify-start filter invert"
+                />
+                <span className="text-center text-gray-200 font-normal text-sm overflow-hidden whitespace-nowrap transition-all duration-500 max-w-0 group-hover:max-w-xs group-hover:ml-3 group-hover:mr-3">
+                  {opcion.nombre}
+                </span>
+              </a>
             </li>
           ))}
         </ul>
-        <div className="flex items-center rounded-lg hover:bg-gray-400 cursor-pointer">
-          {/* Imagen con tamaño fijo */}
 
-          <img src={iconoCerrarSesion} alt={""} className="w-6 h-6" />
-
-          {/* Texto oculto inicialmente pero que aparece suavemente */}
-          <span className=" text-gray-800 font-medium overflow-hidden whitespace-nowrap transition-all duration-500 max-w-0 group-hover:max-w-xs group-hover:ml-3">
+        <div className="flex items-center hover:bg-red-500 cursor-pointer w-full p-2 ">
+          <a href="" className="flex items-center w-full text-center gap-3">
+          <img src={iconoCerrarSesion} alt={""} className="w-6 h-6 filter invert justify-start"/>
+          
+          <span className="text-center text-gray-200 font-normal text-sm overflow-hidden  whitespace-nowrap transition-all duration-500 max-w-0 group-hover:max-w-xs group-hover:ml-3">
             {"Cerrar Sesión"}
           </span>
+          </a>
         </div>
       </div>
       <div style={{ width: sidebarWidth + "px" }}></div>

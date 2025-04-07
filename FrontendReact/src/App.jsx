@@ -9,7 +9,8 @@ import NuevaPagina from "./pages/nuevapagina/NuevaPagina";
 import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
-import ReservasActivas from "./pages/Reservas/ReservasActivas";
+import NoRecomendadas from "./pages/NoRecomendadas/NoRecomendadas"; 
+import Reservas from "./pages/Reservas/ReservasActivas";
 import RutasProtegidas from "./utils/rutasProtegidas";
 
 function App() {
@@ -28,7 +29,8 @@ function App() {
           <Route element={<SideBarPerfil />}>
             <Route path="/favoritos" element={<Favoritos />} />
             <Route path="/perfil" element={<PerfilPage />} /> 
-            <Route path="/reservasactivas" element={<ReservasActivas />} />
+            <Route path="/reservasactivas" element={<Reservas />} />
+            <Route path="/norecomendadas" element={<NoRecomendadas />} />
           </Route>
         </Route>
       </Routes>

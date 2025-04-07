@@ -35,12 +35,11 @@ export const BusquedaFiltros = () => {
   };
 
   return (
-    <div className="flex gap-1 px-1 lg:gap-6 w-full justify-center pt-4 lg:pt-0">
+    <div className="flex gap-1 px-1 lg:gap-6 w-full justify-center items-center pt-4 lg:pt-0 ">
       <BotonFiltros
         filtros={filtros}
         agregarFiltros={agregarFiltros}
-        limpiarFiltros={limpiarFiltros}
-      />
+        limpiarFiltros={limpiarFiltros}/>
       <BarraBusqueda filtros={filtros} agregarFiltros={agregarFiltros} />
     </div>
   );
@@ -91,7 +90,7 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
     <>
       <button
         onClick={abrirModal}
-        className="relative w-12 lg:w-24 cursor-pointer flex shadow-md py-2 justify-center border border-gray-300 rounded-md  hover:bg-gray-200 transition-all duration-300 ease-in-out"
+        className="relative bg-[#f6f6f6] w-11 lg:w-20 h-7 cursor-pointer flex shadow-md  justify-center border border-gray-300 rounded-md  hover:bg-gray-300 transition-all duration-300 ease-in-out items-center"
       >
         {contadorFiltros > 0 && <div className="absolute w-5 h-5 rounded-full bg-red-500 right-0 bottom-0 translate-2">
           <p className="text-sm">{contadorFiltros}</p>
@@ -102,7 +101,7 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="size-6"
+          className="size-5 pr-1"
         >
           <path
             strokeLinecap="round"
@@ -111,7 +110,7 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
           />
         </svg>
 
-        <span className="hidden lg:block">Filtros</span>
+        <span className="hidden lg:block text-[16px]" >Filtros</span>
       </button>
       {mostrarModal && (
         <div
@@ -231,17 +230,17 @@ const BarraBusqueda = ({ filtros, agregarFiltros }) => {
   };
 
   return (
-    <div className="relative w-full lg:w-[500px]">
+    <div className="relative w-full lg:w-[400px]">
       {/* Input de búsqueda */}
-      <form className="flex rounded-full relative">
+      <form className="flex rounded-full relative items-center">
         <input
           type="text"
           value={query}
           onChange={handleSearch}
           placeholder="Busca alguna cancha que conozcas..."
-          className="w-full pl-4 pr-10 lg:pl-10 lg:pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-600"
+          className="bg-[#f6f6f6] w-full pl-4 pr-10 lg:pl-7 lg:pr-4 py-1 text-[17px] border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500"
         />
-        <img className="absolute right-4 top-3" src={iconSearch} alt="Buscar" />
+        <img className="absolute right-6 cursor-pointer " src={iconSearch} alt="Buscar" />
       </form>
 
       {/* Lista de resultados */}
