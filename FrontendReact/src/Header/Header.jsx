@@ -12,20 +12,20 @@ const Header = () => {
   const navigate = useNavigate(); // Hook para redireccionar a diferentes rutas
 
   return (
-    <header className="bg-white sticky top-0 z-10 shadow-sm">
+    <header className="bg-[#003044] sticky top-0 z-10 shadow-sm">
       {/* Contenedor del header con estilos */}
-      <div className="container flex justify-around items-center p-2 mx-auto">
+      <div className="container flex justify-around items-center p-4 mx-auto">
         {/* Logo y nombre de la aplicación, al hacer clic redirige a la página principal */}
         <div
           className="flex items-center gap-2 font-bold cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <img src={logo} alt="Logo de mi cancha ya" className="w-8 md:w-12" />
-          <p className="text-sm md:text-base">MiCanchaYa</p>
+          <img src={logo} alt="Logo de mi cancha ya" className="w-8 md:w-7 lg:w-8" />
+          <p className="text-[#f7f7f7] text-sm md:text-base lg:text-[16px]">MiCanchaYa</p>
         </div>
 
         {/* Barra de búsqueda y filtros (visible solo en pantallas grandes) */}
-        <div className="hidden lg:block">
+        <div className="hidden lg:block ">
           <BusquedaFiltros/>
         </div>
 
@@ -83,9 +83,9 @@ export const BotonPerfil = () => {
           onClick={() => {
             setMostrarMenu(!mostrarMenu); // Muestra/oculta el menú al hacer clic en el botón
           }}
-          className=" text-sm lg:text-lg flex items-center py-1 px-4 bg-green-400 rounded-2xl hover:bg-green-500 cursor-pointer"
+          className=" text-sm lg:text-[17px] flex justify-center items-center gap-1 py-1 px-4 bg-[#2fc92c] rounded-2xl hover:bg-green-600 text-[#f6f6f6] cursor-pointer shadow-md transition-all duration-250"
         >
-          <span className="mr-2">Perfil</span>
+          <span className="">Perfil</span>
           {/* Ícono del usuario */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -93,7 +93,7 @@ export const BotonPerfil = () => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="size-4 lg:size-6"
+            className="size-4 lg:size-4.5"
           >
             <path
               strokeLinecap="round"
@@ -119,7 +119,7 @@ export const BotonPerfil = () => {
       {mostrarMenu &&
         (isAuthenticated ? (
           // Menú para usuarios autenticados
-          <div className="absolute right-0 w-40 bg-white shadow-lg rounded-t-lg rounded-b-lg cursor-pointer z-50">
+          <div className="absolute mt-1 right-0 w-40 bg-white shadow-lg rounded-t-lg rounded-b-lg cursor-pointer z-50">
             <Link to={"/perfil"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center rounded-t-lg">
               Mi Perfil
             </Link>
@@ -128,7 +128,7 @@ export const BotonPerfil = () => {
             </Link>
             <button
               onClick={handleLogout}
-              className="w-full block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm rounded-b-lg"
+              className="w-full block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm rounded-b-lg cursor-pointer"
             >
               Cerrar Sesión
             </button>
