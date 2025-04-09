@@ -28,7 +28,7 @@ function App() {
           <Route path="/favoritos" element={<Favoritos />} />
           <Route path="/perfil" element={<PerfilPage />} />
           <Route path="/ReservasActivas" element={<Reservas />} />
-          <Route path="norecomendadas" element={<NoRecomendadas />} />
+          <Route path="/norecomendadas" element={<NoRecomendadas />} />
         </Route>
       </Routes>
     </Router>
