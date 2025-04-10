@@ -22,6 +22,13 @@ const NuevaPagina = () => {
 
   // Función para eliminar cancha pero con swet
   const eliminarCancha = (id) => {
+
+    const [showPopUp, setShowPopUp] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
+    const [popupSubText, setPopupSubText] = useState("");
+      
+
+
     Swal.fire({
       title: "¿Estás seguro?",
       text: "No podrás revertir esta acción.",
@@ -38,6 +45,7 @@ const NuevaPagina = () => {
       }
     });
   };
+  
 // FUNCION PARA DROP DE PERIL     
   const [mostrar, setMostrar] = useState(false);
   const mostraropciones = () => {

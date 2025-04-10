@@ -8,7 +8,7 @@ import Cliente from "./pages/Cliente/PerfilUsuario";
 import NuevaPagina from "./pages/nuevapagina/NuevaPagina";
 import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
-import Reservas from "./pages/Reservas/Reservas";
+import Reservas from "./pages/HistorialReservas/Reservas";
 import PerfilPage from "./pages/Perfil/Perfil";
 
 function App() {
