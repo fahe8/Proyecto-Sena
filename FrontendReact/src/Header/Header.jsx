@@ -108,7 +108,7 @@ export const BotonPerfil = () => {
          
           <Link
             to="/login"
-            className=" text-sm lg:text-lg flex items-center py-1 px-1.5 md:px-4 border-2  border-green-400 hover:bg-green-500 rounded-2xl  cursor-pointer"
+            className=" text-sm lg:text-lg flex items-center py-1 px-1.5 md:px-4 border-2 text-green-400 hover:text-white  border-green-400 hover:bg-green-500 rounded-2xl  cursor-pointer"
           >
             Ingresar
           </Link>

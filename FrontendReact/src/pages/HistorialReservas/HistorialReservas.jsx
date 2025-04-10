@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { HistorialReservas } from "./ReservaPrueba";
+import { HistorialReservasData } from "./ReservaPrueba";
 
 
-const Reservas = () => {
+const HistorialReservas = () => {
 
   
   
@@ -14,17 +14,17 @@ const Reservas = () => {
 
   //muestra las reservas 
   const [HistoialCanchas, setHistoialCanchas] = useState (
-    HistorialReservas
+    HistorialReservasData
   );
 
   //Clona el array y los ordena 
   const MasAntiguo = () => {
-    const OrdenAntiguo = [...HistorialReservas].sort((a, b) => new Date(a.Fecha) - new Date(b.Fecha));
+    const OrdenAntiguo = [...HistorialReservasData].sort((a, b) => new Date(a.Fecha) - new Date(b.Fecha));
     setHistoialCanchas(OrdenAntiguo)
   }
 
   const Masrecientes = () => {
-    const OrdenReciente = [...HistorialReservas].sort((a, b) => new Date(b.Fecha) - new Date(a.Fecha));
+    const OrdenReciente = [...HistorialReservasData].sort((a, b) => new Date(b.Fecha) - new Date(a.Fecha));
     console.log(OrdenReciente)
     setHistoialCanchas(OrdenReciente)
   }
@@ -169,4 +169,4 @@ const Reservas = () => {
   );
 };
 
-export default Reservas;
+export default HistorialReservas;
