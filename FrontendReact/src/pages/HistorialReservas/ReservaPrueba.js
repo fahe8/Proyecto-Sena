@@ -1,6 +1,6 @@
 import Prueba_fabian from "../../assets/Prueba_fabian.jpg";
 
-export const HistorialReservas = [
+export const HistorialReservasData = [
     {   id:1, 
         Image:Prueba_fabian,
         NombreCancha: "Canchas la 64", 

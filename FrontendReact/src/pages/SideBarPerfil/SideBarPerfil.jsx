@@ -26,7 +26,7 @@ const SideBarPerfil = () => {
     {
       nombre: "Historial de Reservas",
       icono: iconoArchivo,
-      url: "/Reservas",
+      url: "/historialReservas",
     },
     { nombre: "Canchas Favoritas", icono: iconoCorazon, url: "/favoritos" },
     { nombre: "No Recomendado", icono: iconoUnlike, url: "/norecomendadas" },
