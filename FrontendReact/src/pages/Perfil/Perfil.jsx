@@ -53,8 +53,6 @@ const PerfilPage = () => {
     const newErrors = {};
     if (!datos.nombre) newErrors.nombre = "El nombre es obligatorio";
     if (!datos.apellido) newErrors.apellido = "El apellido es obligatorio";
-    if (!datos.email || !/\S+@\S+\.\S+/.test(datos.email))
-      newErrors.email = "El correo electrónico no es válido";
     if (datos.telefono && !/^\d{10}$/.test(datos.telefono))
       newErrors.telefono = "El teléfono debe tener 10 dígitos";
     setErrores(newErrors);
@@ -152,14 +150,7 @@ const PerfilPage = () => {
                 error={errores.apellido}
                 editable={editando}
               />
-              <InputField
-                label="Correo electrónico"
-                name="email"
-                value={datos.email}
-                onChange={handleChange}
-                error={errores.email}
-                editable={editando}
-              />
+              
               <InputField
                 label="Teléfono"
                 name="telefono"
