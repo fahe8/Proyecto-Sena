@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useUsuario } from "../../Provider/UsuarioProvider";
 import lapizIcon from "../../assets/Perfil/lapiz.svg";
 import camara from "../../assets/Perfil/camara.svg";
-import Modal from "./modal";
+import Modal from "./Modal";
 import LogPopUp from "../Login/components/logPopUp";
 
 const PerfilPage = () => {

@@ -10,7 +10,7 @@ import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
 import NoRecomendadas from "./pages/NoRecomendadas/NoRecomendadas";
 import Reservas from "./pages/Reservas/ReservasActivas";
-import RutasProtegidas from "./utils/rutasProtegidas";
+import RutasProtegidas from "./utils/RutasProtegidas";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 
 function App() {

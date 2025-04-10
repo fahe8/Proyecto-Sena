@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import "../pages/Login/login.css"
+import "../pages/Login/Login";
 const LazyBackground = ({ imageUrl, className,children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const divRef = useRef(null);
