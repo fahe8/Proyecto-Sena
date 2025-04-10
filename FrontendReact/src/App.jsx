@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Inicio from "./pages/Inicio/Inicio";
-
 import Login from "./pages/Login/Login";
 import Cliente from "./pages/Cliente/PerfilUsuario";
 import NuevaPagina from "./pages/nuevapagina/NuevaPagina";

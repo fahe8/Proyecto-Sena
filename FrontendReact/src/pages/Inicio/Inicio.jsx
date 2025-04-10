@@ -52,6 +52,7 @@ const ListaEmpresas = ({ empresas }) => {
   );
 };
 
+
 const SeccionHerramientas = () => {
   const { isAuthenticated } = useAuth();
   const menuItems = [
