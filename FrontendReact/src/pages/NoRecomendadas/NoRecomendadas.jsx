@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CardEmpresa from "../Inicio/componentes/CardEmpresa.jsx";
 import { useEmpresas } from "../../Provider/EmpresasProvider.jsx";
-import Swal from "sweetalert2";
+
 
 const NoRecomendadas = () => {
   const { copiaEmpresas } = useEmpresas();
