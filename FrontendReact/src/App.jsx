@@ -11,6 +11,7 @@ import PerfilPage from "./pages/Perfil/Perfil";
 import NoRecomendadas from "./pages/NoRecomendadas/NoRecomendadas";
 import Reservas from "./pages/Reservas/ReservasActivas";
 import RutasProtegidas from "./utils/rutasProtegidas";
+import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 
 function App() {
   return (
@@ -27,7 +28,8 @@ function App() {
           <Route element={<SideBarPerfil />}>
             <Route path="/favoritos" element={<Favoritos />} />
             <Route path="/perfil" element={<PerfilPage />} />
-            <Route path="/ReservasActivas" element={<Reservas />} />
+            <Route path="/reservas" element={<Reservas />} />
+            <Route path="/historialReservas" element={<HistorialReservas />} />
             <Route path="/norecomendadas" element={<NoRecomendadas />} />
           </Route>
         </Route>
