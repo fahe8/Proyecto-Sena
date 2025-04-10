@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { Link } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
@@ -20,7 +20,7 @@ const Inicio = () => {
         <div className="lg:hidden">
           <BusquedaFiltros />
         </div>
-        <section className="grid container mx-auto pt-5">
+        <section className="grid container mx-auto bg-[#fbfbfb] gap-4">
           {/* <!-- Seccion superior --> */}
           <SeccionHerramientas />
 
@@ -46,11 +46,12 @@ const ListaEmpresas = ({ empresas }) => {
       id="canchas-seccion"
     >
       {empresas?.map((empresa, index) => (
-        <CardEmpresa empresa={empresa} key={index + "a"} />
+        <CardEmpresa empresa={empresa} mostrarFavorito={true} key={index + "a"} />
       ))}
     </div>
   );
 };
+
 
 const SeccionHerramientas = () => {
   const { isAuthenticated } = useAuth();
@@ -61,7 +62,7 @@ const SeccionHerramientas = () => {
     },
     {
       text: "Reservas pendientes",
-      ref: "/",
+      ref: "/reservasactivas",
     },
     {
       text: "Mis favoritos",
@@ -69,27 +70,25 @@ const SeccionHerramientas = () => {
     },
     {
       text: "No recomendarme",
-      ref: "/",
+      ref: "/norecomendadas",
     },
   ];
   return (
-    <div className="px-2  border-gray-300 flex flex-col gap-4 items-center self-start overflow-y-auto">
+    <div className="flex flex-col gap-4 items-center self-start overflow-y-auto">
       <ul
-        className=" rounded-2xl grid grid-cols-4 justify-around mb-4 shadow-sm"
+        className=" grid grid-cols-4 justify-around mb-4 "
         id="menu-lista"
       >
         {menuItems?.map((item, index) => {
-          const borderClass =
             index === menuItems.length - 1 ? "" : "border-r-2 border-gray-300";
           return (
             <li className="grid items-center" key={index + "b"}>
               <Link
                 to={isAuthenticated ? item.ref : "/login"}
-                className={`  text-center flex  text-[11px] lg:text-sm  p-2 lg:px-4 lg:py-4  xl:px-6  gap-2 justify-center items-center ${borderClass} 
-            hover:bg-gray-200 hover:text-green-500 ${
-              index === menuItems.length - 1 ? "rounded-r-2xl" : ""
-            } ${index === 0 ? "rounded-l-2xl" : ""}  
-            transition-colors duration-300`}
+                className={`hover-items  text-center flex  text-[11px] lg:text-[15px] lg:py-2  xl:px-3  gap-2 justify-center items-center  hover:text-green-500 ${
+              index === menuItems.length - 1 ? "" : ""
+            } ${index === 0 ? "" : ""}  
+            transition-colors duration-200`}
               >
                 <span>{item.text}</span>
               </Link>

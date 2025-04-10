@@ -1,23 +1,14 @@
-// Importaciones iniciales de React y componentes necesarios
-import React, { useState } from "react"; // Importa React y los hooks useState y useEffect
-import "./Login.css"; // Importa los estilos CSS para este componente
-import { useNavigate } from "react-router-dom"; // Hook para la navegación entre rutas
+import React, { useState } from "react";
+import "./Login.css";
+import { useNavigate } from "react-router-dom";
 import {
-  EyeIcon,
-  EyeOffIcon,
-  LetterIcon,
-  KeyIcon,
-} from "./IconosSVG/iconos.jsx";
-// Importaciones relacionadas con Firebase Authentication
-import {
-  signInWithGoogle, // Función para iniciar sesión con Google
-  signUpWithEmailAndPassword, // Función para registrarse con email y contraseña
-  iniciarSesionConEmail, // Función para iniciar sesión con email
-} from "./firebaseconfig"; // Archivo que contiene la configuración de Firebase
+  signInWithGoogle,
+  signUpWithEmailAndPassword,
+  iniciarSesionConEmail,
+} from "./firebaseconfig";
 
-// Importaciones de otros componentes y recursos
-import LogPopUp from "./components/logPopUp"; // Componente para mostrar popups
-import logogoogle from "../../assets/LogIn/simbolo-de-google.png"; // Imagen del logo de Google
+import LogPopUp from "./components/logPopUp";
+import logogoogle from "../../assets/LogIn/simbolo-de-google.png";
 
 // Importaciones de funciones para interactuar con el backend
 import {
@@ -26,6 +17,7 @@ import {
 import Loading from "./components/Loading"; // Componente de carga
 import { manejarErroresFirebase } from "./manejarErroresFirebase"; // Función para manejar errores de Firebase
 import LazyBackground from "../../utils/LazyBackground.jsx";
+import { LetterIcon, KeyIcon, EyeIcon, EyeOffIcon } from "../../assets/IconosSVG/iconos.jsx"; // Iconos para el formulario
 
 // Definición del componente Login
 const Login = () => {
@@ -35,10 +27,10 @@ const Login = () => {
 
   // Estado para almacenar los datos del formulario
   const [formData, setFormData] = useState({
-    password: "", // Contraseña
-    email: "", // Email
-    confirmPassword: "", // Confirmación de contraseña (para registro)
-    rememberMe: true, // Opción "Recuérdame"
+    password: "",
+    email: "",
+    confirmPassword: "", 
+    rememberMe: true, 
   });
 
   const [showPopUp, setShowPopUp] = useState(false);
@@ -157,7 +149,7 @@ const Login = () => {
   };
 
   return (
-    <LazyBackground  imageUrl="/src/assets/LogIn/fondo.jpg" className="container-login w-screen h-screen">
+    <LazyBackground  imageUrl="/src/assets/LogIn/background.webp" className="container-login w-screen h-screen">
       {" "}
       <div className="w-screen h-screen filtro flex items-center">
         <div className="login-container relative">
@@ -170,8 +162,7 @@ const Login = () => {
             <a
               id="google-button"
               className="social-button"
-              onClick={handleGoogleLogin}
-            >
+              onClick={handleGoogleLogin} >
               <img src={logogoogle} alt="logo-google" />
               Continuar con Google
             </a>
@@ -201,9 +192,7 @@ const Login = () => {
               <div className="icon-input">
                 <KeyIcon />
               </div>
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
+              <input type={showPassword ? "text" : "password"} id="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
@@ -216,22 +205,14 @@ const Login = () => {
             </div>
 
             <div className="aditional-options">
-              <a
-                href="#"
-                className={`forgot-password ${
+              <a href="#" className={`forgot-password ${
                   register ? "hidden-button" : "block-button"
-                }`}
-              >
-                Olvidó su contraseña
-              </a>
+                }`}>Olvidó su contraseña</a>
+
               <div className="remember-me">
-                <input
-                  type="checkbox"
-                  id="rememberMe"
-                  name="rememberMe"
+                <input type="checkbox" id="rememberMe" name="rememberMe"
                   checked={formData.rememberMe}
-                  onChange={handleChange}
-                />
+                  onChange={handleChange}/>
                 <label htmlFor="rememberMe">Recuérdame</label>
               </div>
             </div>
@@ -250,8 +231,7 @@ const Login = () => {
               onClick={() => {
                 setRegister(!register);
               }}
-              className={`login-button`}
-            >
+              className={`login-button`}>
               {register ? "Iniciar sesión" : "Registrarse"}
             </a>
           </div>
@@ -276,5 +256,5 @@ const Login = () => {
       </div>
     </LazyBackground>
   );
-};
-export default Login;
+}
+  export default Login;

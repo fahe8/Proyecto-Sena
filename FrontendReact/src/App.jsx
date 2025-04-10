@@ -2,14 +2,14 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Inicio from "./pages/Inicio/Inicio";
-
 import Login from "./pages/Login/Login";
 import Cliente from "./pages/Cliente/PerfilUsuario";
 import NuevaPagina from "./pages/nuevapagina/NuevaPagina";
 import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
-import Reservas from "./pages/Reservas/Reservas";
 import PerfilPage from "./pages/Perfil/Perfil";
+import NoRecomendadas from "./pages/NoRecomendadas/NoRecomendadas"; 
+import Reservas from "./pages/Reservas/ReservasActivas";
 import RutasProtegidas from "./utils/rutasProtegidas";
 
 function App() {
@@ -23,13 +23,11 @@ function App() {
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
 
         {/* Seccion perfil con el mismo SideBar */}
-
-        <Route element={<RutasProtegidas/>}>
-          <Route element={<SideBarPerfil />}>
-            <Route path="/favoritos" element={<Favoritos />} />
-            <Route path="/perfil" element={<PerfilPage />} /> 
-            <Route path="/reservas" element={<Reservas />} />
-          </Route>
+        <Route element={<SideBarPerfil />}>
+          <Route path="/favoritos" element={<Favoritos />} />
+          <Route path="/perfil" element={<PerfilPage />} />
+          <Route path="/ReservasActivas" element={<Reservas />} />
+          <Route path="norecomendadas" element={<NoRecomendadas />} />
         </Route>
       </Routes>
     </Router>
