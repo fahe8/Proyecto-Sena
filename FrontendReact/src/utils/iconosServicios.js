@@ -1,9 +1,12 @@
+
+import { BathroomIcon, WifiIcon, StoreIcon, ParkingIcon, RestaurantIcon} from "../assets/IconosSVG/iconos";
+
 const iconosServicios = {
-    baños: "🚻",
-    tienda: "🏪",
-    parqueadero: "🅿️",
-    wifi: "📶",
-    restaurante: "🍽️",
+    baños: BathroomIcon,
+    tienda: StoreIcon,
+    parqueadero: ParkingIcon,
+    wifi: WifiIcon,
+    restaurante: RestaurantIcon,
   };
 
   
