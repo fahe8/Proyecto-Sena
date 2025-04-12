@@ -95,8 +95,8 @@ export default function EmpresaForm({ formData, handleChange, handlePrev }) {
         
         <button type="submit"
           className="h-8 px-6 py-1 text-[15px] bg-[#33ea30] text-white font-medium rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 flex items-center cursor-pointer"
-        >Enviar
-        </button>
+          onClick={'/'}
+        >Enviar</button>
       </div>
     </div>
   );
