@@ -12,6 +12,7 @@ import PerfilPage from "./pages/Perfil/Perfil";
 import NoRecomendadas from "./pages/NoRecomendadas/NoRecomendadas"; 
 import Reservas from "./pages/Reservas/ReservasActivas";
 import RutasProtegidas from "./utils/rutasProtegidas";
+import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/nueva" element={<NuevaPagina />} />
         <Route path="/login" element={<Login />} />
         <Route path="/empresa/:nombre" element={<Cliente />} />
+        <Route path="/formulario-empresa" element={<FormularioEmpresa/>}/>
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
 
         {/* Seccion perfil con el mismo SideBar */}

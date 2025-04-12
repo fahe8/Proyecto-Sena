@@ -151,11 +151,15 @@ const Login = () => {
     <LazyBackground  imageUrl="/src/assets/LogIn/background.webp" className="p-0 m-0 relative bg-cover w-screen h-screen">
       {" "}
       <div className="flex absolute w-screen h-screen bg-[#00000037] items-center z-20">
-        <div className="relative w-110 p-[30px] px-10 bg-white m-auto rounded-[8px] font-[Arial] mt-[10vh] shadow-md z-10">
+        <div className="relative w-110 p-[30px] px-10 bg-white rounded-[8px] font-[Arial] m-0 mx-auto shadow-md z-10">
+          <div className="flex justify-start gap-3 items-center mb-[20px]">
+            <div className="border-b-2 border-[#003044] px-4 py-[4px] text-[14px] text-[#33ea30] cursor-default">Usuario</div>
+            <a href="/formulario-empresa" className=" px-4 py-[4px] hover:border-[#003044] hover:border-b-2 hover:text-[#33ea30] text-[14px]">Empresa</a>
+          </div>
           {register ? (
-            <h2 className="text-center text-2xl mb-8 font-semibold text-[#333]">Regístrate</h2>
+            <h2 className="text-center text-lg mb-5 font-semibold text-[#333]">Regístrate</h2>
           ) : (
-            <h2 className="text-center text-2xl mb-8 font-semibold text-[#333]">Inicia sesión</h2>
+            <h2 className="text-center text-lg mb-5 font-semibold text-[#333]">Inicia sesión</h2>
           )}
           <div className="flex flex-col gap-[12px] mb-[25px]">
             <a
