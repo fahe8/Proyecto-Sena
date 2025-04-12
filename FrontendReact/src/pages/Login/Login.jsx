@@ -11,13 +11,12 @@ import LogPopUp from "./components/logPopUp";
 import logogoogle from "../../assets/LogIn/simbolo-de-google.png";
 
 // Importaciones de funciones para interactuar con el backend
-import {
-  crearUsuarioEnBackend, // Función para crear un usuario en el backend usando email
-} from "./fetchBackendLogin"; // Archivo con funciones para comunicarse con el backend
 import Loading from "./components/Loading"; // Componente de carga
 import { manejarErroresFirebase } from "./manejarErroresFirebase"; // Función para manejar errores de Firebase
 import LazyBackground from "../../utils/LazyBackground.jsx";
 import { LetterIcon, KeyIcon, EyeIcon, EyeOffIcon } from "../../assets/IconosSVG/iconos.jsx"; // Iconos para el formulario
+import { usuarioServicio } from "../../services/api.js";
+import axios from "axios";
 
 // Definición del componente Login
 const Login = () => {
@@ -76,10 +75,13 @@ const Login = () => {
         if (!result.success) {
           throw result; // Si hay un error, lanza el resultado completo
         }
-
+        console.log( result.userCredential.user.accessToken)
         // Crea el usuario en la base de datos del backend
-        const email = { email: formData.email };
-        const usuarioCreado = await crearUsuarioEnBackend(email);
+        const usuarioCrear = { email: formData.email, token: result.userCredential.user.accessToken };
+        
+        // const usuarioCreado = await usuarioServicio.crear(usuarioCrear);
+        const usuarioCreado =await  axios.post("http://127.0.0.1:8000/api/usuarios", usuarioCrear);
+
         if (usuarioCreado) {
           // Si el usuario se crea correctamente se muestra el mensaje de éxito
           setPopupMessage("Felicidades!");
@@ -133,7 +135,7 @@ const Login = () => {
         };
 
         // Envía los datos al backend para crear/actualizar el usuario
-        const creado = await crearUsuarioEnBackend(datosActualizar);
+        const creado = await usuarioServicio.crear(datosActualizar);
         console.log(creado.message); // Muestra el mensaje de respuesta en la consola
 
         if (creado) {
@@ -249,7 +251,7 @@ const Login = () => {
             message={popupMessage}
             subText={popupSubText}
             onClose={() =>
-              popupMessage === "Error" ? stayThere() : goToHome()
+              popupMessage === "Error" ? () =>{} : goToHome()
             }
           />
         )}
