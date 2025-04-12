@@ -11,6 +11,7 @@ import PerfilPage from "./pages/Perfil/Perfil";
 import NoRecomendadas from "./pages/NoRecomendadas/NoRecomendadas";
 import Reservas from "./pages/Reservas/ReservasActivas";
 import RutasProtegidas from "./utils/rutasProtegidas";
+import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
         <Route path="/nueva" element={<NuevaPagina />} />
         <Route path="/login" element={<Login />} />
         <Route path="/empresa/:nombre" element={<Cliente />} />
-
+        <Route path="/formulario-empresa" element={<FormularioEmpresa/>}/>
         {/* Rutas protegidas */}
         <Route element={<RutasProtegidas />}>
           {/* Subrutas protegidas que usan SideBarPerfil */}
