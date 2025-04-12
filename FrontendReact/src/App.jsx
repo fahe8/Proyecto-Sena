@@ -8,8 +8,9 @@ import Cliente from "./pages/Cliente/PerfilUsuario";
 import NuevaPagina from "./pages/nuevapagina/NuevaPagina";
 import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
-import Reservas from "./pages/HistorialReservas/Reservas";
+import Reservas from "./pages/HistorialReservas/HistorialReservas";
 import PerfilPage from "./pages/Perfil/Perfil";
+import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/favoritos" element={<Favoritos />} />
           <Route path="/perfil" element={<PerfilPage />} />
           <Route path="/reservas" element={<Reservas />} />
+          <Route path="/historialReservas" element={<HistorialReservas />} />
           
         </Route>
       </Routes>

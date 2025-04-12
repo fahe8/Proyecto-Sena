@@ -1,9 +1,9 @@
 import Prueba_fabian from "../../assets/Prueba_fabian.jpg";
 
-export const HistorialReservas = [
+export const reservaPruebaData = [
     {   id:1, 
         Image:Prueba_fabian,
-        NombreCancha: "Canchas la 64", 
+        NombreCancha: "Canchas", 
         Direccion: "Avenida 64 con carrera 9, Jordan, Ibagué, Tolima", 
         Fecha: "2025-03-15", 
         HoraInicio: "09 : 00 PM", 
