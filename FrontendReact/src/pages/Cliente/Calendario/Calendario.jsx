@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "./Calendario.css";
 import "react-datepicker/dist/react-datepicker.css";
-import { setHours, setMinutes, format } from "date-fns";
+import { setHours, setMinutes, format, isEqual, isAfter } from "date-fns";
 import { es } from "date-fns/locale";
+
 const redondearSiguienteHora = (date) => {
   const nuevaFecha = new Date(date);
   nuevaFecha.setMinutes(0, 0, 0);
@@ -74,7 +75,6 @@ const Calendario = () => {
   function obtenerFechasEntre(inicio, final) {
     const fechas = [];
     let fechaInicio = new Date(inicio);
-
     const fechaFinal = new Date(final);
 
     while (fechaInicio <= fechaFinal) {
@@ -103,9 +103,6 @@ const Calendario = () => {
 
   const buscarHorasPorFecha = (fecha) => {
     const fechaStr = format(new Date(fecha), "yyyy-MM-dd");
-
-    console.log(reservasActivas);
-
     return reservasActivas[fechaStr]?.horasInicio || [];
   };
 
@@ -134,7 +131,6 @@ const Calendario = () => {
                 dateFormat="HH:mm"
                 timeFormat="HH:mm"
                 excludeTimes={buscarHorasPorFecha(reserva.fecha)}
-                
                 className="w-16 bg-gray-200 rounded-lg px-2 cursor-pointer"
               />
               <svg

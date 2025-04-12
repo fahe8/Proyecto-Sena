@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { reservaPruebaData } from "./ReservaPruebaData";
+import { HistorialReservasData } from "./ReservaPruebaData";
 
 const HistorialReservas = () => {
   
@@ -10,10 +10,10 @@ const HistorialReservas = () => {
   const [BuscarTerm, setBuscarTerm] = useState("");
   
   // Estado para almacenar las reservas filtradas por búsqueda y ordenamiento
-  const [reservaFiltrada, setReservaFiltrada] = useState(reservaPruebaData);
+  const [reservaFiltrada, setReservaFiltrada] = useState(HistorialReservasData);
   
   // Estado para almacenar los datos originales de las reservas
-  const [HistoialCanchas, setHistoialCanchas] = useState(reservaPruebaData);
+  const [HistoialCanchas, setHistoialCanchas] = useState(HistorialReservasData);
   
   // Estado para controlar el texto mostrado en el botón de filtro
   const [TextoBoton, setTextoBoton] = useState("Ordenar");

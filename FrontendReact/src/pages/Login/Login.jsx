@@ -1,23 +1,13 @@
-// Importaciones iniciales de React y componentes necesarios
-import React, { useState } from "react"; // Importa React y los hooks useState y useEffect
-import "./Login.css"; // Importa los estilos CSS para este componente
-import { useNavigate } from "react-router-dom"; // Hook para la navegación entre rutas
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  EyeIcon,
-  EyeOffIcon,
-  LetterIcon,
-  KeyIcon,
-} from "./IconosSVG/iconos.jsx";
-// Importaciones relacionadas con Firebase Authentication
-import {
-  signInWithGoogle, // Función para iniciar sesión con Google
-  signUpWithEmailAndPassword, // Función para registrarse con email y contraseña
-  iniciarSesionConEmail, // Función para iniciar sesión con email
-} from "./firebaseconfig"; // Archivo que contiene la configuración de Firebase
+  signInWithGoogle,
+  signUpWithEmailAndPassword,
+  iniciarSesionConEmail,
+} from "./firebaseconfig";
 
-// Importaciones de otros componentes y recursos
-import LogPopUp from "./components/logPopUp"; // Componente para mostrar popups
-import logogoogle from "../../assets/LogIn/simbolo-de-google.png"; // Imagen del logo de Google
+import LogPopUp from "./components/logPopUp";
+import logogoogle from "../../assets/LogIn/simbolo-de-google.png";
 
 // Importaciones de funciones para interactuar con el backend
 import {
@@ -26,6 +16,7 @@ import {
 import Loading from "./components/Loading"; // Componente de carga
 import { manejarErroresFirebase } from "./manejarErroresFirebase"; // Función para manejar errores de Firebase
 import LazyBackground from "../../utils/LazyBackground.jsx";
+import { LetterIcon, KeyIcon, EyeIcon, EyeOffIcon } from "../../assets/IconosSVG/iconos.jsx"; // Iconos para el formulario
 
 // Definición del componente Login
 const Login = () => {
@@ -35,10 +26,10 @@ const Login = () => {
 
   // Estado para almacenar los datos del formulario
   const [formData, setFormData] = useState({
-    password: "", // Contraseña
-    email: "", // Email
-    confirmPassword: "", // Confirmación de contraseña (para registro)
-    rememberMe: true, // Opción "Recuérdame"
+    password: "",
+    email: "",
+    confirmPassword: "", 
+    rememberMe: true, 
   });
 
   const [showPopUp, setShowPopUp] = useState(false);
@@ -157,34 +148,37 @@ const Login = () => {
   };
 
   return (
-    <LazyBackground  imageUrl="/src/assets/LogIn/fondo.jpg" className="container-login w-screen h-screen">
+    <LazyBackground  imageUrl="/src/assets/LogIn/background.webp" className="p-0 m-0 relative bg-cover w-screen h-screen">
       {" "}
-      <div className="w-screen h-screen filtro flex items-center">
-        <div className="login-container relative">
+      <div className="flex absolute w-screen h-screen bg-[#00000037] items-center z-20">
+        <div className="relative w-110 p-[30px] px-10 bg-white rounded-[8px] font-[Arial] m-0 mx-auto shadow-md z-10">
+          <div className="flex justify-start gap-3 items-center mb-[20px]">
+            <div className="border-b-2 border-[#003044] px-4 py-[4px] text-[14px] text-[#33ea30] cursor-default">Usuario</div>
+            <a href="/formulario-empresa" className=" px-4 py-[4px] hover:border-[#003044] hover:border-b-2 hover:text-[#33ea30] text-[14px]">Empresa</a>
+          </div>
           {register ? (
-            <h2 className="register-tittle">Regístrate</h2>
+            <h2 className="text-center text-lg mb-5 font-semibold text-[#333]">Regístrate</h2>
           ) : (
-            <h2 className="register-tittle">Inicia sesión</h2>
+            <h2 className="text-center text-lg mb-5 font-semibold text-[#333]">Inicia sesión</h2>
           )}
-          <div className="social-buttons">
+          <div className="flex flex-col gap-[12px] mb-[25px]">
             <a
               id="google-button"
-              className="social-button"
-              onClick={handleGoogleLogin}
-            >
-              <img src={logogoogle} alt="logo-google" />
+              className="flex items-center justify-center px-[15px] py-[12px] h-[46px] rounded-full border border-[#00c951] cursor-pointer text-[15px] transition-colors duration-200 text-[#333] bg-white hover:bg-[#d0ffd0]"
+              onClick={handleGoogleLogin} >
+              <img src={logogoogle} className="h-[20px] w-[20px] mr-[12px] " alt="logo-google" />
               Continuar con Google
             </a>
           </div>
 
-          <div className="divider">o</div>
+          <div className="flex items-center text-center text-[#777] text-[14px] my-[20px] before:content-[''] before:flex-1 before:mr-[20px] before:border-b before:border-gray-300 after:content-[''] after:flex-1 after:border-b after:border-gray-300 after:ml-[20px]">o</div>
 
           <form onSubmit={handleSubmit}>
-            <div className="form-group relative">
-              <div className="icon-input">
+            <div className="relative mb-[20px]">
+              <div className="absolute top-[35px] left-[10px] text-[13px] text-[#777] pt-[5px] cursor-pointer">
                 <LetterIcon />
               </div>
-              <label htmlFor="email">Correo electrónico</label>
+              <label htmlFor="email" className="block mb-[8px] text-[15px] text-[#555]">Correo electrónico</label>
               <input
                 type="text"
                 id="email"
@@ -192,66 +186,57 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Ingresa tu correo electrónico..."
+                className="w-full pl-10 pr-4 py-3 h-[46px] border border-gray-300 rounded-md text-[15px]"
                 required
               />
             </div>
 
-            <div className="form-group password-container">
-              <label htmlFor="password">Contraseña</label>
-              <div className="icon-input">
+            <div className="form-group relative">
+              <label htmlFor="password" className="block mb-[8px] text-[15px] text-[#555]">Contraseña</label>
+              <div className="absolute top-[35px] left-[10px] text-[13px] text-[#777] pt-[5px] cursor-pointer">
                 <KeyIcon />
               </div>
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
+              <input type={showPassword ? "text" : "password"} id="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Ingresa tu contraseña..."
+                className="w-full pl-10 pr-4 py-3 h-[46px] border border-gray-300 rounded-md text-[15px]"
                 required
               />
-              <div className="eye-icon" onClick={togglePasswordVisibility}>
-                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+              <div className="absolute top-[38px] right-[15px] text-[13px] text-[#777] pt-[5px] cursor-pointer" onClick={togglePasswordVisibility}>
+                {showPassword ? <EyeOffIcon /> : <EyeIcon /> }
               </div>
             </div>
 
-            <div className="aditional-options">
-              <a
-                href="#"
-                className={`forgot-password ${
+            <div className="flex items-center justify-between mb-[22px] text-[14px] my-5">
+              <a href="#" className={`block text-right text-[#009a3a] text-[14px] no-underline ${
                   register ? "hidden-button" : "block-button"
-                }`}
-              >
-                Olvidó su contraseña
-              </a>
-              <div className="remember-me">
-                <input
-                  type="checkbox"
-                  id="rememberMe"
-                  name="rememberMe"
+                }`}>Olvidó su contraseña</a>
+
+              <div className="flex items-center no-underline"> 
+                <input type="checkbox" id="rememberMe" name="rememberMe" className="mr-2 ml-[2px] accent-[rgba(9,167,46,0.912)]"
                   checked={formData.rememberMe}
-                  onChange={handleChange}
-                />
+                  onChange={handleChange}/>
                 <label htmlFor="rememberMe">Recuérdame</label>
               </div>
             </div>
 
-            <button type="submit" className="register-button">
+            <button type="submit" className="w-full h-[46px] bg-[#00c951] border-none text-white text-[16px] rounded-[25px] mb-[15px] cursor-pointer hover:bg-[#05983b] duration-200 transition ease-in-out">
               {register ? "Registrarse" : "Iniciar sesión"}
             </button>
           </form>
 
-          <div className="bottom-divider"></div>
-          <div className="changeSign">
-            <p className={`login-prompt`}>
+          <div className="mb-[20px] mt-[15px] border-b border-[#ddd] "></div>
+          <div className="flex justify-between mt-[20px] text-[17px] text-[#555]">
+            <p className={` text-[#555]`}>
               {register ? "¿Ya tienes una cuenta?" : "¿Eres nuevo aquí?"}
             </p>
             <a
               onClick={() => {
                 setRegister(!register);
               }}
-              className={`login-button`}
-            >
+              className={`text-[#00c951] underline cursor-pointer hover:text-[#029d02]`}>
               {register ? "Iniciar sesión" : "Registrarse"}
             </a>
           </div>
@@ -276,5 +261,5 @@ const Login = () => {
       </div>
     </LazyBackground>
   );
-};
-export default Login;
+}
+  export default Login;

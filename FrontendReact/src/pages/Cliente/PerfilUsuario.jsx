@@ -2,97 +2,15 @@ import React, { useState, useEffect } from "react";
 import cancha2 from "./imagen/cancha2.jpg";
 import canchasi from "./imagen/canchasin.png";
 import Header from "../../Header/Header";
-import insignia from "./imagen/insignia.png";
 import Calendario from "./Calendario/Calendario";
+import insignia from "./imagen/insignia.png";
+ 
 
 const imagen = {
-  gps: (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className="size-5"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-      />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-      />
-    </svg>
-  ),
-  insignia: <img src={insignia} alt="Insignia" />,
-  estrella: (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="#FFC107"
-      className="size-6"
-    >
-      <path
-        fillRule="evenodd"
-        d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-        clipRule="evenodd"
-      />
-    </svg>
-  ),
-  Tienda: (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="size-6"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-      />
-    </svg>
-  ),
-  flecha: (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={2}
-      stroke="currentColor"
-      className="size-5"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M8.25 4.5l7.5 7.5-7.5 7.5"
-      />
-    </svg>
-  ),
-  flechaIzq: (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={2}
-      stroke="currentColor"
-      className="size-5"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15.75 19.5L8.25 12l7.5-7.5"
-      />
-    </svg>
-  ),
+  // Tus SVGs e imágenes aquí...
 };
 
-// implemento este componente para el Carrusel
+// Componente para el Carrusel
 const Carousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -100,7 +18,6 @@ const Carousel = ({ images }) => {
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    
     );
   };
 
@@ -111,9 +28,8 @@ const Carousel = ({ images }) => {
     );
   };
 
-  // aca le coloco  cambio automático de imágenes cada 5 segundos
+  // Cambio automático de imágenes cada 5 segundos
   useEffect(() => {
-
     const interval = setInterval(() => {
       nextSlide();
     }, 5000);
@@ -169,10 +85,10 @@ const Perfil = () => {
   const [selectedField, setSelectedField] = useState("Fútbol 7");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
-
-
-
   const [showBookingSummary, setShowBookingSummary] = useState(false);
+  const [showMobileCalendar, setShowMobileCalendar] = useState(false);
+  const [showAllReviews, setShowAllReviews] = useState(false);
+  
   const [reviews, setReviews] = useState([
     {
       id: 1,
@@ -202,15 +118,15 @@ const Perfil = () => {
         "La cancha está en perfectas condiciones, y el proceso de reserva fue rápido y sin complicaciones. El césped se siente casi natural. Fue una gran experiencia para todos.",
     },
   ]);
+  
   const [newReview, setNewReview] = useState({
     name: "Usuario Actual",
     fieldType: selectedField,
     rating: 5,
     comment: "",
   });
-  const [showAllReviews, setShowAllReviews] = useState(false);
 
-  // Imágenes que implementarios al carrusel
+  // Imágenes para el carrusel
   const carouselImages = [cancha2, canchasi];
 
   const toggleDropdown = () => {
@@ -258,49 +174,47 @@ const Perfil = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* encabezado de navegacion */}
+    <div className="min-h-screen bg-white ">
+      {/* Encabezado de navegación */}
       <Header />
 
-      {/* Contenido principal*/}
-      <div className="container mx-auto ">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left column: Venue info */}
-          <div className="md:col-span-2">
-            <div className="bg-white shadow-md lg:px-15 xl:px-25 pt-10 mb-6 ">
+      {/* Contenedor padre principal con márgenes alineados al header */}
+      <div className="container mx-auto px-4 py-6">
+        
+        {/* Primer contenedor: Info a la izquierda y calendario a la derecha */}
+        <div className="flex flex-col md:flex-row gap-6 mb-6 px-25">
+          {/* Columna izquierda: Información del lugar (hasta valoración general) */}
+          <div className="flex-1">
+            <div>
               {/* Venue header */}
-              <div className="flex items-start mb-4">
-                <div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center mr-3">
-                  <span className="text-gray-600">🏟️</span>
-                </div>
-                <div className="flex-1">
-                  <h2 className="font-bold text-lg">Canchas MeteGol</h2>
-                  <div className="flex">
-                    {imagen.gps}
-                    <p className="text-sm text-gray-500">
-                      Calle 3 N°00-00 Barrio salado
-                    </p>
+              <div className="flex flex-col sm:flex-row items-start mb-4">
+                <div className="flex items-start mb-4 sm:mb-0">
+                  <div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center mr-3">
+                    <span className="text-gray-600">🏟️</span>
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="font-bold text-lg">Canchas MeteGol</h2>
+                    <div className="flex">
+                      {imagen.gps}
+                      <p className="text-sm text-gray-500">
+                        Calle 3 N°00-00 Barrio salado
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex flex-row items-center justify-between text-center">
-                  
-                    <span className="flex flex-col items-center text-xs mr-5 ml-6">
-                      <span className="mr-1 w-8 h-auto">
-                        {imagen.insignia}
-                      </span>
-                      <p className="font-semibold">Preferido</p>
-                       </span>
+                <div className="flex flex-row items-center ml-auto">
+                  <span className="flex flex-col items-center text-xs mr-4">
+                    <span className="mr-1 w-8 h-auto">{imagen.insignia}</span>
                     <p className="font-semibold">Preferido</p>
-                      
-                
+                  </span>
 
-                  <div className=" text-sm text-gray-600">
+                  <div className="text-sm text-gray-600">
                     <button
                       className={`px-4 py-2 w-16 rounded-md text-sm transition duration-100 ease-in-out ${
                         isOpen
-                          ? " text-green-400 dark:text-green-500"
-                          : "text-red-500 dark:text-red-500"
+                          ? "text-green-500"
+                          : "text-red-500"
                       }`}
                       onClick={toggleOpenStatus}
                     >
@@ -310,10 +224,12 @@ const Perfil = () => {
                 </div>
               </div>
 
-              {/* Carrusel - reemplaza el grid de 2 columnas */}
-              <Carousel images={carouselImages} />
+              {/* Carrusel - con tamaño más controlado */}
+              <div className="max-w-full h-auto overflow-hidden mb-6">
+                <Carousel images={carouselImages} />
+              </div>
 
-              {/* Informacion del empresario */}
+              {/* Información del empresario */}
               <div className="flex items-center mb-4">
                 <div className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center mr-3">
                   <span className="text-gray-600">👤</span>
@@ -323,21 +239,21 @@ const Perfil = () => {
                 </div>
               </div>
 
-              {/* Descripcion de la empresa */}
+              {/* Descripción de la empresa */}
               <p className="text-sm text-gray-700 mb-6">
-                Canchas MeteGoles una empresa especializada en la administración
-                y alquiler de canchas sintéticas de última generación. Ofrecemos
-                espacios deportivos de alta calidad para fútbol 5, 7 y 9, con
-                césped sintético de alta resistencia, iluminación LED, graderías
-                cómodas y vestuarios equipados. Nuestras canchas garantizan
-                durabilidad, confort y un excelente rendimiento para jugadores
-                de todos los niveles.
+                Canchas MeteGoles una empresa especializada en la
+                administración y alquiler de canchas sintéticas de última
+                generación. Ofrecemos espacios deportivos de alta calidad para
+                fútbol 5, 7 y 9, con césped sintético de alta resistencia,
+                iluminación LED, graderías cómodas y vestuarios equipados.
+                Nuestras canchas garantizan durabilidad, confort y un
+                excelente rendimiento para jugadores de todos los niveles.
               </p>
 
-              {/* Canchas disponibles que los usuarios visualizan */}
+              {/* Canchas disponibles */}
               <div className="mb-6">
                 <h3 className="font-medium mb-2">Canchas disponibles:</h3>
-                <div className="space-y-2 max-w-70">
+                <div className="space-y-2">
                   <div className="flex justify-between bg-gray-100 px-3 py-2 rounded-md">
                     <span className="text-sm">Fútbol 5</span>
                     <span className="text-sm text-gray-500">(3)</span>
@@ -352,7 +268,7 @@ const Perfil = () => {
                   </div>
                   <div className="flex justify-between bg-gray-100 px-3 py-2 rounded-md">
                     <span className="text-sm">Fútbol 11</span>
-                    <span className="tgitext-sm text-gray-500">(1)</span>
+                    <span className="text-sm text-gray-500">(1)</span>
                   </div>
                 </div>
               </div>
@@ -362,28 +278,25 @@ const Perfil = () => {
               {/* Servicios adicionales */}
               <div className="mb-6">
                 <h3 className="font-medium mb-3">Servicios adicionales:</h3>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-wrap gap-4">
                   <div className="flex items-center text-sm">
-                    <span className="mr-2"></span>
+                    <span className="mr-2">{imagen.arbitro}</span>
                     <span>Árbitro</span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <span className="mr-2">🚿</span>
+                    <span className="mr-2">{imagen.baños}</span>
                     <span>Baños</span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <span className="mr-2">
-                      <div> {imagen.Tienda}</div>
-                    </span>
-
+                    <span className="mr-2">{imagen.Tienda}</span>
                     <span>Tienda</span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <span className="mr-2">🍹</span>
+                    <span className="mr-2">{imagen.bar}</span>
                     <span>Bar</span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <span className="mr-2">🚗</span>
+                    <span className="mr-2">{imagen.carro}</span>
                     <span>Parqueadero</span>
                   </div>
                 </div>
@@ -391,13 +304,14 @@ const Perfil = () => {
 
               <hr className="my-6" />
 
-              {/* valoracion general de usuarios */}
-              <div className="mb-6">
+              {/* Valoración general de usuarios */}
+              <div>
                 <div className="flex justify-between items-center mb-3">
                   <h3 className="font-medium">Valoración general:</h3>
                   <div className="flex items-center">
-                    <span className="text-yellow-500 mr-1"></span>{" "}
-                    {imagen.estrella}
+                    <span className="text-yellow-500 mr-1">
+                      {imagen.estrella}
+                    </span>
                     <span className="font-medium">4.8</span>
                     <span className="text-gray-500 text-sm ml-1">(23)</span>
                     <div className="ml-3 bg-gray-100 px-2 py-1 rounded-md text-sm">
@@ -406,7 +320,7 @@ const Perfil = () => {
                   </div>
                 </div>
 
-                <div className="space-y-1 mb-4">
+                <div className="space-y-1">
                   <div className="flex items-center">
                     <span className="w-4 text-sm mr-2">5</span>
                     <div className="flex-1 bg-gray-200 h-2 rounded-full">
@@ -439,117 +353,123 @@ const Perfil = () => {
                   </div>
                 </div>
               </div>
-
-              <hr className="my-6" />
-
-              {/* agregar reseña */}
-              <div className="mb-6 bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-medium mb-3">Deja tu reseña</h3>
-                <form onSubmit={handleReviewSubmit}>
-                  <div className="mb-3">
-                    <div className="flex items-center mb-2">
-                      <label className="mr-4 text-sm">Calificación:</label>
-                      <div className="flex">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            type="button"
-                            className="text-2xl focus:outline-none"
-                            onClick={() => handleRatingChange(star)}
-                          >
-                            <span
-                              className={
-                                star <= newReview.rating
-                                  ? "text-yellow-500"
-                                  : "text-gray-300"
-                              }
-                            >
-                              ★
-                            </span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mb-3">
-                    <textarea
-                      className="w-full border rounded-md p-2 text-sm"
-                      rows="3"
-                      placeholder="Comparte tu experiencia con esta cancha..."
-                      value={newReview.comment}
-                      onChange={(e) =>
-                        setNewReview({ ...newReview, comment: e.target.value })
-                      }
-                      required
-                    ></textarea>
-                  </div>
-                  <div className="text-right">
-                    <button
-                      type="submit"
-                      className="bg-[#00b04b] text-white px-4 py-2 rounded-md text-sm hover:bg-[#009040]"
-                    >
-                      Publicar reseña
-                    </button>
-                  </div>
-                </form>
-              </div>
-
-              {/* opiniones de usuarios  */}
-              <div className="space-y-6">
-                <h3 className="font-medium mb-3">Reseñas de usuarios:</h3>
-
-                {/* Mostrar reseñas de usuarios  */}
-                {reviews
-                  .slice(0, showAllReviews ? reviews.length : 3)
-                  .map((review) => (
-                    <div key={review.id} className="border-b pb-6">
-                      <div className="flex justify-between mb-2">
-                        <div className="flex items-center">
-                          <div className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center mr-2">
-                            <span className="text-gray-600">👤</span>
-                          </div>
-                          <span className="font-medium">{review.name}</span>
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {review.date} - {review.fieldType}
-                        </div>
-                      </div>
-                      <div className="flex text-yellow-500 mb-2">
-                        {Array(5)
-                          .fill(0)
-                          .map((_, i) => (
-                            <span key={i}>{i < review.rating ? "★" : "☆"}</span>
-                          ))}
-                      </div>
-                      <p className="text-sm">"{review.comment}"</p>
-                    </div>
-                  ))}
-
-                {reviews.length > 3 && (
-                  <div className="text-center">
-                    <button
-                      className="bg-gray-200 text-gray-700 px-6 py-2 rounded-md text-sm"
-                      onClick={() => setShowAllReviews(!showAllReviews)}
-                    >
-                      {showAllReviews
-                        ? "Mostrar menos"
-                        : "Mostrar todas las reseñas"}
-                    </button>
-                  </div>
-                )}
-              </div>
             </div>
-            {/* pie de pagina */}
-            <div className="text-center text-sm text-gray-500 mb-6"></div>
           </div>
-          {/*aca fabian coloca el calendario */}
-          <div className="flex justify-center ">
-            <div className="lg:fixed">
+
+          {/* Columna derecha: Calendario - Oculto en móvil */}
+          <div className="hidden md:block ">
+            <div className="sticky top-4">
               <Calendario />
             </div>
           </div>
         </div>
+
+        {/* Segundo contenedor Opiniones de usuarios (ancho completo) */}
+        <div className="mt-8 px-25">
+          <h3 className="font-medium mb-3">Reseñas de usuarios:</h3>
+
+          {/* Mostrar reseñas de usuarios */}
+          <div className="space-y-6">
+            {reviews
+              .slice(0, showAllReviews ? reviews.length : 3)
+              .map((review) => (
+                <div key={review.id} className="border-b pb-6">
+                  <div className="flex flex-col sm:flex-row sm:justify-between mb-2">
+                    <div className="flex items-center mb-2 sm:mb-0">
+                      <div className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center mr-2">
+                        <span className="text-gray-600">👤</span>
+                      </div>
+                      <span className="font-medium">{review.name}</span>
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {review.date} - {review.fieldType}
+                    </div>
+                  </div>
+                  <div className="flex text-yellow-500 mb-2">
+                    {Array(5)
+                      .fill(0)
+                      .map((_, i) => (
+                        <span key={i}>
+                          {i < review.rating ? "★" : "☆"}
+                        </span>
+                      ))}
+                  </div>
+                  <p className="text-sm">"{review.comment}"</p>
+                </div>
+              ))}
+
+            <div className="text-center">
+              <button
+                className="bg-gray-200 text-gray-700 px-6 py-2 rounded-md text-sm"
+                onClick={() => setShowAllReviews(!showAllReviews)}
+              >
+                {showAllReviews
+                  ? "Mostrar menos"
+                  : "Mostrar todas las reseñas"}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Botón flotante para reservar (visible solo en móvil) */}
+      <div className="md:hidden fixed bottom-6 right-6">
+        <button
+          onClick={() => setShowMobileCalendar(true)}
+          className="bg-[#2fc92c] hover:bg-green-500 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg"
+        >
+          <div className="flex flex-col items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-8 w-8 mb-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            <span className="text-xs font-medium">Reservar</span>
+          </div>
+        </button>
+      </div>
+
+      {/* Modal de calendario para móvil */}
+      {showMobileCalendar && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-md w-full max-h-screen overflow-auto">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h3 className="font-bold">Reservar cancha</h3>
+              <button
+                onClick={() => setShowMobileCalendar(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="p-4">
+              <Calendario />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

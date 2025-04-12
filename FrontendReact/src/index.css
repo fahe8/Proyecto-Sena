@@ -13,8 +13,13 @@
   }
 }
 
-@theme {
+.hover-items:hover {
+  cursor: pointer;
+  border-bottom: 1.5px solid #00C951;
+}
+
+/* @theme {
   --color-primary: #00C951;
   --color-secundary: #003044;
   --color-text-white: #ffffff;
-}
+} */

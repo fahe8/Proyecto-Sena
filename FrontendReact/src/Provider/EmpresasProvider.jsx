@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { createContext, useContext } from "react";
+import React, { useState, createContext, useContext } from "react";
 import imagenCancha from "../assets/Inicio/cancha.jpeg";
 import imagenCancha2 from "../assets/Inicio/cancha2.jpeg";
 import imagenCancha3 from "../assets/Inicio/cancha3.jpeg";
@@ -57,12 +56,21 @@ export const EmpresasProvider = ({ children }) => {
       slug:"Canchas-sintéticas-chelsea-fútbol-club"
     },
   ];
+
   const [empresas, setEmpresas] = useState(copiaEmpresas);
   const [filteredOptions, setFilteredOptions] = useState(copiaEmpresas);
 
+
+
   return (
     <EmpresasContext.Provider
-      value={{ empresas, setEmpresas, filteredOptions, setFilteredOptions }}
+      value={{
+        empresas,
+        setEmpresas,
+        filteredOptions,
+        setFilteredOptions,
+        copiaEmpresas,
+      }}
     >
       {children}
     </EmpresasContext.Provider>
