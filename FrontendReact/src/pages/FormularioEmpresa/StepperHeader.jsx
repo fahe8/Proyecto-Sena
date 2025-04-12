@@ -1,5 +1,4 @@
 import React from 'react';
-// import { CheckIcon } from "../../assets/IconosSVG/iconos.jsx";
 export default function StepperHeader({ currentStep }) {
     return (
       <div className="mb-4 md:mb-8">
