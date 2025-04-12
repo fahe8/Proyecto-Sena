@@ -19,13 +19,13 @@ const Favoritos = () => {
   }, []);
 
   return (
-    <div className=" w-full py-4 px-12 contianer">
-      <h2 className="text-xl font-bold mb-4 ">Favoritos</h2>
+    <div className=" w-full py-8 px-14">
+      <h2 className="text-2xl font-bold mb-4 justify-self-center">Favoritos</h2>
       <hr />
       {favoritos.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-4">
           {favoritos.map((empresa) => (
-            <CardEmpresa key={empresa.id} empresa={empresa} />
+            <CardEmpresa key={empresa.id} mostrarFavorito={true} empresa={empresa} />
           ))}
         </div>
       ) : (
