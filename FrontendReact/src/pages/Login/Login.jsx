@@ -74,18 +74,27 @@ const Login = () => {
         if (!result.success) {
           throw result; // Si hay un error, lanza el resultado completo
         }
-        console.log( result.userCredential.user.accessToken)
-        // Crea el usuario en la base de datos del backend
-        const usuarioCrear = { email: formData.email, token: result.userCredential.user.accessToken };
-        
-        // const usuarioCreado = await usuarioServicio.crear(usuarioCrear);
-        const usuarioCreado =await  axios.post("http://127.0.0.1:8000/api/usuarios", usuarioCrear);
 
-        if (usuarioCreado) {
-          // Si el usuario se crea correctamente se muestra el mensaje de éxito
-          setPopupMessage("Felicidades!");
-          setPopupSubText("Tu usuario se creó correctamente.");
+        // Crea el usuario en la base de datos del backend
+        const usuarioCrear = {
+          id_usuario: result.userCredential.user.uid,
+          email: formData.email,
+        };
+        
+        try {
+          const usuarioCreado = await usuarioServicio.crear(JSON.stringify(usuarioCrear));
+          
+          if (usuarioCreado) {
+            setPopupMessage("Felicidades!");
+            setPopupSubText("Tu usuario se creó correctamente.");
+            setShowPopUp(true);
+          }
+        } catch (error) {
+          console.log("Error del backend:", error.response?.data);
+          setPopupMessage("Error");
+          setPopupSubText(error.response?.data?.message || "Error al crear el usuario");
           setShowPopUp(true);
+          throw error; // Re-throw to be caught by the outer catch block
         }
       } else {
         // Iniciar sesión con email y contraseña existentes
@@ -119,35 +128,46 @@ const Login = () => {
   // Función para iniciar sesión con Google
   const handleGoogleLogin = async () => {
     try {
-      const result = await signInWithGoogle(); // Llama a la función de autenticación con Google
+      const result = await signInWithGoogle(); 
       if (result) {
-        const { displayName, telefono, email } = result.user; // Extrae datos del usuario
-
-        const nombreCompleto = displayName.split(" "); // Divide el nombre completo en partes separadas
-
-        // Prepara los datos para enviar al backend
-        const datosActualizar = {
-          email,
-          nombre: nombreCompleto[0], // Primera parte (nombre)
-          apellido: nombreCompleto[1], // Segunda parte (apellido)
-          telefono: telefono || "", // Teléfono o cadena vacía si no existe
-        };
-
-        // Envía los datos al backend para crear/actualizar el usuario
-        const creado = await usuarioServicio.crear(datosActualizar);
-        console.log(creado.message); // Muestra el mensaje de respuesta en la consola
-
-        if (creado) {
-          // Si se creó/actualizó el usuario, muestra el popup de bienvenida
-          setPopupMessage("Bienvenido!");
+        const { displayName, telefono, email } = result.user;
+        const usuarioExistente = await usuarioServicio.obtenerPorId(result.user.uid);
+  
+        if (!usuarioExistente) {
+          const nombreCompleto = displayName.split(" ");
+          const datosActualizar = {
+            id_usuario: result.user.uid,
+            email: email,
+            nombre: nombreCompleto[0],
+            apellido: nombreCompleto[1]
+          };
+  
+          if (telefono) {
+            datosActualizar.telefono = telefono;
+          }
+  
+          const creado = await usuarioServicio.crear(JSON.stringify(datosActualizar));
+  
+          if (creado) {
+            setPopupMessage("Bienvenido!");
+            setPopupSubText("Has iniciado sesión correctamente con Google");
+            setShowPopUp(true);
+          }
+        } else {
+          // Si el usuario ya existía, también mostramos mensaje de bienvenida
+          setPopupMessage("Bienvenido de nuevo!");
           setPopupSubText("Has iniciado sesión correctamente con Google");
           setShowPopUp(true);
         }
       }
     } catch (error) {
-      console.error("Error al iniciar sesión con Google:", error); // Muestra errores en la consola
+      console.error("Error al iniciar sesión con Google:", error);
+      setPopupMessage("Error");
+      setPopupSubText(error.response?.data?.message || "Error al autenticar con Google");
+      setShowPopUp(true);
     }
   };
+  
 
   return (
     <LazyBackground  imageUrl="/src/assets/LogIn/background.webp" className="p-0 m-0 relative bg-cover w-screen h-screen">
@@ -256,7 +276,7 @@ const Login = () => {
             message={popupMessage}
             subText={popupSubText}
             onClose={() =>
-              popupMessage === "Error" ? () =>{} : goToHome()
+              popupMessage === "Error" ? stayThere() : goToHome()
             }
           />
         )}

@@ -1,15 +1,17 @@
 import axios from "axios";
 
-const API_URL = 'http://localhost:8000/api';
-
+const API_URL = 'http://127.0.0.1:8000/api';
 
 const apiClient = axios.create({
     baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
     }
 });
+
+
 
 export const usuarioServicio = {
     obtenerTodos: () => apiClient.get('/usuarios'),
