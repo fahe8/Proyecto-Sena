@@ -58,7 +58,7 @@ const SeccionHerramientas = () => {
   const menuItems = [
     {
       text: "Historial de reservas",
-      ref: "/reservas",
+      ref: "/historialreservas",
     },
     {
       text: "Reservas pendientes",
@@ -69,7 +69,7 @@ const SeccionHerramientas = () => {
       ref: "/favoritos",
     },
     {
-      text: "No recomendarme",
+      text: "No recomiendo",
       ref: "/norecomendadas",
     },
   ];
