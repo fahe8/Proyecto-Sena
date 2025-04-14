@@ -130,7 +130,6 @@ const Login = () => {
     try {
       const result = await signInWithGoogle(); 
       if (result) {
-<<<<<<< HEAD
         const { displayName, telefono, email } = result.user;
         const usuarioExistente = await usuarioServicio.obtenerPorId(result.user.uid);
   
@@ -153,33 +152,11 @@ const Login = () => {
             setPopupMessage("Bienvenido!");
             setPopupSubText("Has iniciado sesión correctamente con Google");
             setShowPopUp(true);
-          }
+          } 
         } else {
           // Si el usuario ya existía, también mostramos mensaje de bienvenida
           setPopupMessage("Bienvenido de nuevo!");
           setPopupSubText("Has iniciado sesión correctamente con Google");
-=======
-        const { displayName, telefono, email } = result.user; // Extrae datos del usuario
-
-        const nombreCompleto = displayName.split(" "); // Divide el nombre completo en partes separadas
-
-        // Prepara los datos para enviar al backend
-        const datosActualizar = {
-          email,
-          nombre: nombreCompleto[0], // Primera parte (nombre)
-          apellido: nombreCompleto[1], // Segunda parte (apellido)
-          telefono: telefono || "", // Teléfono o cadena vacía si no existe
-        };
-
-        // Envía los datos al backend para crear/actualizar el usuario
-        const creado = await crearUsuarioEnBackend(datosActualizar);
-        console.log(creado.message); // Muestra el mensaje de respuesta en la consola
-
-        if (creado) {
-          // Si se creó/actualizó el usuario, muestra el popup de bienvenida
-          setPopupMessage("Bienvenido!");
-          setPopupSubText("Has iniciado con Google");
->>>>>>> fa94c464c267d4b6735f95be1a89abee0d7e8219
           setShowPopUp(true);
         }
       }
