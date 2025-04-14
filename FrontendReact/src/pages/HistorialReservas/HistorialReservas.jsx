@@ -5,7 +5,7 @@ const HistorialReservas = () => {
   
   // Estado para controlar la visibilidad del menú desplegable de filtro
   const [mostrar, setmostrar] = useState(false);
-  
+
   // Estado para almacenar el término de búsqueda
   const [BuscarTerm, setBuscarTerm] = useState("");
   
@@ -18,7 +18,6 @@ const HistorialReservas = () => {
   // Estado para controlar el texto mostrado en el botón de filtro
   const [TextoBoton, setTextoBoton] = useState("Ordenar");
 
-
   // Referencias para detectar clics fuera del menú desplegable
   const mostrarRef = useRef(null);
   const buttonRef = useRef(null);
@@ -28,7 +27,7 @@ const HistorialReservas = () => {
   const ManejarBusqueda = (e) => {
     const value = e.target.value;
     setBuscarTerm(value);
-  
+    
     // Si el campo de búsqueda está vacío, muestra todas las reservas
     if (value.length === 0) {
       setReservaFiltrada(HistoialCanchas);
