@@ -58,7 +58,7 @@ const SeccionHerramientas = () => {
   const menuItems = [
     {
       text: "Historial de reservas",
-      ref: "/reservas",
+      ref: "/historialReservas",
     },
     {
       text: "Reservas pendientes",
