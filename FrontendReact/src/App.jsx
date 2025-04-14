@@ -23,6 +23,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/empresa/:nombre" element={<Cliente />} />
         <Route path="/formulario-empresa" element={<FormularioEmpresa/>}/>
+        
         {/* Rutas protegidas */}
         <Route element={<RutasProtegidas />}>
           {/* Subrutas protegidas que usan SideBarPerfil */}
@@ -34,7 +35,6 @@ function App() {
             <Route path="/norecomendadas" element={<NoRecomendadas />} />
           </Route>
         </Route>
-
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
       </Routes>
     </Router>

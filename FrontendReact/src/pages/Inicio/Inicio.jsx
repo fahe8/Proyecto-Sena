@@ -69,7 +69,7 @@ const SeccionHerramientas = () => {
       ref: "/favoritos",
     },
     {
-      text: "No recomendarme",
+      text: "No recomiendo",
       ref: "/norecomendadas",
     },
   ];
