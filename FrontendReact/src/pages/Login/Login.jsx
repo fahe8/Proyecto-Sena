@@ -138,7 +138,7 @@ const Login = () => {
         if (creado) {
           // Si se creó/actualizó el usuario, muestra el popup de bienvenida
           setPopupMessage("Bienvenido!");
-          setPopupSubText("Has iniciado sesión correctamente con Google");
+          setPopupSubText("Has iniciado con Google");
           setShowPopUp(true);
         }
       }

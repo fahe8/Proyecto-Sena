@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { auth } from "../../pages/Login/firebaseconfig"; // Importamos la configuración de Firebase
+import { signOut } from "firebase/auth"; // Importamos la función para cerrar sesión en Firebase
+
 
 import iconoCorazon from "../../assets/Perfil/corazon.svg";
 import iconoArchivo from "../../assets/Perfil/archive.svg";
@@ -50,6 +53,18 @@ const SideBarPerfil = () => {
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
+  const handleLogout = async () => {
+      try {
+        await signOut(auth); // Cierra sesión en Firebase
+        window.localStorage.removeItem("auth"); // Elimina datos de autenticación almacenados en localStorage
+        console.log("Cierre de sesión exitoso");
+  
+        window.location.href = "/login"; // Redirige a la página de inicio de sesión
+      } catch (error) {
+        console.error("Error al cerrar sesión:", error);
+      }
+    };
+
   return (
     <div className="flex flex-row relative h-screen">
       
@@ -83,7 +98,7 @@ const SideBarPerfil = () => {
           ))}
         </ul>
 
-        <div className="flex items-center hover:bg-red-500 cursor-pointer w-full p-2 ">
+        <div className="flex items-center hover:bg-red-500 cursor-pointer w-full p-2 " onClick={handleLogout}>
           <a href="" className="flex items-center w-full text-center gap-3">
           <img src={iconoCerrarSesion} alt={""} className="w-6 h-6 filter invert justify-start"/>
           

@@ -28,36 +28,12 @@ const NoRecomendadas = () => {
 
   // Anular aislamiento
   const anularAislamiento = () => {
-    if (seleccionados.length === 0) {
-      Swal.fire("Atención", "No has seleccionado ninguna empresa.", "warning");
-      return;
-    }
-
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: "Esto anulará el aislamiento de las empresas seleccionadas.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, anular",
-      cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        console.log("Empresas anuladas:", seleccionados);
-        Swal.fire(
-          "¡Anulado!",
-          "El aislamiento de las empresas seleccionadas ha sido anulado.",
-          "success"
-        );
-        setSeleccionados([]); 
-      }
-    });
+    
   };
 
   return (
     <div className="bg-[#fbfbfb] w-full py-10 px-10 md:px-15 lg:px-20 ">
-      <h1 className="text-center font-bold text-lg">NO RECOMENDADO</h1>
+      <h1 className="text-center font-bold text-lg">NO RECOMENDADAS</h1>
       <hr className="w-full mx-auto my-4 border-[1.5px]" />
 
       <div className="flex justify-between items-center text-xs mb-8">

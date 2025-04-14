@@ -82,11 +82,11 @@ const PerfilPage = () => {
           />
         )}
 
-        <div className="relative overflow-hidden w-28 h-28 flex items-center justify-center bg-purple-300 rounded-full group">
+        <div className="relative overflow-hidden w-28 h-28 flex items-center justify-center bg-green-400 rounded-full group">
           <p className="text-7xl">{usuario.nombre[0]}</p>
           <div className="absolute bottom-0 translate-y-[80%] transition-all duration-300 group-hover:translate-y-[50%] flex justify-center bg-black opacity-40 w-28 h-1/2 rounded-b-full"></div>
           <img
-            className="size-6 absolute bottom-0 translate-y-[50%] transition-all duration-300 group-hover:translate-y-[0%]"
+            className="size-6 absolute bottom-0 translate-y-[50%] transition-all duration-300 group-hover:translate-y-[0%] "
             src={camara}
             alt=""
             width={30}
@@ -97,7 +97,7 @@ const PerfilPage = () => {
           {/* Boton de editar */}
           <button
             onClick={editando ? validarInputs : toggleEdicion}
-            className="absolute bg-blue-500 cursor-pointer text-white p-2 rounded-tr-2xl rounded-bl-2xl top-0 right-0 translate-x-[1.5px] -translate-y-[1.5px] flex"
+            className="absolute bg-[#003044] cursor-pointer text-white p-2 rounded-tr-2xl rounded-bl-2xl top-0 right-0 translate-x-[1.5px] -translate-y-[1.5px] flex"
           >
             <span>{editando ? "Guardar" : "Editar"}</span>
             <img width={28} src={lapizIcon} alt="Icono de editar" />
