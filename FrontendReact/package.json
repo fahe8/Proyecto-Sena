@@ -13,6 +13,7 @@
     "@tailwindcss/vite": "^4.0.9",
     "axios": "^0.24.0",
     "firebase": "^9.23.0",
+    "frontendreact": "file:",
     "react": "^19.0.0",
     "react-datepicker": "^8.1.0",
     "react-dom": "^19.0.0",

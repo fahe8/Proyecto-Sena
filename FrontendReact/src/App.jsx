@@ -29,7 +29,7 @@ function App() {
           <Route element={<SideBarPerfil />}>
             <Route path="/favoritos" element={<Favoritos />} />
             <Route path="/perfil" element={<PerfilPage />} />
-            <Route path="/reservas" element={<Reservas />} />
+            <Route path="/reservasactivas" element={<Reservas />} />
             <Route path="/historialReservas" element={<HistorialReservas />} />
             <Route path="/norecomendadas" element={<NoRecomendadas />} />
           </Route>
