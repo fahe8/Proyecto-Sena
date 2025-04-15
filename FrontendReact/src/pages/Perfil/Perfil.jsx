@@ -1,31 +1,50 @@
-import React, { useState } from "react";
-import { useUsuario } from "../../Provider/UsuarioProvider";
+import React, { useEffect, useState } from "react";
 import lapizIcon from "../../assets/Perfil/lapiz.svg";
 import camara from "../../assets/Perfil/camara.svg";
 import Modal from "./modal";
 import LogPopUp from "../Login/components/logPopUp";
+import { usuarioServicio } from "../../services/api";
+import { useAuth } from "../../Provider/AuthProvider";
 
 const PerfilPage = () => {
-  const { usuario } = useUsuario();
+  const {user} = useAuth();
+  const [usuario, setUsuario] = useState({
+    id_usuario: "",
+    nombre: "",
+    apellido: "",
+    email: "",
+    telefono: "",
+  });
   const [editando, setEditando] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarPopUp, setMostrarPopUp] = useState(false);
   const [textoPopUp, setTextoPopUp] = useState({ titulo: "", subtitulo: "" });
 
-  const [datos, setDatos] = useState({
-    nombre: usuario.nombre,
-    apellido: usuario.apellido,
-    email: usuario.email,
-    telefono: usuario.telefono || "",
-  });
+  useEffect(() => {
+    const fetchUsuario = async () => {
+      if (user?.uid) {
+        try {
+          const response = await usuarioServicio.obtenerPorId(user.uid);
+          console.log(response.data)
+          setUsuario(response.data.data);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    };
+
+    fetchUsuario();
+  }, [user]);
+
+  const handleChange = (e) => {
+    setUsuario({ ...usuario, [e.target.name]: e.target.value });
+  };
 
   const toggleEdicion = () => {
     setEditando(!editando);
   };
 
-  const handleChange = (e) => {
-    setDatos({ ...datos, [e.target.name]: e.target.value });
-  };
+
 
   const validarInputs = () => {
     if (validate()) {
@@ -33,15 +52,25 @@ const PerfilPage = () => {
     }
   };
 
-  const guardarCambios = () => {
-    console.log("Aqui va la logica de actualizar informacion");
-    setTextoPopUp({
-      titulo: "Cambio exitoso",
-      subtitulo: "Sus cambios se han realizado con exito",
-    });
-    setMostrarPopUp(true);
-    setMostrarModal(false);
-    setEditando(false);
+  const guardarCambios = async () => {
+try {
+  await usuarioServicio.actualizar(usuario.id_usuario, usuario);
+  setEditando(false);
+  setMostrarModal(false);
+  setTextoPopUp({
+    titulo: "Cambio exitoso",
+    subtitulo: "Sus cambios se han realizado con exito",
+  });
+  setMostrarPopUp(true);
+  setMostrarModal(false);
+  setEditando(false);
+} catch (error) {
+  console.log(error.response.data);
+  setTextoPopUp({
+    titulo: "Error al actualizar",
+    subtitulo: "Ha ocurrido un error al actualizar tus datos",
+  });
+}
   };
   const cerrarModal = () => {
     setMostrarModal(false);
@@ -51,9 +80,10 @@ const PerfilPage = () => {
 
   const validate = () => {
     const newErrors = {};
-    if (!datos.nombre) newErrors.nombre = "El nombre es obligatorio";
-    if (!datos.apellido) newErrors.apellido = "El apellido es obligatorio";
-    if (datos.telefono && !/^\d{10}$/.test(datos.telefono))
+    if (!usuario.nombre) newErrors.nombre = "El nombre es obligatorio";
+    if (!usuario.apellido) newErrors.apellido = "El apellido es obligatorio";
+    if(!usuario.telefono) newErrors.telefono = "El teléfono es obligatorio";
+    if (usuario.telefono && !/^\d{10}$/.test(usuario.telefono))
       newErrors.telefono = "El teléfono debe tener 10 dígitos";
     setErrores(newErrors);
     return Object.keys(newErrors).length === 0; // Retorna true si no hay errores
@@ -82,8 +112,8 @@ const PerfilPage = () => {
           />
         )}
 
-        <div className="relative overflow-hidden w-28 h-28 flex items-center justify-center bg-green-400 rounded-full group">
-          <p className="text-7xl">{usuario.nombre[0]}</p>
+        <div className="relative overflow-hidden w-28 h-28 flex items-center justify-center bg-purple-300 rounded-full group">
+          <p className="text-7xl"> {usuario.nombre ? usuario.nombre[0].toLocaleUpperCase() : ''}</p>
           <div className="absolute bottom-0 translate-y-[80%] transition-all duration-300 group-hover:translate-y-[50%] flex justify-center bg-black opacity-40 w-28 h-1/2 rounded-b-full"></div>
           <img
             className="size-6 absolute bottom-0 translate-y-[50%] transition-all duration-300 group-hover:translate-y-[0%] "
@@ -108,13 +138,13 @@ const PerfilPage = () => {
               <div>
                 <label className="text-sm font-semibold">Nombre(s)</label>
                 <p className="w-full p-2 bg-gray-300 rounded-full px-4">
-                  {usuario.nombre}
+                  {usuario.nombre === "" ? "No hay nombre registrado" : usuario.nombre}
                 </p>
               </div>
               <div>
                 <label className="text-sm font-semibold">Apellido(s)</label>
                 <p className="w-full p-2 bg-gray-300 rounded-full px-4">
-                  {usuario.apellido}
+                  {usuario.apellido === "" ? "No hay apellido registrado": usuario.apellido}
                 </p>
               </div>
               <div>
@@ -137,7 +167,7 @@ const PerfilPage = () => {
               <InputField
                 label="Nombre(s)"
                 name="nombre"
-                value={datos.nombre}
+                value={usuario.nombre}
                 onChange={handleChange}
                 error={errores.nombre}
                 editable={editando}
@@ -145,7 +175,7 @@ const PerfilPage = () => {
               <InputField
                 label="Apellido(s)"
                 name="apellido"
-                value={datos.apellido}
+                value={usuario.apellido}
                 onChange={handleChange}
                 error={errores.apellido}
                 editable={editando}
@@ -154,7 +184,7 @@ const PerfilPage = () => {
               <InputField
                 label="Teléfono"
                 name="telefono"
-                value={datos.telefono}
+                value={usuario.telefono}
                 onChange={handleChange}
                 error={errores.telefono}
                 editable={editando}

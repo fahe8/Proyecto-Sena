@@ -358,7 +358,7 @@ const Perfil = () => {
 
           {/* Columna derecha: Calendario - Oculto en móvil */}
           <div className="hidden md:block ">
-            <div className="sticky top-4">
+            <div className="sticky top-26">
               <Calendario />
             </div>
           </div>
