@@ -138,13 +138,13 @@ try {
               <div>
                 <label className="text-sm font-semibold">Nombre(s)</label>
                 <p className="w-full p-2 bg-gray-300 rounded-full px-4">
-                  {usuario.nombre}
+                  {usuario.nombre === "" ? "No hay nombre registrado" : usuario.nombre}
                 </p>
               </div>
               <div>
                 <label className="text-sm font-semibold">Apellido(s)</label>
                 <p className="w-full p-2 bg-gray-300 rounded-full px-4">
-                  {usuario.apellido}
+                  {usuario.apellido === "" ? "No hay apellido registrado": usuario.apellido}
                 </p>
               </div>
               <div>

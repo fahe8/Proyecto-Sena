@@ -3,7 +3,7 @@ import imagen from "../../assets/Inicio/cancha.jpeg";
 export const HistorialReservasData = [
     {   id:1, 
         Image:imagen,
-        NombreCancha: "Canchas la 64", 
+        NombreCancha: "Canchas la estacion", 
         Direccion: "Avenida 64 con carrera 9, Jordan, Ibagué, Tolima", 
         Fecha: "2025-03-15", 
         HoraInicio: "09 : 00 PM", 
@@ -23,7 +23,7 @@ export const HistorialReservasData = [
     },
     {   id:3, 
         Image:imagen,
-        NombreCancha: "Canchas la 64", 
+        NombreCancha: "Canchas el triangulo", 
         Direccion: "Avenida 64 con carrera 9, Jordan, Ibagué, Tolima", 
         Fecha: "2025-03-27", 
         HoraInicio: "09 : 00 PM", 
@@ -32,5 +32,3 @@ export const HistorialReservasData = [
         CanchaTotal: "70.000"
     },
 ];
-
-
