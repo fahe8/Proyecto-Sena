@@ -16,7 +16,10 @@ class ApiController extends Controller
             'message' => $message,
         ];
 
-        return response()->json($response, 200);
+        return response()->json($response, 200, [
+            'Content-Type' => 'application/json;charset=UTF-8',
+            'Charset' => 'utf-8'
+        ], JSON_UNESCAPED_UNICODE);
     }
 
     public function sendError($error, $errorMessages = [], $code = 404)

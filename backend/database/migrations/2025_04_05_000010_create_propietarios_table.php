@@ -9,7 +9,7 @@ class CreatePropietariosTable extends Migration
     public function up()
     {
         Schema::create('propietario', function (Blueprint $table) {
-            $table->id('id_propietario')->primary();
+            $table->string('id_propietario')->primary();
             $table->string('nombre');
             $table->string('apellido');
             $table->string('telefono');

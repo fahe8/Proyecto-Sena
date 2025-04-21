@@ -11,6 +11,7 @@ class CreateCanchaTable extends Migration
         Schema::create("cancha", function (Blueprint $table) {
             $table->id("id_cancha")->primary();
             $table->string("nombre");
+            $table->integer("precio")->unsigned();
             $table->unsignedBigInteger('NIT');
             $table->string("id_estado_cancha");
             $table->string("id_tipo_cancha");

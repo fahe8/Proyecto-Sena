@@ -10,6 +10,7 @@ class MetodoPago extends Model
     protected $primaryKey = 'id_metodo_pago';
     public $incrementing = false;
     protected $keyType = 'string';
+    public $timestamps = false; 
 
     public function pagos()
     {

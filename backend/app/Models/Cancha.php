@@ -6,15 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cancha extends Model
 {
+    public $timestamps = false; 
     protected $table = 'cancha';
     protected $primaryKey = 'id_cancha';
     protected $fillable = [
         'nombre',
+        'precio',
         'NIT',
         'id_estado_cancha',
         'id_tipo_cancha',
     ];
     
+    protected $casts = [
+        'precio' => 'integer'
+    ];
     public function estado()
     {
         return $this->belongsTo(EstadoCancha::class, 'id_estado_cancha');
