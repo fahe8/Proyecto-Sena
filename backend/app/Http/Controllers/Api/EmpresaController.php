@@ -105,12 +105,11 @@ class EmpresaController extends ApiController
     public function show($id)
     {
         try {
-            $empresa = Empresa::with(['propietario', 'estado', 'servicios', 'canchas', 'tarifas'])->find($id);
+            $empresa = Empresa::with(['propietario', 'estado', 'servicios', 'canchas'])->find($id);
             if (is_null($empresa)) {
                 return $this->sendError('Empresa no encontrada');
             }
             $empresa->servicios->makeHidden('pivot');
-            $empresa->tarifas->makeHidden('NIT');
             return $this->sendResponse($empresa, 'Empresa obtenida con exito');
         } catch (\Exception $e) {
             return $this->sendError('Error obteniendo empresa', $e->getMessage());
