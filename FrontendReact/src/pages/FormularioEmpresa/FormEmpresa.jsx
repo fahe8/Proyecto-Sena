@@ -18,7 +18,7 @@ export default function FormularioEmpresa() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-screen bg-[#02514d]">
+    <div className="flex flex-col items-center justify-center w-full min-h-screen bg-[#02514d]">
       <div className=" relative w-78 md:w-90 mx-auto p-8 py-5 bg-white rounded-lg shadow-2xl">
 
         <div className="flex justify-start gap-3 items-center mb-5">

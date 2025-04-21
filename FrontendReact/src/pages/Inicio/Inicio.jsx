@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Link } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
@@ -9,9 +9,30 @@ import { BusquedaFiltros } from "../../Header/Componentes/BusquedaFiltros";
 import CardEmpresa from "./componentes/CardEmpresa";
 import { useEmpresas } from "../../Provider/EmpresasProvider";
 import balonroto from "../../assets/Inicio/balonRoto.png"
+import { empresaServicio } from "../../services/api";
+
 
 const Inicio = () => {
-  const { filteredOptions } = useEmpresas();
+  const { filteredOptions, setFilteredOptions, setEmpresas } = useEmpresas();
+
+  useEffect(() => {
+    const fetchEmpresas = async () => {
+      try {
+        const response = await empresaServicio.obtenerTodos();
+        if (response.data.success) {
+          console.log(
+            response.data.data,
+          )
+          setEmpresas(response.data.data);
+          setFilteredOptions(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching empresas:", error);
+      }
+    };
+
+    fetchEmpresas();
+  }, [setEmpresas, setFilteredOptions]);
 
   return (
     <>
@@ -23,7 +44,6 @@ const Inicio = () => {
         <section className="grid container mx-auto bg-[#fbfbfb] gap-4">
           {/* <!-- Seccion superior --> */}
           <SeccionHerramientas />
-
           {/* <!-- listado de canchas --> */}
           {filteredOptions.length > 0 ? (
             <ListaEmpresas empresas={filteredOptions} />
@@ -39,7 +59,9 @@ const Inicio = () => {
   );
 };
 
-const ListaEmpresas = ({ empresas }) => {
+
+
+const ListaEmpresas = ({ empresas}) => {
   return (
     <div
       className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-self-center"

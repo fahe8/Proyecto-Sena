@@ -130,10 +130,21 @@ const Login = () => {
     try {
       const result = await signInWithGoogle(); 
       if (result) {
+        console.log("Este es el result",result.user.uid)
         const { displayName, telefono, email } = result.user;
-        const usuarioExistente = await usuarioServicio.obtenerPorId(result.user.uid);
-  
-        if (!usuarioExistente) {
+        let usuarioExistente;
+
+        try {
+          usuarioExistente = await usuarioServicio.obtenerPorId(result.user.uid);
+        } catch (error) {
+          if (error.response?.status === 404) {
+            usuarioExistente = { success: false, message: "Usuario no encontrado" };
+          } else {
+            throw error; // Otros errores sí se manejan abajo
+          }
+        }
+
+        if (usuarioExistente.success === false) {
           const nombreCompleto = displayName.split(" ");
           const datosActualizar = {
             id_usuario: result.user.uid,
@@ -141,6 +152,8 @@ const Login = () => {
             nombre: nombreCompleto[0],
             apellido: nombreCompleto[1]
           };
+
+        console.log(datosActualizar)
   
           if (telefono) {
             datosActualizar.telefono = telefono;

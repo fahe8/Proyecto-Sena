@@ -18,8 +18,7 @@ class CreateEmpresaServicioTable extends Migration
             // Relaciones foráneas
             $table->foreign('NIT')->references('NIT')->on('empresa')->onDelete('cascade');
             $table->foreign('id_servicio')->references('id_servicio')->on('servicio')->onDelete('cascade');
-    
-            $table->timestamps();
+            // Removed timestamps
         });
     }
     public function down()

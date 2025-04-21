@@ -14,11 +14,12 @@ class CreateEmpresasTable extends Migration
             $table->string('nombre');
             $table->string('direccion');
             $table->string('descripcion');
+            $table->json('imagenes')->nullable();
             $table->time('hora_apertura');
             $table->time('hora_cierre');
 
-            // id_propietario como clave foránea (sin auto_increment)
-            $table->unsignedBigInteger('id_propietario');
+            // Changed from unsignedBigInteger to string
+            $table->string('id_propietario');
             $table->string('id_estado_empresa');
 
             // Relaciones foráneas

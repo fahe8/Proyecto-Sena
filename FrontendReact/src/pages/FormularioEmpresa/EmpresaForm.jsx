@@ -1,5 +1,7 @@
 import React from 'react';
+import CloudinaryUploader from "../../components/CloudinaryUploader"
 import { useNavigate } from 'react-router';
+
 export default function EmpresaForm({ formData, handleChange, handlePrev }) {
   const navigate = useNavigate();
   return (
@@ -88,6 +90,12 @@ export default function EmpresaForm({ formData, handleChange, handlePrev }) {
             required
           />
         </div>
+
+      <div className=' col-span-2'>
+      <CloudinaryUploader/>
+      </div>
+        
+
       </div>
       
       <div className="flex justify-between pt-3">

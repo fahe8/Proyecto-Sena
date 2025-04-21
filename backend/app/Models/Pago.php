@@ -8,7 +8,6 @@ class Pago extends Model
 {
     protected $table = 'pago';
     protected $primaryKey = 'id_pago';
-    public $timestamps = false;
 
     protected $fillable = [
         'monto',

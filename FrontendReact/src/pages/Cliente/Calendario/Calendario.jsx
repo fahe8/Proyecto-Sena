@@ -118,7 +118,7 @@ const Calendario = () => {
         />
 
         <div className="w-full flex justify-between gap-2 text-sm">
-          <div className=" w-[130px] md:w-[160px] flex gap-2">
+          <div className=" w-[130px] md:w-[160px] flex items-center gap-2">
             <span>Desde:</span>
             <div className="relative">
               <DatePicker
@@ -131,7 +131,7 @@ const Calendario = () => {
                 dateFormat="HH:mm"
                 timeFormat="HH:mm"
                 excludeTimes={buscarHorasPorFecha(reserva.fecha)}
-                className="w-16 bg-gray-200 rounded-lg px-2 cursor-pointer"
+                className="w-20 border rounded-lg px-2 py-2 cursor-pointer"
               />
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -139,7 +139,7 @@ const Calendario = () => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="size-5 absolute top-0 right-0 "
+                className="size-5 absolute top-1/2 right-2 -translate-y-1/2"
               >
                 <path
                   strokeLinecap="round"
@@ -150,7 +150,7 @@ const Calendario = () => {
             </div>
           </div>
 
-          <div className="w-[130px] md:w-[160px] flex gap-2">
+          <div className="w-[130px] md:w-[160px] flex items-center gap-2">
             <span>Hasta:</span>
             <div className="relative">
               <DatePicker
@@ -163,7 +163,7 @@ const Calendario = () => {
                 dateFormat="HH:mm"
                 timeFormat="HH:mm"
                 excludeTimes={buscarHorasPorFecha(reserva.fecha)}
-                className="w-16 bg-gray-200 rounded-lg px-2 cursor-pointer"
+                className="w-20 border rounded-lg px-2 py-2 cursor-pointer"
               />
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -171,7 +171,7 @@ const Calendario = () => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="size-5 absolute top-0 right-0 "
+                className="size-5 absolute top-1/2 right-2 -translate-y-1/2"
               >
                 <path
                   strokeLinecap="round"

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EstadoCancha extends Model
 {
+    
     protected $table = 'estado_cancha';
     protected $primaryKey = 'id_estado_cancha';
     public $incrementing = false;

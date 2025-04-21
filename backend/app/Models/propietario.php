@@ -8,8 +8,10 @@ class Propietario extends Model
 {
     protected $table = 'propietario';
     protected $primaryKey = 'id_propietario';
-
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $fillable = [
+        'id_propietario',
         'nombre',
         'apellido',
         'telefono',
