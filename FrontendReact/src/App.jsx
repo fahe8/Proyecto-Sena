@@ -22,7 +22,7 @@ import iconoUnlike from "./assets/Perfil/Unlike.svg";
 
 function App() {
 
-  const opciones = [
+  const opcionesUsuario = [
     {
       nombre: "Información Personal",
       icono: iconoPerfil,
@@ -60,13 +60,14 @@ function App() {
         <Route path="/formulario-empresa" element={<FormularioEmpresa />} />
 
         {/* Rutas protegidas */}
+        {/* Rutas de USUARIO */}
         <Route element={<RutasProtegidas />}>
           {/* Subrutas protegidas que usan SideBarPerfil */}
           <Route
             element={
               <SideBarPerfil
               opciones={
-                opciones
+                opcionesUsuario
                 }
               />
             }
@@ -77,6 +78,14 @@ function App() {
             <Route path="/historialReservas" element={<HistorialReservas />} />
             <Route path="/norecomendadas" element={<NoRecomendadas />} />
           </Route>
+
+
+        {/* Rutas de PROPIETARIO */}
+
+        <Route element={SideBarPerfil(opciones = {})}>
+
+        </Route>
+
         </Route>
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
       </Routes>
