@@ -14,7 +14,42 @@ import RutasProtegidas from "./utils/rutasProtegidas";
 import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 
+import iconoCorazon from "./assets/Perfil/corazon.svg";
+import iconoArchivo from "./assets/Perfil/archive.svg";
+import iconoReciente from "./assets/Perfil/recent.svg";
+import iconoPerfil from "./assets/Perfil/iconoPerfil.svg";
+import iconoUnlike from "./assets/Perfil/Unlike.svg";
+
 function App() {
+
+  const opciones = [
+    {
+      nombre: "Información Personal",
+      icono: iconoPerfil,
+      url: "/perfil",
+    },
+    {
+      nombre: "Reservas Activas",
+      icono: iconoReciente,
+      url: "/ReservasActivas",
+    },
+    {
+      nombre: "Historial de Reservas",
+      icono: iconoArchivo,
+      url: "/historialReservas",
+    },
+    {
+      nombre: "Canchas Favoritas",
+      icono: iconoCorazon,
+      url: "/favoritos",
+    },
+    {
+      nombre: "No Recomendado",
+      icono: iconoUnlike,
+      url: "/norecomendadas",
+    },
+  ]
+
   return (
     <Router>
       <Routes>
@@ -22,12 +57,20 @@ function App() {
         <Route path="/nueva" element={<NuevaPagina />} />
         <Route path="/login" element={<Login />} />
         <Route path="/empresa/:nombre" element={<Cliente />} />
-        <Route path="/formulario-empresa" element={<FormularioEmpresa/>}/>
-        
+        <Route path="/formulario-empresa" element={<FormularioEmpresa />} />
+
         {/* Rutas protegidas */}
         <Route element={<RutasProtegidas />}>
           {/* Subrutas protegidas que usan SideBarPerfil */}
-          <Route element={<SideBarPerfil />}>
+          <Route
+            element={
+              <SideBarPerfil
+              opciones={
+                opciones
+                }
+              />
+            }
+          >
             <Route path="/favoritos" element={<Favoritos />} />
             <Route path="/perfil" element={<PerfilPage />} />
             <Route path="/reservasactivas" element={<Reservas />} />
@@ -41,4 +84,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;

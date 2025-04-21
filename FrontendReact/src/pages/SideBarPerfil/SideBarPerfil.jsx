@@ -4,36 +4,17 @@ import { auth } from "../../pages/Login/firebaseconfig"; // Importamos la config
 import { signOut } from "firebase/auth"; // Importamos la función para cerrar sesión en Firebase
 
 
-import iconoCorazon from "../../assets/Perfil/corazon.svg";
-import iconoArchivo from "../../assets/Perfil/archive.svg";
-import iconoReciente from "../../assets/Perfil/recent.svg";
-import iconoPerfil from "../../assets/Perfil/iconoPerfil.svg";
+
 import logo from "../../assets/logo.png";
 import iconoCerrarSesion from "../../assets/Perfil/cerrarSesion.svg";
-import iconoUnlike from "../../assets/Perfil/Unlike.svg";
 
-const SideBarPerfil = () => {
+const SideBarPerfil = ({opciones = []}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [urlActual, seturlActual] = useState(location.pathname);
   const sidebarRef = useRef(null);
   const [sidebarWidth, setSidebarWidth] = useState(60);
 
-  const opciones = [
-    { nombre: "Información Personal", icono: iconoPerfil, url: "/perfil" },
-    {
-      nombre: "Reservas Activas",
-      icono: iconoReciente,
-      url: "/ReservasActivas",
-    },
-    {
-      nombre: "Historial de Reservas",
-      icono: iconoArchivo,
-      url: "/historialReservas",
-    },
-    { nombre: "Canchas Favoritas", icono: iconoCorazon, url: "/favoritos" },
-    { nombre: "No Recomendado", icono: iconoUnlike, url: "/norecomendadas" },
-  ];
 
   const cambiarRutas = (url) => {
     seturlActual(url);
@@ -76,7 +57,7 @@ const SideBarPerfil = () => {
           <img src={logo} className="w-8 h-auto" alt="Logo-MiCanchaYa" />
         </div>
         <ul className="space-y-15  flex-col justify-center items-center  ">
-          {opciones.map((opcion, index) => (
+          { opciones?.map((opcion, index) => (
             <li
               key={index}
               onClick={() => cambiarRutas(opcion.url)}
