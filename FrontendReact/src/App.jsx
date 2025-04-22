@@ -82,7 +82,11 @@ function App() {
 
         {/* Rutas de PROPIETARIO */}
 
-        <Route element={SideBarPerfil(opciones = {})}>
+        <Route element={<SideBarPerfil
+              opciones={
+                opcionesUsuario
+                }
+              />}>
 
         </Route>
 
