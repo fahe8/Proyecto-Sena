@@ -1,7 +1,5 @@
 .card{
-
     border-radius: 8px;
-    padding: 10px 15px;
     background-color: #ffffff;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     gap: 15px;
@@ -10,11 +8,7 @@
     z-index: 100;
   }
   .wave {
-    position: absolute;
     transform: rotate(90deg);
-    left: -31px;
-    top: 32px;
-    width: 80px;
     fill: #04e400b5;
   }
   .icon-container {

@@ -10,13 +10,12 @@ import LogPopUp from "./components/logPopUp";
 import logogoogle from "../../assets/LogIn/simbolo-de-google.png";
 
 // Importaciones de funciones para interactuar con el backend
-import {
-  crearUsuarioEnBackend, // Función para crear un usuario en el backend usando email
-} from "./fetchBackendLogin"; // Archivo con funciones para comunicarse con el backend
 import Loading from "./components/Loading"; // Componente de carga
 import { manejarErroresFirebase } from "./manejarErroresFirebase"; // Función para manejar errores de Firebase
 import LazyBackground from "../../utils/LazyBackground.jsx";
 import { LetterIcon, KeyIcon, EyeIcon, EyeOffIcon } from "../../assets/IconosSVG/iconos.jsx"; // Iconos para el formulario
+import { usuarioServicio } from "../../services/api.js";
+import axios from "axios";
 
 // Definición del componente Login
 const Login = () => {
@@ -77,13 +76,25 @@ const Login = () => {
         }
 
         // Crea el usuario en la base de datos del backend
-        const email = { email: formData.email };
-        const usuarioCreado = await crearUsuarioEnBackend(email);
-        if (usuarioCreado) {
-          // Si el usuario se crea correctamente se muestra el mensaje de éxito
-          setPopupMessage("Felicidades!");
-          setPopupSubText("Tu usuario se creó correctamente.");
+        const usuarioCrear = {
+          id_usuario: result.userCredential.user.uid,
+          email: formData.email,
+        };
+        
+        try {
+          const usuarioCreado = await usuarioServicio.crear(JSON.stringify(usuarioCrear));
+          
+          if (usuarioCreado) {
+            setPopupMessage("Felicidades!");
+            setPopupSubText("Tu usuario se creó correctamente.");
+            setShowPopUp(true);
+          }
+        } catch (error) {
+          console.log("Error del backend:", error.response?.data);
+          setPopupMessage("Error");
+          setPopupSubText(error.response?.data?.message || "Error al crear el usuario");
           setShowPopUp(true);
+          throw error; // Re-throw to be caught by the outer catch block
         }
       } else {
         // Iniciar sesión con email y contraseña existentes
@@ -117,35 +128,59 @@ const Login = () => {
   // Función para iniciar sesión con Google
   const handleGoogleLogin = async () => {
     try {
-      const result = await signInWithGoogle(); // Llama a la función de autenticación con Google
+      const result = await signInWithGoogle(); 
       if (result) {
-        const { displayName, telefono, email } = result.user; // Extrae datos del usuario
+        console.log("Este es el result",result.user.uid)
+        const { displayName, telefono, email } = result.user;
+        let usuarioExistente;
 
-        const nombreCompleto = displayName.split(" "); // Divide el nombre completo en partes separadas
+        try {
+          usuarioExistente = await usuarioServicio.obtenerPorId(result.user.uid);
+        } catch (error) {
+          if (error.response?.status === 404) {
+            usuarioExistente = { success: false, message: "Usuario no encontrado" };
+          } else {
+            throw error; // Otros errores sí se manejan abajo
+          }
+        }
 
-        // Prepara los datos para enviar al backend
-        const datosActualizar = {
-          email,
-          nombre: nombreCompleto[0], // Primera parte (nombre)
-          apellido: nombreCompleto[1], // Segunda parte (apellido)
-          telefono: telefono || "", // Teléfono o cadena vacía si no existe
-        };
+        if (usuarioExistente.success === false) {
+          const nombreCompleto = displayName.split(" ");
+          const datosActualizar = {
+            id_usuario: result.user.uid,
+            email: email,
+            nombre: nombreCompleto[0],
+            apellido: nombreCompleto[1]
+          };
 
-        // Envía los datos al backend para crear/actualizar el usuario
-        const creado = await crearUsuarioEnBackend(datosActualizar);
-        console.log(creado.message); // Muestra el mensaje de respuesta en la consola
-
-        if (creado) {
-          // Si se creó/actualizó el usuario, muestra el popup de bienvenida
-          setPopupMessage("Bienvenido!");
+        console.log(datosActualizar)
+  
+          if (telefono) {
+            datosActualizar.telefono = telefono;
+          }
+  
+          const creado = await usuarioServicio.crear(JSON.stringify(datosActualizar));
+  
+          if (creado) {
+            setPopupMessage("Bienvenido!");
+            setPopupSubText("Has iniciado sesión correctamente con Google");
+            setShowPopUp(true);
+          } 
+        } else {
+          // Si el usuario ya existía, también mostramos mensaje de bienvenida
+          setPopupMessage("Bienvenido de nuevo!");
           setPopupSubText("Has iniciado sesión correctamente con Google");
           setShowPopUp(true);
         }
       }
     } catch (error) {
-      console.error("Error al iniciar sesión con Google:", error); // Muestra errores en la consola
+      console.error("Error al iniciar sesión con Google:", error);
+      setPopupMessage("Error");
+      setPopupSubText(error.response?.data?.message || "Error al autenticar con Google");
+      setShowPopUp(true);
     }
   };
+  
 
   return (
     <LazyBackground  imageUrl="/src/assets/LogIn/background.webp" className="p-0 m-0 relative bg-cover w-screen h-screen">

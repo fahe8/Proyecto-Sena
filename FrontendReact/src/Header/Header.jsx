@@ -134,15 +134,7 @@ export const BotonPerfil = () => {
             </button>
           </div>
         ) : (
-          // Menú para usuarios no autenticados
-          <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg cursor-pointer z-50">
-            <Link to={"/nueva"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-              Pon tus canchas
-            </Link>
-            <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-b-lg">
-              Centro de ayuda
-            </Link>
-          </div>
+         <></>
         ))}
     </div>
   );

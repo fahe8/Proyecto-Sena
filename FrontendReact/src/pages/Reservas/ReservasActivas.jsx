@@ -109,22 +109,22 @@ const ReservasActivas = () => {
 
       {/* Cancha la 64 - Card Container */}
       <div className="bg-gray-200 rounded-lg shadow-md mt-4 overflow-hidden">
-        {/* Main Card Info */}
+        {/* Información de la card principal */}
         <div className="p-4 grid grid-cols-2">
           <div className="flex items-center gap-4">
-            {/* Circular green indicator */}
+            {/* Aquí se cargaría automaticamente el logo de la empresa de la reserva */}
             <div className="w-10 h-10 bg-green-500 rounded-full"></div>
             {/* Location info */}
             <div>
               <h3 className="font-bold">Canchas la 64</h3>
-             <span className="flex">
-              <div>{svgs.gps}</div>
-             <p className="text-sm">Avenida 64 con carrera 9, Jordan</p>
-             </span>
+              <span className="flex">
+                <div>{svgs.gps}</div>
+                <p className="text-sm">Avenida 64 con carrera 9, Jordan</p>
+              </span>
             </div>
           </div>
 
-          {/* Button for description */}
+          {/* Botón que despliega/oculta la descripción */}
           <div className="flex justify-end items-center">
             <button
               className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600"
@@ -135,40 +135,44 @@ const ReservasActivas = () => {
           </div>
         </div>
 
-        {/* Expandable Description Section */}
-        {mostrarDescripcion && (
-          <div className="bg-gray-100 p-4 border-t border-gray-300">
-            <h4 className="font-medium mb-2">Descripción de reserva</h4>
+        {/* Sección expandible de la descripción de la reserva */}
+        <div
+          className={`bg-gray-100 border-t border-gray-300 overflow-hidden transition-all duration-300 ${
+            mostrarDescripcion ? "max-h-[500px] p-4" : "max-h-0 p-0"
+          }`}
+        >
+          {mostrarDescripcion && (
+            <div>
+              <h4 className="font-medium mb-2">Descripción de reserva</h4>
 
-            <div className="grid grid-cols-2 gap-4">
-              {/* Left column - Date and Time */}
-              <div className="border-r border-gray-300 pr-4">
-                <div className="flex items-center gap-2 mb-2">
-                  {svgs.calendar}
-                  <span>15 de Marzo 2025</span>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Información de la fecha y hora de la reserva pendiente */}
+                <div className="border-r border-gray-300 pr-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    {svgs.calendar}
+                    <span>15 de Marzo 2025</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {svgs.clock}
+                    <span>09:00PM - 10:00 PM</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {svgs.clock}
-                  <span>09:00PM - 10:00 PM</span>
-                </div>
-              </div>
-
-              {/* Right column - Court Type and Price */}
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  {svgs.football}
-                  <span>Cancha futbol 5</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  {svgs.money}
-                  <span>Total: 70.000</span>
+                {/* Información del tipo de la cancha reservada y el total a pagar */}
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    {svgs.football}
+                    <span>Cancha futbol 5</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {svgs.money}
+                    <span>Total: 70.000</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-      {/*Aca colo otro igual a lo que realice  al principio*/}
     </div>
   );
 };

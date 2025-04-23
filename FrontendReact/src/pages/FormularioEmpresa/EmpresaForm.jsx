@@ -1,5 +1,9 @@
 import React from 'react';
+import CloudinaryUploader from "../../components/CloudinaryUploader"
+import { useNavigate } from 'react-router';
+
 export default function EmpresaForm({ formData, handleChange, handlePrev }) {
+  const navigate = useNavigate();
   return (
     <div className="space-y-3">
       <h2 className="text-8 md:text-[20px] font-bold text-gray-800 mb-4">Información de la Empresa</h2>
@@ -86,6 +90,12 @@ export default function EmpresaForm({ formData, handleChange, handlePrev }) {
             required
           />
         </div>
+
+      <div className=' col-span-2'>
+      <CloudinaryUploader/>
+      </div>
+        
+
       </div>
       
       <div className="flex justify-between pt-3">
@@ -95,7 +105,7 @@ export default function EmpresaForm({ formData, handleChange, handlePrev }) {
         
         <button type="submit"
           className="h-8 px-6 py-1 text-[15px] bg-[#33ea30] text-white font-medium rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 flex items-center cursor-pointer"
-          onClick={'/'}
+          onClick={() => {navigate('/nueva');}}
         >Enviar</button>
       </div>
     </div>

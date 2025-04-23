@@ -203,8 +203,11 @@ const BarraBusqueda = ({ filtros, agregarFiltros }) => {
 
   const handleSearch = (e) => {
     const value = e.target.value;
+
+
     let filtered = [];
     setQuery(value);
+
 
     if (filtros.servicios.length > 0 || filtros.tiposCanchas.length > 0) {
       filtered = empresas.filter(
