@@ -47,11 +47,11 @@ const SideBarPerfil = ({opciones = []}) => {
     };
 
   return (
-    <div className="flex flex-row relative h-screen">
+    <div className="flex flex-row relative min-h-screen">
       
       <div
         ref={sidebarRef}
-        className="fixed h-screen py-3 w-auto group-hover:max-w-xs bg-[#003044] group flex flex-col justify-between z-20"
+        className="fixed min-h-screen py-3 w-auto group-hover:max-w-xs bg-[#003044] group flex flex-col justify-between z-20"
       >
         <div className="flex items-center justify-center cursor-pointer" onClick={() => navigate("/")}>
           <img src={logo} className="w-8 h-auto" alt="Logo-MiCanchaYa" />
