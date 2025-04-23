@@ -4,7 +4,6 @@ import { auth } from "../../pages/Login/firebaseconfig"; // Importamos la config
 import { signOut } from "firebase/auth"; // Importamos la función para cerrar sesión en Firebase
 
 
-
 import logo from "../../assets/logo.png";
 import iconoCerrarSesion from "../../assets/Perfil/cerrarSesion.svg";
 
@@ -15,7 +14,7 @@ const SideBarPerfil = ({opciones = []}) => {
   const sidebarRef = useRef(null);
   const [sidebarWidth, setSidebarWidth] = useState(60);
 
-
+  
   const cambiarRutas = (url) => {
     seturlActual(url);
     navigate(url);
@@ -94,5 +93,7 @@ const SideBarPerfil = ({opciones = []}) => {
     </div>
   );
 };
+
+
 
 export default SideBarPerfil;
