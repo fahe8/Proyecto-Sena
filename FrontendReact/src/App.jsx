@@ -13,12 +13,17 @@ import Reservas from "./pages/Reservas/ReservasActivas";
 import RutasProtegidas from "./utils/rutasProtegidas";
 import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
+import CanchasPropietario from "./pages/PanelPropietario/CanchasPropietario";
+import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
+import PerfilPropietario from "./pages/PanelPropietario/PerfilPropietario";
+import ReservaPropietario from "./pages/PanelPropietario/ReservaPropietario";
 
 import iconoCorazon from "./assets/Perfil/corazon.svg";
 import iconoArchivo from "./assets/Perfil/archive.svg";
 import iconoReciente from "./assets/Perfil/recent.svg";
 import iconoPerfil from "./assets/Perfil/iconoPerfil.svg";
 import iconoUnlike from "./assets/Perfil/Unlike.svg";
+import IconoHome from "./assets/Inicio/Home.svg";
 
 function App() {
 
@@ -50,6 +55,29 @@ function App() {
     },
   ]
 
+  const opcionesEmpresario = [
+    {
+      nombre: "Inicio",
+      icono: IconoHome,
+      url: "/InterfazPropietario",
+    },
+    {
+      nombre: "Perfil ",
+      icono: iconoPerfil,
+      url: "/PerfilPropietario",
+    },
+    {
+      nombre: "Reservas",
+      icono: iconoReciente,
+      url: "/ReservaPropietario",
+    },
+    {
+      nombre: "Canchas",
+      icono: iconoArchivo,
+      url: "/CanchasPropietario",
+    },
+  ]
+
   return (
     <Router>
       <Routes>
@@ -78,16 +106,23 @@ function App() {
             <Route path="/historialReservas" element={<HistorialReservas />} />
             <Route path="/norecomendadas" element={<NoRecomendadas />} />
           </Route>
-
+        
 
         {/* Rutas de PROPIETARIO */}
 
         <Route element={<SideBarPerfil
               opciones={
-                opcionesUsuario
+                opcionesEmpresario
                 }
-              />}>
+              />
+            }
+          >
 
+            <Route path="/CanchasPropietario" element={<CanchasPropietario/>} />
+            <Route path="/InterfazPropietario" element={<InterfazPropietario />} />
+            <Route path="/PerfilPropietario" element={<PerfilPropietario />} />
+            <Route path="/ReservaPropietario" element={<ReservaPropietario />} />
+          
         </Route>
 
         </Route>
