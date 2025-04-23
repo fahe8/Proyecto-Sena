@@ -66,7 +66,7 @@ const CardEmpresa = ({ empresa, mostrarFavorito }) => {
 
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: empresa?.imagenes?.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -112,7 +112,7 @@ const CardEmpresa = ({ empresa, mostrarFavorito }) => {
               key={index}
               src={imagen}
               alt={`Imagen ${index + 1} de ${empresa?.nombre}`}
-              className="object-cover h-48 w-64 "
+              className="object-cover  h-48 w-64 "
             />
           ))}
         </Slider>
@@ -150,19 +150,17 @@ const CardEmpresa = ({ empresa, mostrarFavorito }) => {
         <div className="flex gap-4 justify-center my-2">
           {empresa?.servicios.map((servicio, index) => {
             if (!servicio?.tipo) return null;
-            console.log(servicio.tipo)
+
             // Normalizamos el tipo de servicio para ignorar tildes
             const tipoNormalizado = servicio?.tipo
               .normalize("NFD") // separa caracteres y acentos
               .replace(/[\u0300-\u036f]/g, "") // elimina los acentos
               .toLowerCase(); // convierte a minúsculas
 
-              console.log(tipoNormalizado)
-
             return (
               <div key={index} className="flex items-center h-5 w-5">
                 {iconosServicios[tipoNormalizado] &&
-                  React.createElement(iconosServicios[tipoNormalizado])}
+                  React.createElement(iconosServicios[tipoNormalizado])} 
               </div>
             );
           })}

@@ -10,6 +10,7 @@ import CardEmpresa from "./componentes/CardEmpresa";
 import { useEmpresas } from "../../Provider/EmpresasProvider";
 import balonroto from "../../assets/Inicio/balonRoto.png"
 import { empresaServicio } from "../../services/api";
+import CardLoader from "./componentes/CardLoader";
 
 
 const Inicio = () => {
@@ -41,10 +42,12 @@ const Inicio = () => {
         <div className="lg:hidden">
           <BusquedaFiltros />
         </div>
-        <section className="grid container mx-auto bg-[#fbfbfb] gap-4">
+        <section className="grid container mx-auto bg-white gap-4">
           {/* <!-- Seccion superior --> */}
           <SeccionHerramientas />
           {/* <!-- listado de canchas --> */}
+          
+          <CardLoader/>
           {filteredOptions.length > 0 ? (
             <ListaEmpresas empresas={filteredOptions} />
           ) : (
