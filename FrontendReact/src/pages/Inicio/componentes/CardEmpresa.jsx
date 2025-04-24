@@ -112,7 +112,7 @@ const CardEmpresa = ({ empresa, mostrarFavorito }) => {
               key={index}
               src={imagen}
               alt={`Imagen ${index + 1} de ${empresa?.nombre}`}
-              className="object-cover h-48 w-64 "
+              className="object-cover h-48 w-full "
             />
           ))}
         </Slider>

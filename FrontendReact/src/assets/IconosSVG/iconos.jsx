@@ -167,7 +167,7 @@ const StoreIcon = () => (
 
 const ParkingIcon = () => (
   <svg fill="#19df15" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" 
-	 width="800px" height="800px" viewBox="0 0 31.446 31.446"
+	 width="25px" height="25px" viewBox="0 0 31.446 31.446"
 	 xml:space="preserve">
 <g>
 	<g>
@@ -287,7 +287,7 @@ const StarIcon = () => (
 )
 
 const RestaurantIcon = () => (
-  <svg fill="#19df15" height="800px" width="800px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+  <svg fill="#19df15" height="25px" width="25px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
   viewBox="0 0 484.529 484.529" xml:space="preserve">
 <g id="XMLID_128_">
  <path id="XMLID_137_" d="M56.239,145.562c-2.128-8.271-3.374-16.85-3.374-25.655V91.303C19.885,132.704,0,185.015,0,241.955
