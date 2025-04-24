@@ -167,7 +167,7 @@ const StoreIcon = () => (
 
 const ParkingIcon = () => (
   <svg fill="#19df15" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" 
-	 width="800px" height="800px" viewBox="0 0 31.446 31.446"
+	 width="25px" height="25px" viewBox="0 0 31.446 31.446"
 	 xml:space="preserve">
 <g>
 	<g>
@@ -287,7 +287,7 @@ const StarIcon = () => (
 )
 
 const RestaurantIcon = () => (
-  <svg fill="#19df15" height="800px" width="800px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+  <svg fill="#19df15" height="25px" width="25px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
   viewBox="0 0 484.529 484.529" xml:space="preserve">
 <g id="XMLID_128_">
  <path id="XMLID_137_" d="M56.239,145.562c-2.128-8.271-3.374-16.85-3.374-25.655V91.303C19.885,132.704,0,185.015,0,241.955
@@ -321,4 +321,11 @@ const RestaurantIcon = () => (
 </g>
 </svg>
     )
-export { EyeIcon, EyeOffIcon, LetterIcon, KeyIcon, BathroomIcon, StoreIcon, ParkingIcon, RefereeIcon, BarIcon, WifiIcon,LeftArrowIcon,RightArrowIcon, StarIcon, RestaurantIcon};
+
+const CheckIcon = () => (
+  <svg width="800px" height="800px" viewBox="0 0 24 24" id="_24x24_On_Light_Checkmark" data-name="24x24/On Light/Checkmark" xmlns="http://www.w3.org/2000/svg">
+  <rect id="view-box" width="24" height="24" fill="#141124" opacity="0"/>
+  <path id="Shape" d="M5.341,12.247a1,1,0,0,0,1.317,1.505l4-3.5a1,1,0,0,0,.028-1.48l-9-8.5A1,1,0,0,0,.313,1.727l8.2,7.745Z" transform="translate(19 6.5) rotate(90)" fill="#141124"/>
+</svg>
+)
+export { EyeIcon, EyeOffIcon, LetterIcon, KeyIcon, BathroomIcon, StoreIcon, ParkingIcon, RefereeIcon, BarIcon, WifiIcon,LeftArrowIcon,RightArrowIcon, StarIcon, RestaurantIcon, CheckIcon};

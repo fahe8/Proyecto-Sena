@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import {
   signInWithGoogle,
@@ -11,13 +10,12 @@ import LogPopUp from "./components/logPopUp";
 import logogoogle from "../../assets/LogIn/simbolo-de-google.png";
 
 // Importaciones de funciones para interactuar con el backend
-import {
-  crearUsuarioEnBackend, // Función para crear un usuario en el backend usando email
-} from "./fetchBackendLogin"; // Archivo con funciones para comunicarse con el backend
 import Loading from "./components/Loading"; // Componente de carga
 import { manejarErroresFirebase } from "./manejarErroresFirebase"; // Función para manejar errores de Firebase
 import LazyBackground from "../../utils/LazyBackground.jsx";
 import { LetterIcon, KeyIcon, EyeIcon, EyeOffIcon } from "../../assets/IconosSVG/iconos.jsx"; // Iconos para el formulario
+import { usuarioServicio } from "../../services/api.js";
+import axios from "axios";
 
 // Definición del componente Login
 const Login = () => {
@@ -78,13 +76,25 @@ const Login = () => {
         }
 
         // Crea el usuario en la base de datos del backend
-        const email = { email: formData.email };
-        const usuarioCreado = await crearUsuarioEnBackend(email);
-        if (usuarioCreado) {
-          // Si el usuario se crea correctamente se muestra el mensaje de éxito
-          setPopupMessage("Felicidades!");
-          setPopupSubText("Tu usuario se creó correctamente.");
+        const usuarioCrear = {
+          id_usuario: result.userCredential.user.uid,
+          email: formData.email,
+        };
+        
+        try {
+          const usuarioCreado = await usuarioServicio.crear(JSON.stringify(usuarioCrear));
+          
+          if (usuarioCreado) {
+            setPopupMessage("Felicidades!");
+            setPopupSubText("Tu usuario se creó correctamente.");
+            setShowPopUp(true);
+          }
+        } catch (error) {
+          console.log("Error del backend:", error.response?.data);
+          setPopupMessage("Error");
+          setPopupSubText(error.response?.data?.message || "Error al crear el usuario");
           setShowPopUp(true);
+          throw error; // Re-throw to be caught by the outer catch block
         }
       } else {
         // Iniciar sesión con email y contraseña existentes
@@ -118,64 +128,92 @@ const Login = () => {
   // Función para iniciar sesión con Google
   const handleGoogleLogin = async () => {
     try {
-      const result = await signInWithGoogle(); // Llama a la función de autenticación con Google
+      const result = await signInWithGoogle(); 
       if (result) {
-        const { displayName, telefono, email } = result.user; // Extrae datos del usuario
+        console.log("Este es el result",result.user.uid)
+        const { displayName, telefono, email } = result.user;
+        let usuarioExistente;
 
-        const nombreCompleto = displayName.split(" "); // Divide el nombre completo en partes separadas
+        try {
+          usuarioExistente = await usuarioServicio.obtenerPorId(result.user.uid);
+        } catch (error) {
+          if (error.response?.status === 404) {
+            usuarioExistente = { success: false, message: "Usuario no encontrado" };
+          } else {
+            throw error; // Otros errores sí se manejan abajo
+          }
+        }
 
-        // Prepara los datos para enviar al backend
-        const datosActualizar = {
-          email,
-          nombre: nombreCompleto[0], // Primera parte (nombre)
-          apellido: nombreCompleto[1], // Segunda parte (apellido)
-          telefono: telefono || "", // Teléfono o cadena vacía si no existe
-        };
+        if (usuarioExistente.success === false) {
+          const nombreCompleto = displayName.split(" ");
+          const datosActualizar = {
+            id_usuario: result.user.uid,
+            email: email,
+            nombre: nombreCompleto[0],
+            apellido: nombreCompleto[1]
+          };
 
-        // Envía los datos al backend para crear/actualizar el usuario
-        const creado = await crearUsuarioEnBackend(datosActualizar);
-        console.log(creado.message); // Muestra el mensaje de respuesta en la consola
-
-        if (creado) {
-          // Si se creó/actualizó el usuario, muestra el popup de bienvenida
-          setPopupMessage("Bienvenido!");
+        console.log(datosActualizar)
+  
+          if (telefono) {
+            datosActualizar.telefono = telefono;
+          }
+  
+          const creado = await usuarioServicio.crear(JSON.stringify(datosActualizar));
+  
+          if (creado) {
+            setPopupMessage("Bienvenido!");
+            setPopupSubText("Has iniciado sesión correctamente con Google");
+            setShowPopUp(true);
+          } 
+        } else {
+          // Si el usuario ya existía, también mostramos mensaje de bienvenida
+          setPopupMessage("Bienvenido de nuevo!");
           setPopupSubText("Has iniciado sesión correctamente con Google");
           setShowPopUp(true);
         }
       }
     } catch (error) {
-      console.error("Error al iniciar sesión con Google:", error); // Muestra errores en la consola
+      console.error("Error al iniciar sesión con Google:", error);
+      setPopupMessage("Error");
+      setPopupSubText(error.response?.data?.message || "Error al autenticar con Google");
+      setShowPopUp(true);
     }
   };
+  
 
   return (
-    <LazyBackground  imageUrl="/src/assets/LogIn/background.webp" className="container-login w-screen h-screen">
+    <LazyBackground  imageUrl="/src/assets/LogIn/background.webp" className="p-0 m-0 relative bg-cover w-screen h-screen">
       {" "}
-      <div className="w-screen h-screen filtro flex items-center">
-        <div className="login-container relative">
+      <div className="flex absolute w-screen h-screen bg-[#00000037] items-center z-20">
+        <div className="relative w-110 p-[30px] px-10 bg-white rounded-[8px] font-[Arial] m-0 mx-auto shadow-md z-10">
+          <div className="flex justify-start gap-3 items-center mb-[20px]">
+            <div className="border-b-2 border-[#003044] px-4 py-[4px] text-[14px] text-[#33ea30] cursor-default">Usuario</div>
+            <a href="/formulario-empresa" className=" px-4 py-[4px] hover:border-[#003044] hover:border-b-2 hover:text-[#33ea30] text-[14px]">Empresa</a>
+          </div>
           {register ? (
-            <h2 className="register-tittle">Regístrate</h2>
+            <h2 className="text-center text-lg mb-5 font-semibold text-[#333]">Regístrate</h2>
           ) : (
-            <h2 className="register-tittle">Inicia sesión</h2>
+            <h2 className="text-center text-lg mb-5 font-semibold text-[#333]">Inicia sesión</h2>
           )}
-          <div className="social-buttons">
+          <div className="flex flex-col gap-[12px] mb-[25px]">
             <a
               id="google-button"
-              className="social-button"
+              className="flex items-center justify-center px-[15px] py-[12px] h-[46px] rounded-full border border-[#00c951] cursor-pointer text-[15px] transition-colors duration-200 text-[#333] bg-white hover:bg-[#d0ffd0]"
               onClick={handleGoogleLogin} >
-              <img src={logogoogle} alt="logo-google" />
+              <img src={logogoogle} className="h-[20px] w-[20px] mr-[12px] " alt="logo-google" />
               Continuar con Google
             </a>
           </div>
 
-          <div className="divider">o</div>
+          <div className="flex items-center text-center text-[#777] text-[14px] my-[20px] before:content-[''] before:flex-1 before:mr-[20px] before:border-b before:border-gray-300 after:content-[''] after:flex-1 after:border-b after:border-gray-300 after:ml-[20px]">o</div>
 
           <form onSubmit={handleSubmit}>
-            <div className="form-group relative">
-              <div className="icon-input">
+            <div className="relative mb-[20px]">
+              <div className="absolute top-[35px] left-[10px] text-[13px] text-[#777] pt-[5px] cursor-pointer">
                 <LetterIcon />
               </div>
-              <label htmlFor="email">Correo electrónico</label>
+              <label htmlFor="email" className="block mb-[8px] text-[15px] text-[#555]">Correo electrónico</label>
               <input
                 type="text"
                 id="email"
@@ -183,13 +221,14 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Ingresa tu correo electrónico..."
+                className="w-full pl-10 pr-4 py-3 h-[46px] border border-gray-300 rounded-md text-[15px]"
                 required
               />
             </div>
 
-            <div className="form-group password-container">
-              <label htmlFor="password">Contraseña</label>
-              <div className="icon-input">
+            <div className="form-group relative">
+              <label htmlFor="password" className="block mb-[8px] text-[15px] text-[#555]">Contraseña</label>
+              <div className="absolute top-[35px] left-[10px] text-[13px] text-[#777] pt-[5px] cursor-pointer">
                 <KeyIcon />
               </div>
               <input type={showPassword ? "text" : "password"} id="password"
@@ -197,41 +236,42 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Ingresa tu contraseña..."
+                className="w-full pl-10 pr-4 py-3 h-[46px] border border-gray-300 rounded-md text-[15px]"
                 required
               />
-              <div className="eye-icon" onClick={togglePasswordVisibility}>
-                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+              <div className="absolute top-[38px] right-[15px] text-[13px] text-[#777] pt-[5px] cursor-pointer" onClick={togglePasswordVisibility}>
+                {showPassword ? <EyeOffIcon /> : <EyeIcon /> }
               </div>
             </div>
 
-            <div className="aditional-options">
-              <a href="#" className={`forgot-password ${
+            <div className="flex items-center justify-between mb-[22px] text-[14px] my-5">
+              <a href="#" className={`block text-right text-[#009a3a] text-[14px] no-underline ${
                   register ? "hidden-button" : "block-button"
                 }`}>Olvidó su contraseña</a>
 
-              <div className="remember-me">
-                <input type="checkbox" id="rememberMe" name="rememberMe"
+              <div className="flex items-center no-underline"> 
+                <input type="checkbox" id="rememberMe" name="rememberMe" className="mr-2 ml-[2px] accent-[rgba(9,167,46,0.912)]"
                   checked={formData.rememberMe}
                   onChange={handleChange}/>
                 <label htmlFor="rememberMe">Recuérdame</label>
               </div>
             </div>
 
-            <button type="submit" className="register-button">
+            <button type="submit" className="w-full h-[46px] bg-[#00c951] border-none text-white text-[16px] rounded-[25px] mb-[15px] cursor-pointer hover:bg-[#05983b] duration-200 transition ease-in-out">
               {register ? "Registrarse" : "Iniciar sesión"}
             </button>
           </form>
 
-          <div className="bottom-divider"></div>
-          <div className="changeSign">
-            <p className={`login-prompt`}>
+          <div className="mb-[20px] mt-[15px] border-b border-[#ddd] "></div>
+          <div className="flex justify-between mt-[20px] text-[17px] text-[#555]">
+            <p className={` text-[#555]`}>
               {register ? "¿Ya tienes una cuenta?" : "¿Eres nuevo aquí?"}
             </p>
             <a
               onClick={() => {
                 setRegister(!register);
               }}
-              className={`login-button`}>
+              className={`text-[#00c951] underline cursor-pointer hover:text-[#029d02]`}>
               {register ? "Iniciar sesión" : "Registrarse"}
             </a>
           </div>

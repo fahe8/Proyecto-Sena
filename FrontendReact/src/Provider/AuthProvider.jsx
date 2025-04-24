@@ -6,6 +6,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState("");
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Nuevo estado de carga
 
   const auth = getAuth();
@@ -15,11 +16,13 @@ export const AuthProvider = ({ children }) => {
       if (user) {
         console.log("Usuario autenticado:", user);
         setIsAuthenticated(true);
+        setUser(user);
         const token = await user.getIdToken();
         setToken(token);
       } else {
         console.log("Usuario no autenticado");
         setIsAuthenticated(false);
+        setUser(null);
         setToken("");
       }
       setLoading(false); // Marcar como finalizada la verificación
@@ -29,7 +32,7 @@ export const AuthProvider = ({ children }) => {
   }, [auth]);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, token, loading }}>
+    <AuthContext.Provider value={{ isAuthenticated, token, loading, user }}>
       {children}
     </AuthContext.Provider>
   );

@@ -104,11 +104,11 @@ export const BotonPerfil = () => {
         </button>
       ) : (
         // Botones de iniciar sesión y registrarse (cuando el usuario no está autenticado)
-        <div className="flex gap-2">
+        <div className="flex gap-2 text-center items-center">
          
           <Link
             to="/login"
-            className=" text-sm lg:text-lg flex items-center py-1 px-1.5 md:px-4 border-2 text-green-400 hover:text-white  border-green-400 hover:bg-green-500 rounded-2xl  cursor-pointer"
+            className="text-sm lg:text-[17px] flex justify-center items-center py-1 px-4 bg-[#2fc92c] rounded-2xl hover:bg-green-600 text-[#f6f6f6] cursor-pointer shadow-md transition-all duration-250"
           >
             Ingresar
           </Link>
@@ -134,15 +134,7 @@ export const BotonPerfil = () => {
             </button>
           </div>
         ) : (
-          // Menú para usuarios no autenticados
-          <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg cursor-pointer z-50">
-            <Link to={"/nueva"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-              Pon tus canchas
-            </Link>
-            <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200 rounded-b-lg">
-              Centro de ayuda
-            </Link>
-          </div>
+         <></>
         ))}
     </div>
   );
