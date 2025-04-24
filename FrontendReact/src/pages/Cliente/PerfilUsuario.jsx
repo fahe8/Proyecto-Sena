@@ -4,6 +4,7 @@ import canchasi from "./imagen/canchasin.png";
 import Header from "../../Header/Header";
 import Calendario from "./Calendario/Calendario";
 import insignia from "./imagen/insignia.png";
+import { useEmpresas } from "../../Provider/EmpresasProvider";
  
 
 const imagen = {
@@ -13,6 +14,9 @@ const imagen = {
 // Componente para el Carrusel
 const Carousel = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const {empresas} = useEmpresas()
+
+  console.log(empresas)
 
   // Función para moverse a la siguiente imagen
   const nextSlide = () => {
@@ -36,6 +40,7 @@ const Carousel = ({ images }) => {
 
     return () => clearInterval(interval);
   }, []);
+
 
   return (
     <div className="relative w-full rounded-lg overflow-hidden mb-6">

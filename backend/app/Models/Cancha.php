@@ -15,6 +15,7 @@ class Cancha extends Model
         'NIT',
         'id_estado_cancha',
         'id_tipo_cancha',
+        'imagen'
     ];
     
     protected $casts = [

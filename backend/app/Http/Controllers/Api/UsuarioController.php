@@ -19,8 +19,7 @@ class UsuarioController extends ApiController
         try {
             $request->validate([
                 "id_usuario" => 'required|unique:usuario',
-                'email' => 'email|unique:usuario',
-
+                'email' => 'email|unique:usuario'
             ]);
 
             $usuario = Usuario::create($request->all());
@@ -44,6 +43,7 @@ class UsuarioController extends ApiController
                 'apellido' => 'sometimes|string',
                 'telefono' => 'sometimes|string',
                 'email' => 'sometimes|email|unique:usuario,email,' . $usuario->id_usuario . ',id_usuario',
+                // 'imagenes' => 'required|url|regex:/^https?:\/\/.*\.cloudinary\.com\/.*/',
                 'bloqueado' => 'sometimes|boolean'
             ]);
 

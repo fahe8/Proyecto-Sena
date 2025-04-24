@@ -14,6 +14,7 @@ class CreateUsuariosTable extends Migration
             $table->string('apellido')->default('');
             $table->string('telefono')->default('');
             $table->string('email');
+            $table->string('imagen')->default('');
             $table->boolean('bloqueado')->default(false);
             $table->timestamps();
         });

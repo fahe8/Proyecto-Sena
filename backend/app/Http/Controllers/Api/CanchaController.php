@@ -25,9 +25,11 @@ class CanchaController extends ApiController
             $request->validate([
                 'nombre' => 'required|string',
                 'NIT' => 'required|exists:empresa,NIT',
+                'precio' => 'required|integer|min:0',
+                // 'imagen'=>'required|string',
                 'id_tipo_cancha' => 'required|exists:tipo_cancha,id_tipo_cancha',
                 'id_estado_cancha' => 'required|exists:estado_cancha,id_estado_cancha',
-                'precio' => 'required|integer|min:0'
+
             ]);
 
             $cancha = Cancha::create($request->all());
@@ -62,10 +64,13 @@ class CanchaController extends ApiController
 
             $request->validate([
                 'nombre' => 'required|string',
-                'descripcion' => 'required|string',
                 'NIT' => 'required|exists:empresa,NIT',
+                // 'imagen'=>'required|string',
+                'precio' => 'required|integer|min:0',
+
                 'id_tipo_cancha' => 'required|exists:tipo_cancha,id_tipo_cancha',
                 'id_estado_cancha' => 'required|exists:estado_cancha,id_estado_cancha'
+                
             ]);
 
             $cancha->update($request->all());

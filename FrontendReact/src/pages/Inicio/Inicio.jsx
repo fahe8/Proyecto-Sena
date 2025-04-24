@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
@@ -15,20 +15,20 @@ import CardLoader from "./componentes/CardLoader";
 
 const Inicio = () => {
   const { filteredOptions, setFilteredOptions, setEmpresas } = useEmpresas();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchEmpresas = async () => {
       try {
         const response = await empresaServicio.obtenerTodos();
         if (response.data.success) {
-          console.log(
-            response.data.data,
-          )
           setEmpresas(response.data.data);
           setFilteredOptions(response.data.data);
         }
       } catch (error) {
         console.error("Error fetching empresas:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -43,12 +43,15 @@ const Inicio = () => {
           <BusquedaFiltros />
         </div>
         <section className="grid container mx-auto bg-white gap-4">
-          {/* <!-- Seccion superior --> */}
           <SeccionHerramientas />
-          {/* <!-- listado de canchas --> */}
           
-          <CardLoader/>
-          {filteredOptions.length > 0 ? (
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-self-center">
+              {[...Array(8)].map((_, index) => (
+                <CardLoader key={index} />
+              ))}
+            </div>
+          ) : filteredOptions.length > 0 ? (
             <ListaEmpresas empresas={filteredOptions} />
           ) : (
             <div className="w-full flex flex-col justify-center items-center">

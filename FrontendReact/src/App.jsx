@@ -29,6 +29,12 @@ function App() {
 
   const opcionesUsuario = [
     {
+      nombre: "Inicio",
+      icono: IconoHome,
+      url: "/",
+    },
+
+    {
       nombre: "Información Personal",
       icono: iconoPerfil,
       url: "/perfil",
