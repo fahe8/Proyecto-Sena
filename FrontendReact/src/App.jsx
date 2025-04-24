@@ -10,7 +10,7 @@ import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
 import NoRecomendadas from "./pages/NoRecomendadas/NoRecomendadas";
 import Reservas from "./pages/Reservas/ReservasActivas";
-import RutasProtegidas from "./utils/rutasProtegidas";
+import RutasProtegidas from "./utils/RutasProtegidas";
 import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 import CanchasPropietario from "./pages/PanelPropietario/CanchasPropietario";
@@ -110,7 +110,7 @@ function App() {
             <Route path="/perfil" element={<PerfilPage />} />
             <Route path="/reservasactivas" element={<Reservas />} />
             <Route path="/historialReservas" element={<HistorialReservas />} />
-            <Route path="/norecomendadas" element={<NoRecomendadas />} />
+            {/* <Route path="/norecomendadas" element={<NoRecomendadas />} /> */}
           </Route>
         
 

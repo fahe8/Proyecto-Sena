@@ -3,6 +3,7 @@ import cancha2 from "./imagen/cancha2.jpg";
 import canchasi from "./imagen/canchasin.png";
 import Header from "../../Header/Header";
 import Calendario from "./Calendario/Calendario";
+import {iconosServicios} from "../../utils/iconosServicios";
 import insignia from "./imagen/insignia.png";
 import { useEmpresas } from "../../Provider/EmpresasProvider";
  
@@ -58,7 +59,7 @@ const Carousel = ({ images }) => {
         className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white/90 rounded-full p-2 shadow-md"
         aria-label="Anterior"
       >
-        {imagen.flechaIzq}
+        {React.createElement(iconosServicios["flechaizq"])}
       </button>
 
       <button
@@ -66,7 +67,7 @@ const Carousel = ({ images }) => {
         className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white/90 rounded-full p-2 shadow-md"
         aria-label="Siguiente"
       >
-        {imagen.flecha}
+        {React.createElement(iconosServicios["flechader"])}
       </button>
 
       {/* Indicadores */}
@@ -87,14 +88,12 @@ const Carousel = ({ images }) => {
 };
 
 const Perfil = () => {
-  const [selectedField, setSelectedField] = useState("Fútbol 7");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  
   const [isOpen, setIsOpen] = useState(true);
-  const [showBookingSummary, setShowBookingSummary] = useState(false);
   const [showMobileCalendar, setShowMobileCalendar] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
   
-  const [reviews, setReviews] = useState([
+  const [reviews] = useState([
     {
       id: 1,
       name: "Lucas Morales",
@@ -122,60 +121,40 @@ const Perfil = () => {
       comment:
         "La cancha está en perfectas condiciones, y el proceso de reserva fue rápido y sin complicaciones. El césped se siente casi natural. Fue una gran experiencia para todos.",
     },
+    {
+      id: 4,
+      name: "leonidas",
+      date: "13/04/2023",
+      fieldType: "Fútbol 7",
+      rating: 5,
+      comment:
+        "La cancha está en perfectas condiciones, y el proceso de reserva fue rápido y sin complicaciones. El césped se siente casi natural. Fue una gran experiencia para todos.",
+    },
+    {
+      id: 5,
+      name: "meliodas",
+      date: "13/04/2023",
+      fieldType: "Fútbol 7",
+      rating: 5,
+      comment:
+        "La cancha está en perfectas condiciones, y el proceso de reserva fue rápido y sin complicaciones. El césped se siente casi natural. Fue una gran experiencia para todos.",
+    },
+    {
+      id: 6,
+      name: "carlos guerrero",
+      date: "13/04/2023",
+      fieldType: "Fútbol 7",
+      rating: 5,
+      comment:
+        "La cancha está en perfectas condiciones, y el proceso de reserva fue rápido y sin complicaciones. El césped se siente casi natural. Fue una gran experiencia para todos.",
+    },
   ]);
-  
-  const [newReview, setNewReview] = useState({
-    name: "Usuario Actual",
-    fieldType: selectedField,
-    rating: 5,
-    comment: "",
-  });
 
   // Imágenes para el carrusel
   const carouselImages = [cancha2, canchasi];
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const selectField = (field) => {
-    setSelectedField(field);
-    setIsDropdownOpen(false);
-    setNewReview({ ...newReview, fieldType: field });
-  };
-
   const toggleOpenStatus = () => {
     setIsOpen(!isOpen);
-  };
-
-  const handleReviewSubmit = (e) => {
-    e.preventDefault();
-    const today = new Date();
-    const formattedDate = `${today.getDate().toString().padStart(2, "0")}/${(
-      today.getMonth() + 1
-    )
-      .toString()
-      .padStart(2, "0")}/${today.getFullYear()}`;
-
-    const review = {
-      id: reviews.length + 1,
-      name: newReview.name,
-      date: formattedDate,
-      fieldType: newReview.fieldType,
-      rating: newReview.rating,
-      comment: newReview.comment,
-    };
-
-    setReviews([review, ...reviews]);
-    setNewReview({ ...newReview, comment: "", rating: 5 });
-  };
-
-  const handleRatingChange = (rating) => {
-    setNewReview({ ...newReview, rating });
-  };
-
-  const handlePayment = () => {
-    setShowBookingSummary(true);
   };
 
   return (
@@ -187,9 +166,9 @@ const Perfil = () => {
       <div className="container mx-auto px-4 py-6">
         
         {/* Primer contenedor: Info a la izquierda y calendario a la derecha */}
-        <div className="flex flex-col md:flex-row gap-6 mb-6 px-25">
+        <div className="flex flex-col md:flex-row gap-6 mb-6 px-10 lg:px-25">
           {/* Columna izquierda: Información del lugar (hasta valoración general) */}
-          <div className="flex-1">
+          <div className="flex-1  lg:mr-15">
             <div>
               {/* Venue header */}
               <div className="flex flex-col sm:flex-row items-start mb-4">
@@ -200,19 +179,19 @@ const Perfil = () => {
                   <div className="flex-1">
                     <h2 className="font-bold text-lg">Canchas MeteGol</h2>
                     <div className="flex">
-                      {imagen.gps}
-                      <p className="text-sm text-gray-500">
+                      
+                    </div>
+                    <p className="text-sm text-gray-500">
                         Calle 3 N°00-00 Barrio salado
                       </p>
-                    </div>
                   </div>
                 </div>
 
                 <div className="flex flex-row items-center ml-auto">
-                  <span className="flex flex-col items-center text-xs mr-4">
-                    <span className="mr-1 w-8 h-auto">{imagen.insignia}</span>
+                  <div className="flex flex-col items-center text-xs mr-4">
+                    <img src={insignia} alt="insignia" className="w-8"/>
                     <p className="font-semibold">Preferido</p>
-                  </span>
+                  </div>
 
                   <div className="text-sm text-gray-600">
                     <button
@@ -256,7 +235,7 @@ const Perfil = () => {
               </p>
 
               {/* Canchas disponibles */}
-              <div className="mb-6">
+              <div className="mb-6 w-70">
                 <h3 className="font-medium mb-2">Canchas disponibles:</h3>
                 <div className="space-y-2">
                   <div className="flex justify-between bg-gray-100 px-3 py-2 rounded-md">
@@ -281,27 +260,32 @@ const Perfil = () => {
               <hr className="my-6" />
 
               {/* Servicios adicionales */}
-              <div className="mb-6">
+              <div className="mb-6 w-70">
                 <h3 className="font-medium mb-3">Servicios adicionales:</h3>
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-col gap-4">
                   <div className="flex items-center text-sm">
-                    <span className="mr-2">{imagen.arbitro}</span>
+                    <span className="mr-2">
+                      {React.createElement(iconosServicios["parqueadero"])}</span>
                     <span>Árbitro</span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <span className="mr-2">{imagen.baños}</span>
+                    <span className="mr-2">
+                    {React.createElement(iconosServicios["banos"])}</span>
                     <span>Baños</span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <span className="mr-2">{imagen.Tienda}</span>
+                    <span className="mr-2">
+                    {React.createElement(iconosServicios["cafeteria"])}</span>
                     <span>Tienda</span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <span className="mr-2">{imagen.bar}</span>
+                    <span className="mr-2">
+                    {React.createElement(iconosServicios["bar"])}</span>
                     <span>Bar</span>
                   </div>
                   <div className="flex items-center text-sm">
-                    <span className="mr-2">{imagen.carro}</span>
+                    <span className="mr-2">
+                    {React.createElement(iconosServicios["parqueadero"])}</span>
                     <span>Parqueadero</span>
                   </div>
                 </div>
@@ -310,20 +294,22 @@ const Perfil = () => {
               <hr className="my-6" />
 
               {/* Valoración general de usuarios */}
-              <div>
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-medium">Valoración general:</h3>
+
+              <div className="flex items-center mb-3">
+                  <h3 className="font-medium mr-20">Valoración general:</h3>
                   <div className="flex items-center">
-                    <span className="text-yellow-500 mr-1">
-                      {imagen.estrella}
-                    </span>
-                    <span className="font-medium">4.8</span>
+                    <span className="text-yellow-500 mr-1"></span>
+                    <span className="font-medium mr-1.5">4.8</span>
                     <span className="text-gray-500 text-sm ml-1">(23)</span>
-                    <div className="ml-3 bg-gray-100 px-2 py-1 rounded-md text-sm">
-                      {reviews.length} Reseñas
+                    <div className="bg-black w-[1px] h-10 mx-5 "></div>  
+                    <div className="  py-1 rounded-md text-[18px] text-center">
+                    {reviews.length} <p className="text-[13px] underline "> Reseñas </p>
                     </div>
+                    
                   </div>
                 </div>
+              <div className="w-70">
+                
 
                 <div className="space-y-1">
                   <div className="flex items-center">
@@ -370,51 +356,51 @@ const Perfil = () => {
         </div>
 
         {/* Segundo contenedor Opiniones de usuarios (ancho completo) */}
-        <div className="mt-8 px-25">
-          <h3 className="font-medium mb-3">Reseñas de usuarios:</h3>
+        <div className="mt-8 px-10 lg:px-25">
+  <h3 className="font-medium mb-3">Reseñas de usuarios:</h3>
 
-          {/* Mostrar reseñas de usuarios */}
-          <div className="space-y-6">
-            {reviews
-              .slice(0, showAllReviews ? reviews.length : 3)
-              .map((review) => (
-                <div key={review.id} className="border-b pb-6">
-                  <div className="flex flex-col sm:flex-row sm:justify-between mb-2">
-                    <div className="flex items-center mb-2 sm:mb-0">
-                      <div className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center mr-2">
-                        <span className="text-gray-600">👤</span>
-                      </div>
-                      <span className="font-medium">{review.name}</span>
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {review.date} - {review.fieldType}
-                    </div>
-                  </div>
-                  <div className="flex text-yellow-500 mb-2">
-                    {Array(5)
-                      .fill(0)
-                      .map((_, i) => (
-                        <span key={i}>
-                          {i < review.rating ? "★" : "☆"}
-                        </span>
-                      ))}
-                  </div>
-                  <p className="text-sm">"{review.comment}"</p>
-                </div>
-              ))}
-
-            <div className="text-center">
-              <button
-                className="bg-gray-200 text-gray-700 px-6 py-2 rounded-md text-sm"
-                onClick={() => setShowAllReviews(!showAllReviews)}
-              >
-                {showAllReviews
-                  ? "Mostrar menos"
-                  : "Mostrar todas las reseñas"}
-              </button>
+  {/* Mostrar reseñas de usuarios */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-25 gap-y-14">
+    {reviews
+      .slice(0, showAllReviews ? reviews.length : 4)
+      .map((review) => (
+        <div key={review.id} className="border-b pb-6 ">
+          <div className="flex flex-col sm:flex-row sm:justify-between mb-2">
+            <div className="flex items-center mb-2 sm:mb-0">
+              <div className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center mr-2">
+                <span className="text-gray-600">👤</span>
+              </div>
+              <span className="font-medium">{review.name}</span>
+            </div>
+            <div className="text-sm text-gray-500">
+              {review.date} - {review.fieldType}
             </div>
           </div>
+          <div className="flex text-yellow-500 mb-2">
+            {Array(5)
+              .fill(0)
+              .map((_, i) => (
+                <span key={i}>
+                  {i < review.rating ? "★" : "☆"}
+                </span>
+              ))}
+          </div>
+          <p className="text-sm">"{review.comment}"</p>
         </div>
+      ))}
+
+    {/* Botón para mostrar más */}
+    <div className="col-span-full text-center mt-4">
+      <button
+        className="bg-gray-200 text-gray-700 px-6 py-2 rounded-md text-sm"
+        onClick={() => setShowAllReviews(!showAllReviews)}
+      >
+        {showAllReviews ? "Mostrar menos" : "Mostrar todas las reseñas"}
+      </button>
+    </div>
+  </div>
+</div>
+
       </div>
 
       {/* Botón flotante para reservar (visible solo en móvil) */}
@@ -438,7 +424,6 @@ const Perfil = () => {
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
-            <span className="text-xs font-medium">Reservar</span>
           </div>
         </button>
       </div>

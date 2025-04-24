@@ -19,20 +19,21 @@ const Favoritos = () => {
   }, []);
 
   return (
-    <div className=" w-full py-8 px-14">
-      <h2 className="text-2xl font-bold mb-4 justify-self-center">Favoritos</h2>
+    <div className="w-full py-8 px-14">
+      <h2 className="text-2xl font-bold mb-4 justify-self-center text-center">Favoritos</h2>
       <hr />
       {favoritos.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-self-center">
+        <div className="flex flex-wrap justify-center gap-6 mt-10">
           {favoritos.map((empresa) => (
             <CardEmpresa key={empresa.id} mostrarFavorito={true} empresa={empresa} />
           ))}
         </div>
       ) : (
-        <p className="text-gray-700">No tienes empresas en favoritos.</p>
+        <p className="text-gray-700 text-center">No tienes empresas en favoritos.</p>
       )}
     </div>
   );
+  
 };
 
 export default Favoritos;

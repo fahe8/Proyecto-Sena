@@ -1,5 +1,5 @@
 
-import { BathroomIcon, WifiIcon, StoreIcon, ParkingIcon, RestaurantIcon} from "../assets/IconosSVG/iconos";
+import { BathroomIcon, WifiIcon, StoreIcon, ParkingIcon, RestaurantIcon, RefereeIcon, BarIcon, LeftArrowIcon, RightArrowIcon} from "../assets/IconosSVG/iconos";
 
 const iconosServicios = {
     banos: BathroomIcon,
@@ -8,8 +8,10 @@ const iconosServicios = {
     wifi: WifiIcon,
     restaurante: RestaurantIcon,
     cafeteria: RestaurantIcon,
-    bar: RestaurantIcon,
-    arbitro: RestaurantIcon,
+    bar: BarIcon,
+    arbitro: RefereeIcon,
+    flechaizq: LeftArrowIcon,
+    flechader: RightArrowIcon,
   };
 
   
