@@ -13,8 +13,9 @@ class CreateCanchaTable extends Migration
             $table->string("nombre");
             $table->integer("precio")->unsigned();
             $table->unsignedBigInteger('NIT');
-            $table->string("id_estado_cancha");
+            $table->string("id_estado_cancha")->default('disponible');
             $table->string("id_tipo_cancha");
+            $table->string('imagen');
 
             $table->foreign('id_estado_cancha')->references('id_estado_cancha')->on('estado_cancha');
             $table->foreign('NIT')->references('NIT')->on('empresa');

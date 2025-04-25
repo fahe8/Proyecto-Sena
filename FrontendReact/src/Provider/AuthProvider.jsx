@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     });
 
     return () => unsubscribe(); // Limpiar el listener al desmontar
-  }, [auth]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, token, loading, user }}>

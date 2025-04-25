@@ -29,6 +29,12 @@ function App() {
 
   const opcionesUsuario = [
     {
+      nombre: "Inicio",
+      icono: IconoHome,
+      url: "/",
+    },
+
+    {
       nombre: "Información Personal",
       icono: iconoPerfil,
       url: "/perfil",
@@ -84,7 +90,7 @@ function App() {
         <Route path="/" element={<Inicio />} />
         <Route path="/nueva" element={<NuevaPagina />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/empresa/:nombre" element={<Cliente />} />
+        <Route path="/empresa/:id" element={<Cliente />} />
         <Route path="/formulario-empresa" element={<FormularioEmpresa />} />
 
         {/* Rutas protegidas */}
@@ -104,7 +110,7 @@ function App() {
             <Route path="/perfil" element={<PerfilPage />} />
             <Route path="/reservasactivas" element={<Reservas />} />
             <Route path="/historialReservas" element={<HistorialReservas />} />
-            <Route path="/norecomendadas" element={<NoRecomendadas />} />
+            {/* <Route path="/norecomendadas" element={<NoRecomendadas />} /> */}
           </Route>
         
 
