@@ -43,7 +43,7 @@ class UsuarioController extends ApiController
                 'apellido' => 'sometimes|string',
                 'telefono' => 'sometimes|string',
                 'email' => 'sometimes|email|unique:usuario,email,' . $usuario->id_usuario . ',id_usuario',
-                // 'imagenes' => 'required|url|regex:/^https?:\/\/.*\.cloudinary\.com\/.*/',
+                'imagen' => 'required|url',
                 'bloqueado' => 'sometimes|boolean'
             ]);
 

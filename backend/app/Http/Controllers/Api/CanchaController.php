@@ -26,7 +26,7 @@ class CanchaController extends ApiController
                 'nombre' => 'required|string',
                 'NIT' => 'required|exists:empresa,NIT',
                 'precio' => 'required|integer|min:0',
-                // 'imagen'=>'required|string',
+                'imagen'=>'required|url',
                 'id_tipo_cancha' => 'required|exists:tipo_cancha,id_tipo_cancha',
                 'id_estado_cancha' => 'required|exists:estado_cancha,id_estado_cancha',
 

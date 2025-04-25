@@ -90,7 +90,7 @@ function App() {
         <Route path="/" element={<Inicio />} />
         <Route path="/nueva" element={<NuevaPagina />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/empresa/:nombre" element={<Cliente />} />
+        <Route path="/empresa/:id" element={<Cliente />} />
         <Route path="/formulario-empresa" element={<FormularioEmpresa />} />
 
         {/* Rutas protegidas */}

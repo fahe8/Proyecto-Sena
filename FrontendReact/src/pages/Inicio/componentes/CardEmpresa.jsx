@@ -79,7 +79,7 @@ const CardEmpresa = ({ empresa, mostrarFavorito }) => {
       className={`w-64 bg-[#fdfdfd] rounded-2xl shadow-lg cursor-pointer overflow-hidden  transition-transform duration-300 relative mb-10 ${
         mostrarFavorito ? "hover:scale-103" : "none"
       } `}
-      onClick={() => navigate(`/empresa/${empresa?.slug}`)}
+      onClick={() => navigate(`/empresa/${empresa?.NIT}`)}
     >
       <div className="relative">
         {mostrarFavorito && (
