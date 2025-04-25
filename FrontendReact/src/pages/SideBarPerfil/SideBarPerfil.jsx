@@ -46,16 +46,16 @@ const SideBarPerfil = ({opciones = []}) => {
     };
 
   return (
-    <div className="flex flex-row relative h-screen">
+    <div className="flex flex-row relative min-h-screen">
       
       <div
         ref={sidebarRef}
-        className="fixed h-screen py-3 w-auto group-hover:max-w-xs bg-[#003044] group flex flex-col justify-between z-20"
+        className="fixed h-screen py-3 w-auto group-hover:max-w-xs bg-[#003044] group flex flex-col z-20"
       >
         <div className="flex items-center justify-center cursor-pointer" onClick={() => navigate("/")}>
           <img src={logo} className="w-8 h-auto" alt="Logo-MiCanchaYa" />
         </div>
-        <ul className="space-y-15  flex-col justify-center items-center  ">
+        <ul className="grid justify-between items-center h-full  ">
           { opciones?.map((opcion, index) => (
             <li
               key={index}
@@ -76,9 +76,7 @@ const SideBarPerfil = ({opciones = []}) => {
               </a>
             </li>
           ))}
-        </ul>
-
-        <div className="flex items-center hover:bg-red-500 cursor-pointer w-full p-2 " onClick={handleLogout}>
+           <div className="flex items-center hover:bg-red-500 cursor-pointer w-full p-2 " onClick={handleLogout}>
           <a href="" className="flex items-center w-full text-center gap-3">
           <img src={iconoCerrarSesion} alt={""} className="w-6 h-6 filter invert justify-start"/>
           
@@ -87,6 +85,10 @@ const SideBarPerfil = ({opciones = []}) => {
           </span>
           </a>
         </div>
+          
+        </ul>
+
+       
       </div>
       <div style={{ width: sidebarWidth + "px" }}></div>
       <Outlet />

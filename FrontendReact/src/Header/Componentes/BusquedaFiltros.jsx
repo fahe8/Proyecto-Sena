@@ -58,7 +58,6 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
     "Futbol 11",
   ];
 
-  const servicios = ["baños", "tienda", "parqueadero", "wifi", "restaurante"];
   const cerrarModal = () => {
     enviarFiltros();
     setMostarModal(false);
@@ -74,15 +73,33 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
   };
 
   const enviarFiltros = () => {
-    setFilteredOptions(
-      empresas.filter(
-        (empresa) =>
-          filtros.tiposCanchas.every((tipo) =>
-            empresa.tipoCanchas.includes(tipo)
-          ) &&
-          filtros.servicios.every((tipo) => empresa.servicios.includes(tipo))
-      )
-    );
+    const removeAccents = (str) => {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    };
+
+    const filteredEmpresas = empresas.filter((empresa) => {
+      
+      const tiposCanchasMatch = filtros.tiposCanchas.length === 0 || 
+        filtros.tiposCanchas.every((tipo) => 
+          empresa.tiposCanchas && empresa.tiposCanchas.includes(tipo)
+        );
+      
+      const serviciosMatch = filtros.servicios.length === 0 || 
+        filtros.servicios.every((servicio) => {
+          return empresa.servicios && 
+            empresa.servicios.some(s => {
+              if (!s.tipo) return false;
+              // Normalize both strings to ignore accents and case
+              const normalizedServicio = removeAccents(servicio.toLowerCase());
+              const normalizedTipo = removeAccents(s.tipo.toLowerCase());
+              return normalizedTipo === normalizedServicio;
+            });
+        });
+      
+      return tiposCanchasMatch && serviciosMatch;
+    });
+    
+    setFilteredOptions(filteredEmpresas);
     contadorDeFiltros();
   };
 
@@ -93,7 +110,7 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
         className="relative bg-[#f6f6f6] w-11 lg:w-20 h-7 cursor-pointer flex shadow-md  justify-center border border-gray-300 rounded-md  hover:bg-gray-300 transition-all duration-300 ease-in-out items-center"
       >
         {contadorFiltros > 0 && <div className="absolute w-5 h-5 rounded-full bg-red-500 right-0 bottom-0 translate-2">
-          <p className="text-sm">{contadorFiltros}</p>
+          <p className="text-sm text-white">{contadorFiltros}</p>
         </div>}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -119,71 +136,82 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-[600px]  bg-white rounded-2xl p-8"
+            className="w-[600px] max-h-[95vh] bg-white rounded-2xl shadow-2xl flex flex-col"
           >
-            <div className="flex justify-end pr-4">
-              <img
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-3xl py-3 font-bold text-[#003044] px-8">FILTROS</h2>
+              <button
                 onClick={cerrarModal}
-                className="cursor-pointer"
-                src={close}
-                alt="icono de cerrar"
-                width={40}
-              />
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              >
+                <img src={close} alt="icono de cerrar" width={24} height={24} />
+              </button>
             </div>
-            <div className="flex flex-col gap-6">
-              <p className="text-center text-2xl font-bold">FILTROS</p>
-              <div>
-                {" "}
-                <p>Tipos de canchas</p>
-                <div className="flex flex-wrap gap-4 mt-2">
+
+            {/* Make only this section scrollable */}
+            <div className="space-y-4 overflow-y-auto pr-2 flex-1 px-8 max-h-[60vh]">
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-gray-700">Tipos de canchas</h3>
+                <div className="flex flex-wrap gap-3">
                   {tiposCanchas.map((tipoCancha) => (
-                    <p
+                    <button
+                      key={tipoCancha}
                       onClick={() => agregarFiltros("tiposCanchas", tipoCancha)}
-                      className={`border-2 border-green-300 rounded-2xl px-2 cursor-pointer hover:bg-green-300 text-sm ${
-                        filtros.tiposCanchas.includes(tipoCancha) &&
-                        "bg-green-400"
+                      className={`px-4 py-2 rounded-full border-2 transition-all duration-200 ${
+                        filtros.tiposCanchas.includes(tipoCancha)
+                          ? 'border-[#00c951] bg-[#00c951] text-white'
+                          : 'border-gray-300 hover:border-[#00c951] hover:bg-[#00c95110]'
                       }`}
                     >
                       {tipoCancha}
-                    </p>
+                    </button>
                   ))}
                 </div>
               </div>
-              <div className="h-[2px] bg-gray-200"></div>
-              <div>
-                {" "}
-                <p>Servicios</p>
-                <div className="flex flex-wrap gap-4 mt-2">
-                  {servicios.map((servicio) => (
-                    <div
-                      onClick={() => agregarFiltros("servicios", servicio)}
-                      className={`border-2 border-green-300 rounded-2xl cursor-pointer hover:bg-green-300 flex px-2 text-sm ${
-                        filtros.servicios.includes(servicio) && "bg-green-400"
-                      }`}
-                    >
-                      <p>{servicio}</p>
-                      <span>{iconosServicios[servicio]}</span>
-                    </div>
-                  ))}
+              <div className="h-px bg-gray-200"/>
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-gray-700">Servicios disponibles</h3>
+                <div className="flex flex-wrap gap-3">
+                  {Object.keys(iconosServicios).map((servicio) => {
+                    const IconComponent = iconosServicios[servicio];
+                    return (
+                      <button
+                        key={servicio}
+                        onClick={() => agregarFiltros("servicios", servicio)}
+                        className={`px-4 py-2 rounded-full border-2 transition-all duration-200 flex items-center gap-2 ${
+                          filtros.servicios.includes(servicio)
+                            ? 'border-[#00c951] bg-[#00c951] text-white'
+                            : 'border-gray-300 hover:border-[#00c951] hover:bg-[#00c95110]'
+                        }`}
+                      >
+                        <span className={filtros.servicios.includes(servicio) ? 'text-white' : 'text-gray-700'}>
+                          {IconComponent && <IconComponent className="w-5 h-5" />}
+                        </span>
+                        <span className="capitalize">{servicio}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-              <div className="flex justify-center items-center gap-4">
-                <p
-                  onClick={limpiarFiltros}
-                  className="underline cursor-pointer"
-                >
-                  Limpiar Filtros
-                </p>
-                <button
-                  onClick={() => {
-                    enviarFiltros();
-                    cerrarModal();
-                  }}
-                  className=" bg-green-400 px-8 py-2 rounded-2xl hover:bg-green-300 cursor-pointer text-xl"
-                >
-                  Filtrar
-                </button>
-              </div>
+            </div>
+
+            
+            <div className="flex justify-between items-center px-8 py-3 bg-white rounded-b-2xl">
+              <button
+                onClick={limpiarFiltros}
+                className="text-gray-600 hover:text-[#003044] font-medium transition-colors duration-200"
+              >
+                Limpiar filtros
+              </button>
+              <button
+                onClick={() => {
+                  enviarFiltros();
+                  cerrarModal();
+                }}
+                className="bg-[#00c951] hover:bg-[#00a844] text-white px-8 py-3 rounded-full transition-all duration-200 font-semibold shadow-lg hover:shadow-xl"
+              >
+                Aplicar filtros
+              </button>
             </div>
           </div>
         </div>

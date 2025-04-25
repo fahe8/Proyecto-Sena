@@ -14,6 +14,7 @@ class CreateEmpresasTable extends Migration
             $table->string('nombre');
             $table->string('direccion');
             $table->string('descripcion');
+            $table->string('logo');
             $table->json('imagenes')->nullable();
             $table->time('hora_apertura');
             $table->time('hora_cierre');

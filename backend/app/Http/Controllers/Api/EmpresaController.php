@@ -41,6 +41,7 @@ class EmpresaController extends ApiController
                 'hora_cierre' => 'required|date_format:H:i',
                 'id_propietario' => 'required|exists:propietario,id_propietario',
                 'id_estado_empresa' => 'required|exists:estado_empresa,id_estado_empresa',
+                // 'logo'=> 'required|url|regex:/^https?:\/\/.*\.cloudinary\.com\/.*/',
                 'imagenes' => 'nullable|array',
                 'imagenes.*' => 'required|url|regex:/^https?:\/\/.*\.cloudinary\.com\/.*/'
             ]);
@@ -83,6 +84,7 @@ class EmpresaController extends ApiController
                 'id_estado_empresa' => 'sometimes|exists:estado_empresa,id_estado_empresa',
                 'servicios' => 'sometimes|array',
                 'servicios.*' => 'exists:servicio,id_servicio',
+                // 'logo'=> 'required|url|regex:/^https?:\/\/.*\.cloudinary\.com\/.*/',
                 'imagenes' => 'nullable|array',
                 'imagenes.*' => 'required|url|regex:/^https?:\/\/.*\.cloudinary\.com\/.*/'
             ]);

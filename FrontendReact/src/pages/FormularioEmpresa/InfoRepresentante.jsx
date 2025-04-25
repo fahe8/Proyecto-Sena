@@ -51,7 +51,7 @@ export default function InfoRepresentante() {
       </div>
       
       <div className="mb-4">
-        <label className="block text-sm text-[#003044] mb-1 flex items-center gap-1">
+        <label className="block text-sm text-[#003044] mb-1  items-center gap-1">
           Correo Electrónico
         </label>
         <input 

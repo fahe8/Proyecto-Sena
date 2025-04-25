@@ -20,6 +20,7 @@ class Empresa extends Model
         'hora_cierre',
         'id_propietario',
         'id_estado_empresa',
+        'logo',
         'imagenes'
     ];
 
