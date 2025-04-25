@@ -59,6 +59,11 @@ function App() {
     {
       nombre: "Inicio",
       icono: IconoHome,
+      url: "/",
+    },
+    {
+      nombre: "Interfaz pro",
+      icono: IconoHome,
       url: "/InterfazPropietario",
     },
     {
@@ -119,6 +124,7 @@ function App() {
           >
 
             <Route path="/CanchasPropietario" element={<CanchasPropietario/>} />
+            <Route path="/" element={<Inicio/>} />
             <Route path="/InterfazPropietario" element={<InterfazPropietario />} />
             <Route path="/PerfilPropietario" element={<PerfilPropietario />} />
             <Route path="/ReservaPropietario" element={<ReservaPropietario />} />
