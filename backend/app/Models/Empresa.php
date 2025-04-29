@@ -20,6 +20,7 @@ class Empresa extends Model
         'hora_cierre',
         'id_propietario',
         'id_estado_empresa',
+        'logo',
         'imagenes'
     ];
 
@@ -45,6 +46,11 @@ class Empresa extends Model
     public function canchas()
     {
         return $this->hasMany(Cancha::class, 'NIT');
+    }
+
+    public function reservas()
+    {
+        return $this->hasMany(Reserva::class, 'NIT');
     }
 
     public function resenas()

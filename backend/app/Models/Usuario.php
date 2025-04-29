@@ -17,6 +17,7 @@ class Usuario extends Model
         'apellido',
         'telefono',
         'email',
-        'bloqueado'
+        'bloqueado',
+        'imagen'
     ];
 }

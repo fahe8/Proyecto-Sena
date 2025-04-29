@@ -57,8 +57,9 @@ export const EmpresasProvider = ({ children }) => {
     },
   ];
 
-  const [empresas, setEmpresas] = useState(copiaEmpresas);
-  const [filteredOptions, setFilteredOptions] = useState(copiaEmpresas);
+  const [empresas, setEmpresas] = useState([]);
+  const [filteredOptions, setFilteredOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
 
 
@@ -70,6 +71,8 @@ export const EmpresasProvider = ({ children }) => {
         filteredOptions,
         setFilteredOptions,
         copiaEmpresas,
+        loading,
+        setLoading
       }}
     >
       {children}

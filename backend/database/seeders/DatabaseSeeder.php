@@ -14,6 +14,10 @@ class DatabaseSeeder extends Seeder
             TipoCanchaSeeder::class,
             EstadoEmpresaSeeder::class,
             EstadoCanchaSeeder::class,
+            PropietarioSeeder::class,
+            EmpresaSeeder::class,
+            CanchaSeeder::class,
+            EmpresaServicioSeeder::class,
         ]);
     }
 }

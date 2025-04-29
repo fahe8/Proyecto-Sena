@@ -15,7 +15,8 @@ class Reserva extends Model
         'hora_inicio',
         'hora_final',
         'id_cancha',
-        'id_usuario'
+        'id_usuario',
+        'NIT'
     ];
 
     protected $casts = [
@@ -32,6 +33,11 @@ class Reserva extends Model
     public function usuario()
     {
         return $this->belongsTo(Usuario::class, 'id_usuario');
+    }
+
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class, 'NIT');
     }
 
     public function pago()

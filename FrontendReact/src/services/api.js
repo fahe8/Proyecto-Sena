@@ -37,5 +37,13 @@ export const empresaServicio = {
     eliminar: (id) => apiClient.delete(`/empresas/${id}`)
 };
 
+export const reservaServicio = {
+    obtenerTodos: () => apiClient.get('/reservas'),
+    obtenerPorUsuario: (userId) => apiClient.get(`/reservas/usuario/${userId}`),
+    obtenerPorEmpresa: (nit) => apiClient.get(`/reservas/empresa/${nit}`),
+    crear: (data) => apiClient.post('/reservas', data),
+    actualizar: (id, data) => apiClient.put(`/reservas/${id}`, data),
+    eliminar: (id) => apiClient.delete(`/reservas/${id}`)
+};
 
 export default apiClient;

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"; // Importamos React y hooks necesarios
-import { Link, useNavigate } from "react-router-dom"; // Importamos Link para la navegación entre páginas y useNavigate para redirecciones
+import { Link, useNavigate, useLocation } from "react-router-dom"; // Importamos Link para la navegación entre páginas y useNavigate para redirecciones
 import { useAuth } from "../Provider/AuthProvider"; // Importamos el contexto de autenticación
 import { signOut } from "firebase/auth"; // Importamos la función para cerrar sesión en Firebase
 import { auth } from "../pages/Login/firebaseconfig"; // Importamos la configuración de Firebase
@@ -10,9 +10,13 @@ import logo from "../assets/logo.png"; // Importamos el logo de la aplicación
 // Componente Header
 const Header = () => {
   const navigate = useNavigate(); // Hook para redireccionar a diferentes rutas
+  const location = useLocation(); // <-- get current location
+
+  // Check if the current path matches /empresa/:id
+  const hideBusquedaFiltros = /^\/empresa\/[^/]+$/.test(location.pathname);
 
   return (
-    <header className="bg-[#003044] sticky top-0 z-10 shadow-sm">
+    <header className="bg-[#003044]  shadow-sm">
       {/* Contenedor del header con estilos */}
       <div className="container flex justify-around items-center p-4 mx-auto">
         {/* Logo y nombre de la aplicación, al hacer clic redirige a la página principal */}
@@ -24,10 +28,12 @@ const Header = () => {
           <p className="text-[#f7f7f7] text-sm md:text-base lg:text-[16px]">MiCanchaYa</p>
         </div>
 
-        {/* Barra de búsqueda y filtros (visible solo en pantallas grandes) */}
-        <div className="hidden lg:block ">
-          <BusquedaFiltros/>
-        </div>
+        {/* Only show BusquedaFiltros if not on /empresa/:id */}
+        {!hideBusquedaFiltros && (
+          <div className="hidden lg:block ">
+            <BusquedaFiltros/>
+          </div>
+        )}
 
         {/* Botón de perfil */}
         <BotonPerfil />
