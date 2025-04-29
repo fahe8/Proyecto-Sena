@@ -109,9 +109,11 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
         onClick={abrirModal}
         className="relative bg-[#f6f6f6] w-11 lg:w-20 h-7 cursor-pointer flex shadow-md  justify-center border border-gray-300 rounded-md  hover:bg-gray-300 transition-all duration-300 ease-in-out items-center"
       >
-        {contadorFiltros > 0 && <div className="absolute w-5 h-5 rounded-full bg-red-500 right-0 bottom-0 translate-2">
-          <p className="text-sm text-white">{contadorFiltros}</p>
-        </div>}
+        {contadorFiltros > 0 && (
+          <div className="absolute w-5 h-5 rounded-full bg-red-500 right-0 bottom-0 flex items-center justify-center">
+            <p className="text-sm text-white">{contadorFiltros}</p>
+          </div>
+        )}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -120,6 +122,7 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
           stroke="currentColor"
           className="size-5 pr-1"
         >
+          {/* SVG path */}
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -224,6 +227,62 @@ const BarraBusqueda = ({ filtros, agregarFiltros }) => {
   const { empresas, filteredOptions, setFilteredOptions } = useEmpresas();
 
   const [query, setQuery] = useState("");
+const BarraBusqueda = ({ filtros, agregarFiltros }) => {
+  const { empresas, setFilteredOptions } = useEmpresas();
+  const [query, setQuery] = useState("");
+
+  const removeAccents = (str) => {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  };
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    let filtered = empresas.filter((empresa) => {
+      const nombreEmpresa = removeAccents(empresa?.nombre || "").toLowerCase();
+      const nombreMatch = nombreEmpresa.includes(removeAccents(value.toLowerCase()));
+
+      const tiposCanchasMatch =
+        filtros.tiposCanchas.length === 0 ||
+        (empresa.tiposCanchas &&
+          filtros.tiposCanchas.every((tipo) => empresa.tiposCanchas.includes(tipo)));
+
+      const serviciosMatch =
+        filtros.servicios.length === 0 ||
+        (empresa.servicios &&
+          filtros.servicios.every((servicio) =>
+            empresa.servicios.some((s) => {
+              if (!s.tipo) return false;
+              return removeAccents(s.tipo.toLowerCase()) === removeAccents(servicio.toLowerCase());
+            })
+          ));
+
+      return nombreMatch && tiposCanchasMatch && serviciosMatch;
+    });
+
+    setFilteredOptions(filtered);
+  };
+
+  return (
+    <div className="w-full max-w-md">
+      <div className="relative">
+        <input
+          type="text"
+          value={query}
+          onChange={handleSearch}
+          placeholder="Buscar empresa"
+          className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#00c951]"
+        />
+        <img
+          src={iconSearch}
+          alt="Buscar"
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+        />
+      </div>
+    </div>
+  );
+};
 
   const removeAccents = (str) => {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");

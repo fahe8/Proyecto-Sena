@@ -16,7 +16,7 @@ const Header = () => {
   const hideBusquedaFiltros = /^\/empresa\/[^/]+$/.test(location.pathname);
 
   return (
-    <header className="bg-[#003044] sticky top-0 z-10 shadow-sm">
+    <header className="bg-[#003044]  shadow-sm">
       {/* Contenedor del header con estilos */}
       <div className="container flex justify-around items-center p-4 mx-auto">
         {/* Logo y nombre de la aplicación, al hacer clic redirige a la página principal */}

@@ -32,7 +32,7 @@ const Login = () => {
     rememberMe: true, 
   });
 
-  // Consolidate popup states into a single object
+  //Guardar la informacion del popup
   const [popup, setPopup] = useState({
     show: false,
     message: "",
@@ -154,7 +154,7 @@ const Login = () => {
 
   // Función para mostrar mensajes de éxito
   const showSuccessMessage = (title, message) => {
-    // Instead of just showing the popup, navigate to home with state
+    // Gaurdar en navigate la url de redirigiemiento y la información del popup
     navigate("/", { 
       state: { 
         showPopup: true,

@@ -107,11 +107,35 @@ class EmpresaController extends ApiController
     public function show($id)
     {
         try {
-            $empresa = Empresa::with(['propietario', 'estado', 'servicios', 'canchas'])->find($id);
+            $empresa = Empresa::with(['propietario', 'estado', 'servicios', 'canchas.tipoCancha'])->find($id);
             if (is_null($empresa)) {
                 return $this->sendError('Empresa no encontrada');
             }
+            
+            // Process services to hide pivot data
             $empresa->servicios->makeHidden('pivot');
+            
+            // Add field for court types and their counts
+            $tiposCanchaCount = [];
+            foreach ($empresa->canchas as $cancha) {
+                $tipoNombre = $cancha->tipoCancha->id_tipo_cancha ?? 'Sin tipo';
+                if (!isset($tiposCanchaCount[$tipoNombre])) {
+                    $tiposCanchaCount[$tipoNombre] = 0;
+                }
+                $tiposCanchaCount[$tipoNombre]++;
+            }
+            
+            // Convert to array format for response
+            $tiposCanchaArray = [];
+            foreach ($tiposCanchaCount as $tipo => $count) {
+                $tiposCanchaArray[] = [
+                    'tipo' => $tipo,
+                    'cantidad' => $count
+                ];
+            }
+            
+            $empresa->tipos_cancha = $tiposCanchaArray;
+            
             return $this->sendResponse($empresa, 'Empresa obtenida con exito');
         } catch (\Exception $e) {
             return $this->sendError('Error obteniendo empresa', $e->getMessage());

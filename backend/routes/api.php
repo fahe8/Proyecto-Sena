@@ -10,10 +10,15 @@ use App\Http\Controllers\Api\EmpresaController;
 use App\Http\Controllers\Api\ReservaController;
 use App\Http\Controllers\Api\ResenaController;
 
+// First define the specific routes
+Route::get('reservas/active', [App\Http\Controllers\Api\ReservaController::class, 'obtenerReservasActivas']);
+Route::get('reservas/history', [App\Http\Controllers\Api\ReservaController::class, 'obtenerHistorialReservas']);
+Route::get('reservas/empresa/{nit}', [App\Http\Controllers\Api\ReservaController::class, 'obtenerReservasPorEmpresa']);
+
+// Then define the resource routes
 Route::apiResource('usuarios', UsuarioController::class);
 Route::apiResource('propietarios', PropietarioController::class);
 Route::apiResource('administradores', AdministradorController::class);
-// API Routes
 Route::apiResource('empresas', EmpresaController::class);
 Route::apiResource('canchas', CanchaController::class);
 Route::apiResource('reservas', ReservaController::class);
