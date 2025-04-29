@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
-
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useAuth } from "../../Provider/AuthProvider";
@@ -8,26 +7,49 @@ import Header from "../../Header/Header";
 import { BusquedaFiltros } from "../../Header/Componentes/BusquedaFiltros";
 import CardEmpresa from "./componentes/CardEmpresa";
 import { useEmpresas } from "../../Provider/EmpresasProvider";
-import balonroto from "../../assets/Inicio/balonRoto.png"
+import balonroto from "../../assets/Inicio/balonRoto.png";
 import { empresaServicio } from "../../services/api";
-
+import CardLoader from "./componentes/CardLoader";
+import LogPopUp from "../Login/components/logPopUp";
 
 const Inicio = () => {
   const { filteredOptions, setFilteredOptions, setEmpresas } = useEmpresas();
+  const [isLoading, setIsLoading] = useState(true);
+  const location = useLocation();
+  
+  // State for popup
+  const [popup, setPopup] = useState({
+    show: false,
+    message: "",
+    subText: "",
+  });
+
+  // Check for popup state from navigation
+  useEffect(() => {
+    if (location.state && location.state.showPopup) {
+      setPopup({
+        show: true,
+        message: location.state.popupMessage,
+        subText: location.state.popupSubText
+      });
+      
+      // Clean up the location state to prevent showing popup on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   useEffect(() => {
     const fetchEmpresas = async () => {
       try {
         const response = await empresaServicio.obtenerTodos();
         if (response.data.success) {
-          console.log(
-            response.data.data,
-          )
           setEmpresas(response.data.data);
           setFilteredOptions(response.data.data);
         }
       } catch (error) {
         console.error("Error fetching empresas:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -41,11 +63,16 @@ const Inicio = () => {
         <div className="lg:hidden">
           <BusquedaFiltros />
         </div>
-        <section className="grid container mx-auto bg-[#fbfbfb] gap-4">
-          {/* <!-- Seccion superior --> */}
+        <section className="grid container mx-auto bg-white gap-4">
           <SeccionHerramientas />
-          {/* <!-- listado de canchas --> */}
-          {filteredOptions.length > 0 ? (
+          
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-self-center">
+              {[...Array(8)].map((_, index) => (
+                <CardLoader key={index} />
+              ))}
+            </div>
+          ) : filteredOptions.length > 0 ? (
             <ListaEmpresas empresas={filteredOptions} />
           ) : (
             <div className="w-full flex flex-col justify-center items-center">
@@ -55,11 +82,18 @@ const Inicio = () => {
           )}
         </section>
       </main>
+
+      {popup.show && (
+        <LogPopUp
+          setShowPopUp={(show) => setPopup({...popup, show})}
+          message={popup.message}
+          subText={popup.subText}
+          onClose={() => setPopup({...popup, show: false})}
+        />
+      )}
     </>
   );
 };
-
-
 
 const ListaEmpresas = ({ empresas}) => {
   return (
@@ -73,7 +107,6 @@ const ListaEmpresas = ({ empresas}) => {
     </div>
   );
 };
-
 
 const SeccionHerramientas = () => {
   const { isAuthenticated } = useAuth();

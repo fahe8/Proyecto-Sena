@@ -94,160 +94,113 @@ const HistorialReservas = () => {
 
 
   return (
-    <div className="w-full min-h-screen container mx-auto px-4 md:px-6">
-      <div className="flex items-center justify-center text-2xl sm:text-3xl md:text-4xl pt-4 md:pt-7">
-        <h1>Historial de Reservas</h1>
-      </div>
-
-      {/* Barra de búsqueda y filtros */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 pt-4 md:pt-7 pb-3">
-        {/* Campo de búsqueda */}
-        <div className="flex items-center bg-gray-300 px-3 py-1.5 gap-2 rounded-lg w-full sm:w-auto">
-          <label htmlFor="buscador"> 
-            <svg
-              className="w-5 sm:w-6 h-5 sm:h-6 text-gray-800 dark:text-white cursor-pointer"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeWidth="2"
-                d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
-              />
-            </svg>
-          </label>
-          <input 
-            id="buscador" 
-            onChange={ManejarBusqueda} 
-            value={BuscarTerm} 
-            name="Buscar" 
-            placeholder="Buscar reserva" 
-            className="bg-transparent w-full outline-none" 
-          />
+    <div className="min-h-screen w-screen bg-gray-50 py-8">
+      <div className="max-w-5xl mx-auto px-4">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-[#003044] mb-2">Historial de Reservas</h1>
+          <p className="text-gray-600">Gestiona tus reservas anteriores y próximas</p>
         </div>
 
-        {/* Menú desplegable para ordenar */}
-        <div className="relative w-full sm:w-auto mt-2 sm:mt-0">
-          <button 
-            ref={buttonRef}
-            onClick={mostraropciones} 
-            className="flex items-center bg-gray-300 px-3 py-1.5 gap-2 rounded-lg hover:cursor-pointer w-full sm:w-auto justify-center sm:justify-start"
-          >
-            <span className="mr-2">{TextoBoton}</span>
-            <svg
-              className="w-5 sm:w-6 h-5 sm:h-6 text-gray-800 dark:text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeWidth="2"
-                d="M18.796 4H5.204a1 1 0 0 0-.753 1.659l5.302 6.058a1 1 0 0 1 .247.659v4.874a.5.5 0 0 0 .2.4l3 2.25a.5.5 0 0 0 .8-.4v-7.124a1 1 0 0 1 .247-.659l5.302-6.059c.566-.646.106-1.658-.753-1.658Z"
+        {/* Search and Filter Section */}
+        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <input 
+                id="buscador" 
+                onChange={ManejarBusqueda} 
+                value={BuscarTerm} 
+                name="Buscar" 
+                placeholder="Buscar por nombre de cancha..." 
+                className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 focus:border-[#00c951] focus:ring-2 focus:ring-[#00c951] transition-all duration-300 outline-none" 
               />
-            </svg>
-          </button>
-
-          {/* Opciones de ordenamiento */}
-          {mostrar && (
-            <div ref={mostrarRef} className="absolute right-0 top-10 bg-gray-300 border-1 rounded-lg shadow-md z-20 w-full sm:w-auto">
-              <div className="flex flex-col">
-                <button className="py-2 px-6 text-left hover:bg-gray-100 hover:cursor-pointer hover:rounded-tr-lg hover:rounded-tl-lg" onClick={Masrecientes}>Reciente</button>
-                <button className="py-2 px-6 text-left hover:bg-gray-100 hover:cursor-pointer hover:rounded-br-lg hover:rounded-bl-lg" onClick={MasAntiguo}>Antiguo</button>
-              </div>
+              <svg
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </div>
+
+            {/* Filter Button */}
+            <div className="relative">
+              <button 
+                ref={buttonRef}
+                onClick={mostraropciones} 
+                className="flex items-center justify-center px-6 py-3 bg-[#00c951] text-white rounded-lg hover:bg-[#00a844] transition-all duration-300 gap-2 min-w-[160px]"
+              >
+                <span>{TextoBoton}</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {mostrar && (
+                <div ref={mostrarRef} className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg overflow-hidden z-20 min-w-[160px] border border-gray-100">
+                  <button className="w-full px-6 py-3 text-left hover:bg-gray-50 transition-colors duration-200" onClick={Masrecientes}>Más recientes</button>
+                  <button className="w-full px-6 py-3 text-left hover:bg-gray-50 transition-colors duration-200" onClick={MasAntiguo}>Más antiguos</button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Reservations List */}
+        <div className="space-y-4">
+          {reservaFiltrada.length === 0 ? (
+            <div className="text-center py-12 bg-white rounded-xl shadow-md">
+              <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-xl text-gray-600">No se han encontrado reservas registradas</p>
+            </div>
+          ) : (
+            reservaFiltrada.map((cancha, index) => (
+              <div key={index} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+                  {/* Field Info */}
+                  <div className="flex items-center space-x-4">
+                    <img
+                      src={cancha.Image}
+                      alt=""
+                      className="w-20 h-20 rounded-lg object-cover shadow-md"
+                    />
+                    <div>
+                      <h3 className="font-bold text-lg text-[#003044]">{cancha.NombreCancha}</h3>
+                      <p className="text-gray-600 text-sm">{cancha.Direccion}</p>
+                    </div>
+                  </div>
+
+                  {/* Date and Time */}
+                  <div className="flex flex-col justify-center space-y-3">
+                    <div className="flex items-center space-x-3 text-gray-700">
+                      <svg className="w-5 h-5 text-[#00c951]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span>{cambiarFormatoFecha(cancha.Fecha)}</span>
+                    </div>
+                    <div className="flex items-center space-x-3 text-gray-700">
+                      <svg className="w-5 h-5 text-[#00c951]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>{cancha.HoraInicio} - {cancha.HoraFin}</span>
+                    </div>
+                  </div>
+
+                  {/* Field Type and Price */}
+                  <div className="flex flex-col items-center justify-center space-y-3">
+                    <span className="px-4 py-2 bg-[#003044] text-white rounded-full text-sm">{cancha.TipoCancha}</span>
+                    <p className="text-lg font-semibold text-[#00c951]">{cancha.CanchaTotal}</p>
+                  </div>
+                </div>
+              </div>
+            ))
           )}
         </div>
-      </div>
-
-      {/* Línea separadora */}
-      <div className="mx-0 sm:mx-0,5 border-b-2 border-gray-400"></div>
-      
-      {/* Listado de reservas */}
-      <div className="px-0 sm:px-0,5 overflow-x-auto">
-        {/* Mensaje cuando no hay reservas */}
-        {reservaFiltrada.length === 0 ? (
-          <p className="flex items-center justify-center text-xl sm:text-2xl text-gray-600 pt-4">No se han encontrado reservas registradas</p>
-        ) : ( 
-          /* Mapeo de las reservas filtradas */
-          reservaFiltrada.map((cancha, index) => (
-            <div key={index} className="grid grid-cols-1 md:grid-cols-3 md:text-[14px] lg:text-base bg-gray-300 py-3 rounded-lg md:rounded-l-2xl md:rounded-tr-2xl min-h-fit md:h-28 mt-4 overflow-hidden">
-              {/* Columna 1: Imagen y datos de la cancha */}
-              <div className="flex flex-col md:flex-row gap-4 justify-items-center items-center border-b-2 md:border-b-0 md:border-r-2 border-gray-500 px-4">
-                <div className="min-w-[100px] md:min-w-[60px] lg:min-w-[100px]"> 
-                  <img
-                    src={cancha.Image}
-                    alt=""
-                    className="rounded-full w-[100px] h-[100px] md:w-[60px] md:h-[60px] lg:w-[100px] lg:h-[100px] object-cover"
-                  />
-                </div>
-            
-                <div className="flex flex-col justify-between text-center md:text-left mt-2 md:mt-0">
-                  <h2 className="font-semibold">{cancha.NombreCancha}</h2>
-                  <p className="font-semibold md:text-[11px] lg:text-[16px] lg:mt-2">
-                    {cancha.Direccion}
-                  </p>
-                </div>
-              </div>
-              
-              {/* Columna 2: Fecha y hora de la reserva */}
-              <div className="flex flex-col gap-4 px-4 md:px-4 lg:px-8 xl:px-16 lg:mx-0 justify-center py-3 md:py-0 border-gray-500 border-b-2 md:border-b-0">
-                {/* Fecha de la reserva */}
-                <div className="flex gap-2 items-center justify-center md:justify-start">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="size-5 md:size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
-                    />
-                  </svg>
-                  <p>{cambiarFormatoFecha(cancha.Fecha)}</p>
-                </div>
-                
-                {/* Horario de la reserva */}
-                <div className="flex gap-2 items-center justify-center md:justify-start">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="size-5 md:size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                    />
-                  </svg>
-                  <p>{cancha.HoraInicio} - {cancha.HoraFin}</p>
-                </div>
-              </div>
-              
-              {/* Columna 3: Tipo de cancha y precio total */}
-              <div className="flex flex-col md:border-l-2 border-gray-500 px-4 items-center justify-center gap-2.5 py-3 md:py-0">
-                <p className="bg-gray-400 px-3 py-1.5 rounded-full">{cancha.TipoCancha}</p>
-                <p>Total: {cancha.CanchaTotal}</p>
-              </div>
-            </div>
-          ))
-        )}
       </div>
     </div>
   );

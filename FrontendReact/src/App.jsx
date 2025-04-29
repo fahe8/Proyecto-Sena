@@ -10,7 +10,7 @@ import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
 import NoRecomendadas from "./pages/NoRecomendadas/NoRecomendadas";
 import Reservas from "./pages/Reservas/ReservasActivas";
-import RutasProtegidas from "./utils/rutasProtegidas";
+import RutasProtegidas from "./utils/RutasProtegidas";
 import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 import CanchasPropietario from "./pages/PanelPropietario/CanchasPropietario";
@@ -28,6 +28,12 @@ import IconoHome from "./assets/Inicio/Home.svg";
 function App() {
 
   const opcionesUsuario = [
+    {
+      nombre: "Inicio",
+      icono: IconoHome,
+      url: "/",
+    },
+
     {
       nombre: "Información Personal",
       icono: iconoPerfil,
@@ -89,7 +95,7 @@ function App() {
         <Route path="/" element={<Inicio />} />
         <Route path="/nueva" element={<NuevaPagina />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/empresa/:nombre" element={<Cliente />} />
+        <Route path="/empresa/:id" element={<Cliente />} />
         <Route path="/formulario-empresa" element={<FormularioEmpresa />} />
 
         {/* Rutas protegidas */}
@@ -109,7 +115,7 @@ function App() {
             <Route path="/perfil" element={<PerfilPage />} />
             <Route path="/reservasactivas" element={<Reservas />} />
             <Route path="/historialReservas" element={<HistorialReservas />} />
-            <Route path="/norecomendadas" element={<NoRecomendadas />} />
+            {/* <Route path="/norecomendadas" element={<NoRecomendadas />} /> */}
           </Route>
         
 

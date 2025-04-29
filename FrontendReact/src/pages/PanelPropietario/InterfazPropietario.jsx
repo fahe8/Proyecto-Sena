@@ -72,6 +72,10 @@ const InterfazPropietario = () => {
     setMostrarPopUp(true);
   };
 
+  const ModificarCancha = () => {
+    console.log(`Modificar cancha`);
+  };
+
   return (
     <div className="min-h-screen w-full bg-white overflow-x-hidden">
       <nav className="bg-[#003950] shadow-lg p-2 sm:p-4">
@@ -129,7 +133,9 @@ const InterfazPropietario = () => {
                     </div>
                   </div>
                   <div className="flex gap-2.5 px-2.5 pb-2.5">
-                    <button className="flex-1 px-2 sm:px-3.5 py-1.5 bg-[#04c707] text-white rounded text-sm cursor-pointer border-none">
+                    <button className="flex-1 px-2 sm:px-3.5 py-1.5 bg-[#04c707] text-white rounded text-sm cursor-pointer border-none"
+                      onClick={() => ModificarCancha(cancha.id)} >
+                      
                       Modificar
                     </button>
                     <button
