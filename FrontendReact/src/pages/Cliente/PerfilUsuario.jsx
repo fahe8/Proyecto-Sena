@@ -7,6 +7,7 @@ import Calendario from "./Calendario/Calendario";
 import { iconosServicios } from "../../utils/iconosServicios";
 import insignia from "./imagen/insignia.png";
 import { empresaServicio } from "../../services/api";
+import { LeftArrowIcon, RightArrowIcon } from "../../assets/IconosSVG/iconos";
 
 // Componente para el Carrusel
 const Carousel = ({ images }) => {
@@ -28,7 +29,7 @@ const Carousel = ({ images }) => {
 
   // Cambio automático de imágenes cada 5 segundos
   useEffect(() => {
-    if (images.length <= 1) return; // Only set interval if more than one image
+    if (images.length <= 1) return;//Solo si hay una imagen
     const interval = setInterval(() => {
       nextSlide();
     }, 5000);
@@ -52,7 +53,7 @@ const Carousel = ({ images }) => {
         className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white/90 rounded-full p-2 shadow-md"
         aria-label="Anterior"
       >
-        {React.createElement(iconosServicios["flechaizq"])}
+        {React.createElement(LeftArrowIcon)}
       </button>
 
       <button
@@ -60,7 +61,7 @@ const Carousel = ({ images }) => {
         className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white/90 rounded-full p-2 shadow-md"
         aria-label="Siguiente"
       >
-        {React.createElement(iconosServicios["flechader"])}
+        {React.createElement(RightArrowIcon)}
       </button>
 
       {/* Indicadores */}
@@ -256,7 +257,7 @@ const Perfil = () => {
               <div className="mb-6 w-70">
                 <h3 className="font-medium mb-2">Canchas disponibles:</h3>
                 <div className="space-y-2">
-                  {CanchasAgrupadas.map((cancha, idx) => (
+                  {empresa?.tipos_cancha?.map((cancha, idx) => (
                     <div
                       key={idx}
                       className="flex justify-between bg-gray-100 px-3 py-2 rounded-md"
@@ -351,7 +352,7 @@ const Perfil = () => {
           {/* Columna derecha: Calendario - Oculto en móvil */}
           <div className="hidden md:block ">
             <div className="sticky top-26">
-              <Calendario />
+              <Calendario empresa={empresa} />
             </div>
           </div>
         </div>

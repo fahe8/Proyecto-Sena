@@ -16,15 +16,13 @@ const Inicio = () => {
   const { filteredOptions, setFilteredOptions, setEmpresas } = useEmpresas();
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
-  
-  // State for popup
+
   const [popup, setPopup] = useState({
     show: false,
     message: "",
     subText: "",
   });
 
-  // Check for popup state from navigation
   useEffect(() => {
     if (location.state && location.state.showPopup) {
       setPopup({
@@ -33,7 +31,7 @@ const Inicio = () => {
         subText: location.state.popupSubText
       });
       
-      // Clean up the location state to prevent showing popup on refresh
+    
       window.history.replaceState({}, document.title);
     }
   }, [location]);
@@ -47,7 +45,7 @@ const Inicio = () => {
           setFilteredOptions(response.data.data);
         }
       } catch (error) {
-        console.error("Error fetching empresas:", error);
+        console.error("Error obteniendo empresas:", error);
       } finally {
         setIsLoading(false);
       }
