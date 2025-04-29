@@ -48,6 +48,11 @@ class Empresa extends Model
         return $this->hasMany(Cancha::class, 'NIT');
     }
 
+    public function reservas()
+    {
+        return $this->hasMany(Reserva::class, 'NIT');
+    }
+
     public function resenas()
     {
         return $this->hasMany(Resena::class, 'NIT');

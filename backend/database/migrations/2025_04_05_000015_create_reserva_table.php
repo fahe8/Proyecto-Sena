@@ -15,7 +15,9 @@ class CreateReservaTable extends Migration
             $table->time("hora_final");
             $table->string("id_usuario");
             $table->foreignId("id_cancha")->constrained("cancha", "id_cancha");
+            $table->unsignedBigInteger("NIT")->nullable();
             $table->foreign("id_usuario")->references("id_usuario")->on("usuario");
+            $table->foreign("NIT")->references("NIT")->on("empresa");
         });
     }
 
