@@ -14,13 +14,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        console.log("Usuario autenticado:", user);
+       
         setIsAuthenticated(true);
         setUser(user);
         const token = await user.getIdToken();
         setToken(token);
       } else {
-        console.log("Usuario no autenticado");
+        
         setIsAuthenticated(false);
         setUser(null);
         setToken("");
