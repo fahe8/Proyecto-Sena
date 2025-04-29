@@ -123,10 +123,7 @@ const SeccionHerramientas = () => {
       text: "Mis favoritos",
       ref: "/favoritos",
     },
-    {
-      text: "No recomiendo",
-      ref: "/norecomendadas",
-    },
+    
   ];
   return (
     <div className="flex flex-col gap-4 items-center self-start overflow-y-auto">

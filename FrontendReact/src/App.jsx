@@ -8,7 +8,6 @@ import NuevaPagina from "./pages/nuevapagina/NuevaPagina";
 import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
-import NoRecomendadas from "./pages/NoRecomendadas/NoRecomendadas";
 import Reservas from "./pages/Reservas/ReservasActivas";
 import RutasProtegidas from "./utils/RutasProtegidas";
 import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
@@ -55,11 +54,7 @@ function App() {
       icono: iconoCorazon,
       url: "/favoritos",
     },
-    {
-      nombre: "No Recomendado",
-      icono: iconoUnlike,
-      url: "/norecomendadas",
-    },
+
   ]
 
   const opcionesEmpresario = [
