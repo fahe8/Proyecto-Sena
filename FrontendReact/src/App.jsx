@@ -4,7 +4,6 @@ import "./App.css";
 import Inicio from "./pages/Inicio/Inicio";
 import Login from "./pages/Login/Login";
 import Cliente from "./pages/Cliente/PerfilUsuario";
-import NuevaPagina from "./pages/nuevapagina/NuevaPagina";
 import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
@@ -93,7 +92,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Inicio />} />
-        <Route path="/nueva" element={<NuevaPagina />} />
         <Route path="/login" element={<Login />} />
         <Route path="/empresa/:id" element={<Cliente />} />
         <Route path="/formulario-empresa" element={<FormularioEmpresa />} />

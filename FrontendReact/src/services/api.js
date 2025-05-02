@@ -18,7 +18,7 @@ export const usuarioServicio = {
     obtenerPorId: (id) => apiClient.get(`/usuarios/${id}`),
     crear: (data) => apiClient.post('/usuarios', data),
     actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/usuarios/${id}`)
+    eliminar: (id) => apiClient.delete(`/usuarios/${id}`)   
 };
 
 export const propietarioServicio = {
@@ -45,5 +45,14 @@ export const reservaServicio = {
     actualizar: (id, data) => apiClient.put(`/reservas/${id}`, data),
     eliminar: (id) => apiClient.delete(`/reservas/${id}`)
 };
+
+export const canchasServicio = {
+    obtenerTodosEmpresa: (nit) => apiClient.get(`/canchas/empresa/${nit}`),
+    tiposCanchas: () => apiClient.get(`/tipocanchas`),
+    estadoCanchas: () => apiClient.get(`/estadocanchas`),
+    actualizar: (id, data) => apiClient.put(`/canchas/${id}`, data),
+    eliminar: (id) => apiClient.delete(`/canchas/${id}`),
+    agregar: (data) => apiClient.post('/canchas', data),
+}
 
 export default apiClient;

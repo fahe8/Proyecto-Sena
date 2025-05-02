@@ -1,79 +1,112 @@
-import React, { useState } from 'react';
-import cancha2 from '../../../src/assets/Inicio/Cancha2.jpeg';
+import React, { useState, useEffect } from 'react';
 import Modal from '../Perfil/Modal';
 import LogPopUp from "../Login/components/logPopUp";
+import { canchasServicio } from '../../services/api';
+import ModificarCancha from './Componentes/ModificarCancha';
+import CardSkeleton from './Componentes/cardskeleton';
 
 const InterfazPropietario = () => {
-
+  // Estado para controlar la visibilidad del modal de modificar cancha
+  const [modalModificarVisible, setModalModificarVisible] = useState(false);
+  const [canchaParaModificar, setCanchaParaModificar] = useState(null);
+  
   const [modalEliminar, setModalEliminar] = useState(false);
   const [canchaSeleccionada, setCanchaSeleccionada] = useState(null);
-
   const [mostrarPopUp, setMostrarPopUp] = useState(false);
   const [textoPopUp, setTextoPopUp] = useState({ titulo: "", subtitulo: "" });
+  const [listaCanchas, setListaCanchas] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [tiposCanchas, setTiposCanchas] = useState([]);
+  const [estadoCanchas, setEstadoCanchas] = useState([]);
+  const [datosListos, setDatosListos] = useState(false);
 
+  useEffect(() => {
+    // Función para cargar todos los datos necesarios
+    const cargarDatos = async () => {
+      try {
+        // Realizar todas las peticiones en paralelo
+        const [canchasResponse, tiposResponse, estadosResponse] = await Promise.all([
+          canchasServicio.obtenerTodosEmpresa('987654321'),
+          canchasServicio.tiposCanchas(),
+          canchasServicio.estadoCanchas()
+        ]);
+        
+        // Procesar los resultados
+        setListaCanchas(canchasResponse.data.data);
+        
+        if (tiposResponse.data.success && tiposResponse.data.data.tipos) {
+          setTiposCanchas(tiposResponse.data.data.tipos);
+        }
+        
+        if (estadosResponse.data.success && estadosResponse.data.data.estados) {
+          setEstadoCanchas(estadosResponse.data.data.estados);
+        }
+        
+        setDatosListos(true);
+        setCargando(false);
+      } catch (error) {
+        console.error("Error al cargar los datos:", error);
+        setCargando(false);
+      }
+    };
 
+    cargarDatos();
+  }, []);
 
-  const [listaCanchas, setListaCanchas] = useState([
-    {
-      id: 1,
-      nombre: 'Futbol 7',
-      image: cancha2,
-      rating: 4.8,
-    },
-    {
-      id: 2,
-      nombre: 'Futbol 5',
-      image: cancha2,
-      rating: 4.8,
-    },
-    {
-      id: 3,
-      nombre: 'Futbol 5',
-      image: cancha2,
-      rating: 4.8,
-    },
-    {
-      id: 4,
-      nombre: 'Futbol 5',
-      image: cancha2,
-      rating: 4.8,
-    },
-    {
-      id: 5,
-      nombre: 'Futbol 5',
-      image: cancha2,
-      rating: 4.8,
-    },
-    {
-      id: 6,
-      nombre: 'Futbol 5',
-      image: cancha2,
-      rating: 4.8,
-    }
-  ]);
-  
+  // Función para abrir el modal de modificar y pasar la cancha seleccionada
+  const abrirModalModificar = (cancha) => {
+    setCanchaParaModificar(cancha);
+    setModalModificarVisible(true);
+  };
+
+  // Función para cerrar el modal de modificar
+  const cerrarModalModificar = () => {
+    setModalModificarVisible(false);
+    setCanchaParaModificar(null);
+  };
+
+  // Función para guardar los cambios de la cancha modificada
+  const guardarCambiosCancha = (datosModificados) => {
+    // Actualizar la cancha en la lista
+    const canchasActualizadas = listaCanchas.map(cancha => 
+      cancha.id === canchaParaModificar.id 
+        ? {
+            ...cancha,
+            nombre: datosModificados.nombre,
+            tipo: datosModificados.id_tipo_cancha,
+            estado: datosModificados.id_estado_cancha,
+            precio: datosModificados.precio,
+            imagen: datosModificados.imagen
+          } 
+        : cancha
+    );
+    
+    setListaCanchas(canchasActualizadas);
+    
+
+  };
+
   const AgregarCancha = () => {
     console.log('Agregar cancha');
   };
 
- const mostrarModalEliminar = (id) => {
+  const mostrarModalEliminar = (id) => {
     setCanchaSeleccionada(id);
     setModalEliminar(true);
   };
 
-  const eliminarCancha = () => {
-    const canchasActualizadas = listaCanchas.filter((cancha) => cancha.id !== canchaSeleccionada);
+  const eliminarCancha = async () => {
+    const canchasActualizadas = listaCanchas.filter((cancha) => cancha.id_cancha !== canchaSeleccionada);
+    console.log(canchaSeleccionada)
+    await canchasServicio.eliminar(canchaSeleccionada);
     setListaCanchas(canchasActualizadas);
+
     setModalEliminar(false);
     setTextoPopUp({
       titulo: "Se elimino exitosamente",
       subtitulo: "La cancha se elimino con exito",
     });
     setMostrarPopUp(true);
-  };
-
-  const ModificarCancha = () => {
-    console.log(`Modificar cancha`);
   };
 
   return (
@@ -110,17 +143,21 @@ const InterfazPropietario = () => {
         <div className="canchas_container flex-grow px-2 sm:px-5">
           <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 pb-2 sm:pb-2.5 border-b-2 border-gray-200">Tus canchas</h2>
 
-          {listaCanchas.length === 0 ? (
+          {cargando ? (
+            <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4">
+              <CardSkeleton count={6} />
+            </div>
+          ) : listaCanchas?.length === 0 ? (
             <p className="text-center text-black text-xl sm:text-2xl p-3 sm:p-5">No tienes ninguna cancha registrada</p>
           ) : (
             <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4">
-              {listaCanchas.map((cancha) => (
+              {listaCanchas?.map((cancha) => (
                 <div key={cancha.id} className="w-full sm:w-[calc(50%-12px)] md:w-[calc(33.333%-14px)] lg:w-[255px] bg-[#f2f2f2] rounded-xl shadow-md overflow-hidden">
                   <div className="flex flex-col justify-between items-start mb-2 sm:mb-4">
                     <div className="w-full">
                       <img
                         className="w-full h-48 object-cover rounded-t-xl"
-                        src={cancha.image}
+                        src={cancha.imagen}
                         alt={cancha.nombre}
                       />
                     </div>
@@ -133,14 +170,15 @@ const InterfazPropietario = () => {
                     </div>
                   </div>
                   <div className="flex gap-2.5 px-2.5 pb-2.5">
-                    <button className="flex-1 px-2 sm:px-3.5 py-1.5 bg-[#04c707] text-white rounded text-sm cursor-pointer border-none"
-                      onClick={() => ModificarCancha(cancha.id)} >
-                      
+                    <button 
+                      className="flex-1 px-2 sm:px-3.5 py-1.5 bg-[#04c707] text-white rounded text-sm cursor-pointer border-none"
+                      onClick={() => abrirModalModificar(cancha)}
+                    >
                       Modificar
                     </button>
                     <button
                       className="flex-1 px-2 sm:px-3.5 py-1.5 bg-[#e63939] text-white rounded text-sm cursor-pointer border-none"
-                      onClick={() => mostrarModalEliminar(cancha.id)}
+                      onClick={() => mostrarModalEliminar(cancha.id_cancha)}
                     >
                       Eliminar
                     </button>
@@ -161,14 +199,27 @@ const InterfazPropietario = () => {
           tipo="eliminar"
         />
       )}
+      
       {mostrarPopUp && (
-          <LogPopUp
-            setShowPopUp={setMostrarPopUp}
-            message={textoPopUp.titulo}
-            subText={textoPopUp.subtitulo}
-            onClose={() => {}}
-          />
-        )}
+        <LogPopUp
+          setShowPopUp={setMostrarPopUp}
+          message={textoPopUp.titulo}
+          subText={textoPopUp.subtitulo}
+          onClose={() => {}}
+        />
+      )}
+      
+      {/* Componente de ModificarCancha con las props correctas */}
+      {datosListos && modalModificarVisible && (
+        <ModificarCancha 
+          isOpen={modalModificarVisible}
+          onClose={cerrarModalModificar}
+          onConfirm={guardarCambiosCancha}
+          infoCancha={canchaParaModificar}
+          tiposCanchas={tiposCanchas}
+          estadoCanchas={estadoCanchas}
+        />
+      )}
     </div>
   );
 };
