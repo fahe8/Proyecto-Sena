@@ -7,10 +7,10 @@ import Cliente from "./pages/Cliente/PerfilUsuario";
 import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
-import NoRecomendadas from "./pages/NoRecomendadas/NoRecomendadas";
 import Reservas from "./pages/Reservas/ReservasActivas";
 import RutasProtegidas from "./utils/RutasProtegidas";
 import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
+import FormularioCanchas from "./pages/FormularioEmpresa/InfoCanchas";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 import CanchasPropietario from "./pages/PanelPropietario/CanchasPropietario";
 import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
@@ -53,11 +53,7 @@ function App() {
       icono: iconoCorazon,
       url: "/favoritos",
     },
-    {
-      nombre: "No Recomendado",
-      icono: iconoUnlike,
-      url: "/norecomendadas",
-    },
+
   ]
 
   const opcionesEmpresario = [
@@ -95,6 +91,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/empresa/:id" element={<Cliente />} />
         <Route path="/formulario-empresa" element={<FormularioEmpresa />} />
+        <Route path="/formulario-canchas" element={<FormularioCanchas/>}/>
 
         {/* Rutas protegidas */}
         {/* Rutas de USUARIO */}
@@ -115,9 +112,6 @@ function App() {
             <Route path="/historialReservas" element={<HistorialReservas />} />
             {/* <Route path="/norecomendadas" element={<NoRecomendadas />} /> */}
           </Route>
-        
-
-        {/* Rutas de PROPIETARIO */}
 
         <Route element={<SideBarPerfil
               opciones={

@@ -96,6 +96,4 @@ const SideBarPerfil = ({opciones = []}) => {
   );
 };
 
-
-
 export default SideBarPerfil;
