@@ -54,6 +54,19 @@ class CanchaController extends ApiController
         }
     }
 
+    public function mostrarCanchasEmpresa($NIT){
+        try {
+           $cancha = Cancha::with(['empresa', 'estado'])->where('NIT',$NIT)->get();
+           if ($cancha->isEmpty()) {
+            return $this->sendError('Cancha no encontrada');
+        }
+        return $this->sendResponse($cancha,'Se encontro las canchas de la empresa');
+
+        } catch (\Throwable $e) {
+            return $this->sendError('Error obteniendo cancha', $e->getMessage());
+        }
+    }
+
     public function update(Request $request, $id)
     {
         try {
@@ -64,13 +77,11 @@ class CanchaController extends ApiController
 
             $request->validate([
                 'nombre' => 'required|string',
-                'NIT' => 'required|exists:empresa,NIT',
-                // 'imagen'=>'required|string',
+                'NIT' => 'sometimes|exists:empresa,NIT',
+                'imagen' => 'sometimes|url',
                 'precio' => 'required|integer|min:0',
-
                 'id_tipo_cancha' => 'required|exists:tipo_cancha,id_tipo_cancha',
                 'id_estado_cancha' => 'required|exists:estado_cancha,id_estado_cancha'
-                
             ]);
 
             $cancha->update($request->all());

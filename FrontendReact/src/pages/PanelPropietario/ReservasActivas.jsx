@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ReservaPropietario = () => {
+const ReservasActivas = () => {
   return (
     <div>
       <h1>Prueba reserva</h1>
@@ -10,4 +10,4 @@ const ReservaPropietario = () => {
 }
 
 
-export default ReservaPropietario
+export default ReservasActivas

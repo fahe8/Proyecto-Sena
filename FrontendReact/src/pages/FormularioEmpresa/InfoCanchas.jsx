@@ -23,17 +23,16 @@ export default function InfoCanchas({ data, onAddCancha, onChange, onRemoveCanch
           </div>
           
 
-          
           <div className="mb-4">
             <label className="block text-sm text-gray-600 mb-1">Nombre de la cancha</label>
             <input
               type="text"
               className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
               placeholder="Ej: Cancha Principal"
-              value={field.name || ''} 
-              onChange={(e) => onChange(index, 'name', e.target.value)} 
+              value={field.nombre || ''} 
+              onChange={(e) => onChange(index, 'nombre', e.target.value)} 
             />
-            {errors?.[index]?.name && <p className="text-red-500 text-sm">{errors[index].name}</p>}
+            {errors?.[index]?.nombre && <p className="text-red-500 text-sm">{errors[index].nombre}</p>}
           </div>
           
           <div className="grid grid-cols-2 gap-4 mb-4">
@@ -41,31 +40,57 @@ export default function InfoCanchas({ data, onAddCancha, onChange, onRemoveCanch
               <label className="block text-sm text-gray-600 mb-1">Tipo de cancha</label>
               <select
                 className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
-                value={field.size || ''} 
-                onChange={(e) => onChange(index, 'size', e.target.value)} 
+                value={field.id_tipo_cancha || ''} 
+                onChange={(e) => onChange(index, 'id_tipo_cancha', e.target.value)} 
               >
                 <option value="">Seleccione</option>
-                <option value="Fútbol 5">Fútbol 5</option>
-                <option value="Fútbol 7">Fútbol 7</option>
-                <option value="Fútbol 9">Fútbol 9</option>
-                <option value="Fútbol 11">Fútbol 11</option>
+                <option value="Futbol 5">Fútbol 5</option>
+                <option value="Futbol 6">Fútbol 6</option>
+                <option value="Futbol 7">Fútbol 7</option>
+                <option value="Futbol 8">Fútbol 8</option>
+                <option value="Futbol 9">Fútbol 9</option>
+                <option value="Futbol 10">Fútbol 10</option>
+                <option value="Futbol 11">Fútbol 11</option>
               </select>
-              {errors?.[index]?.size && <p className="text-red-500 text-sm">{errors[index].size}</p>}
+              {errors?.[index]?.id_tipo_cancha && <p className="text-red-500 text-sm">{errors[index].id_tipo_cancha}</p>}
             </div>
             <div>
-              <label className="block text-sm text-gray-600 mb-1">Tipo de superficie</label>
+              <label className="block text-sm text-gray-600 mb-1">Estado de la cancha</label>
               <select
                 className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
-                value={field.surface || ''} 
-                onChange={(e) => onChange(index, 'surface', e.target.value)} 
+                value={field.id_estado_cancha || ''} 
+                onChange={(e) => onChange(index, 'id_estado_cancha', e.target.value)} 
               >
-                <option value="">Seleccione un tipo</option>
-                <option value="Césped sintético">Césped sintético</option>
-                <option value="Pasto natural">Pasto natural</option>
-                <option value="Grama artificial">Grama artificial</option>
+                <option value="">Seleccione un estado</option>
+                <option value="disponible">Disponible</option>
+                <option value="mantenimiento">Mantenimiento</option>
               </select>
-              {errors?.[index]?.surface && <p className="text-red-500 text-sm">{errors[index].surface}</p>}
+              {errors?.[index]?.id_estado_cancha && <p className="text-red-500 text-sm">{errors[index].id_estado_cancha}</p>}
             </div>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm text-gray-600 mb-1">Imagen (URL)</label>
+            <input
+              type="url"
+              className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
+              placeholder="https://ejemplo.com/imagen.jpg"
+              value={field.imagen || ''} 
+              onChange={(e) => onChange(index, 'imagen', e.target.value)} 
+            />
+            {errors?.[index]?.imagen && <p className="text-red-500 text-sm">{errors[index].imagen}</p>}
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm text-gray-600 mb-1">NIT de la empresa</label>
+            <input
+              type="text"
+              className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
+              placeholder="NIT de la empresa"
+              value={field.NIT || ''} 
+              onChange={(e) => onChange(index, 'NIT', e.target.value)} 
+            />
+            {errors?.[index]?.NIT && <p className="text-red-500 text-sm">{errors[index].NIT}</p>}
           </div>
           
           <div className="grid grid-cols-2 gap-4">
@@ -74,22 +99,11 @@ export default function InfoCanchas({ data, onAddCancha, onChange, onRemoveCanch
               <input
                 type="number"
                 className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
-                placeholder="ej: 80.000"
-                value={field.price || ''} 
-                onChange={(e) => onChange(index, 'price', e.target.value)} 
+                placeholder="ej: 80000"
+                value={field.precio || ''} 
+                onChange={(e) => onChange(index, 'precio', e.target.value)} 
               />
-              {errors?.[index]?.price && <p className="text-red-500 text-sm">{errors[index].price}</p>}
-            </div>
-            <div>
-              <label className="block text-sm text-gray-600 mb-1">Capacidad (jugadores)</label>
-              <input
-                type="number"
-                className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
-                placeholder="10"
-                value={field.capacity || ''} 
-                onChange={(e) => onChange(index, 'capacity', e.target.value)} 
-              />
-              {errors?.[index]?.capacity && <p className="text-red-500 text-sm">{errors[index].capacity}</p>}
+              {errors?.[index]?.precio && <p className="text-red-500 text-sm">{errors[index].precio}</p>}
             </div>
           </div>
         </div>

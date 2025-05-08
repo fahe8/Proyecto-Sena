@@ -5,7 +5,8 @@ const Modal = ({
   titulo = "¿Estás seguro?",
   subtitulo = "Estas seguro de aceptar estos cambios, recuerda que no podrás retrocederlo",
   cerrarModal = () => {},
-  funcionEjecutar = () => {}
+  funcionEjecutar = () => {},
+  tipo = "eliminar" // Nuevo prop para determinar el tipo de acción
 }) => {
   const [mostrar, setMostrar] = useState(false);
 
@@ -32,7 +33,7 @@ const Modal = ({
         }}
       >
         <div className="text-center">
-          <div className="rounded-t-2xl py-2 bg-red-500 flex justify-center">
+          <div className={`rounded-t-2xl py-2 ${tipo === 'eliminar' ? 'bg-red-500' : 'bg-yellow-500'} flex justify-center`}>
             <img src={error} alt="Error" width={80} />
           </div>
           <div className="p-4">
@@ -43,12 +44,15 @@ const Modal = ({
             <div className="flex justify-center gap-4">
               <button
                 onClick={cerrarModal}
-                className="px-6 py-3 bg-red-400 rounded-full cursor-pointer hover:bg-red-300"
+                className={`px-6 py-3 ${tipo === 'eliminar' ? 'bg-[#04c707e6] hover:bg-[#04c707] ' : 'bg-gray-400 hover:bg-gray-300'}text-white rounded-full cursor-pointer transition-colors duration-300`}
               >
                 <span>Cancelar</span>
               </button>
-              <button onClick={confirmar} className="px-6 py-3 bg-green-400 rounded-full cursor-pointer hover:bg-green-300">
-                <span>Confirmar</span>
+              <button 
+                onClick={confirmar} 
+                className={`px-6 py-3 ${tipo === 'eliminar' ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-400'} text-white rounded-full cursor-pointer transition-colors duration-300`}
+              >
+                <span>{tipo === 'eliminar' ? 'Eliminar' : 'Modificar'}</span>
               </button>
             </div>
           </div>
