@@ -12,10 +12,10 @@ import RutasProtegidas from "./utils/RutasProtegidas";
 import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 import FormularioCanchas from "./pages/FormularioEmpresa/InfoCanchas";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
-import CanchasPropietario from "./pages/PanelPropietario/CanchasPropietario";
 import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
 import PerfilPropietario from "./pages/PanelPropietario/PerfilPropietario";
-import ReservaPropietario from "./pages/PanelPropietario/ReservaPropietario";
+import ReservasActivas from "./pages/PanelPropietario/ReservasActivas";
+import ReservasPasadas from "./pages/PanelPropietario/ReservasPasadas";
 
 import iconoCorazon from "./assets/Perfil/corazon.svg";
 import iconoArchivo from "./assets/Perfil/archive.svg";
@@ -23,6 +23,7 @@ import iconoReciente from "./assets/Perfil/recent.svg";
 import iconoPerfil from "./assets/Perfil/iconoPerfil.svg";
 import iconoUnlike from "./assets/Perfil/Unlike.svg";
 import IconoHome from "./assets/Inicio/Home.svg";
+import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
 
 function App() {
 
@@ -73,15 +74,16 @@ function App() {
       url: "/PerfilPropietario",
     },
     {
-      nombre: "Reservas",
+      nombre: "Reservas Pasadas",
       icono: iconoReciente,
-      url: "/ReservaPropietario",
+      url: "/ReservasPasadas",
     },
     {
-      nombre: "Canchas",
-      icono: iconoArchivo,
-      url: "/CanchasPropietario",
+      nombre: "Reservas Activas",
+      icono: iconoReciente,
+      url: "/ReservasActivas",
     },
+    
   ]
 
   return (
@@ -91,7 +93,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/empresa/:id" element={<Cliente />} />
         <Route path="/formulario-empresa" element={<FormularioEmpresa />} />
-        <Route path="/formulario-canchas" element={<FormularioCanchas/>}/>
+        <Route path="/formulario-canchas" element={<AgregarCancha/>}/>
 
         {/* Rutas protegidas */}
         {/* Rutas de USUARIO */}
@@ -120,12 +122,11 @@ function App() {
               />
             }
           >
-
-            <Route path="/CanchasPropietario" element={<CanchasPropietario/>} />
             <Route path="/" element={<Inicio/>} />
             <Route path="/InterfazPropietario" element={<InterfazPropietario />} />
             <Route path="/PerfilPropietario" element={<PerfilPropietario />} />
-            <Route path="/ReservaPropietario" element={<ReservaPropietario />} />
+            <Route path="/ReservasActivas" element={<ReservasActivas />} />
+            <Route path="/ReservasPasadas" element={<ReservasPasadas />} />
           
         </Route>
 

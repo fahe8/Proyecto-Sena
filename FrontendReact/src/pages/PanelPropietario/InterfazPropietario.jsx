@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../Perfil/Modal';
 import LogPopUp from "../Login/components/logPopUp";
-import { canchasServicio } from '../../services/api';
+import { canchasServicio, empresaServicio, propietarioServicio } from '../../services/api';
 import ModificarCancha from './Componentes/ModificarCancha';
 import CardSkeleton from './Componentes/cardskeleton';
+import { useNavigate } from 'react-router-dom'; 
 
 const InterfazPropietario = () => {
   // Estado para controlar la visibilidad del modal de modificar cancha
@@ -16,6 +17,7 @@ const InterfazPropietario = () => {
   const [textoPopUp, setTextoPopUp] = useState({ titulo: "", subtitulo: "" });
   const [listaCanchas, setListaCanchas] = useState([]);
   const [cargando, setCargando] = useState(true);
+  
   const [tiposCanchas, setTiposCanchas] = useState([]);
   const [estadoCanchas, setEstadoCanchas] = useState([]);
   const [datosListos, setDatosListos] = useState(false);
@@ -25,10 +27,11 @@ const InterfazPropietario = () => {
     const cargarDatos = async () => {
       try {
         // Realizar todas las peticiones en paralelo
-        const [canchasResponse, tiposResponse, estadosResponse] = await Promise.all([
+        const [canchasResponse, tiposResponse, estadosResponse, ] = await Promise.all([
           canchasServicio.obtenerTodosEmpresa('987654321'),
           canchasServicio.tiposCanchas(),
-          canchasServicio.estadoCanchas()
+          canchasServicio.estadoCanchas(),
+          
         ]);
         
         // Procesar los resultados
@@ -86,8 +89,10 @@ const InterfazPropietario = () => {
 
   };
 
+  const navigate = useNavigate(); 
+
   const AgregarCancha = () => {
-    console.log('Agregar cancha');
+    navigate('/formulario-canchas'); 
   };
 
   const mostrarModalEliminar = (id) => {
@@ -221,7 +226,7 @@ const InterfazPropietario = () => {
         />
       )}
     </div>
-  );
+  );7
 };
 
 export default InterfazPropietario;

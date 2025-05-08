@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { canchasServicio } from "../../../services/api";
 
-const ModificarCancha = ({ isOpen, onClose, onConfirm, infoCancha, tiposCanchas, estadoCanchas }) => {
+const ModificarCancha = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  infoCancha,
+  tiposCanchas,
+  estadoCanchas,
+}) => {
   const [canchaData, setCanchaData] = useState({
     nombre: "",
     id_tipo_cancha: "",
@@ -22,7 +29,7 @@ const ModificarCancha = ({ isOpen, onClose, onConfirm, infoCancha, tiposCanchas,
         precio: infoCancha.precio || "",
         imagen: infoCancha.imagen || infoCancha.image || "",
       });
-  
+
       // Establecer la vista previa de la imagen
       if (infoCancha.imagen || infoCancha.image) {
         setImagePreview(infoCancha.imagen || infoCancha.image);
@@ -101,7 +108,7 @@ const ModificarCancha = ({ isOpen, onClose, onConfirm, infoCancha, tiposCanchas,
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -114,11 +121,11 @@ const ModificarCancha = ({ isOpen, onClose, onConfirm, infoCancha, tiposCanchas,
   const guardarCambiosCancha = async () => {
     try {
       // Evitar enviar la imagen si está vacía
-      const dataToSend = {...canchaData};
+      const dataToSend = { ...canchaData };
       if (dataToSend.imagen === "") {
         delete dataToSend.imagen;
       }
-      
+
       await canchasServicio.actualizar(infoCancha.id_cancha, dataToSend);
       console.log("se actualizo");
       onConfirm(dataToSend);
@@ -126,7 +133,7 @@ const ModificarCancha = ({ isOpen, onClose, onConfirm, infoCancha, tiposCanchas,
       console.log(error);
     }
   };
-  
+
   if (!isOpen) return null;
 
   return (
@@ -209,13 +216,11 @@ const ModificarCancha = ({ isOpen, onClose, onConfirm, infoCancha, tiposCanchas,
                 }
               >
                 <option value="">Seleccione el estado</option>
-                {estadoCanchas?.map((estado) =>(
+                {estadoCanchas?.map((estado) => (
                   <option key={estado} value={estado}>
                     {estado}
                   </option>
-
                 ))}
-                
               </select>
               {errors.estado && (
                 <p className="text-red-500 text-sm">{errors.estado}</p>

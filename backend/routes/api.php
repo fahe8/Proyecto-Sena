@@ -27,3 +27,4 @@ Route::apiResource('reservas', ReservaController::class);
 Route::apiResource('resenas', ResenaController::class);
 Route::apiResource('tipocanchas', TipoCanchaController::class);
 Route::apiResource('estadocanchas', EstadoCanchaController::class);
+
