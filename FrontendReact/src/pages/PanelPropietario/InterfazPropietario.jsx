@@ -116,27 +116,26 @@ const InterfazPropietario = () => {
 
   return (
     <div className="min-h-screen w-full bg-white overflow-x-hidden">
-      <nav className="bg-[#003950] shadow-lg p-2 sm:p-4">
+      <nav className="bg-[#003950] shadow-lg p-4 sm:p-10">
         <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 py-[4px]">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
             <div className="flex items-center space-x-2 sm:space-x-4">
               <div className="relative">
-                <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full bg-green-500 flex items-center justify-center border-2 sm:border-4 border-white">
+                <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full bg-green-500 flex items-center justify-center border-2 sm:border-3 border-white">
                   <span className="text-white text-3xl sm:text-5xl font-bold"></span>
                 </div>
               </div>
               <div className="text-white text-center sm:text-left">
-                <h2 className="text-xl sm:text-2xl font-bold">Canchas La 64</h2>
-                <p className="text-lg sm:text-xl font-sans">James Diaz</p>
+                <h2 className="text-xl sm:text-lg font-bold">Canchas La 64</h2>
+                <p className="text-lg sm:text-sm font-sans">James Diaz</p>
               </div>
             </div>
             
             <div className="relative mt-2 sm:mt-0">
               <button 
                 onClick={AgregarCancha}
-                className="flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 bg-[#39de02] text-black rounded-lg hover:bg-green-400 transition-colors text-sm sm:text-base"
+                className="flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 bg-[#39de02] text-black rounded-lg hover:bg-green-400 transition-colors text-xs sm:text-base"
               >
-                <span className="mr-1">+</span>
                 Agregar canchas
               </button>
             </div>
@@ -145,8 +144,8 @@ const InterfazPropietario = () => {
       </nav>
 
       <div className="w-full max-w-5xl mx-auto py-3 sm:py-5 px-3 sm:px-0">
-        <div className="canchas_container flex-grow px-2 sm:px-5">
-          <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 pb-2 sm:pb-2.5 border-b-2 border-gray-200">Tus canchas</h2>
+        <div className="canchas_container flex-grow px-10 md:px-6">
+          <h2 className="text-xl sm:text-lg font-bold mb-3 sm:mb-4 pb-2 sm:pb-2.5 border-b-2 border-gray-200 font-sans">Tus canchas</h2>
 
           {cargando ? (
             <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4">
@@ -226,7 +225,7 @@ const InterfazPropietario = () => {
         />
       )}
     </div>
-  );7
+  );
 };
 
 export default InterfazPropietario;

@@ -55,4 +55,11 @@ export const canchasServicio = {
     agregar: (data) => apiClient.post('/canchas', data),
 }
 
+export const adicionalServicio = {
+    obtenerTodos: () => apiClient.get('/adicionales'),
+    obtenerPorId: (id) => apiClient.get(`/adicionales/${id}`),
+    crear: (data) => apiClient.post('/adicionales', data),
+    actualizar: (id, data) => apiClient.put(`/adicionales/${id}`, data),
+    eliminar: (id) => apiClient.delete(`/adicionales/${id}`)
+};
 export default apiClient;

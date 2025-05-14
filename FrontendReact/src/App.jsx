@@ -14,7 +14,7 @@ import FormularioCanchas from "./pages/FormularioEmpresa/InfoCanchas";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
 import PerfilPropietario from "./pages/PanelPropietario/PerfilPropietario";
-import ReservasActivas from "./pages/PanelPropietario/ReservasActivas";
+import ReservasPendientes from "./pages/PanelPropietario/ReservasPendientes";
 import ReservasPasadas from "./pages/PanelPropietario/ReservasPasadas";
 
 import iconoCorazon from "./assets/Perfil/corazon.svg";
@@ -61,27 +61,23 @@ function App() {
     {
       nombre: "Inicio",
       icono: IconoHome,
-      url: "/",
+      url: "/interfazpropietario",
     },
+
     {
-      nombre: "Interfaz pro",
-      icono: IconoHome,
-      url: "/InterfazPropietario",
-    },
-    {
-      nombre: "Perfil ",
+      nombre: "Tu perfil ",
       icono: iconoPerfil,
-      url: "/PerfilPropietario",
+      url: "/perfilpropietario",
     },
     {
-      nombre: "Reservas Pasadas",
+      nombre: "Reservas pasadas",
       icono: iconoReciente,
-      url: "/ReservasPasadas",
+      url: "/reservaspasadas",
     },
     {
-      nombre: "Reservas Activas",
+      nombre: "Reservas pendientes",
       icono: iconoReciente,
-      url: "/ReservasActivas",
+      url: "/reservaspendientes",
     },
     
   ]
@@ -111,7 +107,7 @@ function App() {
             <Route path="/favoritos" element={<Favoritos />} />
             <Route path="/perfil" element={<PerfilPage />} />
             <Route path="/reservasactivas" element={<Reservas />} />
-            <Route path="/historialReservas" element={<HistorialReservas />} />
+            <Route path="/historialreservas" element={<HistorialReservas />} />
             {/* <Route path="/norecomendadas" element={<NoRecomendadas />} /> */}
           </Route>
 
@@ -123,10 +119,10 @@ function App() {
             }
           >
             <Route path="/" element={<Inicio/>} />
-            <Route path="/InterfazPropietario" element={<InterfazPropietario />} />
-            <Route path="/PerfilPropietario" element={<PerfilPropietario />} />
-            <Route path="/ReservasActivas" element={<ReservasActivas />} />
-            <Route path="/ReservasPasadas" element={<ReservasPasadas />} />
+            <Route path="/interfazpropietario" element={<InterfazPropietario />} />
+            <Route path="/perfilpropietario" element={<PerfilPropietario />} />
+            <Route path="/reservaspendientes" element={<ReservasPendientes />} />
+            <Route path="/reservaspasadas" element={<ReservasPasadas />} />
           
         </Route>
 
