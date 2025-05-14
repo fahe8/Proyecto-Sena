@@ -13,13 +13,8 @@ import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 import FormularioCanchas from "./pages/FormularioEmpresa/InfoCanchas";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
-<<<<<<< HEAD
-import PerfilPropietario from "./pages/PanelPropietario/PerfilPropietario";
-import ReservasPendientes from "./pages/PanelPropietario/ReservasPendientes";
-=======
 import PerfilAdministrador from "./pages/PanelPropietario/PerfilAdministrador";
-import ReservasActivas from "./pages/PanelPropietario/ReservasActivas";
->>>>>>> 754e7ab5e652c321c232f8ad27753b7efc704778
+import ReservasPendientes from "./pages/PanelPropietario/ReservasPendientes";
 import ReservasPasadas from "./pages/PanelPropietario/ReservasPasadas";
 
 
@@ -83,7 +78,7 @@ function App() {
     {
       nombre: "Reservas pendientes",
       icono: iconoReciente,
-      url: "/reservaspendientes",
+      url: "/ReservasPendientes",
     },
     
   ]
@@ -127,7 +122,7 @@ function App() {
             <Route path="/" element={<Inicio/>} />
             <Route path="/InterfazPropietario" element={<InterfazPropietario />} />
             <Route path="/PerfilAdministrador" element={<PerfilAdministrador />} />
-            <Route path="/ReservasActivas" element={<ReservasActivas />} />
+            <Route path="/ReservasPendientes" element={<ReservasPendientes />} />
             <Route path="/ReservasPasadas" element={<ReservasPasadas />} />
           
         </Route>
