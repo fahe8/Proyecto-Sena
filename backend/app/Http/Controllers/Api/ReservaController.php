@@ -165,19 +165,18 @@ class ReservaController extends ApiController
     /**
      * Get reservation history (past reservations)
      */
-    public function obtenerHistorialReservas(Request $request)
+    public function obtenerHistorialReservas($id)
     {
         try {
-            $now = Carbon::now();
+            $now = Carbon::now('America/Bogota');
             $currentDate = $now->toDateString();
             $currentHour = $now->format('H:i:s');
+            echo($currentHour);
 
-            $request->validate([
-                'id_usuario' => 'required|exists:usuario,id_usuario'
-            ]);
+
 
             $reservationHistory = Reserva::with(['cancha', 'usuario', 'pago'])
-                ->where('id_usuario', $request->id_usuario)
+                ->where('id_usuario', $id)
                 ->where(function ($query) use ($currentDate, $currentHour) {
                     $query->where('fecha', '<', $currentDate)
                         ->orWhere(function ($q) use ($currentDate, $currentHour) {
