@@ -16,6 +16,7 @@ Route::get('reservas/active', [App\Http\Controllers\Api\ReservaController::class
 Route::get('reservas/history', [App\Http\Controllers\Api\ReservaController::class, 'obtenerHistorialReservas']);
 Route::get('reservas/empresa/{nit}', [App\Http\Controllers\Api\ReservaController::class, 'obtenerReservasPorEmpresa']);
 Route::get('canchas/empresa/{nit}', [App\Http\Controllers\Api\CanchaController::class, 'mostrarCanchasEmpresa']);
+Route::get('propietarios/empresa/{nit}', [PropietarioController::class, 'obtenerPorEmpresa']);
 
 // Then define the resource routes
 Route::apiResource('usuarios', UsuarioController::class);

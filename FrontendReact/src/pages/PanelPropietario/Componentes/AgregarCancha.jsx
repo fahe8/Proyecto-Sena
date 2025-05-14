@@ -104,8 +104,7 @@ const AgregarCancha = () => {
     try {
       // Guardar cada cancha individualmente
       const promesas = canchasData.map(cancha => {
-        console.log("Enviando datos de cancha:", cancha);
-        return canchasServicio.agregar(cancha); 
+        return canchasServicio.agregar(cancha);   
       })
       await Promise.all(promesas)
       
@@ -120,8 +119,6 @@ const AgregarCancha = () => {
         navigate('/InterfazPropietario')
       }, 2000)
     } catch (error) {
-      console.error("Error al guardar las canchas:", error)
-      console.error("Detalles del error:", error.response?.data) // Muestra más detalles
       setTextoPopUp({
         titulo: "Error al guardar",
         subtitulo: error.response?.data?.message || "Ocurrió un problema al guardar las canchas"

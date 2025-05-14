@@ -24,6 +24,7 @@ export const usuarioServicio = {
 export const propietarioServicio = {
     obtenerTodos: () => apiClient.get('/propietarios'),
     obtenerPorId: (id) => apiClient.get(`/propietarios/${id}`),
+    obtenerPorEmpresa: (NIT) => apiClient.get(`/propietarios/empresa/${NIT}`),
     crear: (data) => apiClient.post('/propietarios', data),
     actualizar: (id, data) => apiClient.put(`/propietarios/${id}`, data),
     eliminar: (id) => apiClient.delete(`/propietarios/${id}`)
