@@ -126,7 +126,7 @@ const SeccionHerramientas = () => {
   return (
     <div className="flex flex-col gap-4 items-center self-start overflow-y-auto">
       <ul
-        className=" grid grid-cols-4 justify-around mb-4 "
+        className=" grid grid-cols-3 justify-around mb-4 "
         id="menu-lista"
       >
         {menuItems?.map((item, index) => {
