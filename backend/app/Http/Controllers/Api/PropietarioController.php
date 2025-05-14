@@ -81,4 +81,21 @@ class PropietarioController extends ApiController
         $propietario->update($request->all());
         return $this->sendResponse($propietario, "Propietario actualizado");
     }
+
+    public function obtenerPorEmpresa($nit)
+    {
+        try {
+            $propietario = Propietario::whereHas('empresas', function($query) use ($nit) {
+                $query->where('NIT', $nit);
+            })->first();
+            
+            if(is_null($propietario)) {
+                return $this->sendError('No se encontró propietario para esta empresa');
+            }
+            
+            return $this->sendResponse($propietario, 'Propietario encontrado exitosamente');
+        } catch (\Exception $e) {
+            return $this->sendError('Error obteniendo propietario', $e->getMessage());
+        }
+    }
 }

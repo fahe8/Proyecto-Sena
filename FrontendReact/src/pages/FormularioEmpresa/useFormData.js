@@ -11,11 +11,7 @@ export function useFormData() {
     
     // Datos de la empresa
     nombreEmpresa: '',
-    ruc: '',
     direccion: '',
-    ciudad: '',
-    sector: '',
-    cantidadEmpleados: ''
   });
 
   const handleChange = (e) => {

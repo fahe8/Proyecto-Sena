@@ -13,9 +13,10 @@ import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 import FormularioCanchas from "./pages/FormularioEmpresa/InfoCanchas";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
-import PerfilPropietario from "./pages/PanelPropietario/PerfilPropietario";
+import PerfilAdministrador from "./pages/PanelPropietario/PerfilAdministrador";
 import ReservasActivas from "./pages/PanelPropietario/ReservasActivas";
 import ReservasPasadas from "./pages/PanelPropietario/ReservasPasadas";
+
 
 import iconoCorazon from "./assets/Perfil/corazon.svg";
 import iconoArchivo from "./assets/Perfil/archive.svg";
@@ -71,7 +72,7 @@ function App() {
     {
       nombre: "Perfil ",
       icono: iconoPerfil,
-      url: "/PerfilPropietario",
+      url: "/PerfilAdministrador",
     },
     {
       nombre: "Reservas Pasadas",
@@ -124,7 +125,7 @@ function App() {
           >
             <Route path="/" element={<Inicio/>} />
             <Route path="/InterfazPropietario" element={<InterfazPropietario />} />
-            <Route path="/PerfilPropietario" element={<PerfilPropietario />} />
+            <Route path="/PerfilAdministrador" element={<PerfilAdministrador />} />
             <Route path="/ReservasActivas" element={<ReservasActivas />} />
             <Route path="/ReservasPasadas" element={<ReservasPasadas />} />
           

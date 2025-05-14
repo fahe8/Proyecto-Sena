@@ -20,6 +20,8 @@ const InterfazPropietario = () => {
   
   const [tiposCanchas, setTiposCanchas] = useState([]);
   const [estadoCanchas, setEstadoCanchas] = useState([]);
+  const [DatosEmpresa, setDatosEmpresa] = useState ([])
+  const [datosPropietario, setDatosPropietario] = useState({})
   const [datosListos, setDatosListos] = useState(false);
 
   useEffect(() => {
@@ -27,11 +29,12 @@ const InterfazPropietario = () => {
     const cargarDatos = async () => {
       try {
         // Realizar todas las peticiones en paralelo
-        const [canchasResponse, tiposResponse, estadosResponse, ] = await Promise.all([
+        const [canchasResponse, tiposResponse, estadosResponse, EmpresaReponse, propietarioResponse] = await Promise.all([
           canchasServicio.obtenerTodosEmpresa('987654321'),
           canchasServicio.tiposCanchas(),
           canchasServicio.estadoCanchas(),
-          
+          empresaServicio.obtenerPorId('987654321'),
+          propietarioServicio.obtenerPorEmpresa('987654321'),
         ]);
         
         // Procesar los resultados
@@ -45,9 +48,19 @@ const InterfazPropietario = () => {
           setEstadoCanchas(estadosResponse.data.data.estados);
         }
         
+        if (EmpresaReponse.data.success && EmpresaReponse.data.data) {
+          setDatosEmpresa(EmpresaReponse.data.data);
+        }
+        
+        if (propietarioResponse.data.success && propietarioResponse.data.data) {
+          setDatosPropietario(propietarioResponse.data.data);
+        }
+        
+        console.log("Datos de empresa:", EmpresaReponse.data);
         setDatosListos(true);
         setCargando(false);
       } catch (error) {
+        
         console.error("Error al cargar los datos:", error);
         setCargando(false);
       }
@@ -102,7 +115,6 @@ const InterfazPropietario = () => {
 
   const eliminarCancha = async () => {
     const canchasActualizadas = listaCanchas.filter((cancha) => cancha.id_cancha !== canchaSeleccionada);
-    console.log(canchaSeleccionada)
     await canchasServicio.eliminar(canchaSeleccionada);
     setListaCanchas(canchasActualizadas);
 
@@ -126,8 +138,8 @@ const InterfazPropietario = () => {
                 </div>
               </div>
               <div className="text-white text-center sm:text-left">
-                <h2 className="text-xl sm:text-2xl font-bold">Canchas La 64</h2>
-                <p className="text-lg sm:text-xl font-sans">James Diaz</p>
+                <h2 className="text-xl sm:text-2xl font-bold">{DatosEmpresa.nombre ? `${DatosEmpresa.nombre}` : 'Empresa'} </h2>
+                <p className="text-lg sm:text-xl font-sans">{datosPropietario.nombre ? `${datosPropietario.nombre} ${datosPropietario.apellido}` : 'Propietario'}</p>
               </div>
             </div>
             
@@ -225,8 +237,9 @@ const InterfazPropietario = () => {
           estadoCanchas={estadoCanchas}
         />
       )}
+      
     </div>
-  );7
+  );
 };
 
 export default InterfazPropietario;
