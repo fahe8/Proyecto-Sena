@@ -133,9 +133,8 @@ class ReservaController extends ApiController
             $currentHour = $now->format('H:i:s');
 
             
-
-            $activeReservations = Reserva::with(['cancha', 'usuario', 'pago'])
-                ->where('id_usuario', $id->id_usuario)
+            $activeReservations = Reserva::with(['cancha', 'usuario', 'pago', 'empresa'])
+                ->where('id_usuario', $id)
                 ->where(function ($query) use ($currentDate, $currentHour) {
                     $query->where('fecha', '>', $currentDate)
                         ->orWhere(function ($q) use ($currentDate, $currentHour) {

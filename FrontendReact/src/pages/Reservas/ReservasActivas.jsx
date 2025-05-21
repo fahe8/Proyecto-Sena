@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
-import {useAuth} from "../../Provider/AuthProvider";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../../Provider/AuthProvider";
 import { calendar, clock, football, gps, money } from "../../assets/IconosSVG/iconos";
 import { canchasServicio, reservaServicio } from "../../services/api";
 
-
 const ReservasActivas = () => {
-  const auth = useAuth();
+  const { user } = useAuth();
   const [mostrarModal, setMostrarModal] = useState(false);
   const [reservasActivas, setReservasActivas] = useState([]);
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
-  const [infoCancha, setInfoCancha] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
@@ -18,14 +16,19 @@ const ReservasActivas = () => {
     const cargarReservasActivas = async () => {
       try {
         setCargando(true);
-        console.log("Estado de auth:", auth); // Aquí sí estará definido
+
+        if (!user?.uid) {
+          console.log("No hay usuario autenticado o auth.uid no existe");
+          setCargando(false);
+          return;
+        }
         
-        const response = await reservaServicio.obtenerReservasActivas(auth.uid);
-        console.log("Respuesta API:", response.data); // Aquí sí estará definido
+        const response = await reservaServicio.obtenerReservasActivas(user.uid);
+        console.log("Respuesta API:", response.data);
         
         if (response.data && response.data.success) {
           setReservasActivas(response.data.data || []);
-          console.log("Reservas activas:", response.data.data); // Aquí sí estará definido
+          console.log("Reservas activas:", response.data.data);
         } else {
           throw new Error("No se pudieron cargar las reservas activas");
         }
@@ -37,34 +40,14 @@ const ReservasActivas = () => {
       }
     };
   
-    if (auth?.uid) {
+    if (user?.uid) {
       cargarReservasActivas();
-    } else {
-      console.log("No hay usuario autenticado o auth.uid no existe");
     }
-  }, [auth]);
-
-  // Cargar detalles de la cancha para la reserva seleccionada
-  const cargarDetallesCancha = async (reserva) => {
-    try {
-      // Obtener detalles de la cancha a la que pertenece la reserva
-      const respuesta = await canchasServicio.obtenerPorId(reserva.canchaId);
-      
-      if (respuesta.data.success) {
-        setInfoCancha(respuesta.data.data);
-      } else {
-        throw new Error("No se pudieron cargar los detalles de la cancha");
-      }
-    } catch (error) {
-      console.error("Error al cargar detalles de la cancha:", error);
-      setInfoCancha(null);
-    }
-  };
+  }, [user]);
 
   // Función para abrir el modal con la información de una reserva específica
-  const abrirModal = async (reserva) => {
+  const abrirModal = (reserva) => {
     setReservaSeleccionada(reserva);
-    await cargarDetallesCancha(reserva);
     setMostrarModal(true);
   };
 
@@ -72,24 +55,89 @@ const ReservasActivas = () => {
   const cerrarModal = () => {
     setMostrarModal(false);
     setReservaSeleccionada(null);
-    setInfoCancha(null);
   };
 
-  // Función para formatear la fecha
-  const formatearFecha = (fechaStr) => {
-    if (!fechaStr) return "No disponible";
+  // Función para formatear la fecha - CORREGIDA
+const formatearFecha = (fechaStr) => {
+  if (!fechaStr) return "No disponible";
+  
+  try {
+    // Convertir la fecha a un objeto Date con UTC explícito
+    const fecha = new Date(fechaStr);
+    
+    // Verificar si la fecha es válida
+    if (isNaN(fecha.getTime())) {
+      console.error("Fecha inválida:", fechaStr);
+      return "Fecha inválida";
+    }
+    
+    // Ajustar para la zona horaria local para evitar el desfase de un día
+    // Usamos toLocaleDateString con una opción de zona horaria UTC
+    return fecha.toLocaleDateString('es-ES', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      timeZone: 'UTC' // Importante: esto asegura que se use la fecha UTC sin conversión a hora local
+    });
+  } catch (e) {
+    console.error("Error al formatear fecha:", e);
+    return `Error: ${fechaStr}`;
+  }
+};
+
+  // Función mejorada para formatear la hora
+  const formatearHora = (fechaHoraStr) => {
+    if (!fechaHoraStr) return "--:--";
     
     try {
-      const fecha = new Date(fechaStr);
-      return fecha.toLocaleDateString('es-ES', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+      // Si es solo una hora (no una fecha completa), añadir una fecha ficticia
+      let fechaHora = fechaHoraStr;
+      if (typeof fechaHoraStr === 'string' && fechaHoraStr.length <= 8) {
+        // Asumimos que es un formato de hora como "HH:MM" o "HH:MM:SS"
+        fechaHora = `2000-01-01T${fechaHoraStr}`;
+      }
+      
+      const fecha = new Date(fechaHora);
+      
+      // Verificar si la fecha/hora es válida
+      if (isNaN(fecha.getTime())) {
+        console.error("Hora inválida:", fechaHoraStr);
+        return fechaHoraStr;
+      }
+      
+      return fecha.toLocaleTimeString('es-ES', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true
       });
     } catch (e) {
-      return fechaStr;
+      console.error("Error al formatear hora:", e);
+      return fechaHoraStr;
     }
+  };
+
+  // Función para obtener el nombre de la empresa o establecimiento
+  const obtenerNombreEmpresa = (reserva) => {
+    if (reserva.empresa?.nombre) {
+      return reserva.empresa.nombre;
+    }
+    
+    // Con la nueva estructura
+    if (reserva.cancha?.NIT) {
+      return `Cancha ${reserva.cancha.nombre || 'Sin nombre'}`;
+    }
+    
+    return "Cancha";
+  };
+
+  // Función para obtener la dirección de la empresa
+  const obtenerDireccionEmpresa = (reserva) => {
+    if (reserva.empresa?.direccion) {
+      return reserva.empresa.direccion;
+    }
+    
+    return "Ubicación no disponible";
   };
 
   return (
@@ -115,30 +163,30 @@ const ReservasActivas = () => {
         <div className="space-y-4 mt-4">
           {reservasActivas.map((reserva) => (
             <div 
-              key={reserva.id} 
+              key={reserva.id_reserva || reserva.id} 
               className="bg-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
             >
               {/* Información de la card principal */}
-              <div className="p-4 grid grid-cols-2">
+              <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex items-center gap-4">
                   {/* Logo de la empresa */}
                   <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
-                    {reserva.empresa?.nombre?.charAt(0) || "C"}
+                    {obtenerNombreEmpresa(reserva).charAt(0) || "C"}
                   </div>
                   {/* Location info */}
                   <div>
-                    <h3 className="font-bold">{reserva.empresa?.nombre || "Cancha"}</h3>
+                    <h3 className="font-bold">{obtenerNombreEmpresa(reserva)}</h3>
                     <span className="flex">
                       <div>{React.createElement(gps)}</div>
-                      <p className="text-sm">{reserva.empresa?.direccion || "Ubicación no disponible"}</p>
+                      <p className="text-sm">{obtenerDireccionEmpresa(reserva)}</p>
                     </span>
                   </div>
                 </div>
 
                 {/* Botón que abre el modal de descripción */}
-                <div className="flex justify-end items-center">
+                <div className="flex justify-start sm:justify-end items-center mt-2 sm:mt-0">
                   <button
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition-colors"
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition-colors w-full sm:w-auto"
                     onClick={() => abrirModal(reserva)}
                   >
                     Descripción
@@ -150,24 +198,24 @@ const ReservasActivas = () => {
         </div>
       )}
 
-      {/* Modal de descripción mejorado */}
+      {/* Modal de descripción mejorado y responsive */}
       {mostrarModal && reservaSeleccionada && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-3">
           {/* Overlay oscuro detrás del modal */}
           <div 
             className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
             onClick={cerrarModal}
           ></div>
           
-          {/* Contenido del modal */}
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-lg m-4 z-10 relative overflow-hidden">
+          {/* Contenido del modal - ahora más responsive */}
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-auto z-10 relative overflow-hidden max-h-[90vh] flex flex-col">
             {/* Encabezado del modal con color de fondo */}
             <div className="bg-green-500 p-4 text-white relative">
               <h3 className="text-lg font-bold">
                 Detalles de la Reserva
               </h3>
               <p className="text-sm opacity-90">
-                {infoCancha?.nombre || reservaSeleccionada.empresa?.nombre || "Cancha reservada"}
+                {reservaSeleccionada.cancha?.nombre || obtenerNombreEmpresa(reservaSeleccionada)}
               </p>
               
               {/* Botón de cerrar */}
@@ -181,21 +229,21 @@ const ReservasActivas = () => {
               </button>
             </div>
             
-            {/* Contenido principal del modal */}
-            <div className="p-6">
+            {/* Contenido principal del modal con scroll si es necesario */}
+            <div className="p-4 sm:p-6 overflow-y-auto">
               {/* Información de la reserva */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 {/* Columna izquierda */}
                 <div className="space-y-4">
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <div className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-100">
                     <h4 className="font-medium text-gray-700 mb-3">Información de la Reserva</h4>
                     
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
                         {React.createElement(calendar)}
                         <div>
-                          <span className="text-sm text-gray-500">Fecha</span>
-                          <p className="font-medium">
+                          <span className="text-xs sm:text-sm text-gray-500">Fecha</span>
+                          <p className="font-medium text-sm sm:text-base">
                             {formatearFecha(reservaSeleccionada.fecha)}
                           </p>
                         </div>
@@ -204,9 +252,9 @@ const ReservasActivas = () => {
                       <div className="flex items-center gap-3">
                         {React.createElement(clock)}
                         <div>
-                          <span className="text-sm text-gray-500">Horario</span>
-                          <p className="font-medium">
-                            {reservaSeleccionada.horaInicio || '--:--'} a {reservaSeleccionada.horaFin || '--:--'}
+                          <span className="text-xs sm:text-sm text-gray-500">Horario</span>
+                          <p className="font-medium text-sm sm:text-base">
+                            {formatearHora(reservaSeleccionada.hora_inicio || reservaSeleccionada.horaInicio)} a {formatearHora(reservaSeleccionada.hora_final || reservaSeleccionada.horaFin)}
                           </p>
                         </div>
                       </div>
@@ -214,8 +262,10 @@ const ReservasActivas = () => {
                       <div className="flex items-center gap-3">
                         {React.createElement(football)}
                         <div>
-                          <span className="text-sm text-gray-500">Tipo de cancha</span>
-                          <p className="font-medium">{infoCancha?.tipoCancha || "Fútbol"}</p>
+                          <span className="text-xs sm:text-sm text-gray-500">Tipo de cancha</span>
+                          <p className="font-medium text-sm sm:text-base">
+                            {reservaSeleccionada.cancha?.id_tipo_cancha || "Fútbol"}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -224,16 +274,16 @@ const ReservasActivas = () => {
                 
                 {/* Columna derecha */}
                 <div className="space-y-4">
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  <div className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-100">
                     <h4 className="font-medium text-gray-700 mb-3">Datos de pago</h4>
                     
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
                         {React.createElement(money)}
                         <div>
-                          <span className="text-sm text-gray-500">Total</span>
-                          <p className="font-medium">
-                            ${reservaSeleccionada.total || reservaSeleccionada.monto || '0.00'}
+                          <span className="text-xs sm:text-sm text-gray-500">Total</span>
+                          <p className="font-medium text-sm sm:text-base">
+                            ${reservaSeleccionada.cancha?.precio || reservaSeleccionada.total || reservaSeleccionada.monto || '0.00'}
                           </p>
                         </div>
                       </div>
@@ -245,8 +295,8 @@ const ReservasActivas = () => {
                           </svg>
                         </div>
                         <div>
-                          <span className="text-sm text-gray-500">Estado</span>
-                          <p className="font-medium text-green-600">
+                          <span className="text-xs sm:text-sm text-gray-500">Estado</span>
+                          <p className="font-medium text-sm sm:text-base text-green-600">
                             {reservaSeleccionada.estado || "Confirmada"}
                           </p>
                         </div>
@@ -260,8 +310,8 @@ const ReservasActivas = () => {
                             </svg>
                           </div>
                           <div>
-                            <span className="text-sm text-gray-500">Método de pago</span>
-                            <p className="font-medium">{reservaSeleccionada.metodoPago}</p>
+                            <span className="text-xs sm:text-sm text-gray-500">Método de pago</span>
+                            <p className="font-medium text-sm sm:text-base">{reservaSeleccionada.metodoPago}</p>
                           </div>
                         </div>
                       )}
@@ -271,58 +321,56 @@ const ReservasActivas = () => {
               </div>
               
               {/* Información de contacto */}
-              <div className="mt-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
+              <div className="mt-4 sm:mt-6 bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-100">
                 <h4 className="font-medium text-gray-700 mb-3">Información de contacto</h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex items-center gap-3">
-                    
                     <div>
-                      <span className="text-sm text-gray-500">Nombre</span>
-                      <p className="font-medium">{reservaSeleccionada.nombreUsuario || "Usuario"}</p>
+                      <span className="text-xs sm:text-sm text-gray-500">Nombre</span>
+                      <p className="font-medium text-sm sm:text-base">
+                        {reservaSeleccionada.usuario ? 
+                          `${reservaSeleccionada.usuario.nombre || ''} ${reservaSeleccionada.usuario.apellido || ''}` : 
+                          (reservaSeleccionada.nombreUsuario || "Usuario")}
+                      </p>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-3">
-                    
                     <div>
-                      <span className="text-sm text-gray-500">Teléfono</span>
-                      <p className="font-medium">{reservaSeleccionada.telefonoUsuario || "No disponible"}</p>
+                      <span className="text-xs sm:text-sm text-gray-500">Teléfono</span>
+                      <p className="font-medium text-sm sm:text-base">
+                        {reservaSeleccionada.usuario?.telefono || 
+                         reservaSeleccionada.telefonoUsuario || 
+                         "No disponible"}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
               
               {/* Política de cancelación */}
-              <div className="mt-6 bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+              <div className="mt-4 sm:mt-6 bg-yellow-50 p-3 sm:p-4 rounded-lg border border-yellow-100">
                 <h4 className="font-medium text-yellow-800 flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                   Política de cancelación
                 </h4>
-                <p className="text-sm text-yellow-700 mt-1">
+                <p className="text-xs sm:text-sm text-yellow-700 mt-1">
                   Puedes cancelar esta reserva hasta 24 horas antes de la hora programada. Después de ese tiempo, no habrá reembolso.
                 </p>
               </div>
               
               {/* Botones de acción */}
-              <div className="flex justify-end mt-6 space-x-3">
+              <div className="flex flex-col sm:flex-row sm:justify-end mt-4 sm:mt-6 space-y-2 sm:space-y-0 sm:space-x-3">
                 <button
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                   className="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600 transition-colors w-full sm:w-auto"
                   onClick={cerrarModal}
                 >
                   Cerrar
-                </button>
-                <button
-                  className="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600 transition-colors"
-                  onClick={() => {
-                    // Aquí puedes implementar la lógica para ver en mapa o contactar
-                    // Por ahora solo cierra el modal
-                    cerrarModal();
-                  }}
-                >
-                  Ver en mapa
+               
+                
                 </button>
               </div>
             </div>
