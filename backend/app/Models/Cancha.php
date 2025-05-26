@@ -21,11 +21,18 @@ class Cancha extends Model
     protected $casts = [
         'precio' => 'integer'
     ];
-    public function estado()
+    
+
+    public function estadoCancha()
     {
         return $this->belongsTo(EstadoCancha::class, 'id_estado_cancha');
     }
 
+    public function estado()
+    {
+        return $this->estadoCancha();
+    }
+    
     public function tipoCancha()
     {
         return $this->belongsTo(TipoCancha::class, 'id_tipo_cancha');

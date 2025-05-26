@@ -58,11 +58,12 @@ export const canchasServicio = {
     agregar: (data) => apiClient.post('/canchas', data),
 }
 
-export const adicionalServicio = {
-    obtenerTodos: () => apiClient.get('/adicionales'),
-    obtenerPorId: (id) => apiClient.get(`/adicionales/${id}`),
-    crear: (data) => apiClient.post('/adicionales', data),
-    actualizar: (id, data) => apiClient.put(`/adicionales/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/adicionales/${id}`)
-};
+export const ServiciosServicio = {
+    obtenerTodos: () => apiClient.get('/servicios'),
+    obtenerPorId: (id) => apiClient.get(`/servicios/${id}`),
+    obtenerPorEmpresa: (nit) => apiClient.get(`/servicios/empresa/${nit}`),
+    crear: (data) => apiClient.post('/servicios', data),
+    actualizar: (id, data) => apiClient.put(`/servicios/${id}`, data),
+    eliminar: (id) => apiClient.delete(`/servicios/${id}`)
+}
 export default apiClient;
