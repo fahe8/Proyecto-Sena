@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'http://127.0.0.1:8000/api';
 
 const apiClient = axios.create({
     baseURL: API_URL,
@@ -45,7 +45,8 @@ export const reservaServicio = {
     crear: (data) => apiClient.post('/reservas', data),
     actualizar: (id, data) => apiClient.put(`/reservas/${id}`, data),
     eliminar: (id) => apiClient.delete(`/reservas/${id}`),
-    obtenerReservasActivas: (id) => apiClient.get(`reservas/active/${id}`)
+    obtenerReservasActivas: (id) => apiClient.get(`reservas/active/${id}`),
+    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`)
 };
 
 export const canchasServicio = {

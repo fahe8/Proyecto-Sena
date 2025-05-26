@@ -1,41 +1,85 @@
 import React, { useState, useEffect, useRef } from "react";
-import { HistorialReservasData } from "./ReservaPruebaData";
+import { useAuth } from "../../Provider/AuthProvider";
+import { calendar, clock, football, gps, money } from "../../assets/IconosSVG/iconos";
+import { reservaServicio } from "../../services/api";
 
 const HistorialReservas = () => {
+  const { user } = useAuth();
   
-  // Estado para controlar la visibilidad del menú desplegable de filtro
+  // Estados principales
   const [mostrar, setmostrar] = useState(false);
-
-  // Estado para almacenar el término de búsqueda
   const [BuscarTerm, setBuscarTerm] = useState("");
-  
-  // Estado para almacenar las reservas filtradas por búsqueda y ordenamiento
-  const [reservaFiltrada, setReservaFiltrada] = useState(HistorialReservasData);
-  
-  // Estado para almacenar los datos originales de las reservas
-  const [HistoialCanchas, setHistoialCanchas] = useState(HistorialReservasData);
-  
-  // Estado para controlar el texto mostrado en el botón de filtro
+  const [reservaFiltrada, setReservaFiltrada] = useState([]);
+  const [historialReservas, setHistorialReservas] = useState([]);
   const [TextoBoton, setTextoBoton] = useState("Ordenar");
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Estados para el modal de reseña
+  const [mostrarModalResena, setMostrarModalResena] = useState(false);
+  const [reservaParaResenar, setReservaParaResenar] = useState(null);
+  const [enviandoResena, setEnviandoResena] = useState(false);
+  
+  // Estados del formulario de reseña
+  const [calificacion, setCalificacion] = useState(0);
+  const [comentario, setComentario] = useState("");
+  const [calificacionHover, setCalificacionHover] = useState(0);
 
   // Referencias para detectar clics fuera del menú desplegable
   const mostrarRef = useRef(null);
   const buttonRef = useRef(null);
 
+  // Cargar historial de reservas desde el backend
+  useEffect(() => {
+    const cargarHistorialReservas = async () => {
+      try {
+        setCargando(true);
 
-  // Función para manejar la búsqueda por nombre de cancha
+        if (!user?.uid) {
+          console.log("No hay usuario autenticado");
+          setCargando(false);
+          return;
+        }
+        
+        // Llamada al backend para obtener reservas completadas/pasadas
+        const response = await reservaServicio.obtenerHistorialReservas(user?.uid);
+        console.log("Respuesta historial:", response.data);
+        
+        if (response.data && response.data.success) {
+          const reservasCompletadas = response.data.data || [];
+          setHistorialReservas(reservasCompletadas);
+          setReservaFiltrada(reservasCompletadas);
+          console.log("Historial de reservas:", reservasCompletadas);
+        } else {
+          throw new Error("No se pudo cargar el historial de reservas");
+        }
+      } catch (error) {
+        console.error("Error al cargar historial:", error);
+        setError("No se pudo cargar el historial de reservas");
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    if (user?.uid) {
+      cargarHistorialReservas();
+    }
+  }, [user]);
+
+  // Función para manejar la búsqueda
   const ManejarBusqueda = (e) => {
     const value = e.target.value;
     setBuscarTerm(value);
     
-    // Si el campo de búsqueda está vacío, muestra todas las reservas
     if (value.length === 0) {
-      setReservaFiltrada(HistoialCanchas);
+      setReservaFiltrada(historialReservas);
     } else {
-      // Filtra las reservas por nombre de cancha
-      const filtro = HistoialCanchas.filter(reserva =>
-        reserva.NombreCancha.toLowerCase().includes(value.toLowerCase())
-      );
+      const filtro = historialReservas.filter(reserva => {
+        const nombreCancha = obtenerNombreEmpresa(reserva).toLowerCase();
+        const direccion = obtenerDireccionEmpresa(reserva).toLowerCase();
+        return nombreCancha.includes(value.toLowerCase()) || 
+               direccion.includes(value.toLowerCase());
+      });
       setReservaFiltrada(filtro);
     }
   };
@@ -47,32 +91,179 @@ const HistorialReservas = () => {
   
   // Función para ordenar las reservas de más antigua a más reciente
   const MasAntiguo = () => {
-    const OrdenAntiguo = [...reservaFiltrada].sort((a, b) => new Date(a.Fecha) - new Date(b.Fecha));
+    const OrdenAntiguo = [...reservaFiltrada].sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
     setReservaFiltrada(OrdenAntiguo);
     setmostrar(false); 
-    setTextoBoton("Antiguo");
+    setTextoBoton("Más Antiguas");
   }
 
   // Función para ordenar las reservas de más reciente a más antigua
   const Masrecientes = () => {
-    const OrdenReciente = [...reservaFiltrada].sort((a, b) => new Date(b.Fecha) - new Date(a.Fecha));
+    const OrdenReciente = [...reservaFiltrada].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
     setReservaFiltrada(OrdenReciente);
     setmostrar(false); 
-    setTextoBoton("Reciente");
+    setTextoBoton("Más Recientes");
   }
 
-  // Función para formatear la fecha al estilo español (día, mes, año)
-  const cambiarFormatoFecha = (fecha) => {
-    const opciones = { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" };
-    const formato = new Date(fecha).toLocaleDateString("es-ES", opciones);
-    return formato;
-  }
-  
-  // Efecto para detectar clics fuera del menú desplegable y cerrarlo
+  // Función para formatear la fecha
+  const formatearFecha = (fechaStr) => {
+    if (!fechaStr) return "No disponible";
+    
+    try {
+      const fecha = new Date(fechaStr);
+      
+      if (isNaN(fecha.getTime())) {
+        console.error("Fecha inválida:", fechaStr);
+        return "Fecha inválida";
+      }
+      
+      return fecha.toLocaleDateString('es-ES', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        timeZone: 'UTC'
+      });
+    } catch (e) {
+      console.error("Error al formatear fecha:", e);
+      return `Error: ${fechaStr}`;
+    }
+  };
+
+  // Función para formatear la hora
+  const formatearHora = (fechaHoraStr) => {
+    if (!fechaHoraStr) return "--:--";
+    
+    try {
+      let fechaHora = fechaHoraStr;
+      if (typeof fechaHoraStr === 'string' && fechaHoraStr.length <= 8) {
+        fechaHora = `2000-01-01T${fechaHoraStr}`;
+      }
+      
+      const fecha = new Date(fechaHora);
+      
+      if (isNaN(fecha.getTime())) {
+        console.error("Hora inválida:", fechaHoraStr);
+        return fechaHoraStr;
+      }
+      
+      return fecha.toLocaleTimeString('es-ES', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch (e) {
+      console.error("Error al formatear hora:", e);
+      return fechaHoraStr;
+    }
+  };
+
+  // Función para obtener el nombre de la empresa
+  const obtenerNombreEmpresa = (reserva) => {
+    if (reserva.empresa?.nombre) {
+      return reserva.empresa.nombre;
+    }
+    
+    if (reserva.cancha?.nombre) {
+      return reserva.cancha.nombre;
+    }
+    
+    return "Cancha";
+  };
+
+  // Función para obtener la dirección de la empresa
+  const obtenerDireccionEmpresa = (reserva) => {
+    if (reserva.empresa?.direccion) {
+      return reserva.empresa.direccion;
+    }
+    
+    return "Ubicación no disponible";
+  };
+
+  // Función para abrir el modal de reseña
+  const abrirModalResena = (reserva) => {
+    setReservaParaResenar(reserva);
+    setCalificacion(reserva.resena?.calificacion || 0);
+    setComentario(reserva.resena?.comentario || "");
+    setMostrarModalResena(true);
+  };
+
+  // Función para cerrar el modal de reseña
+  const cerrarModalResena = () => {
+    setMostrarModalResena(false);
+    setReservaParaResenar(null);
+    setCalificacion(0);
+    setComentario("");
+    setCalificacionHover(0);
+  };
+
+  // Función para enviar la reseña
+  const enviarResena = async () => {
+    if (calificacion === 0) {
+      alert("Por favor, selecciona una calificación");
+      return;
+    }
+
+    if (comentario.trim().length < 10) {
+      alert("Por favor, escribe un comentario de al menos 10 caracteres");
+      return;
+    }
+
+    try {
+      setEnviandoResena(true);
+
+      const datosResena = {
+        id_reserva: reservaParaResenar.id_reserva || reservaParaResenar.id,
+        id_usuario: user.uid,
+        calificacion: calificacion,
+        comentario: comentario.trim(),
+        fecha_resena: new Date().toISOString()
+      };
+
+      // Llamada al backend para guardar la reseña
+      const response = await reservaServicio.crearResena(datosResena);
+
+      if (response.data && response.data.success) {
+        // Actualizar la reserva local con la nueva reseña
+        const reservasActualizadas = historialReservas.map(reserva => {
+          if ((reserva.id_reserva || reserva.id) === (reservaParaResenar.id_reserva || reservaParaResenar.id)) {
+            return {
+              ...reserva,
+              resena: {
+                calificacion: calificacion,
+                comentario: comentario.trim(),
+                fecha_resena: new Date().toISOString()
+              }
+            };
+          }
+          return reserva;
+        });
+
+        setHistorialReservas(reservasActualizadas);
+        setReservaFiltrada(reservasActualizadas.filter(reserva => {
+          if (BuscarTerm.length === 0) return true;
+          const nombreCancha = obtenerNombreEmpresa(reserva).toLowerCase();
+          const direccion = obtenerDireccionEmpresa(reserva).toLowerCase();
+          return nombreCancha.includes(BuscarTerm.toLowerCase()) || 
+                 direccion.includes(BuscarTerm.toLowerCase());
+        }));
+
+        alert("¡Reseña enviada exitosamente!");
+        cerrarModalResena();
+      } else {
+        throw new Error("No se pudo enviar la reseña");
+      }
+    } catch (error) {
+      console.error("Error al enviar reseña:", error);
+      alert("Error al enviar la reseña. Por favor, inténtalo de nuevo.");
+    } finally {
+      setEnviandoResena(false);
+    }
+  };
+
+  // Efecto para detectar clics fuera del menú desplegable
   useEffect(() => {
-    // Función para detectar clics fuera del menú
     const handleClickOutside = (event) => {
-      // Verifica si el clic fue fuera del botón y fuera de las opciones
       if (mostrarRef.current && 
           !mostrarRef.current.contains(event.target) && 
           buttonRef.current && 
@@ -81,17 +272,34 @@ const HistorialReservas = () => {
       }
     };
 
-    // Si el menú está abierto, agrega un evento para detectar clics fuera de él
     if (mostrar) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
-    // Limpia el evento al desmontar el componente o al cerrar el menú
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [mostrar]);
 
+  // Renderizado del componente de estrellas
+  const EstrellaCalificacion = ({ indice, calificacionActual, onHover, onClick, readOnly = false }) => {
+    const estaLlena = indice <= calificacionActual;
+    
+    return (
+      <button
+        type="button"
+        disabled={readOnly}
+        className={`text-2xl transition-colors duration-200 ${
+          readOnly ? 'cursor-default' : 'cursor-pointer hover:scale-110'
+        } ${estaLlena ? 'text-yellow-400' : 'text-gray-300'}`}
+        onMouseEnter={() => !readOnly && onHover && onHover(indice)}
+        onMouseLeave={() => !readOnly && onHover && onHover(0)}
+        onClick={() => !readOnly && onClick && onClick(indice)}
+      >
+        ★
+      </button>
+    );
+  };
 
   return (
     <div className="min-h-screen w-screen bg-gray-50 py-8">
@@ -99,7 +307,7 @@ const HistorialReservas = () => {
         {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-[#003044] mb-2">Historial de Reservas</h1>
-          <p className="text-gray-600">Gestiona tus reservas anteriores y próximas</p>
+          <p className="text-gray-600">Revisa tus reservas pasadas y comparte tu experiencia</p>
         </div>
 
         {/* Search and Filter Section */}
@@ -112,7 +320,7 @@ const HistorialReservas = () => {
                 onChange={ManejarBusqueda} 
                 value={BuscarTerm} 
                 name="Buscar" 
-                placeholder="Buscar por nombre de cancha..." 
+                placeholder="Buscar por nombre de cancha o ubicación..." 
                 className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 focus:border-[#00c951] focus:ring-2 focus:ring-[#00c951] transition-all duration-300 outline-none" 
               />
               <svg
@@ -149,61 +357,210 @@ const HistorialReservas = () => {
           </div>
         </div>
 
-        {/* Reservations List */}
-        <div className="space-y-4">
-          {reservaFiltrada.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-xl shadow-md">
-              <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <p className="text-xl text-gray-600">No se han encontrado reservas registradas</p>
-            </div>
-          ) : (
-            reservaFiltrada.map((cancha, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
-                  {/* Field Info */}
-                  <div className="flex items-center space-x-4">
-                    <img
-                      src={cancha.Image}
-                      alt=""
-                      className="w-20 h-20 rounded-lg object-cover shadow-md"
-                    />
-                    <div>
-                      <h3 className="font-bold text-lg text-[#003044]">{cancha.NombreCancha}</h3>
-                      <p className="text-gray-600 text-sm">{cancha.Direccion}</p>
+        {/* Loading, Error, or Reservations List */}
+        {cargando ? (
+          <div className="flex justify-center items-center h-40">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+          </div>
+        ) : error ? (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4">
+            {error}
+          </div>
+        ) : reservaFiltrada.length === 0 ? (
+          <div className="text-center py-12 bg-white rounded-xl shadow-md">
+            <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-xl text-gray-600">No se han encontrado reservas en el historial</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {reservaFiltrada.map((reserva, index) => (
+              <div key={reserva.id_reserva || reserva.id || index} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+                    {/* Field Info */}
+                    <div className="flex items-center space-x-4 md:col-span-2">
+                      <div className="w-16 h-16 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                        {obtenerNombreEmpresa(reserva).charAt(0)}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-lg text-[#003044]">{obtenerNombreEmpresa(reserva)}</h3>
+                        <p className="text-gray-600 text-sm flex items-center gap-1">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          {obtenerDireccionEmpresa(reserva)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Date and Time */}
-                  <div className="flex flex-col justify-center space-y-3">
-                    <div className="flex items-center space-x-3 text-gray-700">
-                      <svg className="w-5 h-5 text-[#00c951]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span>{cambiarFormatoFecha(cancha.Fecha)}</span>
+                    {/* Date and Time */}
+                    <div className="flex flex-col space-y-2">
+                      <div className="flex items-center space-x-2 text-gray-700 text-sm">
+                        <svg className="w-4 h-4 text-[#00c951]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>{formatearFecha(reserva.fecha)}</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-gray-700 text-sm">
+                        <svg className="w-4 h-4 text-[#00c951]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{formatearHora(reserva.hora_inicio || reserva.horaInicio)} - {formatearHora(reserva.hora_final || reserva.horaFin)}</span>
+                      </div>
+                      <p className="text-lg font-semibold text-[#00c951]">
+                        ${reserva.cancha?.precio || reserva.total || reserva.monto || '0.00'}
+                      </p>
                     </div>
-                    <div className="flex items-center space-x-3 text-gray-700">
-                      <svg className="w-5 h-5 text-[#00c951]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span>{cancha.HoraInicio} - {cancha.HoraFin}</span>
-                    </div>
-                  </div>
 
-                  {/* Field Type and Price */}
-                  <div className="flex flex-col items-center justify-center space-y-3">
-                    <span className="px-4 py-2 bg-[#003044] text-white rounded-full text-sm">{cancha.TipoCancha}</span>
-                    <p className="text-lg font-semibold text-[#00c951]">{cancha.CanchaTotal}</p>
+                    {/* Review Section */}
+                    <div className="flex flex-col items-center space-y-3">
+                      {reserva.resena ? (
+                        <div className="text-center">
+                          <div className="flex justify-center mb-2">
+                            {[1, 2, 3, 4, 5].map((estrella) => (
+                              <EstrellaCalificacion
+                                key={estrella}
+                                indice={estrella}
+                                calificacionActual={reserva.resena.calificacion}
+                                readOnly={true}
+                              />
+                            ))}
+                          </div>
+                          <p className="text-sm text-gray-600">Ya has calificado</p>
+                          <button
+                            onClick={() => abrirModalResena(reserva)}
+                            className="text-xs text-[#00c951] hover:underline mt-1"
+                          >
+                            Ver/Editar reseña
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => abrirModalResena(reserva)}
+                          className="bg-[#00c951] text-white px-4 py-2 rounded-lg hover:bg-[#00a844] transition-colors text-sm font-medium"
+                        >
+                          Escribir Reseña
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Modal de Reseña */}
+      {mostrarModalResena && reservaParaResenar && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+          <div 
+            className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+            onClick={cerrarModalResena}
+          ></div>
+          
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-auto z-10 relative">
+            {/* Header */}
+            <div className="bg-[#00c951] p-6 text-white rounded-t-lg">
+              <h3 className="text-xl font-bold">Califica tu experiencia</h3>
+              <p className="text-sm opacity-90 mt-1">
+                {obtenerNombreEmpresa(reservaParaResenar)}
+              </p>
+              
+              <button 
+                className="absolute top-4 right-4 text-white hover:text-gray-200"
+                onClick={cerrarModalResena}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            {/* Content */}
+            <div className="p-6">
+              {/* Información de la reserva */}
+              <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                <div className="flex items-center justify-between text-sm text-gray-600">
+                  <span>{formatearFecha(reservaParaResenar.fecha)}</span>
+                  <span>{formatearHora(reservaParaResenar.hora_inicio || reservaParaResenar.horaInicio)} - {formatearHora(reservaParaResenar.hora_final || reservaParaResenar.horaFin)}</span>
+                </div>
+              </div>
+
+              {/* Calificación con estrellas */}
+              <div className="text-center mb-6">
+                <h4 className="font-medium text-gray-700 mb-4">¿Cómo fue tu experiencia?</h4>
+                <div className="flex justify-center space-x-1">
+                  {[1, 2, 3, 4, 5].map((estrella) => (
+                    <EstrellaCalificacion
+                      key={estrella}
+                      indice={estrella}
+                      calificacionActual={calificacionHover || calificacion}
+                      onHover={setCalificacionHover}
+                      onClick={setCalificacion}
+                    />
+                  ))}
+                </div>
+                {calificacion > 0 && (
+                  <p className="text-sm text-gray-600 mt-2">
+                    {calificacion === 1 && "Muy malo"}
+                    {calificacion === 2 && "Malo"}
+                    {calificacion === 3 && "Regular"}
+                    {calificacion === 4 && "Bueno"}
+                    {calificacion === 5 && "Excelente"}
+                  </p>
+                )}
+              </div>
+
+              {/* Comentario */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Cuéntanos sobre tu experiencia
+                </label>
+                <textarea
+                  value={comentario}
+                  onChange={(e) => setComentario(e.target.value)}
+                  placeholder="Describe cómo fue tu experiencia en esta cancha..."
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00c951] focus:border-[#00c951] resize-none"
+                  rows="4"
+                  maxLength="500"
+                ></textarea>
+                <p className="text-xs text-gray-500 mt-1">{comentario.length}/500 caracteres</p>
+              </div>
+
+              {/* Botones */}
+              <div className="flex space-x-3">
+                <button
+                  onClick={cerrarModalResena}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={enviarResena}
+                  disabled={enviandoResena || calificacion === 0}
+                  className="flex-1 px-4 py-2 bg-[#00c951] text-white rounded-lg hover:bg-[#00a844] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {enviandoResena ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
+                      Enviando...
+                    </div>
+                  ) : (
+                    reservaParaResenar.resena ? "Actualizar Reseña" : "Enviar Reseña"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default HistorialReservas;
+

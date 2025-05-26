@@ -41,7 +41,7 @@ export default function FormEmpresa() {
         horario: { desde: '', hasta: '' },
         dias: [],
         servicios: [],
-        descripcion: '',c
+        descripcion: '',
       },
     };
   });

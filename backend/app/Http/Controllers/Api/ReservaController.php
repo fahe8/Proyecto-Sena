@@ -168,7 +168,7 @@ class ReservaController extends ApiController
             $now = Carbon::now('America/Bogota');
             $currentDate = $now->toDateString();
             $currentHour = $now->format('H:i:s');
-            echo($currentHour);
+            
 
 
 
