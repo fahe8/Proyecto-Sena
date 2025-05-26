@@ -117,7 +117,6 @@ const InterfazPropietario = () => {
     const canchasActualizadas = listaCanchas.filter((cancha) => cancha.id_cancha !== canchaSeleccionada);
     await canchasServicio.eliminar(canchaSeleccionada);
     setListaCanchas(canchasActualizadas);
-
     setModalEliminar(false);
     setTextoPopUp({
       titulo: "Se elimino exitosamente",
