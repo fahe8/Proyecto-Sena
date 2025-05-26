@@ -7,7 +7,6 @@ export function useFormData() {
     apellido: '',
     email: '',
     telefono: '',
-    cargo: '',
     
     // Datos de la empresa
     nombreEmpresa: '',

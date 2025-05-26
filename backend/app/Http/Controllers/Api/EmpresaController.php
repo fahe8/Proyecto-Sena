@@ -84,20 +84,27 @@ class EmpresaController extends ApiController
                 'id_estado_empresa' => 'sometimes|exists:estado_empresa,id_estado_empresa',
                 'servicios' => 'sometimes|array',
                 'servicios.*' => 'exists:servicio,id_servicio',
+                'agregar_servicios' => 'sometimes|boolean',
                 // 'logo'=> 'required|url|regex:/^https?:\/\/.*\.cloudinary\.com\/.*/',
                 'imagenes' => 'nullable|array',
                 'imagenes.*' => 'required|url|regex:/^https?:\/\/.*\.cloudinary\.com\/.*/'
             ]);
 
-            $empresa->update($request->all());
+            $empresa->update($request->except(['servicios', 'agregar_servicios']));
 
             if ($request->has('servicios')) {
-                $empresa->servicios()->sync($request->servicios);
+                // Si agregar_servicios es true, añadir servicios sin eliminar los existentes
+                if ($request->input('agregar_servicios', false)) {
+                    $empresa->servicios()->attach($request->servicios);
+                } else {
+                    // Comportamiento predeterminado: reemplazar todos los servicios
+                    $empresa->servicios()->sync($request->servicios);
+                }
             }
 
-            return $this->sendResponse($empresa->load('servicios'), 'Company updated successfully');
+            return $this->sendResponse($empresa->load('servicios'), 'Empresa actualizada con éxito');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->sendError('Error de validacion', $e->errors());
+            return $this->sendError('Error de validación', $e->errors());
         } catch (\Exception $e) {
             return $this->sendError('Error actualizando la empresa', $e->getMessage());
         }
@@ -153,6 +160,31 @@ class EmpresaController extends ApiController
             return $this->sendResponse(null, 'Empresa eliminada con exito');
         } catch (\Exception $e) {
             return $this->sendError('Error eliminando empresa', $e->getMessage());
+        }
+    }
+
+    // Agregar un nuevo método para añadir servicios a una empresa
+    public function agregarServicios(Request $request, $nit)
+    {
+        try {
+            $empresa = Empresa::find($nit);
+            if (is_null($empresa)) {
+                return $this->sendError('Empresa no encontrada');
+            }
+    
+            $request->validate([
+                'servicios' => 'required|array',
+                'servicios.*' => 'exists:servicio,id_servicio'
+            ]);
+    
+            // Agregar los servicios a la empresa
+            $empresa->servicios()->attach($request->servicios);
+    
+            return $this->sendResponse($empresa->load('servicios'), 'Servicios agregados con éxito');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->sendError('Error de validación', $e->errors());
+        } catch (\Exception $e) {
+            return $this->sendError('Error al agregar servicios', $e->getMessage());
         }
     }
 }

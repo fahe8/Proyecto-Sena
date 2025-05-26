@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers\Api;
+
 use App\Models\Propietario;
 use Illuminate\Http\Request;
 
@@ -14,14 +16,15 @@ class PropietarioController extends ApiController
             return $this->sendError('Error obteniendo propietarios', $e->getMessage());
         }
     }
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         try {
             request()->validate([
                 'nombre' => 'required|string',
                 'apellido' => 'required|string',
                 'telefono' => 'required|string',
-                'email' => 'required|email|unique:propietario',
-                'num_documento' => 'required|string|unique:propietario',
+                'email' => 'required|email|unique:propietario,email',
+                'num_documento' => 'required|numeric|unique:propietario,num_documento',
                 'bloqueado' => 'required|boolean',
                 'id_tipoDocumento' => 'required|exists:tipodocumento,id_tipoDocumento'
             ]);
@@ -39,7 +42,7 @@ class PropietarioController extends ApiController
     {
         try {
             $propietario = Propietario::find($id);
-            if(is_null($propietario)) {
+            if (is_null($propietario)) {
                 return $this->sendError('Propietario no encontrado');
             }
             return $this->sendResponse($propietario, 'Propietario encontrado exitosamente');
@@ -52,7 +55,7 @@ class PropietarioController extends ApiController
     {
         try {
             $propietario = Propietario::find($id);
-            if(is_null($propietario)) {
+            if (is_null($propietario)) {
                 return $this->sendError('Propietario no encontrado');
             }
             $propietario->delete();
@@ -62,9 +65,10 @@ class PropietarioController extends ApiController
         }
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $id)
+    {
         $propietario = Propietario::find($id);
-        if(is_null($propietario)) {
+        if (is_null($propietario)) {
             return $this->sendError("Propietario no encontrado");
         }
 
@@ -85,14 +89,14 @@ class PropietarioController extends ApiController
     public function obtenerPorEmpresa($nit)
     {
         try {
-            $propietario = Propietario::whereHas('empresas', function($query) use ($nit) {
+            $propietario = Propietario::whereHas('empresas', function ($query) use ($nit) {
                 $query->where('NIT', $nit);
             })->first();
-            
-            if(is_null($propietario)) {
+
+            if (is_null($propietario)) {
                 return $this->sendError('No se encontró propietario para esta empresa');
             }
-            
+
             return $this->sendResponse($propietario, 'Propietario encontrado exitosamente');
         } catch (\Exception $e) {
             return $this->sendError('Error obteniendo propietario', $e->getMessage());
