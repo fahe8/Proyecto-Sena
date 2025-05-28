@@ -56,7 +56,7 @@ const AuthForm = ({ register, formData, handleChange, handleSubmit }) => {
 
       <div className="flex items-center justify-between mb-[22px] text-[14px] my-5">
         <a
-          href="#"
+          href="/recuperar-contrasena"
           className={`block text-right text-[#009a3a] text-[14px] no-underline ${
             register ? "hidden-button" : "block-button"
           }`}

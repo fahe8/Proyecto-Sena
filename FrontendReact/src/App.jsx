@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Inicio from "./pages/Inicio/Inicio";
 import Login from "./pages/Login/Login";
+import ForgotPassword from "./pages/Login/components/ForgotPassword";
 import Cliente from "./pages/Cliente/PerfilUsuario";
 import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
@@ -13,13 +14,8 @@ import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 import FormularioCanchas from "./pages/FormularioEmpresa/InfoCanchas";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
-<<<<<<< HEAD
-import PerfilPropietario from "./pages/PanelPropietario/PerfilPropietario";
-import ReservasPendientes from "./pages/PanelPropietario/ReservasPendientes";
-=======
 import PerfilAdministrador from "./pages/PanelPropietario/PerfilAdministrador";
-import ReservasActivas from "./pages/PanelPropietario/ReservasActivas";
->>>>>>> 754e7ab5e652c321c232f8ad27753b7efc704778
+import ReservasPendientes from "./pages/PanelPropietario/ReservasPendientes";
 import ReservasPasadas from "./pages/PanelPropietario/ReservasPasadas";
 
 
@@ -30,6 +26,7 @@ import iconoPerfil from "./assets/Perfil/iconoPerfil.svg";
 import iconoUnlike from "./assets/Perfil/Unlike.svg";
 import IconoHome from "./assets/Inicio/Home.svg";
 import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
+import ResetPassword from "./pages/Login/components/ResetPassword";
 
 function App() {
 
@@ -73,7 +70,7 @@ function App() {
     {
       nombre: "Tu perfil ",
       icono: iconoPerfil,
-      url: "/PerfilAdministrador",
+      url: "/perfiladministrador",
     },
     {
       nombre: "Reservas pasadas",
@@ -93,6 +90,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Inicio />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/recuperar-contrasena" element={<ForgotPassword />} />
+        <Route path="/restablecer-contrasena" element={<ResetPassword />} />
         <Route path="/empresa/:id" element={<Cliente />} />
         <Route path="/formulario-empresa" element={<FormularioEmpresa />} />
         <Route path="/formulario-canchas" element={<AgregarCancha/>}/>
@@ -125,10 +124,10 @@ function App() {
             }
           >
             <Route path="/" element={<Inicio/>} />
-            <Route path="/InterfazPropietario" element={<InterfazPropietario />} />
-            <Route path="/PerfilAdministrador" element={<PerfilAdministrador />} />
-            <Route path="/ReservasActivas" element={<ReservasActivas />} />
-            <Route path="/ReservasPasadas" element={<ReservasPasadas />} />
+            <Route path="/interfazpropietario" element={<InterfazPropietario />} />
+            <Route path="/perfiladministrador" element={<PerfilAdministrador />} />
+            <Route path="/reservaspendientes" element={<ReservasPendientes />} />
+            <Route path="/reservaspasadas" element={<ReservasPasadas />} />
           
         </Route>
 

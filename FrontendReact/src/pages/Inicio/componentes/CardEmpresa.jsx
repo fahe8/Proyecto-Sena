@@ -86,12 +86,12 @@ const CardEmpresa = ({ empresa, mostrarFavorito }) => {
           <button
             onClick={toggleFavorito}
             className={`absolute top-2 right-2 z-1 text-2xl rounded-full transition ${
-              favorito ? "text-[#33ea30]" : "text-[#8f8f8f]"
+              favorito ? "text-[#33ea30]" : "text-[#e5e5e5]"
             }`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              fill={favorito ? "#33ea30" : "#8f8f8f"}
+              fill={favorito ? "#33ea30" : "#e5e5e5"}
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
