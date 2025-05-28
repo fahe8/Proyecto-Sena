@@ -29,6 +29,10 @@ const HistorialReservas = () => {
   const mostrarRef = useRef(null);
   const buttonRef = useRef(null);
 
+  // Estados para mostrar más/menos reservas
+const [reservasMostradas, setReservasMostradas] = useState(5); // Inicialmente mostrar 5
+const [mostrarTodas, setMostrarTodas] = useState(false);
+
   // Cargar historial de reservas desde el backend
   useEffect(() => {
     const cargarHistorialReservas = async () => {
@@ -260,6 +264,16 @@ const HistorialReservas = () => {
       setEnviandoResena(false);
     }
   };
+  // Función para mostrar más o menos reservas
+const alternarMostrarReservas = () => {
+  if (mostrarTodas) {
+    setReservasMostradas(5);
+    setMostrarTodas(false);
+  } else {
+    setReservasMostradas(reservaFiltrada.length);
+    setMostrarTodas(true);
+  }
+};
 
   // Efecto para detectar clics fuera del menú desplegable
   useEffect(() => {
@@ -375,7 +389,7 @@ const HistorialReservas = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {reservaFiltrada.map((reserva, index) => (
+            {reservaFiltrada.slice(0, reservasMostradas).map((reserva, index) => (
               <div key={reserva.id_reserva || reserva.id || index} className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
                 <div className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
@@ -451,7 +465,9 @@ const HistorialReservas = () => {
               </div>
             ))}
           </div>
+          
         )}
+        
       </div>
 
       {/* Modal de Reseña */}
@@ -560,7 +576,5 @@ const HistorialReservas = () => {
       )}
     </div>
   );
-};
 
-export default HistorialReservas;
-
+};export default HistorialReservas;

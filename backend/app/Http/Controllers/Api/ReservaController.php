@@ -172,7 +172,7 @@ class ReservaController extends ApiController
 
 
 
-            $reservationHistory = Reserva::with(['cancha', 'usuario', 'pago'])
+            $reservationHistory = Reserva::with(['cancha', 'usuario', 'pago', 'empresa'])
                 ->where('id_usuario', $id)
                 ->where(function ($query) use ($currentDate, $currentHour) {
                     $query->where('fecha', '<', $currentDate)
