@@ -18,12 +18,13 @@ export const usuarioServicio = {
     obtenerPorId: (id) => apiClient.get(`/usuarios/${id}`),
     crear: (data) => apiClient.post('/usuarios', data),
     actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/usuarios/${id}`)
+    eliminar: (id) => apiClient.delete(`/usuarios/${id}`)   
 };
 
 export const propietarioServicio = {
     obtenerTodos: () => apiClient.get('/propietarios'),
     obtenerPorId: (id) => apiClient.get(`/propietarios/${id}`),
+    obtenerPorEmpresa: (NIT) => apiClient.get(`/propietarios/empresa/${NIT}`),
     crear: (data) => apiClient.post('/propietarios', data),
     actualizar: (id, data) => apiClient.put(`/propietarios/${id}`, data),
     eliminar: (id) => apiClient.delete(`/propietarios/${id}`)
@@ -43,7 +44,26 @@ export const reservaServicio = {
     obtenerPorEmpresa: (nit) => apiClient.get(`/reservas/empresa/${nit}`),
     crear: (data) => apiClient.post('/reservas', data),
     actualizar: (id, data) => apiClient.put(`/reservas/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/reservas/${id}`)
+    eliminar: (id) => apiClient.delete(`/reservas/${id}`),
+    obtenerReservasActivas: (id) => apiClient.get(`reservas/active/${id}`),
+    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`)
 };
 
+export const canchasServicio = {
+    obtenerTodosEmpresa: (nit) => apiClient.get(`/canchas/empresa/${nit}`),
+    tiposCanchas: () => apiClient.get(`/tipocanchas`),
+    estadoCanchas: () => apiClient.get(`/estadocanchas`),
+    actualizar: (id, data) => apiClient.put(`/canchas/${id}`, data),
+    eliminar: (id) => apiClient.delete(`/canchas/${id}`),
+    agregar: (data) => apiClient.post('/canchas', data),
+}
+
+export const ServiciosServicio = {
+    obtenerTodos: () => apiClient.get('/servicios'),
+    obtenerPorId: (id) => apiClient.get(`/servicios/${id}`),
+    obtenerPorEmpresa: (nit) => apiClient.get(`/servicios/empresa/${nit}`),
+    crear: (data) => apiClient.post('/servicios', data),
+    actualizar: (id, data) => apiClient.put(`/servicios/${id}`, data),
+    eliminar: (id) => apiClient.delete(`/servicios/${id}`)
+}
 export default apiClient;

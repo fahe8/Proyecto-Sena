@@ -7,15 +7,10 @@ export function useFormData() {
     apellido: '',
     email: '',
     telefono: '',
-    cargo: '',
     
     // Datos de la empresa
     nombreEmpresa: '',
-    ruc: '',
     direccion: '',
-    ciudad: '',
-    sector: '',
-    cantidadEmpleados: ''
   });
 
   const handleChange = (e) => {

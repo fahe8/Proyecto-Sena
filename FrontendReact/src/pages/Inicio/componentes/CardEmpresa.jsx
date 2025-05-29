@@ -4,37 +4,45 @@ import { useNavigate } from "react-router-dom";
 import { iconosServicios } from "../../../utils/iconosServicios";
 import LazyImage from "../../../utils/LazyImage";
 import corazon from "./corazon.svg";
+import { useAuth } from "../../../Provider/AuthProvider";
 
 const CardEmpresa = ({ empresa, mostrarFavorito }) => {
   const navigate = useNavigate();
   const [favorito, setFavorito] = useState(false);
+  const { user } = useAuth(); // obtenemos el usuario autenticado
+
 
   // Cargar estado de favoritos del localStorage
   useEffect(() => {
-    const favoritosGuardados =
-      JSON.parse(localStorage.getItem("favoritos")) || [];
-    setFavorito(favoritosGuardados.includes(empresa?.nombre));
-  }, [empresa?.nombre]);
+  if (user?.uid) {
+    const favoritosPorUsuario =
+      JSON.parse(localStorage.getItem(`favoritos_${user.uid}`)) || [];
+    setFavorito(favoritosPorUsuario.includes(empresa?.nombre));
+  }
+}, [empresa?.nombre, user?.uid]);
+
 
   // Guardar en el local storage
   const toggleFavorito = (e) => {
-    e.stopPropagation(); // detiene la carta al darle click al corazon
+  e.stopPropagation();
+  if (!user?.uid) return;
 
-    const favoritosGuardados =
-      JSON.parse(localStorage.getItem("favoritos")) || [];
-    let nuevosFavoritos;
+  const storageKey = `favoritos_${user.uid}`;
+  const favoritosGuardados = JSON.parse(localStorage.getItem(storageKey)) || [];
+  let nuevosFavoritos;
 
-    if (favoritosGuardados.includes(empresa?.nombre)) {
-      nuevosFavoritos = favoritosGuardados.filter(
-        (fav) => fav !== empresa?.nombre
-      );
-    } else {
-      nuevosFavoritos = [...favoritosGuardados, empresa?.nombre];
-    }
+  if (favoritosGuardados.includes(empresa?.nombre)) {
+    nuevosFavoritos = favoritosGuardados.filter(
+      (fav) => fav !== empresa?.nombre
+    );
+  } else {
+    nuevosFavoritos = [...favoritosGuardados, empresa?.nombre];
+  }
 
-    localStorage.setItem("favoritos", JSON.stringify(nuevosFavoritos));
-    setFavorito(!favorito);
-  };
+  localStorage.setItem(storageKey, JSON.stringify(nuevosFavoritos));
+  setFavorito(!favorito);
+};
+
 
   const CustomPrevArrow = (props) => {
     const { className, style, onClick } = props;

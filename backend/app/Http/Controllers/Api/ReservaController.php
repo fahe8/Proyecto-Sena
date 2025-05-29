@@ -125,19 +125,16 @@ class ReservaController extends ApiController
     /**
      * Get active reservations (upcoming reservations)
      */
-    public function obtenerReservasActivas(Request $request)
+    public function obtenerReservasActivas($id)
     {
         try {
-            $now = Carbon::now();
+            $now = Carbon::now('America/Bogota');
             $currentDate = $now->toDateString();
             $currentHour = $now->format('H:i:s');
 
-            $request->validate([
-                'id_usuario' => 'required|exists:usuario,id_usuario'
-            ]);
-
-            $activeReservations = Reserva::with(['cancha', 'usuario', 'pago'])
-                ->where('id_usuario', $request->id_usuario)
+            
+            $activeReservations = Reserva::with(['cancha', 'usuario', 'pago', 'empresa'])
+                ->where('id_usuario', $id)
                 ->where(function ($query) use ($currentDate, $currentHour) {
                     $query->where('fecha', '>', $currentDate)
                         ->orWhere(function ($q) use ($currentDate, $currentHour) {
@@ -165,19 +162,18 @@ class ReservaController extends ApiController
     /**
      * Get reservation history (past reservations)
      */
-    public function obtenerHistorialReservas(Request $request)
+    public function obtenerHistorialReservas($id)
     {
         try {
-            $now = Carbon::now();
+            $now = Carbon::now('America/Bogota');
             $currentDate = $now->toDateString();
             $currentHour = $now->format('H:i:s');
+            
 
-            $request->validate([
-                'id_usuario' => 'required|exists:usuario,id_usuario'
-            ]);
 
-            $reservationHistory = Reserva::with(['cancha', 'usuario', 'pago'])
-                ->where('id_usuario', $request->id_usuario)
+
+            $reservationHistory = Reserva::with(['cancha', 'usuario', 'pago', 'empresa'])
+                ->where('id_usuario', $id)
                 ->where(function ($query) use ($currentDate, $currentHour) {
                     $query->where('fecha', '<', $currentDate)
                         ->orWhere(function ($q) use ($currentDate, $currentHour) {

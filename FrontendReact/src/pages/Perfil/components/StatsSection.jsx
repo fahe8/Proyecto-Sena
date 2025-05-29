@@ -11,7 +11,7 @@ const StatsSection = ({ reservas }) => {
       />
       <StatCard 
         title="Canchas Favoritas" 
-        value={JSON.parse(localStorage.getItem('favoritos'))?.length || '0'} 
+        value={JSON.parse(localStorage.getItem("favoritos"))?.length || "0"}
         icon="⭐" 
       />
     </div>
