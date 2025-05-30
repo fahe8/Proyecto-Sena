@@ -2,22 +2,69 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "./Calendario.css";
 import "react-datepicker/dist/react-datepicker.css";
-import { setHours, setMinutes, format, isEqual, isAfter, isBefore, parseISO } from "date-fns";
+import { setHours, setMinutes, format, isEqual, isAfter, isBefore, parseISO,} from "date-fns";
 import { es } from "date-fns/locale";
 import LogPopUp from "../../Login/components/logPopUp";
 import ConfirmacionModal from "./ConfirmacionModal";
 import { reservaServicio } from "../../../services/api";
 import { useAuth } from "../../../Provider/AuthProvider";
 
-const Calendario = ({empresa}) => {
-
+const Calendario = ({ empresa }) => {
   // Función para redondear a la siguiente hora completa
   const redondearSiguienteHora = (fecha) => {
     const nuevaFecha = new Date(fecha);
     nuevaFecha.setMinutes(0, 0, 0);
     nuevaFecha.setHours(nuevaFecha.getHours() + 1);
-    return nuevaFecha;
+    return nuevaFecha; 
   };
+  
+  //Convierte una hora en formato string (por ejemplo "08:00") a un objeto Date con esa hora
+const obtenerHoraDesdeString = (horaStr) => {
+  const [hora, minutos] = horaStr.split(":"); // Divide la cadena por los dos puntos → ["08", "00"]
+  const date = new Date(); // Crea un nuevo objeto Date (con fecha actual)
+  date.setHours(parseInt(hora), parseInt(minutos), 0, 0); // Establece la hora, minutos, segundos y milisegundos
+  return date; // Devuelve el objeto Date con la hora ajustada
+};
+
+//Devuelve la hora de apertura de la empresa como objeto Date
+const getMinHoraEmpresa = () => {
+  if (!empresa?.hora_apertura) return new Date(0, 0, 0, 0, 0); // Si no hay hora, usar 00:00
+  return obtenerHoraDesdeString(empresa.hora_apertura); // Convierte y retorna la hora de apertura
+};
+
+//Devuelve la hora de cierre de la empresa como objeto Date
+const getMaxHoraEmpresa = () => {
+  if (!empresa?.hora_cierre) return new Date(0, 0, 0, 23, 59); // Si no hay hora, usar 23:59
+  return obtenerHoraDesdeString(empresa.hora_cierre); // Convierte y retorna la hora de cierre
+};
+
+//Asegura que una hora esté dentro del horario permitido por la empresa
+const ajustarAHorarioEmpresa = (fecha) => {
+  const minHora = getMinHoraEmpresa(); // Hora mínima permitida
+  const maxHora = getMaxHoraEmpresa(); // Hora máxima permitida
+
+  if (isBefore(fecha, minHora)) return minHora; // Si es antes de la apertura, corrige a apertura
+  if (isAfter(fecha, maxHora)) return maxHora; // Si es después del cierre, corrige a cierre
+
+  return fecha; // Si está dentro del horario, no se modifica
+};
+
+//Define la hora mínima que se puede seleccionar dependiendo si es hoy
+const obtenerMinTime = () => {
+  const hoy = new Date();
+  const esHoy =
+    format(reserva.fecha, "yyyy-MM-dd") === format(hoy, "yyyy-MM-dd"); // Compara si la fecha seleccionada es hoy
+
+  if (esHoy) {
+    const siguienteHora = new Date(); // Hora actual
+    siguienteHora.setMinutes(0, 0, 0); // Redondea a la hora exacta (quita minutos y segundos)
+    siguienteHora.setHours(siguienteHora.getHours() + 1); // Suma una hora completa
+    return siguienteHora; // La mínima hora seleccionable es dentro de una hora a partir de ahora
+  }
+
+  // Si la fecha no es hoy, permite seleccionar desde la medianoche
+  return new Date(0, 0, 0, 0, 0);
+};
 
   const [reserva, setReserva] = useState({
     fecha: new Date(),
@@ -29,7 +76,9 @@ const Calendario = ({empresa}) => {
 
   const [reservasAgrupadas, setReservasAgrupadas] = useState({});
   const [mostrarTiposCancha, setMostrarTiposCancha] = useState(false);
-  const [canchaSeleccionada, setCanchaSeleccionada] = useState(empresa?.canchas[0] || null);
+  const [canchaSeleccionada, setCanchaSeleccionada] = useState(
+    empresa?.canchas[0] || null
+  );
   const [mostrarPopUp, setMostrarPopUp] = useState(false);
   const [configPopUp, setConfigPopUp] = useState({
     mensaje: "",
@@ -37,46 +86,35 @@ const Calendario = ({empresa}) => {
   });
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
   const [infoReserva, setInfoReserva] = useState({});
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
-   const obtenerReservas = async () => {
-    setCanchaSeleccionada(empresa?.canchas[0]);
-    try {
-      const reservas = await reservaServicio.obtenerPorEmpresa(empresa?.NIT);
-      const {data} = reservas.data;
-      console.log(data)
-      const fechasAgrupadasPorCancha = {}
+    const obtenerReservas = async () => {
+      setCanchaSeleccionada(empresa?.canchas[0]);
+      try {
+        const reservas = await reservaServicio.obtenerPorEmpresa(empresa?.NIT);
+        const { data } = reservas.data;
+        console.log(data);
+        const fechasAgrupadasPorCancha = {};
 
-      
-      // data.filter((reserva) => (
-        
+        // data.filter((reserva) => (
 
-      // ))
+        // ))
 
-
-      data.forEach(reserva => {
-        
-        if (!fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha]) {
-          fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha] = []
+        data.forEach((reserva) => {
+          if (!fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha]) {
+            fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha] = [];
+          }
+        });
+        console.log(fechasAgrupadasPorCancha);
+      } catch (error) {
+        if (error.response && error.response.data) {
+          console.log(error.response.data.message);
         }
-
-        
-      });
-      console.log(fechasAgrupadasPorCancha)
-
-
-
-     
-    } catch (error) {
-      if(error.response && error.response.data){
-        console.log(error.response.data.message)
-  
-        }
-        console.log(error)
-    }
-   }
-   obtenerReservas();
+        console.log(error);
+      }
+    };
+    obtenerReservas();
   }, [empresa]);
 
   // Función para calcular la duración en horas entre dos fechas
@@ -87,7 +125,10 @@ const Calendario = ({empresa}) => {
 
   // Función para calcular el costo total
   const calcularCostoTotal = () => {
-    const duracion = calcularDuracionHoras(reserva.horaInicio, reserva.horaFinal);
+    const duracion = calcularDuracionHoras(
+      reserva.horaInicio,
+      reserva.horaFinal
+    );
     return parseInt(canchaSeleccionada?.precio || 0) * duracion;
   };
 
@@ -104,28 +145,37 @@ const Calendario = ({empresa}) => {
     }
 
     // Validar que la hora final sea después de la hora inicial
-    if (isEqual(reserva.horaInicio, reserva.horaFinal) || isAfter(reserva.horaInicio, reserva.horaFinal)) {
+    if (
+      isEqual(reserva.horaInicio, reserva.horaFinal) ||
+      isAfter(reserva.horaInicio, reserva.horaFinal)
+    ) {
       setMostrarPopUp(true);
       setConfigPopUp({
         mensaje: "Error",
-        subTexto: "La hora final debe ser posterior a la hora inicial"
+        subTexto: "La hora final debe ser posterior a la hora inicial",
       });
       return;
     }
 
     // Calcular duración y costo
-    const duracion = calcularDuracionHoras(reserva.horaInicio, reserva.horaFinal);
+    const duracion = calcularDuracionHoras(
+      reserva.horaInicio,
+      reserva.horaFinal
+    );
     const costoTotal = calcularCostoTotal();
 
     // Preparar información para el modal
     setInfoReserva({
-      fecha: format(reserva.fecha, 'dd/MM/yyyy'),
-      horario: `${format(reserva.horaInicio, 'HH:mm')} a ${format(reserva.horaFinal, 'HH:mm')}`,
-      duracion: `${duracion} ${duracion === 1 ? 'hora' : 'horas'}`,
+      fecha: format(reserva.fecha, "dd/MM/yyyy"),
+      horario: `${format(reserva.horaInicio, "HH:mm")} a ${format(
+        reserva.horaFinal,
+        "HH:mm"
+      )}`,
+      duracion: `${duracion} ${duracion === 1 ? "hora" : "horas"}`,
       cancha: canchaSeleccionada.nombre,
-      costoTotal: costoTotal
+      costoTotal: costoTotal,
     });
-    
+
     // Mostrar modal de confirmación
     setMostrarConfirmacion(true);
   };
@@ -133,29 +183,32 @@ const Calendario = ({empresa}) => {
   const manejarReserva = async () => {
     try {
       // Formatear la fecha y horas según el formato requerido por la API
-      const fechaFormateada = format(reserva.fecha, 'yyyy-MM-dd');
-      const horaInicioFormateada = format(reserva.horaInicio, 'HH:mm:ss');
-      const horaFinalFormateada = format(reserva.horaFinal, 'HH:mm:ss');
-      
+      const fechaFormateada = format(reserva.fecha, "yyyy-MM-dd");
+      const horaInicioFormateada = format(reserva.horaInicio, "HH:mm:ss");
+      const horaFinalFormateada = format(reserva.horaFinal, "HH:mm:ss");
+
       const reservaObj = {
         fecha: fechaFormateada,
         hora_inicio: horaInicioFormateada,
         hora_final: horaFinalFormateada,
         id_cancha: canchaSeleccionada.id_cancha,
-        id_usuario: user?.uid
-      }; 
+        id_usuario: user?.uid,
+      };
 
-      const crearReserva = await reservaServicio.crear(JSON.stringify(reservaObj));
+      const crearReserva = await reservaServicio.crear(
+        JSON.stringify(reservaObj)
+      );
 
-      if(crearReserva){
+      if (crearReserva) {
         setMostrarPopUp(true);
         setConfigPopUp({
           mensaje: crearReserva.data.message,
-          subTexto: "Pronto nos comunicaremos contigo para confirmar la reserva",
+          subTexto:
+            "Pronto nos comunicaremos contigo para confirmar la reserva",
         });
       }
     } catch (error) {
-      if(error.response && error.response.data){
+      if (error.response && error.response.data) {
         console.log(error.response.data.message, error.response.data.data);
         const primeraClave = Object.keys(error.response.data.data)[0];
         const valor = error.response.data.data[primeraClave];
@@ -167,8 +220,7 @@ const Calendario = ({empresa}) => {
       }
       console.log(error);
     }
-  }
-
+  };
 
   const manejarCambioFecha = (fecha, campo) => {
     if (campo === "fecha") {
@@ -180,7 +232,7 @@ const Calendario = ({empresa}) => {
         0,
         0
       );
-      
+
       const nuevaHoraFinal = new Date(fecha);
       nuevaHoraFinal.setHours(
         reserva.horaFinal.getHours(),
@@ -188,11 +240,11 @@ const Calendario = ({empresa}) => {
         0,
         0
       );
-      
+
       setReserva({
         fecha: fecha,
         horaInicio: nuevaHoraInicio,
-        horaFinal: nuevaHoraFinal
+        horaFinal: nuevaHoraFinal,
       });
     } else {
       // Si se cambia la hora de inicio o final, mantener la fecha seleccionada
@@ -223,8 +275,8 @@ const Calendario = ({empresa}) => {
           onClose={manejarCierrePopUp}
         />
       )}
-      
-      <ConfirmacionModal 
+
+      <ConfirmacionModal
         isOpen={mostrarConfirmacion}
         onClose={() => setMostrarConfirmacion(false)}
         onConfirm={() => {
@@ -233,7 +285,7 @@ const Calendario = ({empresa}) => {
         }}
         reservaInfo={infoReserva}
       />
-      
+
       <div className="p-3 rounded-lg shadow-2xl flex flex-col gap-2">
         <DatePicker
           selected={reserva.fecha}
@@ -242,7 +294,7 @@ const Calendario = ({empresa}) => {
           locale={es}
           inline
         />
-        
+
         <div className="w-full flex justify-between gap-2 text-sm">
           <div className=" w-[130px] md:w-[160px] flex items-center gap-2">
             <span>Desde:</span>
@@ -253,13 +305,14 @@ const Calendario = ({empresa}) => {
                 showTimeSelect
                 showTimeSelectOnly
                 timeIntervals={60}
-
-              
                 locale={es}
                 dateFormat="HH:mm"
                 timeFormat="HH:mm"
                 className="w-20 border rounded-lg px-2 py-2 cursor-pointer"
+                minTime={getMinHoraEmpresa()}
+                maxTime={getMaxHoraEmpresa()}
               />
+
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -286,12 +339,14 @@ const Calendario = ({empresa}) => {
                 showTimeSelect
                 showTimeSelectOnly
                 timeIntervals={60}
-           
                 locale={es}
                 dateFormat="HH:mm"
                 timeFormat="HH:mm"
                 className="w-20 border rounded-lg px-2 py-2 cursor-pointer"
+                minTime={getMinHoraEmpresa()}
+                maxTime={getMaxHoraEmpresa()}
               />
+
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -314,7 +369,11 @@ const Calendario = ({empresa}) => {
           className="relative w-full self-start bg-green-300 rounded-2xl px-4 pt-2 pb-1 text-sm flex gap-4 cursor-pointer"
           onClick={() => setMostrarTiposCancha((prev) => !prev)}
         >
-          <p>{canchaSeleccionada ? `${canchaSeleccionada.nombre} - ${canchaSeleccionada.tipo_cancha.id_tipo_cancha}` : 'Seleccione una cancha'}</p>
+          <p>
+            {canchaSeleccionada
+              ? `${canchaSeleccionada.nombre} - ${canchaSeleccionada.tipo_cancha.id_tipo_cancha}`
+              : "Seleccione una cancha"}
+          </p>
 
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -347,9 +406,9 @@ const Calendario = ({empresa}) => {
         </div>
 
         <p>Costo total: $ {canchaSeleccionada?.precio || 0} COP</p>
-        
-        <button 
-        onClick={mostrarModalConfirmacion}
+
+        <button
+          onClick={mostrarModalConfirmacion}
           className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg mt-4 transition-colors duration-300"
         >
           Confirmar Reserva
