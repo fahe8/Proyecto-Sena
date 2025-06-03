@@ -9,6 +9,7 @@ import {
   sendEmailVerification, // Envía un correo de verificación al usuario
   deleteUser, // Elimina un usuario
   sendPasswordResetEmail, // Envía un correo para restablecer la contraseña
+  updatePassword, // Actualiza la contraseña del usuario
 } from "firebase/auth"; // Importa todas las funciones necesarias de autenticación
 
 // Configuración de la aplicación Firebase con las credenciales proporcionadas
@@ -111,6 +112,16 @@ const recuperarContrasena = async (email) => {
   }
 };
 
+const establecerContraseña = async (user, newPassword) => {
+  try {
+    await updatePassword(user, newPassword); // Actualiza la contraseña del usuario
+    return { success: true, message: "Contraseña actualizada." }; // Retorna éxito si se actualizó correctamente
+  } catch (error) {
+    console.error("Error al actualizar la contraseña:", error.code, error.message);
+    return { success: false, code: error.code, message: error.message }; // Retorna error en caso de fallo
+  }
+}
+
 export {
   auth, // Instancia de autenticación de Firebase
   signInWithGoogle, // Función para iniciar sesión con Google
@@ -118,4 +129,6 @@ export {
   iniciarSesionConEmail, // Función para iniciar sesión con email y contraseña
   checkAndDeleteUnverifiedUser, // Función para eliminar usuarios no verificados después de 5 minutos
   recuperarContrasena, // Función para recuperar la contraseña mediante email
+  updatePassword, // Función para actualizar la contraseña del usuario
+  establecerContraseña, // Función para establecer una nueva contraseña
 };

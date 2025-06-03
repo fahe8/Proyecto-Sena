@@ -345,20 +345,19 @@ const HistorialReservas = () => {
   };
 
   return (
-    <div className="min-h-screen w-screen bg-gray-50 py-8">
-      <div className="max-w-5xl mx-auto px-4">
+    <div className="min-h-screen w-screen py-8 px-30 bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="max-w-5xl mx-auto rounded-lg bg-white pb-10 shadow-lg">
         {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-[#003044] mb-2">
+        <div className="text-center mb-3 bg-[#003044] rounded-t-lg p-10 ">
+          <h1 className="text-2xl font-bold text-white mb-2">
             Historial de Reservas
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-100 text-sm">
             Revisa tus reservas pasadas y comparte tu experiencia
           </p>
         </div>
-
         {/* Search and Filter Section */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+        <div className="bg-white rounded-xl mt-5 mb-8 mx-10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             {/* Search Input */}
             <div className="relative flex-1">
@@ -368,7 +367,7 @@ const HistorialReservas = () => {
                 value={BuscarTerm}
                 name="Buscar"
                 placeholder="Buscar por nombre de cancha o ubicación..."
-                className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 focus:border-[#00c951] focus:ring-2 focus:ring-[#00c951] transition-all duration-300 outline-none"
+                className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-400 focus:border-[#00c951] focus:ring-2 focus:ring-[#00c951] transition-all duration-300 outline-none"
               />
               {/* Filter Button */}
               <div className="absolute right-0 top-0">
@@ -457,24 +456,24 @@ const HistorialReservas = () => {
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <p className="text-xl text-gray-600">
-              No se han encontrado reservas en el historial
+            <p className="text-lg text-gray-600">
+              Aún no tienes reservas pasadas
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 mx-10">
             {reservaFiltrada
               .slice(0, reservasMostradas)
               .map((reserva, index) => (
                 <div
                   key={reserva.id_reserva || reserva.id || index}
-                  className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
+                  className="bg-gray-50 rounded-xl shadow-[0_0_10px_rgba(0,0,0,0.2)] transition-all duration-300 overflow-hidden"
                 >
-                  <div className="p-6">
+                  <div className="p-4">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
                       {/* Field Info */}
                       <div className="flex items-center space-x-4 md:col-span-2">
-                        <div className="w-16 h-16 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                        <div className="w-13 h-13 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
                           {obtenerNombreEmpresa(reserva).charAt(0)}
                         </div>
                         <div>
@@ -548,17 +547,18 @@ const HistorialReservas = () => {
                             )}
                           </span>
                         </div>
+                        
+                      </div>
+
+                      {/* Review Section */}
+                      <div className="flex flex-col items-center space-y-3">
                         <p className="text-lg font-semibold text-[#00c951]">
-                          $
+                          Total: $
                           {reserva.cancha?.precio ||
                             reserva.total ||
                             reserva.monto ||
                             "0.00"}
                         </p>
-                      </div>
-
-                      {/* Review Section */}
-                      <div className="flex flex-col items-center space-y-3">
                         {reserva.resena ? (
                           <div className="text-center">
                             <div className="flex justify-center mb-2">
@@ -578,7 +578,7 @@ const HistorialReservas = () => {
                             </p>
                             <button
                               onClick={() => abrirModalResena(reserva)}
-                              className="text-xs text-[#00c951] hover:underline mt-1"
+                              className="text-xs text-[#00c951] hover:underline mt-1 cursor-pointer"
                             >
                               Ver/Editar reseña
                             </button>
@@ -586,7 +586,7 @@ const HistorialReservas = () => {
                         ) : (
                           <button
                             onClick={() => abrirModalResena(reserva)}
-                            className="bg-[#1a6079] text-white px-4 py-2 rounded-lg hover:bg-[#145066] transition-colors text-sm font-medium"
+                            className="bg-[#003044] text-white px-4 py-2 rounded-lg hover:bg-[#203c48] transition-colors text-sm font-medium cursor-pointer"
                           >
                             Escribir Reseña
                           </button>
@@ -601,7 +601,7 @@ const HistorialReservas = () => {
               <div className="text-center mt-8">
                 <button
                   onClick={alternarMostrarReservas}
-                  className="bg-[#1a6079] text-white px-6 py-3 rounded-lg hover:bg-[#145066] transition-all duration-300 font-medium"
+                  className="bg-[#1a6079] text-white px-6 py-3 rounded-lg hover:bg-[#145066] transition-all duration-300 font-medium cursor-pointer"
                 >
                   {mostrarTodas
                     ? "Mostrar menos"
@@ -617,7 +617,7 @@ const HistorialReservas = () => {
       {mostrarModalResena && reservaParaResenar && (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
           <div
-            className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+            className="absolute inset-0 bg-[#36363695] backdrop-blur-sm"
             onClick={cerrarModalResena}
           ></div>
 
@@ -630,7 +630,7 @@ const HistorialReservas = () => {
               </p>
 
               <button
-                className="absolute top-4 right-4 text-white hover:text-gray-200"
+                className="absolute top-4 right-4 text-white hover:text-gray-200 cursor-pointer"
                 onClick={cerrarModalResena}
               >
                 <svg
@@ -719,18 +719,18 @@ const HistorialReservas = () => {
               <div className="flex space-x-3">
                 <button
                   onClick={cerrarModalResena}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={enviarResena}
                   disabled={enviandoResena || calificacion === 0}
-                  className="flex-1 px-4 py-2 bg-[#00c951] text-white rounded-lg hover:bg-[#00a844] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 py-2 bg-[#00c951] text-white rounded-lg hover:bg-[#00a844] cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {enviandoResena ? (
                     <div className="flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2 "></div>
                       Enviando...
                     </div>
                   ) : reservaParaResenar.resena ? (
