@@ -369,6 +369,49 @@ const HistorialReservas = () => {
                 placeholder="Buscar por nombre de cancha o ubicación..."
                 className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-400 focus:border-[#00c951] focus:ring-2 focus:ring-[#00c951] transition-all duration-300 outline-none"
               />
+              {/* Filter Button */}
+              <div className="absolute right-0 top-0">
+                <button
+                  ref={buttonRef}
+                  onClick={mostraropciones}
+                  className="flex items-center justify-center px-6 py-3 bg-[#00c951] text-white rounded-r-lg hover:bg-[#00a844] transition-all duration-300 gap-2 min-w-[160px]"
+                >
+                  <span>{TextoBoton}</span>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+  
+                {mostrar && (
+                  <div
+                    ref={mostrarRef}
+                    className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg overflow-hidden z-20 min-w-[160px] border border-gray-100"
+                  >
+                    <button
+                      className="w-full px-6 py-3 text-left hover:bg-gray-50 transition-colors duration-200"
+                      onClick={Masrecientes}
+                    >
+                      Más recientes
+                    </button>
+                    <button
+                      className="w-full px-6 py-3 text-left hover:bg-gray-50 transition-colors duration-200"
+                      onClick={MasAntiguo}
+                    >
+                      Más antiguos
+                    </button>
+                  </div>
+                )}
+              </div>
               <svg
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
                 xmlns="http://www.w3.org/2000/svg"
@@ -383,51 +426,9 @@ const HistorialReservas = () => {
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
+              
             </div>
 
-            {/* Filter Button */}
-            <div className="relative">
-              <button
-                ref={buttonRef}
-                onClick={mostraropciones}
-                className="flex items-center justify-center px-6 py-3 bg-[#00c951] text-white rounded-lg hover:bg-[#00a844] transition-all duration-300 gap-2 min-w-[160px]"
-              >
-                <span>{TextoBoton}</span>
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-
-              {mostrar && (
-                <div
-                  ref={mostrarRef}
-                  className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg overflow-hidden z-20 min-w-[160px] border border-gray-100"
-                >
-                  <button
-                    className="w-full px-6 py-3 text-left hover:bg-gray-50 transition-colors duration-200"
-                    onClick={Masrecientes}
-                  >
-                    Más recientes
-                  </button>
-                  <button
-                    className="w-full px-6 py-3 text-left hover:bg-gray-50 transition-colors duration-200"
-                    onClick={MasAntiguo}
-                  >
-                    Más antiguos
-                  </button>
-                </div>
-              )}
-            </div>
           </div>
         </div>
 
