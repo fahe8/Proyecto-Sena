@@ -395,4 +395,6 @@ const SecurityIcon = () => (
       </g>
     </g>
   </svg>)
-export { EyeIcon, EyeOffIcon, LetterIcon, KeyIcon, BathroomIcon, StoreIcon, ParkingIcon, RefereeIcon, BarIcon, WifiIcon,LeftArrowIcon,RightArrowIcon, StarIcon, RestaurantIcon, CheckIcon, PetFriendlyIcon, LightingIcon, LockersIcon, SecurityIcon};
+
+
+export { EyeIcon, EyeOffIcon, LetterIcon, KeyIcon, BathroomIcon, StoreIcon, ParkingIcon, RefereeIcon, BarIcon, WifiIcon,LeftArrowIcon,RightArrowIcon, StarIcon, RestaurantIcon, CheckIcon, PetFriendlyIcon, LightingIcon, LockersIcon, SecurityIcon, };

@@ -184,8 +184,6 @@ export default function FormEmpresa() {
     
     setIsLoading(true);
     try {
-      const dataToSubmit = prepareDataForSubmission();
-      console.log('Datos a enviar:', JSON.stringify(dataToSubmit, null, 2));
       
       
       // 1. Crear el propietario
@@ -275,12 +273,12 @@ export default function FormEmpresa() {
         <h1 className="text-[#003044]  text-md font-bold mb-5">Crear cuenta</h1>
         
         {/* Mobile Stepper (Horizontal) */}
-        <div className="md:hidden mb-6">
+        <div className="md:hidden mb-6 ">
           <div className="flex justify-between items-center">
             {steps.map((step, index) => (
               <React.Fragment key={step.number}>
                 <div className="flex flex-col items-center">
-                  <StepIndicator 
+                  <StepIndicator
                     number={step.number}
                     title=""  // Hide title on mobile
                     isCompleted={currentStep > step.number}
@@ -297,13 +295,12 @@ export default function FormEmpresa() {
         </div>
         
         {/* Desktop Stepper (Vertical) */}
-        <div className="hidden md:flex mb-6">
+        <div className="hidden md:flex mb-6"> 
           <div className="flex justify-between w-full">
             {steps.map((step) => (
               <div key={step.number} className="flex flex-col items-center">
                 <StepIndicator 
                   number={step.number}
-                  title={step.title}
                   isCompleted={currentStep > step.number}
                   isActive={currentStep === step.number}
                 />
