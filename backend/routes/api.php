@@ -13,7 +13,7 @@ use App\Http\Controllers\Api\ServicioController;
 use App\Http\Controllers\Api\TipoCanchaController;
 
 // First define the specific routes
-Route::get('reservas/active', [App\Http\Controllers\Api\ReservaController::class, 'obtenerReservasActivas']);
+Route::get('reservas/active/{id}', [App\Http\Controllers\Api\ReservaController::class, 'obtenerReservasActivas']);
 Route::get('reservas/history/{id}', [App\Http\Controllers\Api\ReservaController::class, 'obtenerHistorialReservas']);
 Route::get('reservas/empresa/{nit}', [App\Http\Controllers\Api\ReservaController::class, 'obtenerReservasPorEmpresa']);
 Route::get('canchas/empresa/{nit}', [App\Http\Controllers\Api\CanchaController::class, 'mostrarCanchasEmpresa']);

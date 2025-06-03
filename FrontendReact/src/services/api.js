@@ -44,8 +44,9 @@ export const reservaServicio = {
     obtenerPorEmpresa: (nit) => apiClient.get(`/reservas/empresa/${nit}`),
     crear: (data) => apiClient.post('/reservas', data),
     actualizar: (id, data) => apiClient.put(`/reservas/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/reservas/${id}`)
-    
+    eliminar: (id) => apiClient.delete(`/reservas/${id}`),
+    obtenerReservasActivas: (id) => apiClient.get(`reservas/active/${id}`),
+    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`)
 };
 
 export const canchasServicio = {
