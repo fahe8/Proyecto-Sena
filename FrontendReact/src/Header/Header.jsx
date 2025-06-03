@@ -118,7 +118,7 @@ export const BotonPerfil = () => {
       {/* Menú desplegable */}
       {isAuthenticated && (
         <div 
-          className={`absolute right-0 top-[45px] w-[200px] bg-[#2fc92c] rounded-[8px] overflow-hidden z-[50] transition-all duration-500 ease-in-out origin-top-right ${
+          className={`absolute right-0 top-[45px] w-[200px] bg-[#bcbcbc] rounded-[8px] overflow-hidden z-[50] transition-all duration-500 ease-in-out origin-top-right ${
             isOpen 
               ? 'opacity-100 scale-100 visible' 
               : 'opacity-0 scale-0 invisible'
