@@ -66,4 +66,5 @@ export const ServiciosServicio = {
     actualizar: (id, data) => apiClient.put(`/servicios/${id}`, data),
     eliminar: (id) => apiClient.delete(`/servicios/${id}`)
 }
+
 export default apiClient;
