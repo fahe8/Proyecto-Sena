@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -27,4 +28,3 @@ class CreatePropietariosTable extends Migration
         Schema::dropIfExists('propietario');
     }
 }
-?>

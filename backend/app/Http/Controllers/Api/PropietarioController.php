@@ -4,9 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Propietario;
 use Illuminate\Http\Request;
+use Kreait\Firebase\Factory;
 
 class PropietarioController extends ApiController
 {
+    protected $auth;
+
+    public function __construct()
+    {
+        $firebase = (new Factory)
+            ->withServiceAccount(config('firebase.credentials.file'));
+        $this->auth = $firebase->createAuth();
+    }
+
     public function index()
     {
         try {
@@ -19,6 +29,8 @@ class PropietarioController extends ApiController
     public function store(Request $request)
     {
         try {
+            $firebaseUser = $this->auth->getUser($request->firebase_uid);
+            
             request()->validate([
                 'nombre' => 'required|string',
                 'apellido' => 'required|string',
@@ -29,14 +41,23 @@ class PropietarioController extends ApiController
                 'id_tipoDocumento' => 'required|exists:tipodocumento,id_tipoDocumento'
             ]);
 
-            $propietario = Propietario::create($request->all());
-            return $this->sendResponse($propietario, "Propietario creado");
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->sendError('Error de validación', $e->errors());
+            $propietario = Propietario::create([
+                'id_propietario' => $request->firebase_uid,
+                'email' => $firebaseUser->email,
+                'nombre' => $request->nombre,
+                'apellido' => $request->apellido,
+                'telefono' => $request->telefono,
+                'num_documento' => $request->num_documento,
+                'bloqueado' => $request->bloqueado,
+                'id_tipoDocumento' => $request->id_tipoDocumento
+            ]);
+
+            return $this->sendResponse($propietario, 'Propietario creado exitosamente');
         } catch (\Exception $e) {
-            return $this->sendError('Error al crear el propietario', $e->getMessage());
+            return $this->sendError('Error al crear propietario', $e->getMessage());
         }
     }
+
 
     public function show($id)
     {

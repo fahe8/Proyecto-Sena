@@ -11,14 +11,43 @@ const apiClient = axios.create({
     }
 });
 
+export const authServicio = {
+    obtenerUsuario: (token) => apiClient.get('/user', {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }),
+    registroUsuario: (data) => apiClient.post('/usuarios', data),
+    loginUsuario: (data) => apiClient.post('/login', data),
+    logoutUsuario: (token) => apiClient.get('/logout', {}, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }),
+    enviarCorreoVerificacion: (token) => apiClient.post('/email/verification-notification', {}, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }),
+    verificarToken: (token) => apiClient.get('/verificar-token', {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }),
+};
+
 
 
 export const usuarioServicio = {
     obtenerTodos: () => apiClient.get('/usuarios'),
     obtenerPorId: (id) => apiClient.get(`/usuarios/${id}`),
     crear: (data) => apiClient.post('/usuarios', data),
-    actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/usuarios/${id}`)   
+    actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data, {
+        headers:{
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
+    eliminar: (id) => apiClient.delete(`/usuarios/${id}`)
 };
 
 export const propietarioServicio = {
@@ -27,7 +56,8 @@ export const propietarioServicio = {
     obtenerPorEmpresa: (NIT) => apiClient.get(`/propietarios/empresa/${NIT}`),
     crear: (data) => apiClient.post('/propietarios', data),
     actualizar: (id, data) => apiClient.put(`/propietarios/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/propietarios/${id}`)
+    eliminar: (id) => apiClient.delete(`/propietarios/${id}`),
+    obtenerTiposDocumentos: () => apiClient.get('/tipos-documentos'),
 };
 
 export const empresaServicio = {

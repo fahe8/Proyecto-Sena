@@ -12,7 +12,7 @@ import StatsSection from "./components/StatsSection";
 const PerfilPage = () => {
   const {user} = useAuth();
   const [usuario, setUsuario] = useState({
-    id_usuario: "",
+    id: "",
     nombre: "",
     apellido: "",
     email: "",
@@ -28,13 +28,10 @@ const PerfilPage = () => {
   
   useEffect(() => {
     const fetchData = async () => {
-      if (user?.uid) {
+      if (user) {
         try {
-          const [userResponse, reservasResponse] = await Promise.all([
-            usuarioServicio.obtenerPorId(user.uid),
-            // reservaServicio.obtenerPorUsuario(user.uid)
-          ]);
-          setUsuario(userResponse.data.data);
+          console.log(user)
+          setUsuario(user);
           // setReservas(reservasResponse.data);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -61,7 +58,7 @@ const PerfilPage = () => {
 
   const guardarCambios = async () => {
     try {
-      await usuarioServicio.actualizar(usuario.id_usuario, usuario);
+      await usuarioServicio.actualizar(usuario.id, usuario);
       setEditando(false);
       setMostrarModal(false);
       setTextoPopUp({
@@ -121,6 +118,7 @@ const PerfilPage = () => {
           subtitulo="Verifica que tus datos sean correctos antes de confirmar."
           cerrarModal={cerrarModal}
           funcionEjecutar={guardarCambios}
+          tipo=""
         />
       )}
 

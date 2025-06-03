@@ -3,6 +3,10 @@ import CloudinaryUploader from "../../components/CloudinaryUploader";
 import { propietarioServicio } from "../../services/api";
 
 export default function InfoRepresentante({ data, onChange, errors }) {
+
+  
+
+
   // Función para manejar la subida de imágenes
   const handleImageUpload = (url) => {
     onChange("imagen", url);
@@ -61,6 +65,7 @@ export default function InfoRepresentante({ data, onChange, errors }) {
             value={data.id_tipoDocumento || "CC"} // Valor predeterminado
             onChange={(e) => onChange("id_tipoDocumento", e.target.value)}
           >
+            {}
             <option value="CC">CC</option>
             <option value="TI">TI</option>
             <option value="CE">CE</option>

@@ -13,5 +13,8 @@ class ResenaController extends ApiController
     public function show($id) {}
     public function update(Request $request, $id) {}
     public function destroy($id) {}
-    // crear una funcion para obtnerReseñaEmpresa
+
+    public function obtenerReseñasEmpresa($nit) {
+    }
+   
 }

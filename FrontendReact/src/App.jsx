@@ -25,6 +25,7 @@ import iconoPerfil from "./assets/Perfil/iconoPerfil.svg";
 import iconoUnlike from "./assets/Perfil/Unlike.svg";
 import IconoHome from "./assets/Inicio/Home.svg";
 import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
+import ResetPassword from "./pages/Login/components/ResetPassword";
 
 function App() {
 
@@ -91,6 +92,8 @@ function App() {
         <Route path="/empresa/:id" element={<Cliente />} />
         <Route path="/formulario-empresa" element={<FormularioEmpresa />} />
         <Route path="/formulario-canchas" element={<AgregarCancha/>}/>
+        <Route path="/recuperar-contrasena/:token" element={<ResetPassword/>}/>
+        <Route path="/recuperar-contrasena/" element={<ResetPassword/>}/>
 
         {/* Rutas protegidas */}
         {/* Rutas de USUARIO */}

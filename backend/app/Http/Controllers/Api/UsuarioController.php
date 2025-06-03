@@ -1,35 +1,45 @@
 <?php
 namespace App\Http\Controllers\Api;
+
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 
+
 class UsuarioController extends ApiController
 {
+
     public function index()
     {
         try {
-            $usuarios = Usuario::get();
-            return $this->sendResponse($usuarios, 'Usuarios encontrados exitosamente');
+            $usuarios = Usuario::all();
+            return $this->sendResponse($usuarios, 'Usuarios obtenidos exitosamente');
         } catch (\Exception $e) {
             return $this->sendError('Error obteniendo usuarios', $e->getMessage());
         }
     }
+
     public function store(Request $request)
     {
         try {
+          
+            
             $request->validate([
-                "id_usuario" => 'required|unique:usuario',
+                'id_usuario' => 'required|unique:usuario',
                 'email' => 'email|unique:usuario'
             ]);
 
-            $usuario = Usuario::create($request->all());
-            return $this->sendResponse($usuario, 'Usuario created successfully');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->sendError('Validation Error', $e->errors());
+            $usuario = Usuario::create([
+                'id_usuario' => $request->firebase_uid,
+                'email' => $request->email,
+                // otros campos
+            ]);
+
+            return $this->sendResponse($usuario, 'Usuario creado exitosamente');
         } catch (\Exception $e) {
-            return $this->sendError('Error creating usuario', $e->getMessage());
+            return $this->sendError('Error al crear usuario', $e->getMessage());
         }
     }
+
     public function update(Request $request, $id_usuario)
     {
         try {

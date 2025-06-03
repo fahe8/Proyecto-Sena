@@ -9,7 +9,8 @@ class TipoDocumentoSeeder extends Seeder
     {
         DB::table('tipoDocumento')->insertOrIgnore([
             ['id_tipoDocumento' => 'CC'],
-            ['id_tipoDocumento' => 'TI']
+            ['id_tipoDocumento' => 'TI'],
+            ['id_tipoDocumento' => 'CE']
         ]);
     }
 }
