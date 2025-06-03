@@ -93,11 +93,11 @@ const PerfilPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="min-h-screen w-screen  p-6 bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="max-w-5xl mx-auto px-4">
         {/* Header Section */}
         <ProfileHeader usuario={usuario} />
-
+        
         {/* Main Content */}
         <ProfileInfo 
           usuario={usuario}

@@ -2,7 +2,7 @@ import React from "react";
 import InfoField from "./InfoField";
 import InputField from "./InputField";
 import lapizIcon from "../../../assets/Perfil/lapiz.svg";
-
+import {UserIcon, EmailIcon, PhoneIcon} from "../../../assets/IconosSVG/iconos";
 const ProfileInfo = ({ 
   usuario, 
   editando, 
@@ -12,19 +12,19 @@ const ProfileInfo = ({
   validarInputs 
 }) => {
   return (
-    <div className="bg-white rounded-lg shadow-lg p-8 relative">
-      <div className="flex justify-between items-center mb-8">
+    <div className="bg-white rounded-b-lg shadow-lg py-8 px-12 relative">
+      <div className="flex justify-between items-center mb-6">
         <h3 className="text-2xl font-bold text-[#003044]">Información Personal</h3>
         <button
           onClick={editando ? validarInputs : toggleEdicion}
-          className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${
+          className={`flex items-center gap-2 px-6 py-2 rounded-full transition-all duration-300 ${
             editando 
             ? 'bg-[#00c951] hover:bg-[#00a844]' 
             : 'bg-[#003044] hover:bg-[#004466]'
           } text-white shadow-md hover:shadow-lg`}
         >
           <span>{editando ? "Guardar Cambios" : "Editar Perfil"}</span>
-          <img width={20} src={lapizIcon} alt="Editar" className="invert" />
+          <img width={20} src={lapizIcon} alt="Editar" className="" />
         </button>
       </div>
 
@@ -33,25 +33,25 @@ const ProfileInfo = ({
           <InfoField
             label="Nombre(s)"
             value={usuario.nombre}
-            icon="👤"
+            icon={<UserIcon />}
             defaultText="No hay nombre registrado"
           />
           <InfoField
             label="Apellido(s)"
             value={usuario.apellido}
-            icon="👤"
+            icon={<UserIcon />}
             defaultText="No hay apellido registrado"
           />
           <InfoField
             label="Correo electrónico"
             value={usuario.email}
-            icon="📧"
+            icon={<EmailIcon />}
             defaultText="No hay correo registrado"
           />
           <InfoField
             label="Teléfono"
             value={usuario.telefono}
-            icon="📱"
+            icon={<PhoneIcon />}
             defaultText="No hay número registrado"
           />
         </div>
@@ -64,7 +64,7 @@ const ProfileInfo = ({
             onChange={handleChange}
             error={errores.nombre}
             editable={editando}
-            icon="👤"
+            icon={<UserIcon />}
           />
           <InputField
             label="Apellido(s)"
@@ -73,7 +73,7 @@ const ProfileInfo = ({
             onChange={handleChange}
             error={errores.apellido}
             editable={editando}
-            icon="👤"
+            icon={<UserIcon />}
           />
           <InputField
             label="Teléfono"
@@ -82,7 +82,7 @@ const ProfileInfo = ({
             onChange={handleChange}
             error={errores.telefono}
             editable={editando}
-            icon="📱"
+            icon={<PhoneIcon />}
           />
         </div>
       )}

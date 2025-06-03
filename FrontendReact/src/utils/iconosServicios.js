@@ -1,7 +1,5 @@
 
-import { BathroomIcon, WifiIcon, StoreIcon, ParkingIcon, RestaurantIcon, RefereeIcon, BarIcon,} from "../assets/IconosSVG/iconos";
-// You'll need to import or create these new icons
-import { PetFriendlyIcon, LightingIcon, LockersIcon, SecurityIcon } from "../assets/IconosSVG/iconos";
+import { BathroomIcon, WifiIcon, StoreIcon, ParkingIcon, RestaurantIcon, RefereeIcon, BarIcon, PetFriendlyIcon, LightingIcon, LockersIcon, SecurityIcon } from "../assets/IconosSVG/iconos";
 
 const iconosServicios = {
     banos: BathroomIcon,
@@ -12,11 +10,10 @@ const iconosServicios = {
     cafeteria: RestaurantIcon,
     bar: BarIcon,
     arbitro: RefereeIcon,
-    // New icons to add
-    petfriendly: BathroomIcon,
-    iluminacion: BathroomIcon,
-    vestidores: BathroomIcon,
-    seguridad: BathroomIcon,
+    petfriendly: PetFriendlyIcon,
+    iluminacion: LightingIcon,
+    vestidores: LockersIcon,
+    seguridad: SecurityIcon,
   };
 
   export {iconosServicios}

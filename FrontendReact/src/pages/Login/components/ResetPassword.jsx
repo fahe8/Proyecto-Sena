@@ -6,7 +6,7 @@ const ResetPassword = ({ onSubmit, token }) => {
     password: '',
     confirmPassword: ''
   });
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);ñ
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState(null); // null, 'success', 'error'

@@ -7,7 +7,7 @@ import InfoEmpresa from './InfoEmpresa';
 import InfoCanchas from './InfoCanchas';
 import InfoAdicional from './InfoAdicional';
 import CloudinaryUploader from '../../components/CloudinaryUploader';
-
+import image from "../../assets/LogIn/background.webp"; 
 export default function FormEmpresa() {
   const [currentStep, setCurrentStep] = useState(() => {
     const savedStep = localStorage.getItem('formEmpresaStep');
@@ -184,8 +184,6 @@ export default function FormEmpresa() {
     
     setIsLoading(true);
     try {
-      const dataToSubmit = prepareDataForSubmission();
-      console.log('Datos a enviar:', JSON.stringify(dataToSubmit, null, 2));
       
       
       // 1. Crear el propietario
@@ -265,7 +263,7 @@ export default function FormEmpresa() {
   };
 
   return (
-    <div className="bg-teal-800 min-h-screen flex items-center justify-center p-3">
+    <div className="min-h-screen flex items-center justify-center p-3 bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
       <div className="bg-white rounded-lg shadow-lg px-10 md:px-15 pt-4 pb-6 w-full max-w-4xl">
         <div className="flex justify-start gap-3 items-center mb-3">
           <a href='/login' className="hover:border-b-2 hover:border-[#003044] px-4 py-1 text-sm hover:text-[#33ea30] font-medium">Usuario</a>
@@ -275,12 +273,12 @@ export default function FormEmpresa() {
         <h1 className="text-[#003044]  text-md font-bold mb-5">Crear cuenta</h1>
         
         {/* Mobile Stepper (Horizontal) */}
-        <div className="md:hidden mb-6">
+        <div className="md:hidden mb-6 ">
           <div className="flex justify-between items-center">
             {steps.map((step, index) => (
               <React.Fragment key={step.number}>
                 <div className="flex flex-col items-center">
-                  <StepIndicator 
+                  <StepIndicator
                     number={step.number}
                     title=""  // Hide title on mobile
                     isCompleted={currentStep > step.number}
@@ -297,13 +295,12 @@ export default function FormEmpresa() {
         </div>
         
         {/* Desktop Stepper (Vertical) */}
-        <div className="hidden md:flex mb-6">
+        <div className="hidden md:flex mb-6"> 
           <div className="flex justify-between w-full">
             {steps.map((step) => (
               <div key={step.number} className="flex flex-col items-center">
                 <StepIndicator 
                   number={step.number}
-                  title={step.title}
                   isCompleted={currentStep > step.number}
                   isActive={currentStep === step.number}
                 />

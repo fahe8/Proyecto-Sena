@@ -153,9 +153,7 @@ const Login = () => {
     console.log("El error que llega es:", error);
 
     // Asegura que el error tenga un código válido antes de procesarlo
-    const mensajeError = error.code
-      ? manejarErroresFirebase(error)
-      : "Ocurrió un error inesperado.";
+    const mensajeError = "Ocurrió un error inesperado.";
 
     showErrorMessage(mensajeError);
   };

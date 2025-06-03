@@ -39,6 +39,8 @@ const ForgotPassword = ({ onBack, onSubmit }) => {
     }
 
     if (result.success) {
+
+        
       setStatus('success');
       setMessage('Se ha enviado un enlace de restablecimiento a tu correo electrónico');
       setEmail('');
