@@ -90,13 +90,13 @@ const ForgotPassword = ({ onBack, onSubmit }) => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="ejemplo@correo.com"
                 disabled={isLoading || status === 'success'}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all ${
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-xs outline-none transition-all ${
                   status === 'error' ? 'border-red-300 bg-red-50' : 
                   status === 'success' ? 'border-green-300 bg-green-50' : 
                   'border-gray-300'
                 } ${isLoading || status === 'success' ? 'opacity-70 cursor-not-allowed' : ''}`}
               />
-              <Mail className="absolute right-3 top-3.5 w-5 h-5 text-gray-400" />
+              <Mail className="absolute right-4 top-2.5 w-5 h-5 text-gray-400" />
             </div>
           </div>
 
@@ -121,7 +121,7 @@ const ForgotPassword = ({ onBack, onSubmit }) => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white py-3 px-4 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="w-full text-sm bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white py-3 px-4 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 onClick={handleSubmit}
               >
                 {isLoading ? (
@@ -137,7 +137,7 @@ const ForgotPassword = ({ onBack, onSubmit }) => {
               <button
                 type="button"
                 onClick={handleReset}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                className="w-full text-sm bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
               >
                 Enviar otro enlace
               </button>

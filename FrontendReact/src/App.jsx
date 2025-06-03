@@ -17,13 +17,12 @@ import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
 import PerfilAdministrador from "./pages/PanelPropietario/PerfilAdministrador";
 import ReservasPendientes from "./pages/PanelPropietario/ReservasPendientes";
 import ReservasPasadas from "./pages/PanelPropietario/ReservasPasadas";
-
+import { ProfileIcon } from "./assets/IconosSVG/iconos";
 
 import iconoCorazon from "./assets/Perfil/corazon.svg";
 import iconoArchivo from "./assets/Perfil/archive.svg";
-import iconoReciente from "./assets/Perfil/recent.svg";
+import iconoReciente from "./assets/Perfil/clockIcon.svg";
 import iconoPerfil from "./assets/Perfil/iconoPerfil.svg";
-import iconoUnlike from "./assets/Perfil/Unlike.svg";
 import IconoHome from "./assets/Inicio/Home.svg";
 import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
 import ResetPassword from "./pages/Login/components/ResetPassword";
@@ -45,12 +44,12 @@ function App() {
     {
       nombre: "Reservas Activas",
       icono: iconoReciente,
-      url: "/ReservasActivas",
+      url: "/reservasactivas",
     },
     {
       nombre: "Historial de Reservas",
       icono: iconoArchivo,
-      url: "/historialReservas",
+      url: "/historialreservas",
     },
     {
       nombre: "Canchas Favoritas",
@@ -74,7 +73,7 @@ function App() {
     },
     {
       nombre: "Reservas pasadas",
-      icono: iconoReciente,
+      icono: iconoArchivo,
       url: "/reservaspasadas",
     },
     {

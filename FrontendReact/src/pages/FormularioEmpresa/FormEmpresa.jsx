@@ -1,5 +1,5 @@
-import React, { useState , useEffect} from 'react';
-import { empresaServicio } from '../../services/api';
+import React, { useState, useEffect } from 'react';
+import { empresaServicio, propietarioServicio, canchasServicio, ServiciosServicio } from '../../services/api';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import StepIndicator from './StepIndicator';
 import InfoRepresentante from './InfoRepresentante';
@@ -7,10 +7,8 @@ import InfoEmpresa from './InfoEmpresa';
 import InfoCanchas from './InfoCanchas';
 import InfoAdicional from './InfoAdicional';
 import CloudinaryUploader from '../../components/CloudinaryUploader';
-import image from '../../assets/LogIn/background.webp'; 
-
+import image from "../../assets/LogIn/background.webp"; 
 export default function FormEmpresa() {
-
   const [currentStep, setCurrentStep] = useState(() => {
     const savedStep = localStorage.getItem('formEmpresaStep');
     return savedStep ? parseInt(savedStep) : 1;
@@ -25,24 +23,32 @@ export default function FormEmpresa() {
     // Si no hay datos guardados, usa el estado inicial por defecto
     return {
       representante: {
+        id_propietario: '', // Se generará automáticamente
         nombre: '',
         apellido: '',
-        identificacion: '',
+        id_tipoDocumento: 'CC', // Valor predeterminado válido
+        num_documento: '',
         telefono: '',
-        correo: '',
+        email: '',
+        imagen: '',
+        bloqueado: false
       },
       empresa: {
+        NIT: '',
         nombre: '',
-        nit: '',
         direccion: '',
+        descripcion: '',
         logo: '',
+        imagenes: [],
+        hora_apertura: '',
+        hora_cierre: '',
+        id_estado_empresa: 'abierto'
       },
-      canchas: [{ name: '', size: '', surface: '', price: '', capacity: '' }],
+      canchas: [],
       adicional: {
         horario: { desde: '', hasta: '' },
-        dias: [],
         servicios: [],
-        descripcion: '',c
+        descripcion: '',
       },
     };
   });
@@ -57,6 +63,7 @@ export default function FormEmpresa() {
 
   // Manejar cambios en los campos del formulario
   const handleInputChange = (section, field, value) => {
+
     setFormData((prev) => ({
       ...prev,
       [section]: {
@@ -67,20 +74,22 @@ export default function FormEmpresa() {
     setErrors((prev) => ({ ...prev, [section]: null })); // Limpiar errores al cambiar
   };
 
-   // Validar campos requeridos
-   const validateStep = () => {
+  // Validar campos requeridos
+  const validateStep = () => {
     const stepErrors = {};
     if (currentStep === 1) {
-      const { nombre, apellido, identificacion, telefono, correo } = formData.representante;
+      const { nombre, apellido, num_documento, telefono, email } = formData.representante;
       if (!nombre) stepErrors.nombre = 'El nombre es obligatorio';
       if (!apellido) stepErrors.apellido = 'El apellido es obligatorio';
-      if (!identificacion) stepErrors.identificacion = 'La identificación es obligatoria';
+      if (!formData.representante.id_tipoDocumento) {
+        stepErrors.id_tipoDocumento = 'El tipo de documento es obligatorio';}
+      if (!num_documento) stepErrors.num_documento = 'La identificación es obligatoria';
       if (!telefono) stepErrors.telefono = 'El teléfono es obligatorio';
-      if (!correo) stepErrors.correo = 'El correo es obligatorio';
+      if (!email) stepErrors.email = 'El correo es obligatorio';
     } else if (currentStep === 2) {
-      const { nombre, nit, direccion } = formData.empresa;
+      const { nombre, NIT, direccion } = formData.empresa;
       if (!nombre) stepErrors.nombre = 'El nombre de la empresa es obligatorio';
-      if (!nit) stepErrors.nit = 'El NIT es obligatorio';
+      if (!NIT) stepErrors.NIT = 'El NIT es obligatorio';
       if (!direccion) stepErrors.direccion = 'La dirección es obligatoria';
     }
     // Agregar validaciones para otros pasos si es necesario
@@ -91,10 +100,17 @@ export default function FormEmpresa() {
   // Agregar una nueva cancha
   const addCancha = () => {
     setFormData((prev) => ({
-      ...prev,
+      ...prev, // Mantener el resto del estado
       canchas: [
         ...prev.canchas,
-        { name: '', size: '', surface: '', price: '', capacity: '' }, // Usando los nombres que espera InfoCanchas
+        { 
+          nombre: '', 
+          id_tipo_cancha: '', 
+          id_estado_cancha: 'disponible', 
+          imagen: '', 
+          NIT: prev.empresa.NIT, 
+          precio: '' 
+        },
       ],
     }));
   };
@@ -106,23 +122,98 @@ export default function FormEmpresa() {
     setFormData((prev) => ({ ...prev, canchas: updatedCanchas }));
   };
 
+  // Manejar cambios en la información adicional
+  const handleAdicionalChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      adicional: {
+        ...prev.adicional,
+        [field]: value,
+      },
+    }));
+    console.log(formData)
+
+  };
+
+  // Preparar datos para enviar al backend
+  const prepareDataForSubmission = () => {
+    // Generar un ID único para el propietario (puedes usar una biblioteca como uuid)
+    const propietarioId = `PROP-${Date.now()}`;
+    
+    // Actualizar los datos de la empresa con la información adicional
+    const empresaData = {
+      ...formData.empresa,
+      hora_apertura: formData.adicional.horario.desde,
+      hora_cierre: formData.adicional.horario.hasta,
+      descripcion: formData.adicional.descripcion,
+      id_propietario: propietarioId,
+      imagenes: formData.empresa.imagenes && formData.empresa.imagenes.length > 0 ? formData.empresa.imagenes : null
+    };
+    
+    // Actualizar los datos del propietario
+    const propietarioData = {
+      ...formData.representante,
+      id_propietario: propietarioId,
+      bloqueado: false
+    };
+    
+    // Actualizar las canchas con el NIT de la empresa
+    const canchasData = formData.canchas.map(cancha => {
+      // Solo incluir los campos necesarios
+      return {
+        nombre: cancha.nombre,
+        id_tipo_cancha: cancha.id_tipo_cancha,
+        id_estado_cancha: cancha.id_estado_cancha,
+        imagen: cancha.imagen,
+        NIT: formData.empresa.NIT,
+        precio: cancha.precio
+      };
+    });
+    
+    return {
+      propietario: propietarioData,
+      empresa: {...empresaData, servicios: formData.adicional.servicios},
+      canchas: canchasData,
+      
+    };
+  };
+
   // Enviar datos al backend
   const handleSubmit = async () => {
+    if (!validateStep()) return;
+    
     setIsLoading(true);
     try {
-      const response = await empresaServicio.crear(formData);
-      console.log('Empresa creada:', response.data);
-      alert('Empresa creada exitosamente');
+      const dataToSubmit = prepareDataForSubmission();
+      console.log('Datos a enviar:', JSON.stringify(dataToSubmit, null, 2));
+      
+      
+      // 1. Crear el propietario
+      const propietarioResponse = await propietarioServicio.crear(dataToSubmit.propietario);
+      console.log('Propietario creado:', propietarioResponse.data);
+      
+      // 2. Crear la empresa
+      const empresaResponse = await empresaServicio.crear(dataToSubmit.empresa);
+      console.log('Empresa creada:', empresaResponse.data);
+      
+      // 3. Crear las canchas (si hay)
+      if (dataToSubmit.canchas.length > 0) {
+        for (const cancha of dataToSubmit.canchas) {
+          await canchasServicio.agregar(cancha);
+        }
+      }
+    
+      
       // Limpiar los datos guardados después de enviar el formulario exitosamente
       localStorage.removeItem('formEmpresaData');
       localStorage.removeItem('formEmpresaStep');
       
       // Redirigir o reiniciar el formulario
-      window.location.href = '/dashboard'; 
+      window.location.href = '/InterfazPropietario'; 
 
     } catch (error) {
       console.error('Error al crear la empresa:', error);
-      alert('Hubo un error al crear la empresa');
+      alert('Hubo un error al crear la empresa: ' + (error.response?.data?.message || error.message));
     } finally {
       setIsLoading(false);
     }
@@ -144,22 +235,15 @@ export default function FormEmpresa() {
     }
   };
 
-  // CORREGIDA: Función para eliminar una cancha
+  // Función para eliminar una cancha
   const onRemoveCancha = (index) => {
     const updatedCanchas = [...formData.canchas];
     updatedCanchas.splice(index, 1);
-    
-    // Si no quieres permitir eliminar la última cancha, descomenta estas líneas
-    // if (updatedCanchas.length === 0) {
-    //   updatedCanchas.push({ name: '', size: '', surface: '', price: '', capacity: '' });
-    // }
-    
     setFormData(prev => ({
       ...prev,
       canchas: updatedCanchas
     }));
   };
-
 
   // Steps configuration
   const steps = [
@@ -169,123 +253,123 @@ export default function FormEmpresa() {
     { number: 4, title: "Información Adicional" }
   ];
 
+  // Función para manejar la subida de imágenes para la empresa
+  const handleEmpresaImageUpload = (url) => {
+    setFormData(prev => ({
+      ...prev,
+      empresa: {
+        ...prev.empresa,
+        imagenes: [...(prev.empresa.imagenes || []), url]
+      }
+    }));
+  };
+
   return (
-      <div className="min-h-screen flex items-center justify-center p-3 bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
-        <div className="bg-white rounded-lg shadow-lg px-10 md:px-15 pt-4 pb-6 w-full max-w-4xl">
-          <div className="flex justify-start gap-3 items-center mb-3">
-            <a href='/login' className="hover:border-b-2 hover:border-[#003044] px-4 py-1 text-sm hover:text-[#33ea30] font-medium">Usuario</a>
-            <div className="px-4 py-1 font-medium border-[#003044] border-b-2 text-[#33ea30] text-sm cursor-default">Empresa</div>
-          </div>
-          
-          <h1 className="text-[#003044]  text-md font-bold mb-5">Crear cuenta</h1>
-          
-          {/* Mobile Stepper (Horizontal) */}
-          <div className="md:hidden mb-6">
-            <div className="flex justify-between items-center">
-              {steps.map((step, index) => (
-                <React.Fragment key={step.number}>
-                  <div className="flex flex-col items-center">
-                    <StepIndicator 
-                      number={step.number}
-                      title=""  // Hide title on mobile
-                      isCompleted={currentStep > step.number}
-                      isActive={currentStep === step.number}
-                    />
-                    
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div className="h-0.5 flex-1 bg-gray-200 mx-1"></div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-            {/* Show current step title for mobile */}
-            <div className="text-center text-[#003044] font-medium text-sm mt-3">
-              {steps.find(step => step.number === currentStep)?.title}
-            </div>
-          </div>
-          
-          <div className="flex flex-col md:flex-row md:gap-10 lg:gap-25">
-            {/* Desktop Stepper (Vertical) - Hide on mobile */}
-            <div className="hidden md:flex flex-col items-center text-[#003044] bg-[#e5fff2] w-50 rounded-md py-4">
-              {steps.map((step, index) => (
-                <React.Fragment key={step.number}>
-                  <StepIndicator 
+    <div className="min-h-screen flex items-center justify-center p-3 bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
+      <div className="bg-white rounded-lg shadow-lg px-10 md:px-15 pt-4 pb-6 w-full max-w-4xl">
+        <div className="flex justify-start gap-3 items-center mb-3">
+          <a href='/login' className="hover:border-b-2 hover:border-[#003044] px-4 py-1 text-sm hover:text-[#33ea30] font-medium">Usuario</a>
+          <div className="px-4 py-1 font-medium border-[#003044] border-b-2 text-[#33ea30] text-sm cursor-default">Empresa</div>
+        </div>
+        
+        <h1 className="text-[#003044]  text-md font-bold mb-5">Crear cuenta</h1>
+        
+        {/* Mobile Stepper (Horizontal) */}
+        <div className="md:hidden mb-6 ">
+          <div className="flex justify-between items-center">
+            {steps.map((step, index) => (
+              <React.Fragment key={step.number}>
+                <div className="flex flex-col items-center">
+                  <StepIndicator
                     number={step.number}
-                    title={step.title}
+                    title=""  // Hide title on mobile
                     isCompleted={currentStep > step.number}
                     isActive={currentStep === step.number}
-                    
                   />
-                  {index < steps.length - 1 && (
-                    <div className="w-0.5 h-12 bg-gray-200"></div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-            
-            {/* Form content */}
-            <div className="flex-1">
-
-              {currentStep === 1 && ( 
-              <InfoRepresentante 
-              data={formData.representante}
-              onChange={(field, value) =>
-                handleInputChange('representante', field, value)
-              }
-              errors={errors}
-              />
-              )}
-
-              {currentStep === 2 && ( <InfoEmpresa 
-              data={formData.empresa}
-              onChange={(field, value) =>
-                handleInputChange('empresa', field, value)
-              }
-              errors={errors}
-              />
-              )}
-
-              {currentStep === 3 && (
-                <InfoCanchas
-                  data={formData.canchas}
-                  onAddCancha={addCancha} // Conecta la función para agregar una nueva cancha
-                  onChange={handleCanchaChange} // Conecta la función para manejar cambios en las canchas
-                  onRemoveCancha={onRemoveCancha} // Conecta la función para eliminar una cancha
-                  errors={errors.canchas} // Pasa los errores específicos de las canchas
-                />
-              )}
-
-              {currentStep === 4 && (<InfoAdicional 
-              data={formData.adicional}
-              onChange={(field, value) =>
-                handleInputChange('adicional', field, value)
-              }
-              />
-              )}
-              
-              <div className="mt-8 flex justify-end gap-4">
-                {currentStep > 1 && (
-                  <button 
-                    onClick={goToPreviousStep}
-                    className="px-4 sm:px-6 py-2 border border-gray-300 rounded-md flex items-center gap-2 text-gray-600 text-sm"
-                  >
-                    <ChevronLeft size={16} />
-                    <span className="hidden sm:inline">Anterior</span>
-                  </button>
+                  
+                </div>
+                {index < steps.length - 1 && (
+                  <div className="h-0.5 flex-1 bg-gray-200 mx-1"></div>
                 )}
-                <button 
-                  onClick={goToNextStep}
-                  className="px-4 sm:px-5 py-2 bg-[#03c700] text-white text-sm rounded-md flex items-center gap-2"
-                >
-                  <span>{currentStep === 4 ? 'Finalizar' : 'Siguiente'}</span>
-                  {currentStep !== 4 && <ChevronRight size={16} />}
-                </button>
-              </div>
-              
-            </div>
+              </React.Fragment>
+            ))}
           </div>
         </div>
+        
+        {/* Desktop Stepper (Vertical) */}
+        <div className="hidden md:flex mb-6"> 
+          <div className="flex justify-between w-full">
+            {steps.map((step) => (
+              <div key={step.number} className="flex flex-col items-center">
+                <StepIndicator 
+                  number={step.number}
+                  isCompleted={currentStep > step.number}
+                  isActive={currentStep === step.number}
+                />
+                <span className="text-xs mt-1 text-center">{step.title}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Form Content */}
+        <div className="mb-6">
+          {currentStep === 1 && (
+            <InfoRepresentante 
+              data={formData.representante} 
+              onChange={(field, value) => handleInputChange('representante', field, value)} 
+              errors={errors}
+            />
+          )}
+          
+          {currentStep === 2 && (
+            <InfoEmpresa 
+              data={formData.empresa} 
+              onChange={(field, value) => handleInputChange('empresa', field, value)} 
+              errors={errors}
+            />
+          )}
+          
+          {currentStep === 3 && (
+            <InfoCanchas 
+              data={formData.canchas} 
+              onAddCancha={addCancha} 
+              onChange={handleCanchaChange} 
+              onRemoveCancha={onRemoveCancha}
+              errors={errors}
+            />
+          )}
+          
+          {currentStep === 4 && (
+            <InfoAdicional 
+              data={formData.adicional} 
+              onChange={handleAdicionalChange} 
+              errors={errors}
+            />
+          )}
+        </div>
+        
+        {/* Navigation Buttons */}
+        <div className="flex justify-between">
+          <button 
+            onClick={goToPreviousStep}
+            className={`flex items-center gap-1 px-4 py-2 rounded-md ${currentStep === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-[#003044] hover:bg-gray-100'}`}
+            disabled={currentStep === 1}
+          >
+            <ChevronLeft size={16} />
+            Anterior
+          </button>
+          
+          <button 
+            onClick={goToNextStep}
+            className="flex items-center gap-1 px-4 py-2 bg-[#003044] text-white rounded-md hover:bg-[#002030] disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Procesando...' : currentStep === 4 ? 'Finalizar' : 'Siguiente'}
+            {!isLoading && currentStep < 4 && <ChevronRight size={16} />}
+          </button>
+        </div>
       </div>
+    </div>
   );
 }

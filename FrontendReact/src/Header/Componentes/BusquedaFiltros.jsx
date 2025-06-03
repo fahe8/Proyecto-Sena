@@ -141,20 +141,20 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
             onClick={(e) => e.stopPropagation()}
             className="w-[600px] max-h-[95vh] bg-white rounded-2xl shadow-2xl flex flex-col"
           >
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-3xl py-3 font-bold text-[#003044] px-8">FILTROS</h2>
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-xl py-3 font-bold text-[#003044] px-8">FILTROS</h2>
               <button
                 onClick={cerrarModal}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                className="p-2 mr-3 hover:bg-red-400 rounded-full transition-colors duration-200 cursor-pointer"
               >
-                <img src={close} alt="icono de cerrar" width={24} height={24} />
+                <img src={close} alt="icono de cerrar" width={30} height={30} />
               </button>
             </div>
 
             {/* Make only this section scrollable */}
             <div className="space-y-4 overflow-y-auto pr-2 flex-1 px-8 max-h-[60vh]">
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-gray-700">Tipos de canchas</h3>
+                <h3 className="text-lg font-semibold text-gray-700">Tipos de canchas</h3>
                 <div className="flex flex-wrap gap-3">
                   {tiposCanchas.map((tipoCancha) => (
                     <button
@@ -173,7 +173,7 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
               </div>
               <div className="h-px bg-gray-200"/>
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-gray-700">Servicios disponibles</h3>
+                <h3 className="text-lg font-semibold text-gray-700">Servicios disponibles</h3>
                 <div className="flex flex-wrap gap-3">
                   {Object.keys(iconosServicios).map((servicio) => {
                     const IconComponent = iconosServicios[servicio];
@@ -199,10 +199,10 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
             </div>
 
             
-            <div className="flex justify-between items-center px-8 py-3 bg-white rounded-b-2xl">
+            <div className="flex justify-end items-center px-8 py-3 bg-white rounded-b-2xl gap-2">
               <button
                 onClick={limpiarFiltros}
-                className="text-gray-600 hover:text-[#003044] font-medium transition-colors duration-200"
+                className="text-gray-600 hover:text-[#003044] px-5 py-2 rounded-full hover:bg-indigo-50 font-medium transition-colors duration-200 cursor-pointer"
               >
                 Limpiar filtros
               </button>
@@ -211,7 +211,7 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
                   enviarFiltros();
                   cerrarModal();
                 }}
-                className="bg-[#00c951] hover:bg-[#00a844] text-white px-8 py-3 rounded-full transition-all duration-200 font-semibold shadow-lg hover:shadow-xl"
+                className="bg-[#00c951] hover:bg-[#00a844] text-white px-5 py-2 rounded-full transition-all duration-200 font-semibold shadow-lg hover:shadow-xl cursor-pointer"
               >
                 Aplicar filtros
               </button>

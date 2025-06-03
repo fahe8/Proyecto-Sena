@@ -6,7 +6,7 @@ const ResetPassword = ({ onSubmit, token }) => {
     password: '',
     confirmPassword: ''
   });
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);ñ
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState(null); // null, 'success', 'error'
@@ -131,9 +131,9 @@ const ResetPassword = ({ onSubmit, token }) => {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-            <Shield className="w-8 h-8 text-green-600" />
+            <Shield className="w-6 h-6 text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">
             Crear nueva contraseña
           </h2>
           <p className="text-gray-600 text-sm">
@@ -156,7 +156,7 @@ const ResetPassword = ({ onSubmit, token }) => {
                 onChange={(e) => handleInputChange('password', e.target.value)}
                 placeholder="Ingresa tu nueva contraseña"
                 disabled={isLoading}
-                className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all ${
+                className={`w-full text-sm px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all ${
                   errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
                 } ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
               />
@@ -221,7 +221,7 @@ const ResetPassword = ({ onSubmit, token }) => {
                 onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
                 placeholder="Confirma tu nueva contraseña"
                 disabled={isLoading}
-                className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all ${
+                className={`w-full text-sm px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all ${
                   errors.confirmPassword ? 'border-red-300 bg-red-50' : 
                   formData.confirmPassword && formData.password === formData.confirmPassword ? 'border-green-300 bg-green-50' :
                   'border-gray-300'

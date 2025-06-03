@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class EstadoCancha extends Model
 {
     
@@ -20,6 +21,10 @@ class EstadoCancha extends Model
     public function canchas()
     {
         return $this->hasMany(Cancha::class, 'id_estado_cancha');
+
+    }
+    public function estado(){
+        return $this->belongsTo(EstadoCancha::class,'id_estado_cancha','id_estado_cancha');
     }
 }
 

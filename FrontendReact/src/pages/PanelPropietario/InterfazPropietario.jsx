@@ -117,7 +117,6 @@ const InterfazPropietario = () => {
     const canchasActualizadas = listaCanchas.filter((cancha) => cancha.id_cancha !== canchaSeleccionada);
     await canchasServicio.eliminar(canchaSeleccionada);
     setListaCanchas(canchasActualizadas);
-
     setModalEliminar(false);
     setTextoPopUp({
       titulo: "Se elimino exitosamente",
@@ -157,7 +156,7 @@ const InterfazPropietario = () => {
 
       <div className="w-full max-w-5xl mx-auto py-3 sm:py-5 px-3 sm:px-0">
         <div className="canchas_container flex-grow px-10 md:px-6">
-          <h2 className="text-xl sm:text-lg font-bold mb-3 sm:mb-4 pb-2 sm:pb-2.5 border-b-2 border-gray-200 font-sans">Tus canchas</h2>
+          <h2 className="text-xl sm:text-lg font-bold mb-3 sm:mb-4 pb-2 sm:pb-2.5 font-sans">Tus canchas</h2>
 
           {cargando ? (
             <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4">
