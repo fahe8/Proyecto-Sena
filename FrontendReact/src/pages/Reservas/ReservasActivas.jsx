@@ -141,12 +141,14 @@ const formatearFecha = (fechaStr) => {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto mt-20 px-3">
-      {/* Título de la sección */}
-      <h2 className="font-bold text-center text-xl">RESERVAS ACTIVAS</h2>
-      <hr className="font-bold border-t-2 p-1 mt-2" />
-
-      {cargando ? (
+    <div className="w-full mx-auto p-20 px-30 bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="rounded-lg shadow-xl bg-white justify-center items-center">
+        <div className="bg-[#003044] p-6 text-white rounded-t-lg">
+          {/* Título de la sección */}
+          <h2 className="font-bold text-center text-xl">RESERVAS ACTIVAS</h2>
+          <p className="text-center p-3 text-sm">Reservas que has hecho y siguen pendientes</p>
+        </div>
+        {cargando ? (
         <div className="flex justify-center items-center h-40">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
         </div>
@@ -155,16 +157,16 @@ const formatearFecha = (fechaStr) => {
           {error}
         </div>
       ) : reservasActivas.length === 0 ? (
-        <div className="bg-gray-100 rounded-lg p-6 text-center mt-4">
+        <div className="rounded-lg p-6 text-center py-10">
           <p className="text-gray-600">No tienes reservas activas en este momento.</p>
         </div>
       ) : (
         // Lista de reservas activas
-        <div className="space-y-4 mt-4">
+        <div className="space-y-4 p-15 grid grid-cols-1 md:grid-cols-2 gap-10">
           {reservasActivas.map((reserva) => (
             <div 
               key={reserva.id_reserva || reserva.id} 
-              className="bg-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+              className="bg-gray-100 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.2)] overflow-hidden transition-shadow p-3"
             >
               {/* Información de la card principal */}
               <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -186,10 +188,10 @@ const formatearFecha = (fechaStr) => {
                 {/* Botón que abre el modal de descripción */}
                 <div className="flex justify-start sm:justify-end items-center mt-2 sm:mt-0">
                   <button
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition-colors w-full sm:w-auto"
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition-colors w-full sm:w-auto cursor-pointer"
                     onClick={() => abrirModal(reserva)}
                   >
-                    Descripción
+                    Detalles
                   </button>
                 </div>
               </div>
@@ -197,20 +199,24 @@ const formatearFecha = (fechaStr) => {
           ))}
         </div>
       )}
+      </div>
+      
+
+      
 
       {/* Modal de descripción mejorado y responsive */}
       {mostrarModal && reservaSeleccionada && (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-3">
           {/* Overlay oscuro detrás del modal */}
           <div 
-            className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+            className="absolute inset-0 bg-[#36363695] backdrop-blur-sm"
             onClick={cerrarModal}
           ></div>
           
           {/* Contenido del modal - ahora más responsive */}
           <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-auto z-10 relative overflow-hidden max-h-[90vh] flex flex-col">
             {/* Encabezado del modal con color de fondo */}
-            <div className="bg-green-500 p-4 text-white relative">
+            <div className="bg-green-500 p-8 text-white relative">
               <h3 className="text-lg font-bold">
                 Detalles de la Reserva
               </h3>
@@ -220,7 +226,7 @@ const formatearFecha = (fechaStr) => {
               
               {/* Botón de cerrar */}
               <button 
-                className="absolute top-4 right-4 text-white hover:text-gray-200"
+                className="absolute top-4 right-4 text-white hover:text-gray-200 cursor-pointer"
                 onClick={cerrarModal}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -321,7 +327,7 @@ const formatearFecha = (fechaStr) => {
               </div>
               
               {/* Información de contacto */}
-              <div className="mt-4 sm:mt-6 bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-100">
+              <div className=" bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-100">
                 <h4 className="font-medium text-gray-700 mb-3">Información de contacto</h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -349,21 +355,9 @@ const formatearFecha = (fechaStr) => {
                 </div>
               </div>
               
-              {/* Política de cancelación */}
-              <div className="mt-4 sm:mt-6 bg-yellow-50 p-3 sm:p-4 rounded-lg border border-yellow-100">
-                <h4 className="font-medium text-yellow-800 flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                  Política de cancelación
-                </h4>
-                <p className="text-xs sm:text-sm text-yellow-700 mt-1">
-                  Puedes cancelar esta reserva hasta 24 horas antes de la hora programada. Después de ese tiempo, no habrá reembolso.
-                </p>
-              </div>
               
-              {/* Botones de acción */}
-              <div className="flex flex-col sm:flex-row sm:justify-end mt-4 sm:mt-6 space-y-2 sm:space-y-0 sm:space-x-3">
+              {/* Botones de acción
+              <div className="flex flex-col sm:flex-row sm:justify-end  space-y-2 sm:space-y-0 sm:space-x-3">
                 <button
                    className="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600 transition-colors w-full sm:w-auto"
                   onClick={cerrarModal}
@@ -372,7 +366,7 @@ const formatearFecha = (fechaStr) => {
                
                 
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

@@ -16,7 +16,7 @@ const Header = () => {
   const hideBusquedaFiltros = /^\/empresa\/[^/]+$/.test(location.pathname);
 
   return (
-    <header className="bg-[#003044]  shadow-sm">
+    <header className="bg-[#003044] shadow-lg">
       {/* Contenedor del header con estilos */}
       <div className="container flex justify-around items-center p-4 mx-auto">
         {/* Logo y nombre de la aplicación, al hacer clic redirige a la página principal */}
@@ -124,19 +124,27 @@ export const BotonPerfil = () => {
               : 'opacity-0 scale-0 invisible'
           }`}
         >
-          {/* Botones del menú */}
-          <Link to="/perfil" className="w-full h-[50px] border-0 rounded-none hover:bg-[rgba(0,0,0,0.26)] transition-all duration-300 ease-in-out text-white flex items-center justify-center">
-            Mi Perfil
-          </Link>
-          <Link className="w-full h-[50px] border-0 rounded-none hover:bg-[rgba(0,0,0,0.26)] transition-all duration-300 ease-in-out text-white flex items-center justify-center">
-            Centro de ayuda
-          </Link>
-          <button 
-            onClick={handleLogout}
-            className="w-full h-[50px] border-0 rounded-none hover:bg-[rgba(0,0,0,0.26)] transition-all duration-300 ease-in-out text-white flex items-center justify-center"
-          >
-            Cerrar Sesión
-          </button>
+              <Link to={"/perfil"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center rounded-t-lg">
+                  Mi Perfil
+                </Link>
+                <Link to={"/historialreservas"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center ">
+                  Historial de reservas
+                </Link>
+                <Link to={"/reservasactivas"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center">
+                  Reservas activas
+                </Link>
+                <Link to={"/favoritos"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center">
+                  Mis favoritos
+                </Link>
+                {/* <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center">
+                  Centro de ayuda
+                </Link> */}
+                <button
+                  onClick={handleLogout}
+                  className="w-full block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm rounded-b-lg cursor-pointer"
+                >
+                  Cerrar Sesión
+            </button>
         </div>
       )}
     </div>
