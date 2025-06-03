@@ -11,19 +11,25 @@ import PerfilPage from "./pages/Perfil/Perfil";
 import Reservas from "./pages/Reservas/ReservasActivas";
 import RutasProtegidas from "./utils/RutasProtegidas";
 import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
-import FormularioCanchas from "./pages/FormularioEmpresa/InfoCanchas";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
 import PerfilAdministrador from "./pages/PanelPropietario/PerfilAdministrador";
 import ReservasPendientes from "./pages/PanelPropietario/ReservasPendientes";
 import ReservasPasadas from "./pages/PanelPropietario/ReservasPasadas";
 import { ProfileIcon } from "./assets/IconosSVG/iconos";
+import InterfazAdministrador from "./pages/PanelAdministrador/InterfazAdministrador";
+import ListaUsuarios from "./pages/PanelAdministrador/ListaUsuarios";
+import ListaEmpresas from "./pages/PanelAdministrador/ListaEmpresas";
+
+
 
 import iconoCorazon from "./assets/Perfil/corazon.svg";
 import iconoArchivo from "./assets/Perfil/archive.svg";
 import iconoReciente from "./assets/Perfil/clockIcon.svg";
 import iconoPerfil from "./assets/Perfil/iconoPerfil.svg";
+import users from "./assets/Perfil/users.svg";
 import IconoHome from "./assets/Inicio/Home.svg";
+import business from "./assets/perfil/business.svg";
 import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
 import ResetPassword from "./pages/Login/components/ResetPassword";
 
@@ -84,6 +90,29 @@ function App() {
     
   ]
 
+  const opcionesAdminitrador = [
+    {
+      nombre: "Inicio",
+      icono: IconoHome,
+      url: "/",
+    },
+    {
+      nombre: "Perfil",
+      icono: iconoPerfil,
+      url: "/InterfazAdministrador",
+    },
+    {
+      nombre: "Usuarios registrados",
+      icono: users,
+      url: "/ListaUsuarios",
+    },
+    {
+      nombre: "Empresas registradas",
+      icono: business,
+      url: "/ListaEmpresas",
+    },
+  ]
+
   return (
     <Router>
       <Routes>
@@ -127,6 +156,21 @@ function App() {
             <Route path="/perfiladministrador" element={<PerfilAdministrador />} />
             <Route path="/reservaspendientes" element={<ReservasPendientes />} />
             <Route path="/reservaspasadas" element={<ReservasPasadas />} />
+          
+        </Route>
+        
+        <Route element={<SideBarPerfil
+              opciones={
+                opcionesAdminitrador
+                }
+              />
+            }
+          >
+            <Route path="/" element={<Inicio/>} />
+            <Route path="/InterfazAdministrador" element={<InterfazAdministrador />} />
+            <Route path="/ListaUsuarios" element={<ListaUsuarios />} />
+            <Route path="/ListaEmpresas" element={<ListaEmpresas />} />
+            
           
         </Route>
 

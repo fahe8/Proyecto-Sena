@@ -184,8 +184,6 @@ export default function FormEmpresa() {
     
     setIsLoading(true);
     try {
-      const dataToSubmit = prepareDataForSubmission();
-      console.log('Datos a enviar:', JSON.stringify(dataToSubmit, null, 2));
       
       
       // 1. Crear el propietario
