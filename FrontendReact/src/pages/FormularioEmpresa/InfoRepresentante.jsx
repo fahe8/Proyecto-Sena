@@ -1,16 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CloudinaryUploader from "../../components/CloudinaryUploader";
 import { propietarioServicio } from "../../services/api";
 
-export default function InfoRepresentante({ data, onChange, errors }) {
-
-  
-
-
+export default function InfoRepresentante({ data, onChange, errors, isAuthenticated }) {
+  const [tiposDocumentos, setTiposDocumentos] = useState([]);
   // Función para manejar la subida de imágenes
   const handleImageUpload = (url) => {
     onChange("imagen", url);
   };
+
+  useEffect(() => {
+    const obtenerTiposDocumentos = async () => {
+      try {
+        const response = await propietarioServicio.obtenerTiposDocumentos();
+        if (response.data.success) {
+          // Aquí podrías hacer algo con los tipos de documentos obtenidos
+          setTiposDocumentos(response.data.data);
+          console.log("Tipos de documentos:", response.data.data);
+        }
+      } catch (error) {
+        console.error("Error al obtener los tipos de documentos:", error);
+      }
+    }
+    obtenerTiposDocumentos();
+  }, [])
+
 
   return (
     <div>
@@ -26,8 +40,8 @@ export default function InfoRepresentante({ data, onChange, errors }) {
               type="text"
               className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
               placeholder="Primer nombre"
-              value={data.nombre || ""} // Vinculado al estado global
-              onChange={(e) => onChange("nombre", e.target.value)} // Actualiza el estado global
+              value={data.nombre || ""}
+              onChange={(e) => onChange("nombre", e.target.value)}
             />
             {errors?.nombre && (
               <p className="text-red-500 text-sm">{errors.nombre}</p>
@@ -41,13 +55,44 @@ export default function InfoRepresentante({ data, onChange, errors }) {
               type="text"
               className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
               placeholder="Primer apellido"
-              value={data.apellido || ""} // Vinculado al estado global
-              onChange={(e) => onChange("apellido", e.target.value)} // Actualiza el estado global
+              value={data.apellido || ""}
+              onChange={(e) => onChange("apellido", e.target.value)}
             />
             {errors?.apellido && (
               <p className="text-red-500 text-sm">{errors.apellido}</p>
             )}
           </div>
+
+          {!isAuthenticated && (
+            <>
+              <div className="flex-1 mb-4 mt-4">
+                <label className="block text-sm text-[#003044] mb-1">Correo Electrónico</label>
+                <input
+                  type="email"
+                  className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
+                  placeholder="correo@ejemplo.com"
+                  value={data.email || ""}
+                  onChange={(e) => onChange("email", e.target.value)}
+                />
+                {errors?.email && (
+                  <p className="text-red-500 text-sm">{errors.email}</p>
+                )}
+              </div>
+              <div className="flex-1 mb-4">
+                <label className="block text-sm text-[#003044] mb-1">Contraseña</label>
+                <input
+                  type="password"
+                  className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
+                  placeholder="Ingrese su contraseña"
+                  value={data.password || ""}
+                  onChange={(e) => onChange("password", e.target.value)}
+                />
+                {errors?.password && (
+                  <p className="text-red-500 text-sm">{errors.password}</p>
+                )}
+              </div>
+            </>
+          )}
         </div>
         <div className="w-50 h-full md:w-32 ml-4 text-center">
           <label className="block text-sm text-[#003044] mb-1 ">Tu Foto</label>
@@ -65,10 +110,7 @@ export default function InfoRepresentante({ data, onChange, errors }) {
             value={data.id_tipoDocumento || "CC"} // Valor predeterminado
             onChange={(e) => onChange("id_tipoDocumento", e.target.value)}
           >
-            {}
-            <option value="CC">CC</option>
-            <option value="TI">TI</option>
-            <option value="CE">CE</option>
+            {tiposDocumentos?.map(tipos => (<option key={tipos}>{tipos}</option>))}
           </select>
           <input
             type="text"
@@ -97,21 +139,6 @@ export default function InfoRepresentante({ data, onChange, errors }) {
         )}
       </div>
 
-      <div className="mb-4">
-        <label className="block text-sm text-[#003044] mb-1">
-          Correo Electrónico
-        </label>
-        <input
-          type="email"
-          className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
-          placeholder="correo@ejemplo.com"
-          value={data.email || ""} // Cambiado a email para coincidir con el modelo
-          onChange={(e) => onChange("email", e.target.value)} // Actualiza el estado global
-        />
-        {errors?.email && (
-          <p className="text-red-500 text-sm">{errors.email}</p>
-        )}
-      </div>
     </div>
   );
 }

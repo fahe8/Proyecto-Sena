@@ -1,7 +1,7 @@
 import React from "react";
 //Iconos svg
 
-const EyeIcon = () => (
+const EyeIcon = ({ className = "text-green-600" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="16"
@@ -12,13 +12,14 @@ const EyeIcon = () => (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
+    className={className}
   >
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
     <circle cx="12" cy="12" r="3"></circle>
   </svg>
 );
 
-const EyeOffIcon = () => (
+const EyeOffIcon = ({ className = "text-green-600" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="16"
@@ -29,20 +30,21 @@ const EyeOffIcon = () => (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
+    className={className}
   >
     <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
     <line x1="1" y1="1" x2="23" y2="23"></line>
   </svg>
 );
 
-const LetterIcon = () => (
+const LetterIcon = ({ className = "text-green-600 size-5" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="size-5 text-green-600"
+    className={`size-5 ${className}`}
   >
     <path
       strokeLinecap="round"
@@ -52,14 +54,14 @@ const LetterIcon = () => (
   </svg>
 );
 
-const KeyIcon = () => (
+const KeyIcon = ({ className = "text-green-600" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="size-5 text-green-600"
+    className={`size-5 ${className}`}
   >
     <path
       strokeLinecap="round"

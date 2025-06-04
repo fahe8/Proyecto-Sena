@@ -32,6 +32,7 @@ import IconoHome from "./assets/Inicio/Home.svg";
 import business from "./assets/perfil/business.svg";
 import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
 import ResetPassword from "./pages/Login/components/ResetPassword";
+import LoginEmpresa from "./pages/LoginEmpresa/LoginEmpresa";
 
 function App() {
 
@@ -121,10 +122,11 @@ function App() {
         <Route path="/recuperar-contrasena" element={<ForgotPassword />} />
         <Route path="/restablecer-contrasena" element={<ResetPassword />} />
         <Route path="/empresa/:id" element={<Cliente />} />
-        <Route path="/formulario-empresa" element={<FormularioEmpresa />} />
+        <Route path="/loginEmpresa" element={<LoginEmpresa />} />
+        <Route path="/registro-empresa" element={<FormularioEmpresa />} />
         <Route path="/formulario-canchas" element={<AgregarCancha/>}/>
         <Route path="/recuperar-contrasena/:token" element={<ResetPassword/>}/>
-        <Route path="/recuperar-contrasena/" element={<ForgotPassword/>}/>
+        <Route path="/recuperar-contrasena" element={<ForgotPassword/>}/>
 
         {/* Rutas protegidas */}
         {/* Rutas de USUARIO */}

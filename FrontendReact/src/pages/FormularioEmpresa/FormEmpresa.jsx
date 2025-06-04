@@ -7,8 +7,13 @@ import InfoEmpresa from './InfoEmpresa';
 import InfoCanchas from './InfoCanchas';
 import InfoAdicional from './InfoAdicional';
 import CloudinaryUploader from '../../components/CloudinaryUploader';
-import image from "../../assets/LogIn/background.webp"; 
+import image from "../../assets/LogIn/background.webp";
+import EmailVerification from './IniciarSesionPrev';
+import IniciarSesionPrev from './IniciarSesionPrev';
+import { useAuth } from '../../Provider/AuthProvider';
+
 export default function FormEmpresa() {
+  const { isAuthenticated } = useAuth();
   const [currentStep, setCurrentStep] = useState(() => {
     const savedStep = localStorage.getItem('formEmpresaStep');
     return savedStep ? parseInt(savedStep) : 1;
@@ -23,15 +28,14 @@ export default function FormEmpresa() {
     // Si no hay datos guardados, usa el estado inicial por defecto
     return {
       representante: {
-        id_propietario: '', // Se generará automáticamente
+        email: '',
+        password: '',
         nombre: '',
         apellido: '',
-        id_tipoDocumento: 'CC', // Valor predeterminado válido
-        num_documento: '',
+        tipo_documento_id: 'CC',
+        numero_documento: '',
         telefono: '',
-        email: '',
         imagen: '',
-        bloqueado: false
       },
       empresa: {
         NIT: '',
@@ -42,19 +46,17 @@ export default function FormEmpresa() {
         imagenes: [],
         hora_apertura: '',
         hora_cierre: '',
-        id_estado_empresa: 'abierto'
+        id_estado_empresa: 'abierto',
+        servicios: [],
       },
       canchas: [],
-      adicional: {
-        horario: { desde: '', hasta: '' },
-        servicios: [],
-        descripcion: '',
-      },
+
     };
   });
-  
+
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [registrado, setRegistrado] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('formEmpresaData', JSON.stringify(formData));
@@ -63,6 +65,7 @@ export default function FormEmpresa() {
 
   // Manejar cambios en los campos del formulario
   const handleInputChange = (section, field, value) => {
+    console.log(field, value)
 
     setFormData((prev) => ({
       ...prev,
@@ -71,22 +74,24 @@ export default function FormEmpresa() {
         [field]: value,
       },
     }));
+    console.log(formData)
     setErrors((prev) => ({ ...prev, [section]: null })); // Limpiar errores al cambiar
   };
 
   // Validar campos requeridos
   const validateStep = () => {
     const stepErrors = {};
-    if (currentStep === 1) {
+    if (currentStep === 2) {
       const { nombre, apellido, num_documento, telefono, email } = formData.representante;
       if (!nombre) stepErrors.nombre = 'El nombre es obligatorio';
       if (!apellido) stepErrors.apellido = 'El apellido es obligatorio';
       if (!formData.representante.id_tipoDocumento) {
-        stepErrors.id_tipoDocumento = 'El tipo de documento es obligatorio';}
+        stepErrors.id_tipoDocumento = 'El tipo de documento es obligatorio';
+      }
       if (!num_documento) stepErrors.num_documento = 'La identificación es obligatoria';
       if (!telefono) stepErrors.telefono = 'El teléfono es obligatorio';
       if (!email) stepErrors.email = 'El correo es obligatorio';
-    } else if (currentStep === 2) {
+    } else if (currentStep === 3) {
       const { nombre, NIT, direccion } = formData.empresa;
       if (!nombre) stepErrors.nombre = 'El nombre de la empresa es obligatorio';
       if (!NIT) stepErrors.NIT = 'El NIT es obligatorio';
@@ -94,6 +99,7 @@ export default function FormEmpresa() {
     }
     // Agregar validaciones para otros pasos si es necesario
     setErrors(stepErrors);
+    console.log(stepErrors)
     return Object.keys(stepErrors).length === 0;
   };
 
@@ -103,13 +109,13 @@ export default function FormEmpresa() {
       ...prev, // Mantener el resto del estado
       canchas: [
         ...prev.canchas,
-        { 
-          nombre: '', 
-          id_tipo_cancha: '', 
-          id_estado_cancha: 'disponible', 
-          imagen: '', 
-          NIT: prev.empresa.NIT, 
-          precio: '' 
+        {
+          nombre: '',
+          id_tipo_cancha: '',
+          id_estado_cancha: 'disponible',
+          imagen: '',
+          NIT: prev.empresa.NIT,
+          precio: ''
         },
       ],
     }));
@@ -139,24 +145,25 @@ export default function FormEmpresa() {
   const prepareDataForSubmission = () => {
     // Generar un ID único para el propietario (puedes usar una biblioteca como uuid)
     const propietarioId = `PROP-${Date.now()}`;
-    
+
     // Actualizar los datos de la empresa con la información adicional
+    const { email, password, nombre, apellido, telefono, id_tipoDocumento, num_documento } = formData.representante;
     const empresaData = {
-      ...formData.empresa,
-      hora_apertura: formData.adicional.horario.desde,
-      hora_cierre: formData.adicional.horario.hasta,
-      descripcion: formData.adicional.descripcion,
-      id_propietario: propietarioId,
-      imagenes: formData.empresa.imagenes && formData.empresa.imagenes.length > 0 ? formData.empresa.imagenes : null
+
+      // imagenes: formData.empresa.imagenes && formData.empresa.imagenes.length > 0 ? formData.empresa.imagenes : null
     };
-    
+
     // Actualizar los datos del propietario
     const propietarioData = {
-      ...formData.representante,
-      id_propietario: propietarioId,
-      bloqueado: false
+      email: email,
+      password: password,
+      nombre: nombre,
+      apellido: apellido,
+      telefono: telefono,
+      tipo_documento_id: id_tipoDocumento,
+      numero_documento: num_documento,
     };
-    
+
     // Actualizar las canchas con el NIT de la empresa
     const canchasData = formData.canchas.map(cancha => {
       // Solo incluir los campos necesarios
@@ -169,45 +176,46 @@ export default function FormEmpresa() {
         precio: cancha.precio
       };
     });
-    
+
     return {
       propietario: propietarioData,
-      empresa: {...empresaData, servicios: formData.adicional.servicios},
+      empresa: { ...empresaData },
       canchas: canchasData,
-      
+
     };
   };
 
   // Enviar datos al backend
   const handleSubmit = async () => {
     if (!validateStep()) return;
-    
+
     setIsLoading(true);
     try {
-      
-      
+      const dataToSubmit = prepareDataForSubmission();
+      console.log(dataToSubmit)
+
       // 1. Crear el propietario
       const propietarioResponse = await propietarioServicio.crear(dataToSubmit.propietario);
       console.log('Propietario creado:', propietarioResponse.data);
-      
-      // 2. Crear la empresa
-      const empresaResponse = await empresaServicio.crear(dataToSubmit.empresa);
-      console.log('Empresa creada:', empresaResponse.data);
-      
-      // 3. Crear las canchas (si hay)
-      if (dataToSubmit.canchas.length > 0) {
-        for (const cancha of dataToSubmit.canchas) {
-          await canchasServicio.agregar(cancha);
-        }
-      }
-    
-      
+
+      // // 2. Crear la empresa
+      // const empresaResponse = await empresaServicio.crear(dataToSubmit.empresa);
+      // console.log('Empresa creada:', empresaResponse.data);
+
+      // // 3. Crear las canchas (si hay)
+      // if (dataToSubmit.canchas.length > 0) {
+      //   for (const cancha of dataToSubmit.canchas) {
+      //     await canchasServicio.agregar(cancha);
+      //   }
+      // }
+
+
       // Limpiar los datos guardados después de enviar el formulario exitosamente
       localStorage.removeItem('formEmpresaData');
       localStorage.removeItem('formEmpresaStep');
-      
+
       // Redirigir o reiniciar el formulario
-      window.location.href = '/InterfazPropietario'; 
+      window.location.href = '/InterfazPropietario';
 
     } catch (error) {
       console.error('Error al crear la empresa:', error);
@@ -216,10 +224,12 @@ export default function FormEmpresa() {
       setIsLoading(false);
     }
   };
-  
+
   const goToNextStep = () => {
     if (validateStep()) {
-      if (currentStep < 4) {
+      console.log('asas')
+
+      if (currentStep < 5) {
         setCurrentStep((prevStep) => prevStep + 1);
       } else {
         handleSubmit(); // Enviar datos al backend al finalizar
@@ -245,10 +255,11 @@ export default function FormEmpresa() {
 
   // Steps configuration
   const steps = [
-    { number: 1, title: "Datos del Representante" },
-    { number: 2, title: "Datos de la Empresa" },
-    { number: 3, title: "Canchas Sintéticas" },
-    { number: 4, title: "Información Adicional" }
+    { number: 1, title: "¿Ya tienes una cuenta registrada?" },
+    { number: 2, title: "Datos del Representante" },
+    { number: 3, title: "Datos de la Empresa" },
+    { number: 4, title: "Canchas Sintéticas" },
+    { number: 5, title: "Información Adicional" }
   ];
 
   // Función para manejar la subida de imágenes para la empresa
@@ -262,6 +273,18 @@ export default function FormEmpresa() {
     }));
   };
 
+  const [showEmailVerification, setShowEmailVerification] = useState(true);
+  const handleEmailVerified = (data) => {
+    setShowEmailVerification(false);
+    setFormData(prev => ({
+      ...prev,
+      representante: {
+        ...prev.representante,
+        email: data.email,
+        password: data.password
+      }
+    }));
+  };
   return (
     <div className="min-h-screen flex items-center justify-center p-3 bg-cover bg-center" style={{ backgroundImage: `url(${image})` }}>
       <div className="bg-white rounded-lg shadow-lg px-10 md:px-15 pt-4 pb-6 w-full max-w-4xl">
@@ -269,9 +292,9 @@ export default function FormEmpresa() {
           <a href='/login' className="hover:border-b-2 hover:border-[#003044] px-4 py-1 text-sm hover:text-[#33ea30] font-medium">Usuario</a>
           <div className="px-4 py-1 font-medium border-[#003044] border-b-2 text-[#33ea30] text-sm cursor-default">Empresa</div>
         </div>
-        
+
         <h1 className="text-[#003044]  text-md font-bold mb-5">Crear cuenta</h1>
-        
+
         {/* Mobile Stepper (Horizontal) */}
         <div className="md:hidden mb-6 ">
           <div className="flex justify-between items-center">
@@ -284,7 +307,7 @@ export default function FormEmpresa() {
                     isCompleted={currentStep > step.number}
                     isActive={currentStep === step.number}
                   />
-                  
+
                 </div>
                 {index < steps.length - 1 && (
                   <div className="h-0.5 flex-1 bg-gray-200 mx-1"></div>
@@ -293,13 +316,13 @@ export default function FormEmpresa() {
             ))}
           </div>
         </div>
-        
+
         {/* Desktop Stepper (Vertical) */}
-        <div className="hidden md:flex mb-6"> 
+        <div className="hidden md:flex mb-6">
           <div className="flex justify-between w-full">
             {steps.map((step) => (
               <div key={step.number} className="flex flex-col items-center">
-                <StepIndicator 
+                <StepIndicator
                   number={step.number}
                   isCompleted={currentStep > step.number}
                   isActive={currentStep === step.number}
@@ -309,47 +332,65 @@ export default function FormEmpresa() {
             ))}
           </div>
         </div>
-        
+
         {/* Form Content */}
         <div className="mb-6">
           {currentStep === 1 && (
-            <InfoRepresentante 
-              data={formData.representante} 
-              onChange={(field, value) => handleInputChange('representante', field, value)} 
-              errors={errors}
-            />
+            <>
+              <h1>¿Tienes una cuenta creada en este Sitio?</h1>
+              <div className='flex gap-4 pt-2'>
+                <button className='bg-[#003044] text-white px-4 py-2 rounded-md hover:bg-[#002030] mb-4' onClick={() => setRegistrado(true)}>
+                  Si
+                </button>
+                <button className='bg-[#003044] text-white px-4 py-2 rounded-md hover:bg-[#002030] mb-4' onClick={() => setCurrentStep(2)}>
+                  No </button>
+
+              </div>
+
+              {registrado && <IniciarSesionPrev setCurrentStep={setCurrentStep} />}
+            </>
+
+
           )}
-          
           {currentStep === 2 && (
-            <InfoEmpresa 
-              data={formData.empresa} 
-              onChange={(field, value) => handleInputChange('empresa', field, value)} 
+            <InfoRepresentante
+              data={formData.representante}
+              onChange={(field, value) => handleInputChange('representante', field, value)}
+              errors={errors}
+              isAuthenticated={isAuthenticated}
+            />
+          )}
+
+          {currentStep === 3 && (
+            <InfoEmpresa
+              data={formData.empresa}
+              onChange={(field, value) => handleInputChange('empresa', field, value)}
               errors={errors}
             />
           )}
-          
-          {currentStep === 3 && (
-            <InfoCanchas 
-              data={formData.canchas} 
-              onAddCancha={addCancha} 
-              onChange={handleCanchaChange} 
+
+          {currentStep === 4 && (
+            <InfoCanchas
+              data={formData.canchas}
+              onAddCancha={addCancha}
+              onChange={handleCanchaChange}
               onRemoveCancha={onRemoveCancha}
               errors={errors}
             />
           )}
-          
-          {currentStep === 4 && (
-            <InfoAdicional 
-              data={formData.adicional} 
-              onChange={handleAdicionalChange} 
+
+          {currentStep === 5 && (
+            <InfoAdicional
+              data={formData.empresa}
+              onChange={(field, value) => handleInputChange('empresa', field, value)}
               errors={errors}
             />
           )}
         </div>
-        
+
         {/* Navigation Buttons */}
         <div className="flex justify-between">
-          <button 
+          <button
             onClick={goToPreviousStep}
             className={`flex items-center gap-1 px-4 py-2 rounded-md ${currentStep === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-[#003044] hover:bg-gray-100'}`}
             disabled={currentStep === 1}
@@ -357,17 +398,20 @@ export default function FormEmpresa() {
             <ChevronLeft size={16} />
             Anterior
           </button>
-          
-          <button 
+
+          {currentStep != '1' && <button
             onClick={goToNextStep}
             className="flex items-center gap-1 px-4 py-2 bg-[#003044] text-white rounded-md hover:bg-[#002030] disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading}
           >
-            {isLoading ? 'Procesando...' : currentStep === 4 ? 'Finalizar' : 'Siguiente'}
-            {!isLoading && currentStep < 4 && <ChevronRight size={16} />}
-          </button>
+            {isLoading ? 'Procesando...' : currentStep === 5 ? 'Finalizar' : 'Siguiente'}
+            {!isLoading && currentStep < 5 && <ChevronRight size={16} />}
+          </button>}
         </div>
       </div>
     </div>
+
+
+
   );
 }

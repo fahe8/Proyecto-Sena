@@ -13,7 +13,6 @@ import { manejarErroresFirebase } from "./manejarErroresFirebase";
 import { authServicio, usuarioServicio } from "../../services/api.js";
 import GoogleLoginButton from "./components/GoogleLoginButton";
 import AuthForm from "./components/AuthForm";
-import LoginContainer from "./components/LoginContainer";
 import LoginHeader from "./components/LoginHeader";
 import LoginFooter from "./components/LoginFooter";
 import Divider from "./components/Divider";
@@ -111,6 +110,7 @@ const Login = () => {
     const { email, password } = formData;
 
     const userData = {
+      role: "usuario",
       email,
       password,
     };
@@ -163,11 +163,8 @@ const Login = () => {
   return (
     <LazyBackground imageUrl="/src/assets/LogIn/background.webp" className="p-0 m-0 relative bg-cover w-screen h-screen">
       <div className="flex absolute w-screen h-screen bg-[#00000037] items-center z-20">
-        <LoginContainer>
+        <div className="relative w-110 p-[30px] px-10 bg-white rounded-[8px] font-[Arial] m-0 mx-auto shadow-md z-10">
           <LoginHeader register={register} />
-
-          <Divider />
-
           <AuthForm
             register={register}
             formData={formData}
@@ -180,7 +177,7 @@ const Login = () => {
             register={register}
             toggleRegister={() => setRegister(!register)}
           />
-        </LoginContainer>
+        </div>
 
         {loading && (
           <div className="absolute left-1/2 top-0 translate-x-[-50%] bg-black/50 w-screen h-screen z-50 flex items-center">

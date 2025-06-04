@@ -14,26 +14,29 @@ const apiClient = axios.create({
 export const authServicio = {
     obtenerUsuario: (token) => apiClient.get('/user', {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
     }),
     registroUsuario: (data) => apiClient.post('/usuarios', data),
     loginUsuario: (data) => apiClient.post('/login', data),
     logoutUsuario: (token) => apiClient.get('/logout', {}, {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
     }),
-    enviarCorreoVerificacion: (token) => apiClient.post('/email/verification-notification', {}, {
+    enviarCorreoVerificacion: () => apiClient.post('/email/verification-notification', {}, {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
     }),
     verificarToken: (token) => apiClient.get('/verificar-token', {
         headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
     }),
+
+    recuperarContrasena: (email) => apiClient.post('/forgot-password', email),
+    cambiarContrasena: (data) => apiClient.post('/reset-password', data),
 };
 
 

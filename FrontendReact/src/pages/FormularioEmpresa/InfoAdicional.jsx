@@ -5,12 +5,13 @@ export default function InfoAdicional({ data, onChange, errors }) {
   const [ListaServicios, setListaServicios] = useState([]);
 
   useEffect(() => {
+    console.log('hola')
     const cargarServicios = async () => {
       try {
         const serviciosResponse = await ServiciosServicio.obtenerTodos();
-
-        if (serviciosResponse.data.success && serviciosResponse.data.data) {
-          setListaServicios(serviciosResponse.data.data);
+        console.log(serviciosResponse.status)
+        if (serviciosResponse.status == '200') {
+          setListaServicios(serviciosResponse.data.servicios);
         }
       } catch (error) {
         console.error("Error al cargar los servicios:", error);
@@ -45,9 +46,9 @@ export default function InfoAdicional({ data, onChange, errors }) {
               id="desde"
               type="time"
               className="w-full border border-gray-300 rounded-md p-2"
-              value={data.horario.desde || ""} // Vinculado al estado global
+              value={data.hora_apertura || ""} // Vinculado al estado global
               onChange={(e) =>
-                onChange("horario", { ...data.horario, desde: e.target.value })
+                onChange("hora_apertura", e.target.value)
               } // Actualiza el estado global
             />
           </div>
@@ -56,9 +57,9 @@ export default function InfoAdicional({ data, onChange, errors }) {
             <input
               type="time"
               className="w-full border border-gray-300 rounded-md p-2"
-              value={data.horario.hasta || ""} // Vinculado al estado global
+              value={data.hora_cierre || ""} // Vinculado al estado global
               onChange={(e) =>
-                onChange("horario", { ...data.horario, hasta: e.target.value })
+                onChange("hora_cierre", e.target.value)
               } // Actualiza el estado global
             />
           </div>
@@ -78,9 +79,9 @@ export default function InfoAdicional({ data, onChange, errors }) {
               <input
                 type="checkbox"
                 className="accent-teal-500"
-                checked={data.servicios.includes(servicio.id_servicio)} // Vinculado al estado global
+                checked={data.servicios.includes(servicio.id)} // Vinculado al estado global
                 onChange={() =>
-                  handleCheckboxChange("servicios", servicio.id_servicio)
+                  handleCheckboxChange("servicios", servicio.id)
                 } // Actualiza el estado global
               />
               <span className="text-sm">{servicio.tipo}</span>
