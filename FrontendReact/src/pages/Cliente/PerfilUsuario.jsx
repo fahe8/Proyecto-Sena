@@ -8,6 +8,7 @@ import { iconosServicios } from "../../utils/iconosServicios";
 import insignia from "./imagen/insignia.png";
 import { empresaServicio } from "../../services/api";
 import { LeftArrowIcon, RightArrowIcon } from "../../assets/IconosSVG/iconos";
+import { Galleria } from 'primereact/galleria';
 
 // Componente para el Carrusel
 const Carousel = ({ images }) => {
@@ -407,7 +408,16 @@ const Perfil = () => {
         <button
           onClick={() => setShowMobileCalendar(true)}
           className="bg-[#2fc92c] hover:bg-green-500 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg"
-        >
+        >￼
+￼
+￼
+￼
+￼
+￼
+￼
+￼
+
+
           <div className="flex flex-col items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"

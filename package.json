@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "lucide-react": "^0.511.0"
+    "lucide-react": "^0.511.0",
+    "primereact": "^10.9.6"
   }
 }
