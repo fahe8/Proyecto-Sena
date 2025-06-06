@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { empresaServicio, propietarioServicio, canchasServicio, ServiciosServicio } from '../../services/api';
+import { empresaServicio, propietarioServicio, canchasServicio, ServiciosServicio, cloudinaryServicio } from '../../services/api';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import StepIndicator from './StepIndicator';
 import InfoRepresentante from './InfoRepresentante';
@@ -143,23 +143,40 @@ export default function FormEmpresa() {
 
   // Preparar datos para enviar al backend
   const prepareDataForSubmission = () => {
-    // Generar un ID único para el propietario (puedes usar una biblioteca como uuid)
-    const propietarioId = `PROP-${Date.now()}`;
+    const {
+      NIT,
+      direccion,
+      descripcion,
+      logo,
+      imagenes,
+      hora_apertura,
+      hora_cierre,
+      id_estado_empresa,
+      servicios, } = formData.empresa;
 
-    // Actualizar los datos de la empresa con la información adicional
-    const { email, password, nombre, apellido, telefono, id_tipoDocumento, num_documento } = formData.representante;
     const empresaData = {
-
+      NIT: NIT,
+      nombre: formData.empresa.nombre,
+      direccion: direccion,
+      descripcion: descripcion,
+      logo: logo,
+      imagenes: imagenes, // Asegurarse de que sea un array o null
+      hora_apertura: hora_apertura,
+      hora_cierre: hora_cierre,
+      id_estado_empresa: id_estado_empresa,
+      servicios: servicios && servicios.length > 0 ? servicios : null, // Asegurarse de que sea un array o null
       // imagenes: formData.empresa.imagenes && formData.empresa.imagenes.length > 0 ? formData.empresa.imagenes : null
     };
 
     // Actualizar los datos del propietario
+    const { email, password, nombre, apellido, telefono, imagen, id_tipoDocumento, num_documento } = formData.representante;
     const propietarioData = {
-      email: email,
-      password: password,
-      nombre: nombre,
-      apellido: apellido,
-      telefono: telefono,
+      email,
+      password,
+      nombre,
+      apellido,
+      telefono,
+      imagen,
       tipo_documento_id: id_tipoDocumento,
       numero_documento: num_documento,
     };
@@ -192,38 +209,63 @@ export default function FormEmpresa() {
     setIsLoading(true);
     try {
       const dataToSubmit = prepareDataForSubmission();
-      console.log(dataToSubmit)
+      console.log('Datos a enviar:', dataToSubmit);
+
+      const image = dataToSubmit.propietario.imagen;
+      const logo = dataToSubmit.empresa.logo;
+      const imagenes = dataToSubmit.empresa.imagenes;
+      const subirImagenPropietario = await cloudinaryServicio.subirImagen(image);
+      console.log('subirImagenPropietario', subirImagenPropietario)
+      const subirImagenLogo = await cloudinaryServicio.subirImagen(logo);
+      console.log('subirImagenLogo', subirImagenLogo)
+      const subirImagenes = await cloudinaryServicio.subirImagenes(imagenes);
+      console.log('subirImagenes', subirImagenes)
+      console.log('subirImagenes', subirImagenes.data.data)
+      const { url, public_id } = subirImagenPropietario.data.data;
+
+      const { url: urlLogo, public_id: publicIdLogo } = subirImagenLogo.data.data;
+
+
+
+      // ✅ Envía como objeto, no como string
+      dataToSubmit.propietario.imagen = { url, public_id };
+      dataToSubmit.empresa.logo = { url: urlLogo, public_id: publicIdLogo };
+      dataToSubmit.empresa.imagenes = subirImagenes.data.data
 
       // 1. Crear el propietario
       const propietarioResponse = await propietarioServicio.crear(dataToSubmit.propietario);
+      const propietarioId = propietarioResponse.data.data.propietario.id; // ✅ Asegúrate que sea 'id' (depende del backend)
       console.log('Propietario creado:', propietarioResponse.data);
 
-      // // 2. Crear la empresa
-      // const empresaResponse = await empresaServicio.crear(dataToSubmit.empresa);
-      // console.log('Empresa creada:', empresaResponse.data);
+      // // 2. Agregar el id del propietario a la empresa
+      dataToSubmit.empresa.propietario_id = propietarioId;
 
-      // // 3. Crear las canchas (si hay)
+      // // 3. Crear la empresa con el id del propietario incluido
+      const empresaResponse = await empresaServicio.crear(dataToSubmit.empresa);
+      console.log('Empresa creada:', empresaResponse.data);
+
+      // // 4. Crear las canchas (si hay)
       // if (dataToSubmit.canchas.length > 0) {
       //   for (const cancha of dataToSubmit.canchas) {
       //     await canchasServicio.agregar(cancha);
       //   }
       // }
 
+      // // Limpiar almacenamiento local
+      // localStorage.removeItem('formEmpresaData');
+      // localStorage.removeItem('formEmpresaStep');
 
-      // Limpiar los datos guardados después de enviar el formulario exitosamente
-      localStorage.removeItem('formEmpresaData');
-      localStorage.removeItem('formEmpresaStep');
-
-      // Redirigir o reiniciar el formulario
-      window.location.href = '/InterfazPropietario';
+      // // Redirigir
+      // window.location.href = '/InterfazPropietario';
 
     } catch (error) {
-      console.error('Error al crear la empresa:', error);
-      alert('Hubo un error al crear la empresa: ' + (error.response?.data?.message || error.message));
+      console.error('Error al crear:', error);
+      alert('Hubo un error al crear: ' + (error.response?.data?.message || error.message));
     } finally {
       setIsLoading(false);
     }
   };
+
 
   const goToNextStep = () => {
     if (validateStep()) {

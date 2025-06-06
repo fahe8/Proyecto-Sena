@@ -4,6 +4,7 @@ import { propietarioServicio } from "../../services/api";
 
 export default function InfoRepresentante({ data, onChange, errors, isAuthenticated }) {
   const [tiposDocumentos, setTiposDocumentos] = useState([]);
+  const [loading, setLoading] = useState(true);
   // Función para manejar la subida de imágenes
   const handleImageUpload = (url) => {
     onChange("imagen", url);
@@ -12,6 +13,7 @@ export default function InfoRepresentante({ data, onChange, errors, isAuthentica
   useEffect(() => {
     const obtenerTiposDocumentos = async () => {
       try {
+        setLoading(true);
         const response = await propietarioServicio.obtenerTiposDocumentos();
         if (response.data.success) {
           // Aquí podrías hacer algo con los tipos de documentos obtenidos
@@ -20,12 +22,20 @@ export default function InfoRepresentante({ data, onChange, errors, isAuthentica
         }
       } catch (error) {
         console.error("Error al obtener los tipos de documentos:", error);
+      }finally{
+        setLoading(false);
       }
     }
     obtenerTiposDocumentos();
   }, [])
 
-
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <p className="text-gray-500">Cargando tipos de documentos...</p>
+      </div>
+    );
+  }
   return (
     <div>
       <h2 className="text-[#003044] font-medium mb-4 uppercase text-sm">
@@ -96,7 +106,7 @@ export default function InfoRepresentante({ data, onChange, errors, isAuthentica
         </div>
         <div className="w-50 h-full md:w-32 ml-4 text-center">
           <label className="block text-sm text-[#003044] mb-1 ">Tu Foto</label>
-          <CloudinaryUploader onUploadSuccess={handleImageUpload} />
+          <CloudinaryUploader onUploadSuccess={handleImageUpload} folder={"propietarios"} />
         </div>
       </div>
 
@@ -107,7 +117,7 @@ export default function InfoRepresentante({ data, onChange, errors, isAuthentica
         <div className="flex">
           <select
             className="border border-gray-300 rounded-l-md p-2 w-20 text-[14px]"
-            value={data.id_tipoDocumento || "CC"} // Valor predeterminado
+            value={data.tipo_documento_id || "CC"} // Valor predeterminado
             onChange={(e) => onChange("id_tipoDocumento", e.target.value)}
           >
             {tiposDocumentos?.map(tipos => (<option key={tipos}>{tipos}</option>))}

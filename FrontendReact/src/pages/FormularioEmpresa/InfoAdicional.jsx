@@ -3,11 +3,12 @@ import { ServiciosServicio } from "../../services/api";
 
 export default function InfoAdicional({ data, onChange, errors }) {
   const [ListaServicios, setListaServicios] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('hola')
     const cargarServicios = async () => {
       try {
+        setLoading(true);
         const serviciosResponse = await ServiciosServicio.obtenerTodos();
         console.log(serviciosResponse.status)
         if (serviciosResponse.status == '200') {
@@ -15,6 +16,8 @@ export default function InfoAdicional({ data, onChange, errors }) {
         }
       } catch (error) {
         console.error("Error al cargar los servicios:", error);
+      } finally {
+        setLoading(false);
       }
     };
     cargarServicios();
@@ -27,7 +30,17 @@ export default function InfoAdicional({ data, onChange, errors }) {
     onChange(field, updatedArray);
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <p className="text-gray-500">Cargando servicios...</p>
+      </div>
+    );
+  }
+
+
   return (
+    
     <div>
       <h2 className="text-gray-600 font-medium mb-4 uppercase text-sm">
         Información adicional

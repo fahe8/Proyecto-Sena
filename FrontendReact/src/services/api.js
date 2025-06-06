@@ -46,7 +46,7 @@ export const usuarioServicio = {
     obtenerPorId: (id) => apiClient.get(`/usuarios/${id}`),
     crear: (data) => apiClient.post('/usuarios', data),
     actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data, {
-        headers:{
+        headers: {
             Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
     }),
@@ -63,6 +63,20 @@ export const propietarioServicio = {
     obtenerTiposDocumentos: () => apiClient.get('/tipos-documentos'),
 };
 
+export const cloudinaryServicio = {
+  subirImagen: (data) =>
+    apiClient.post("/upload-image", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
+  subirImagenes: (data) =>
+    apiClient.post("/upload-multiple-images", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
+};
 export const empresaServicio = {
     obtenerTodos: () => apiClient.get('/empresas'),
     obtenerPorId: (id) => apiClient.get(`/empresas/${id}`),
