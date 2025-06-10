@@ -185,7 +185,7 @@ export default function FormEmpresa() {
     setIsLoading(true);
     try {
       
-      
+      const dataToSubmit = prepareDataForSubmission();
       // 1. Crear el propietario
       const propietarioResponse = await propietarioServicio.crear(dataToSubmit.propietario);
       console.log('Propietario creado:', propietarioResponse.data);

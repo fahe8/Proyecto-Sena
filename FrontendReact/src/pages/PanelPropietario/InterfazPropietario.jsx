@@ -5,6 +5,8 @@ import { canchasServicio, empresaServicio, propietarioServicio } from '../../ser
 import ModificarCancha from './Componentes/ModificarCancha';
 import CardSkeleton from './Componentes/cardskeleton';
 import { useNavigate } from 'react-router-dom'; 
+import { StarIcon } from '../../assets/IconosSVG/iconos';
+import HeaderPropietario from './Componentes/HeaderPropietario';
 
 const InterfazPropietario = () => {
   // Estado para controlar la visibilidad del modal de modificar cancha
@@ -126,34 +128,9 @@ const InterfazPropietario = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-white overflow-x-hidden">
-      <nav className="bg-[#003950] shadow-lg p-4 sm:p-10">
-        <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 py-[4px]">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="relative">
-                <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full bg-green-500 flex items-center justify-center border-2 sm:border-3 border-white">
-                  <span className="text-white text-3xl sm:text-5xl font-bold"></span>
-                </div>
-              </div>
-              <div className="text-white text-center sm:text-left">
-                <h2 className="text-xl sm:text-2xl font-bold">{DatosEmpresa.nombre ? `${DatosEmpresa.nombre}` : 'Empresa'} </h2>
-                <p className="text-lg sm:text-xl font-sans">{datosPropietario.nombre ? `${datosPropietario.nombre} ${datosPropietario.apellido}` : 'Propietario'}</p>
-              </div>
-            </div>
-            
-            <div className="relative mt-2 sm:mt-0">
-              <button 
-                onClick={AgregarCancha}
-                className="flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 bg-[#39de02] text-black rounded-lg hover:bg-green-400 transition-colors text-xs sm:text-base"
-              >
-                Agregar canchas
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-blue-50 overflow-x-hidden">
+      <HeaderPropietario empresa={DatosEmpresa} propietario={datosPropietario} />
+        
       <div className="w-full max-w-5xl mx-auto py-3 sm:py-5 px-3 sm:px-0">
         <div className="canchas_container flex-grow px-10 md:px-6">
           <h2 className="text-xl sm:text-lg font-bold mb-3 sm:mb-4 pb-2 sm:pb-2.5 font-sans">Tus canchas</h2>
@@ -165,9 +142,9 @@ const InterfazPropietario = () => {
           ) : listaCanchas?.length === 0 ? (
             <p className="text-center text-black text-xl sm:text-2xl p-3 sm:p-5">No tienes ninguna cancha registrada</p>
           ) : (
-            <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4">
+            <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 ">
               {listaCanchas?.map((cancha) => (
-                <div key={cancha.id} className="w-full sm:w-[calc(50%-12px)] md:w-[calc(33.333%-14px)] lg:w-[255px] bg-[#f2f2f2] rounded-xl shadow-md overflow-hidden">
+                <div key={cancha.id} className="w-60 lg:w-68 bg-[#fdfdfd] p-5 rounded-xl shadow-md overflow-hidden">
                   <div className="flex flex-col justify-between items-start mb-2 sm:mb-4">
                     <div className="w-full">
                       <img
@@ -177,22 +154,22 @@ const InterfazPropietario = () => {
                       />
                     </div>
                   </div>
-                  <div className="flex justify-between items-center px-2.5 pb-2.5">
-                    <h3 className="font-bold">{cancha.nombre}</h3>
-                    <div className="flex items-center gap-1">
-                      <span className="text-yellow-400">★</span>
-                      <span>{cancha.rating}</span>
-                    </div>
+                  <div className="flex justify-between items-center px-2.5 pb-5">
+                    <h3 className="text-lg">{cancha.nombre}</h3>
+                    <div className="flex items-center mt-1 bg-amber-100 px-3 py-1 rounded-lg text-xs">
+                  <StarIcon />
+                  <span className="ml-1 font-bold">4.4</span>
+                </div>
                   </div>
-                  <div className="flex gap-2.5 px-2.5 pb-2.5">
+                  <div className="flex gap-5 px-2.5 pb-2.5">
                     <button 
-                      className="flex-1 px-2 sm:px-3.5 py-1.5 bg-[#04c707] text-white rounded text-sm cursor-pointer border-none"
+                      className="flex-1 px-2 sm:px-3.5 py-1.5 bg-[#04c707] text-white rounded-md text-sm cursor-pointer border-none"
                       onClick={() => abrirModalModificar(cancha)}
                     >
                       Modificar
                     </button>
                     <button
-                      className="flex-1 px-2 sm:px-3.5 py-1.5 bg-[#e63939] text-white rounded text-sm cursor-pointer border-none"
+                      className="flex-1 px-2 sm:px-3.5 py-1.5 bg-[#e63939] text-white rounded-md text-sm cursor-pointer border-none"
                       onClick={() => mostrarModalEliminar(cancha.id_cancha)}
                     >
                       Eliminar

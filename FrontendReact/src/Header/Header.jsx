@@ -87,7 +87,7 @@ export const BotonPerfil = () => {
       {/* Botón de perfil (solo visible si el usuario está autenticado) */}
       {isAuthenticated ? (
         <button 
-          className="flex items-center gap-2.5 py-0 px-4 h-[40px] text-[#f6f6f6] bg-[#2fc92c] hover:bg-green-600 border-0 rounded-2xl relative z-10 transition-all duration-300 ease-in-out shadow-md"
+          className="flex items-center gap-2.5 py-0 px-4 h-[40px] text-[#f6f6f6] bg-[#2fc92c] hover:bg-green-600 border-0 rounded-2xl relative z-10 transition-all duration-300 ease-in-out shadow-md cursor-pointer"
           onClick={toggleDropdown}
           aria-expanded={isOpen}
           aria-haspopup="true"
@@ -118,7 +118,7 @@ export const BotonPerfil = () => {
       {/* Menú desplegable */}
       {isAuthenticated && (
         <div 
-          className={`absolute right-0 top-[45px] w-[200px] bg-[#bcbcbc] rounded-[8px] overflow-hidden z-[50] transition-all duration-500 ease-in-out origin-top-right ${
+          className={`absolute right-0 top-[45px] w-[200px] bg-[#2fc92c] rounded-[8px] overflow-hidden z-[50] transition-all duration-500 ease-in-out origin-top-right ${
             isOpen 
               ? 'opacity-100 scale-100 visible' 
               : 'opacity-0 scale-0 invisible'

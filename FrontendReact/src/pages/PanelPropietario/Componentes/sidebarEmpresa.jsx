@@ -7,7 +7,7 @@ import { signOut } from "firebase/auth"; // Importamos la función para cerrar s
 import logo from "../../assets/logo.png";
 import iconoCerrarSesion from "../../assets/Perfil/cerrarSesion.svg";
 
-const SideBarPerfil = ({opciones = [], bgClass = "bg-[#003044]"}) => {
+const SideBarPerfil = ({opciones = []}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [urlActual, seturlActual] = useState(location.pathname);
@@ -49,7 +49,7 @@ const SideBarPerfil = ({opciones = [], bgClass = "bg-[#003044]"}) => {
     <div className="flex flex-row relative min-h-screen">
       <div
         ref={sidebarRef}
-        className={`fixed h-screen w-auto group-hover:max-w-xs flex flex-col z-20 ${bgClass}`}
+        className="fixed h-screen  w-auto group-hover:max-w-xs bg-[#008e0e] group flex flex-col z-20"
       >
         <div className="flex items-center pt-5 justify-center cursor-pointer mb-5" onClick={() => navigate("/")}>
           <img src={logo} className="w-8 h-auto mx-auto" alt="Logo-MiCanchaYa" />

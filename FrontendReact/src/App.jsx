@@ -141,36 +141,36 @@ function App() {
             <Route path="/perfil" element={<PerfilPage />} />
             <Route path="/reservasactivas" element={<Reservas />} />
             <Route path="/historialreservas" element={<HistorialReservas />} />
-            {/* <Route path="/norecomendadas" element={<NoRecomendadas />} /> */}
+           
           </Route>
 
         <Route element={<SideBarPerfil
               opciones={
                 opcionesEmpresario
                 }
+                bgClass="bg-green-800"
               />
             }
           >
-            <Route path="/" element={<Inicio/>} />
-            <Route path="/interfazpropietario" element={<InterfazPropietario />} />
             <Route path="/perfiladministrador" element={<PerfilAdministrador />} />
             <Route path="/reservaspendientes" element={<ReservasPendientes />} />
             <Route path="/reservaspasadas" element={<ReservasPasadas />} />
-          
         </Route>
-        
+
+        <Route path="/interfazpropietario" element={<InterfazPropietario />} />
+
+
+
         <Route element={<SideBarPerfil
-              opciones={
-                opcionesAdminitrador
-                }
+              opciones={opcionesAdminitrador}
+              
               />
             }
           >
-            <Route path="/" element={<Inicio/>} />
+
             <Route path="/InterfazAdministrador" element={<InterfazAdministrador />} />
             <Route path="/ListaUsuarios" element={<ListaUsuarios />} />
             <Route path="/ListaEmpresas" element={<ListaEmpresas />} />
-            
           
         </Route>
 
