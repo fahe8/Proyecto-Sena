@@ -17,6 +17,8 @@
     "firebase": "^11.6.0",
     "frontendreact": "file:",
     "lucide-react": "^0.503.0",
+    "primeicons": "^7.0.0",
+    "primereact": "^10.9.6",
     "react": "^19.0.0",
     "react-datepicker": "^8.1.0",
     "react-dom": "^19.0.0",

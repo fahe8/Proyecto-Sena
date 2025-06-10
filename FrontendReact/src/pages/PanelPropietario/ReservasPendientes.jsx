@@ -40,7 +40,7 @@ const ReservasPendientes = () => {
 
       <main className="px-4 md:px-20 py-8">
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <h1 className="text-2xl font-bold mb-6 text-[#003044]">Reservas próximas</h1>
+          <h1 className="text-2xl font-bold mb-6 text-[#003044]">Reservas pendientes</h1>
           {reservasEjemplo.length === 0 ? (
             <div className="text-center text-gray-500 py-10">No hay reservas pendientes.</div>
           ) : (

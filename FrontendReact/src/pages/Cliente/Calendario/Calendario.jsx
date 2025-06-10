@@ -36,35 +36,8 @@ const getMinHoraEmpresa = () => {
 const getMaxHoraEmpresa = () => {
   if (!empresa?.hora_cierre) return new Date(0, 0, 0, 23, 59); // Si no hay hora, usar 23:59
   return obtenerHoraDesdeString(empresa.hora_cierre); // Convierte y retorna la hora de cierre
-};
+};  
 
-//Asegura que una hora esté dentro del horario permitido por la empresa
-const ajustarAHorarioEmpresa = (fecha) => {
-  const minHora = getMinHoraEmpresa(); // Hora mínima permitida
-  const maxHora = getMaxHoraEmpresa(); // Hora máxima permitida
-
-  if (isBefore(fecha, minHora)) return minHora; // Si es antes de la apertura, corrige a apertura
-  if (isAfter(fecha, maxHora)) return maxHora; // Si es después del cierre, corrige a cierre
-
-  return fecha; // Si está dentro del horario, no se modifica
-};
-
-//Define la hora mínima que se puede seleccionar dependiendo si es hoy
-const obtenerMinTime = () => {
-  const hoy = new Date();
-  const esHoy =
-    format(reserva.fecha, "yyyy-MM-dd") === format(hoy, "yyyy-MM-dd"); // Compara si la fecha seleccionada es hoy
-
-  if (esHoy) {
-    const siguienteHora = new Date(); // Hora actual
-    siguienteHora.setMinutes(0, 0, 0); // Redondea a la hora exacta (quita minutos y segundos)
-    siguienteHora.setHours(siguienteHora.getHours() + 1); // Suma una hora completa
-    return siguienteHora; // La mínima hora seleccionable es dentro de una hora a partir de ahora
-  }
-
-  // Si la fecha no es hoy, permite seleccionar desde la medianoche
-  return new Date(0, 0, 0, 0, 0);
-};
 
   const [reserva, setReserva] = useState({
     fecha: new Date(),
@@ -102,13 +75,13 @@ const obtenerMinTime = () => {
         // ))
 
         data.forEach((reserva) => {
-          if (!fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha]) {
-            fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha] = [];
+          if (!fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha]) { 
+            fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha] = []; 
           }
         });
         console.log(fechasAgrupadasPorCancha);
       } catch (error) {
-        if (error.response && error.response.data) {
+        if (error.response && error.response.data) { 
           console.log(error.response.data.message);
         }
         console.log(error);
@@ -303,11 +276,11 @@ const obtenerMinTime = () => {
                 selected={reserva.horaInicio}
                 onChange={(fecha) => manejarCambioFecha(fecha, "horaInicio")}
                 showTimeSelect
-                showTimeSelectOnly
+                showTimeSelectOnly 
                 timeIntervals={60}
                 locale={es}
-                dateFormat="HH:mm"
-                timeFormat="HH:mm"
+                dateFormat="HH:mm" 
+                timeFormat="HH:mm" 
                 className="w-20 border rounded-lg px-2 py-2 cursor-pointer"
                 minTime={getMinHoraEmpresa()}
                 maxTime={getMaxHoraEmpresa()}

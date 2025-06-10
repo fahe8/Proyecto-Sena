@@ -1,148 +1,25 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import cancha2 from "./imagen/cancha2.jpg";
-import canchasi from "./imagen/canchasin.png";
 import Header from "../../Header/Header";
 import Calendario from "./Calendario/Calendario";
 import { iconosServicios } from "../../utils/iconosServicios";
 import insignia from "./imagen/insignia.png";
-import { empresaServicio } from "../../services/api";
-import { LeftArrowIcon, RightArrowIcon } from "../../assets/IconosSVG/iconos";
-import { Galleria } from 'primereact/galleria';
-
-// Componente para el Carrusel
-const Carousel = ({ images }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Función para moverse a la siguiente imagen
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  // Función para moverse a la imagen anterior
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
-
-  // Cambio automático de imágenes cada 5 segundos
-  useEffect(() => {
-    if (images.length <= 1) return;//Solo si hay una imagen
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [images.length]);
-
-  return (
-    <div className="relative w-full rounded-lg overflow-hidden mb-6">
-      <div className="w-full h-64 bg-gray-200">
-        <img
-          src={images[currentIndex]}
-          alt={`Slide ${currentIndex + 1}`}
-          className="w-full h-full object-cover"
-        />
-      </div>
-
-      {/* Botones de navegación */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white/90 rounded-full p-2 shadow-md"
-        aria-label="Anterior"
-      >
-        {React.createElement(LeftArrowIcon)}
-      </button>
-
-      <button
-        onClick={nextSlide}
-        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white/90 rounded-full p-2 shadow-md"
-        aria-label="Siguiente"
-      >
-        {React.createElement(RightArrowIcon)}
-      </button>
-
-      {/* Indicadores */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
-        {images.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentIndex(index)}
-            className={`w-2 h-2 rounded-full ${
-              currentIndex === index ? "bg-white" : "bg-white/50"
-            }`}
-            aria-label={`Ir a diapositiva ${index + 1}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
+import { empresaServicio, reservaServicio } from "../../services/api";
+import ImageGallery from "./galeria";
 
 const Perfil = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false); // Estado para verificar si la empresa está abierta
   const [showMobileCalendar, setShowMobileCalendar] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
 
-  const [reviews] = useState([
-    {
-      id: 1,
-      name: "Lucas Morales",
-      date: "13/04/2023",
-      fieldType: "Fútbol 7",
-      rating: 4,
-      comment:
-        "Reservar esta cancha fue muy sencillo y la calidad del césped sintético es impresionante. Mis amigos y yo disfrutamos de un partido increíble sin ningún inconveniente. Definitivamente volveré a reservar aquí.",
-    },
-    {
-      id: 2,
-      name: "María Gómez",
-      date: "13/04/2023",
-      fieldType: "Fútbol 5",
-      rating: 5,
-      comment:
-        "Me encantó jugar en esta cancha. El espacio es amplio, las condiciones son perfectas, y además ofrecen un servicio al cliente excelente. Lo recomendaría a cualquiera que quiera pasar un buen rato.",
-    },
-    {
-      id: 3,
-      name: "Javier Torres",
-      date: "13/04/2023",
-      fieldType: "Fútbol 7",
-      rating: 5,
-      comment:
-        "La cancha está en perfectas condiciones, y el proceso de reserva fue rápido y sin complicaciones. El césped se siente casi natural. Fue una gran experiencia para todos.",
-    },
-    {
-      id: 4,
-      name: "leonidas",
-      date: "13/04/2023",
-      fieldType: "Fútbol 7",
-      rating: 5,
-      comment:
-        "La cancha está en perfectas condiciones, y el proceso de reserva fue rápido y sin complicaciones. El césped se siente casi natural. Fue una gran experiencia para todos.",
-    },
-    {
-      id: 5,
-      name: "meliodas",
-      date: "13/04/2023",
-      fieldType: "Fútbol 7",
-      rating: 5,
-      comment:
-        "La cancha está en perfectas condiciones, y el proceso de reserva fue rápido y sin complicaciones. El césped se siente casi natural. Fue una gran experiencia para todos.",
-    },
-    {
-      id: 6,
-      name: "carlos guerrero",
-      date: "13/04/2023",
-      fieldType: "Fútbol 7",
-      rating: 5,
-      comment:
-        "La cancha está en perfectas condiciones, y el proceso de reserva fue rápido y sin complicaciones. El césped se siente casi natural. Fue una gran experiencia para todos.",
-    },
-  ]);
+  // Reemplazar el estado estático de reseñas con un estado vacío
+  const [reviews, setReviews] = useState([]);
+  // Estado para estadísticas de calificaciones
+  const [ratingStats, setRatingStats] = useState({
+    promedio: 0,
+    total: 0,
+    distribucion: {}
+  });
 
   const [empresa, setEmpresa] = useState(null);
 
@@ -151,9 +28,28 @@ const Perfil = () => {
     const obtenerEmpresa = async () => {
       if (id) {
         try {
-          const empresa = await empresaServicio.obtenerPorId(id);
-          console.log(empresa.data.data);
+          const empresa = await empresaServicio.obtenerPorId(id);   
+          console.log(empresa.data.data); 
           setEmpresa(empresa.data.data);
+          
+          // Verificar si la empresa está abierta
+          const ahora = new Date(); // Fecha actual
+          const horaActual = ahora.getHours(); // Hora actual
+          const minutosActuales = ahora.getMinutes(); // Minutos actuales
+          const horaActualEnMinutos = horaActual * 60 + minutosActuales; // Hora actual en minutos
+
+          const horaApertura = empresa.data.data.hora_apertura ? 
+            parseInt(empresa.data.data.hora_apertura.split(':')[0]) * 60 + // Hora de apertura en minutos
+            parseInt(empresa.data.data.hora_apertura.split(':')[1]) : 0; // Si no hay hora de apertura, se establece en 0
+
+          const horaCierre = empresa.data.data.hora_cierre ? 
+            parseInt(empresa.data.data.hora_cierre.split(':')[0]) * 60 + // Hora de cierre en minutos
+            parseInt(empresa.data.data.hora_cierre.split(':')[1]) : 0; // Si no hay hora de cierre, se establece en 0
+
+          setIsOpen(horaActualEnMinutos >= horaApertura && horaActualEnMinutos <= horaCierre); // Verificar si la empresa está abierta
+          
+          // Una vez que tenemos la empresa, obtenemos sus reseñas
+          obtenerResenasEmpresa(empresa.data.data.NIT);
         } catch (error) {
           setEmpresa([]);
         }
@@ -162,8 +58,36 @@ const Perfil = () => {
     obtenerEmpresa();
   }, [id]);
 
-  // Imágenes para el carrusel
-  const carouselImages = [cancha2, canchasi];
+  // Función para obtener las reseñas de la empresa
+  const obtenerResenasEmpresa = async (nit) => {
+    try {
+      const response = await reservaServicio.obtenerResenasEmpresa(nit);
+      if (response.data && response.data.success) {
+        const resenasData = response.data.data;
+        
+        // Formatear las reseñas para que coincidan con la estructura esperada
+        const resenasFormateadas = resenasData.resenas.map(resena => ({
+          id: resena.id,
+          name: resena.usuario ? `${resena.usuario.nombre} ${resena.usuario.apellido}` : "Usuario",
+          date: new Date(resena.fecha_resena).toLocaleDateString(),
+          fieldType: resena.cancha ? resena.cancha.tipo : "Cancha",
+          rating: resena.calificacion,
+          comment: resena.comentario
+        }));
+        
+        setReviews(resenasFormateadas);
+        
+        // Actualizar estadísticas de calificaciones
+        setRatingStats({
+          promedio: resenasData.promedio_calificacion || 0,
+          total: resenasData.total_resenas || 0,
+          distribucion: resenasData.distribucion_calificaciones || {}
+        });
+      }
+    } catch (error) {      
+      console.error("Error al obtener reseñas:", error);
+    }
+  };
 
   const toggleOpenStatus = () => {
     setIsOpen(!isOpen);
@@ -182,6 +106,13 @@ const Perfil = () => {
     });
     return Object.values(counts);
   }, [empresa]);
+
+  // Función para calcular el porcentaje de cada calificación
+  const calcularPorcentajeCalificacion = (calificacion) => {
+    if (!ratingStats.total || ratingStats.total === 0) return 0;
+    const cantidad = ratingStats.distribucion[calificacion] || 0;
+    return (cantidad / ratingStats.total) * 100;
+  };
 
   return (
     <div className="min-h-screen bg-white ">
@@ -212,26 +143,25 @@ const Perfil = () => {
 
                 <div className="flex flex-row items-center ml-auto">
                   <div className="flex flex-col items-center text-xs mr-4">
-                    <img src={insignia} alt="insignia" className="w-8" />
+                    <img src={insignia} alt="insignia" className="w-8" /> 
                     <p className="font-semibold">Preferido</p>
                   </div>
 
                   <div className="text-sm text-gray-600">
-                    <button
-                      className={`px-4 py-2 w-16 rounded-md text-sm transition duration-100 ease-in-out ${
-                        isOpen ? "text-green-500" : "text-red-500"
+                    <div
+                      className={`px-4 py-2 w-16 rounded-md text-sm ${ // Estilo del botón de apertura/cierre
+                        isOpen ? "text-green-500" : "text-red-500" // Si la empresa está abierta, el texto es verde, si está cerrado, el texto es rojo
                       }`}
-                      onClick={toggleOpenStatus}
                     >
                       {isOpen ? "Abierto" : "Cerrado"}
-                    </button>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Carrusel - con tamaño más controlado */}
-              <div className="max-w-full h-auto overflow-hidden mb-6">
-                <Carousel images={empresa?.imagenes && empresa.imagenes.length > 0 ? empresa.imagenes : [cancha2, canchasi]} />
+              <div className="mb-6">
+                <ImageGallery images={empresa?.imagenes || []} />
               </div>
 
               {/* Información del empresario */}
@@ -299,13 +229,12 @@ const Perfil = () => {
               <hr className="my-6" />
 
               {/* Valoración general de usuarios */}
-
               <div className="flex items-center mb-3">
                 <h3 className="font-medium mr-20">Valoración general:</h3>
                 <div className="flex items-center">
                   <span className="text-yellow-500 mr-1"></span>
-                  <span className="font-medium mr-1.5">4.8</span>
-                  <span className="text-gray-500 text-sm ml-1">(23)</span>
+                  <span className="font-medium mr-1.5">{ratingStats.promedio.toFixed(1)}</span>
+                  <span className="text-gray-500 text-sm ml-1">({ratingStats.total})</span>
                   <div className="bg-black w-[1px] h-10 mx-5 "></div>
                   <div className="  py-1 rounded-md text-[18px] text-center">
                     {reviews.length}{" "}
@@ -318,31 +247,46 @@ const Perfil = () => {
                   <div className="flex items-center">
                     <span className="w-4 text-sm mr-2">5</span>
                     <div className="flex-1 bg-gray-200 h-2 rounded-full">
-                      <div className="bg-green-500 h-2 rounded-full w-3/4"></div>
+                      <div 
+                        className="bg-green-500 h-2 rounded-full" 
+                        style={{ width: `${calcularPorcentajeCalificacion(5)}%` }}
+                      ></div>
                     </div>
                   </div>
                   <div className="flex items-center">
                     <span className="w-4 text-sm mr-2">4</span>
                     <div className="flex-1 bg-gray-200 h-2 rounded-full">
-                      <div className="bg-green-500 h-2 rounded-full w-1/5"></div>
+                      <div 
+                        className="bg-green-500 h-2 rounded-full" 
+                        style={{ width: `${calcularPorcentajeCalificacion(4)}%` }}
+                      ></div>
                     </div>
                   </div>
                   <div className="flex items-center">
                     <span className="w-4 text-sm mr-2">3</span>
                     <div className="flex-1 bg-gray-200 h-2 rounded-full">
-                      <div className="bg-green-500 h-2 rounded-full w-0"></div>
+                      <div 
+                        className="bg-green-500 h-2 rounded-full" 
+                        style={{ width: `${calcularPorcentajeCalificacion(3)}%` }}
+                      ></div>
                     </div>
                   </div>
                   <div className="flex items-center">
                     <span className="w-4 text-sm mr-2">2</span>
                     <div className="flex-1 bg-gray-200 h-2 rounded-full">
-                      <div className="bg-green-500 h-2 rounded-full w-0"></div>
+                      <div 
+                        className="bg-green-500 h-2 rounded-full" 
+                        style={{ width: `${calcularPorcentajeCalificacion(2)}%` }}
+                      ></div>
                     </div>
                   </div>
                   <div className="flex items-center">
                     <span className="w-4 text-sm mr-2">1</span>
                     <div className="flex-1 bg-gray-200 h-2 rounded-full">
-                      <div className="bg-green-500 h-2 rounded-full w-0"></div>
+                      <div 
+                        className="bg-green-500 h-2 rounded-full" 
+                        style={{ width: `${calcularPorcentajeCalificacion(1)}%` }}
+                      ></div>
                     </div>
                   </div>
                 </div>
@@ -364,41 +308,49 @@ const Perfil = () => {
 
           {/* Mostrar reseñas de usuarios */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-25 gap-y-14">
-            {reviews
-              .slice(0, showAllReviews ? reviews.length : 4)
-              .map((review) => (
-                <div key={review.id} className="border-b pb-6 ">
-                  <div className="flex flex-col sm:flex-row sm:justify-between mb-2">
-                    <div className="flex items-center mb-2 sm:mb-0">
-                      <div className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center mr-2">
-                        <span className="text-gray-600">👤</span>
+            {reviews.length > 0 ? (
+              reviews
+                .slice(0, showAllReviews ? reviews.length : 4)
+                .map((review) => (
+                  <div key={review.id} className="border-b pb-6 ">
+                    <div className="flex flex-col sm:flex-row sm:justify-between mb-2">
+                      <div className="flex items-center mb-2 sm:mb-0">
+                        <div className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center mr-2">
+                          <span className="text-gray-600">👤</span>
+                        </div>
+                        <span className="font-medium">{review.name}</span>
                       </div>
-                      <span className="font-medium">{review.name}</span>
+                      <div className="text-sm text-gray-500">
+                        {review.date} - {review.fieldType}
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-500">
-                      {review.date} - {review.fieldType}
+                    <div className="flex text-yellow-500 mb-2">
+                      {Array(5)
+                        .fill(0)
+                        .map((_, i) => (
+                          <span key={i}>{i < review.rating ? "★" : "☆"}</span>
+                        ))}
                     </div>
+                    <p className="text-sm">"{review.comment}"</p>
                   </div>
-                  <div className="flex text-yellow-500 mb-2">
-                    {Array(5)
-                      .fill(0)
-                      .map((_, i) => (
-                        <span key={i}>{i < review.rating ? "★" : "☆"}</span>
-                      ))}
-                  </div>
-                  <p className="text-sm">"{review.comment}"</p>
-                </div>
-              ))}
+                ))
+            ) : (
+              <div className="col-span-full text-center py-8">
+                <p className="text-gray-500">No hay reseñas disponibles para esta empresa.</p>
+              </div>
+            )}
 
             {/* Botón para mostrar más */}
-            <div className="col-span-full text-center mt-4">
-              <button
-                className="bg-gray-200 text-gray-700 px-6 py-2 rounded-md text-sm"
-                onClick={() => setShowAllReviews(!showAllReviews)}
-              >
-                {showAllReviews ? "Mostrar menos" : "Mostrar todas las reseñas"}
-              </button>
-            </div>
+            {reviews.length > 4 && (
+              <div className="col-span-full text-center mt-4">
+                <button
+                  className="bg-gray-200 text-gray-700 px-6 py-2 rounded-md text-sm"
+                  onClick={() => setShowAllReviews(!showAllReviews)}
+                >
+                  {showAllReviews ? "Mostrar menos" : "Mostrar todas las reseñas"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -408,16 +360,9 @@ const Perfil = () => {
         <button
           onClick={() => setShowMobileCalendar(true)}
           className="bg-[#2fc92c] hover:bg-green-500 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg"
-        >￼
-￼
-￼
-￼
-￼
-￼
-￼
-￼
-
-
+        >
+          
+          {/* Icono del botón flotante */}  
           <div className="flex flex-col items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
