@@ -38,7 +38,7 @@ const Perfil = () => {
           const minutosActuales = ahora.getMinutes(); // Minutos actuales
           const horaActualEnMinutos = horaActual * 60 + minutosActuales; // Hora actual en minutos
 
-          const horaApertura = empresa.data.data.hora_apertura ? 
+          const horaApertura = empresa.data.data.hora_apertura ?            
             parseInt(empresa.data.data.hora_apertura.split(':')[0]) * 60 + // Hora de apertura en minutos
             parseInt(empresa.data.data.hora_apertura.split(':')[1]) : 0; // Si no hay hora de apertura, se establece en 0
 
@@ -128,9 +128,9 @@ const Perfil = () => {
             <div>
               {/* Venue header */}
               <div className="flex flex-col sm:flex-row items-start mb-4">
-                <div className="flex items-start mb-4 sm:mb-0">
+                <div className="flex items-start mb-4 sm:mb-0"> 
                   <div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center mr-3">
-                    <span className="text-gray-600">🏟️</span>
+                    <span className="text-gray-600">🏟️</span> 
                   </div>
                   <div className="flex-1">
                     <h2 className="font-bold text-lg">{empresa?.nombre}</h2>
