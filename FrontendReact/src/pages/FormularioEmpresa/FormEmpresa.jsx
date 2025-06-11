@@ -185,6 +185,7 @@ export default function FormEmpresa() {
     setIsLoading(true);
     try {
       
+      const dataToSubmit = prepareDataForSubmission();
       
       // 1. Crear el propietario
       const propietarioResponse = await propietarioServicio.crear(dataToSubmit.propietario);
@@ -222,7 +223,7 @@ export default function FormEmpresa() {
       if (currentStep < 4) {
         setCurrentStep((prevStep) => prevStep + 1);
       } else {
-        handleSubmit(); // Enviar datos al backend al finalizar
+        handleSubmit();
       }
     }
   };

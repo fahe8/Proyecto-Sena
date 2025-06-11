@@ -20,7 +20,12 @@ Route::get('canchas/empresa/{nit}', [App\Http\Controllers\Api\CanchaController::
 Route::get('propietarios/empresa/{nit}', [PropietarioController::class, 'obtenerPorEmpresa']);
 Route::get('servicios/empresa/{nit}', [ServicioController::class, 'obtenerPorEmpresa']);
 Route::post('empresas/{nit}/servicios', 'App\Http\Controllers\Api\EmpresaController@agregarServicios');
-Route::post('obtenerReseñaEmpresa/empresas/{nit}',[ResenaController::class, 'obtenerReseñaEmpresa']);
+
+// Rutas específicas de reseñas (ANTES de apiResource)
+Route::get('/resenas/verificar/{idReserva}/{idUsuario}', [ResenaController::class, 'verificarResenaUsuario']);
+Route::get('/resenas/empresa/{nit}', [ResenaController::class, 'obtenerReseñaEmpresa']);
+Route::apiResource('resenas', ResenaController::class);
+
 // Then define the resource routes
 Route::apiResource('usuarios', UsuarioController::class);
 Route::apiResource('propietarios', PropietarioController::class);
@@ -28,7 +33,3 @@ Route::apiResource('administradores', AdministradorController::class);
 Route::apiResource('empresas', EmpresaController::class);
 Route::apiResource('canchas', CanchaController::class);
 Route::apiResource('reservas', ReservaController::class);
-Route::apiResource('resenas', ResenaController::class);
-Route::apiResource('tipocanchas', TipoCanchaController::class);
-Route::apiResource('estadocanchas', EstadoCanchaController::class);
-Route::apiResource('servicios', ServicioController::class);

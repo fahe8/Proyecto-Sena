@@ -61,7 +61,7 @@ const Perfil = () => {
   // Función para obtener las reseñas de la empresa
   const obtenerResenasEmpresa = async (nit) => {
     try {
-      const response = await reservaServicio.obtenerResenasEmpresa(nit);
+      const response = await resenaServicio.obtenerResenasEmpresa(nit); // Cambiar de reservaServicio a resenaServicio
       if (response.data && response.data.success) {
         const resenasData = response.data.data;
         
@@ -70,7 +70,7 @@ const Perfil = () => {
           id: resena.id,
           name: resena.usuario ? `${resena.usuario.nombre} ${resena.usuario.apellido}` : "Usuario",
           date: new Date(resena.fecha_resena).toLocaleDateString(),
-          fieldType: resena.cancha ? resena.cancha.tipo : "Cancha",
+          fieldType: resena.reserva?.cancha?.tipo || "Cancha", // Corregir el acceso a la cancha
           rating: resena.calificacion,
           comment: resena.comentario
         }));

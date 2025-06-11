@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import BuscarBTN from './BuscarBTN'; 
 
 function ListaUsuarios() {
   // Array de objetos con la información de los usuarios
@@ -51,25 +52,67 @@ function ListaUsuarios() {
       Correo: "paradi.van@google.com",
       status: "active",
     },
+    {
+      id: 7,
+      Foto: "https://randomuser.me/api/portraits/women/24.jpg",
+      Nombre: "Vanessa Paradi",
+      Telefono: "+4 644 12 38",
+      Correo: "paradi.van@google.com",
+      status: "inactive",
+    },
+    {
+      id: 8,
+      Foto: "https://randomuser.me/api/portraits/women/54.jpg",
+      Nombre: "Vanessa Paradi",
+      Telefono: "+4 644 12 38",
+      Correo: "paradi.van@google.com",
+      status: "inactive",
+    },
+    {
+      id: 8,
+      Foto: "https://randomuser.me/api/portraits/women/54.jpg",
+      Nombre: "Vanessa Paradi",
+      Telefono: "+4 644 12 38",
+      Correo: "paradi.van@google.com",
+      status: "inactive",
+    },
+    {
+      id: 8,
+      Foto: "https://randomuser.me/api/portraits/women/54.jpg",
+      Nombre: "Vanessa Paradi",
+      Telefono: "+4 644 12 38",
+      Correo: "paradi.van@google.com",
+      status: "inactive",
+    },
+    {
+      id: 8,
+      Foto: "https://randomuser.me/api/portraits/women/54.jpg",
+      Nombre: "Vanessa Paradi",
+      Telefono: "+4 644 12 38",
+      Correo: "paradi.van@google.com",
+      status: "inactive",
+    },
     
   ]);
 
   return (
     <div className="w-full p-6 bg-gray-50 rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex space-x-4">
-          <button className="px-4 py-2 border-b-2 border-green-400 text-green-400 font-medium">Usuarios</button>
-        </div>
-        <div className="text-right text-sm text-gray-500">
-          <div>Total Usuarios: 6</div>
-        </div>
-      </div>  
+      <div className="flex justify-between items-center mb-2">
+        <div className="flex space-x-4 rounded-lg m-2">
+          <button className="px-4 py-2 m-2 border-b-2 border-green-400 text-green-400 text-xl ">Usuarios</button>
 
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-green-500 ">Usuarios Registrados</h2>
+        </div>
+        <div className="text-right text-md text-[#003044]">
+          <div>Total Usuarios: {usuarios.length}</div>
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center mb-6 ">
+        <h2 className="pl-4 text-xl font-semibold text-green-500 ">Usuarios Registrados</h2>
         <div className="flex space-x-4">
+          <BuscarBTN></BuscarBTN>
           <button className="border border-green-400 text-green-500 px-4 py-2 rounded-md flex items-center">
-            <span className="mr-2">Filter</span>
+            <span className="mr-2 cursor-pointer">Filter</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
             </svg>
@@ -105,10 +148,10 @@ function ListaUsuarios() {
                   </span>
                 </td>
                 <td className="py-3 px-4">
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-2 pl-2 justify-left">
                     <button className="text-blue-600 hover:text-blue-800">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
                     </button>

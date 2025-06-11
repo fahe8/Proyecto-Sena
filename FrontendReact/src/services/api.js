@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const API_URL = 'http://127.0.0.1:8000/api';
 
@@ -10,8 +10,6 @@ const apiClient = axios.create({
         'X-Requested-With': 'XMLHttpRequest'
     }
 });
-
-
 
 export const usuarioServicio = {
     obtenerTodos: () => apiClient.get('/usuarios'),
@@ -46,9 +44,16 @@ export const reservaServicio = {
     actualizar: (id, data) => apiClient.put(`/reservas/${id}`, data),
     eliminar: (id) => apiClient.delete(`/reservas/${id}`),
     obtenerReservasActivas: (id) => apiClient.get(`reservas/active/${id}`),
-    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`),
-    obtenerResenasEmpresa: (Nit) => apiClient.post(`obtenerReseñaEmpresa/empresas/${Nit}`),
-    crearResena:(data) => apiClient.post("/resenas", data)
+    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`)
+};
+
+// NUEVO SERVICIO PARA RESEÑAS
+export const resenaServicio = {
+    obtenerResenasEmpresa: (nit) => apiClient.get(`/resenas/empresa/${nit}`),
+    crear: (data) => apiClient.post('/resenas', data),
+    verificarResenaUsuario: (idReserva, idUsuario) => apiClient.get(`/resenas/verificar/${idReserva}/${idUsuario}`),
+    obtenerPorReserva: (idReserva) => apiClient.get(`/resenas/reserva/${idReserva}`),
+    obtenerHistorialResenas: (idUsuario) => apiClient.get(`/resenas/history/${idUsuario}`) // NUEVO MÉTODO
 };
 
 export const canchasServicio = {
