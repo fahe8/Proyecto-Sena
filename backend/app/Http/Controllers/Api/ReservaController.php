@@ -168,11 +168,8 @@ class ReservaController extends ApiController
             $now = Carbon::now('America/Bogota');
             $currentDate = $now->toDateString();
             $currentHour = $now->format('H:i:s');
-            
 
-
-
-            $reservationHistory = Reserva::with(['cancha', 'usuario', 'pago', 'empresa'])
+            $reservationHistory = Reserva::with(['cancha', 'usuario', 'pago', 'empresa', 'resena'])
                 ->where('id_usuario', $id)
                 ->where(function ($query) use ($currentDate, $currentHour) {
                     $query->where('fecha', '<', $currentDate)
@@ -184,6 +181,12 @@ class ReservaController extends ApiController
                 ->orderBy('fecha', 'desc')
                 ->orderBy('hora_inicio', 'desc')
                 ->get();
+
+            // Agregar información de reseña a cada reserva
+            $reservationHistory = $reservationHistory->map(function ($reserva) {
+                $reserva->tiene_resena = $reserva->resena !== null;
+                return $reserva;
+            });
 
             if ($reservationHistory->isEmpty()) {
                 return $this->sendResponse([], 'No hay reservas en el historial para este usuario');

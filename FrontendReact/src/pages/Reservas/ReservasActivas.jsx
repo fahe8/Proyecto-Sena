@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../Provider/AuthProvider";
-import { calendar, clock, football, gps, money } from "../../assets/IconosSVG/iconos";
+import { calendar, clock, football, Gps, money } from "../../assets/IconosSVG/iconos";
 import { canchasServicio, reservaServicio } from "../../services/api";
 
 const ReservasActivas = () => {
@@ -179,7 +179,7 @@ const formatearFecha = (fechaStr) => {
                   <div>
                     <h3 className="font-bold">{obtenerNombreEmpresa(reserva)}</h3>
                     <span className="flex">
-                      <div>{React.createElement(gps)}</div>
+                      <div>{React.createElement(Gps)}</div>
                       <p className="text-sm">{obtenerDireccionEmpresa(reserva)}</p>
                     </span>
                   </div>
