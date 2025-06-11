@@ -8,6 +8,7 @@ const CloudinaryUploader = ({
   },
   multiple = false,
   folder = 'default',
+  returnFile = false, // ✅ Nuevo parámetro
 }) => {
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -24,12 +25,16 @@ const CloudinaryUploader = ({
       setPreviewUrl(preview);
     }
 
-    // Preparar datos para enviar al backend (formato FormData)
-    const formData = new FormData();
-    formData.append("image", file);
-    formData.append("folder", folder);
-    onUploadSuccess(formData);
-
+    if (returnFile) {
+      // Para canchas: enviar el archivo original
+      onUploadSuccess(file);
+    } else {
+      // Para otros casos: enviar FormData
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("folder", folder);
+      onUploadSuccess(formData);
+    }
   };
   return (
     <div className="flex flex-col items-center gap-4">

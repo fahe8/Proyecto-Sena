@@ -13,7 +13,7 @@ import IniciarSesionPrev from './IniciarSesionPrev';
 import { useAuth } from '../../Provider/AuthProvider';
 
 export default function FormEmpresa() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, guardarToken, setUser, setIsAuthenticated } = useAuth();
   const [currentStep, setCurrentStep] = useState(() => {
     const savedStep = localStorage.getItem('formEmpresaStep');
     return savedStep ? parseInt(savedStep) : 1;
@@ -49,7 +49,15 @@ export default function FormEmpresa() {
         id_estado_empresa: 'abierto',
         servicios: [],
       },
-      canchas: [],
+      canchas: [
+        {
+          nombre: '',
+          precio: '',
+          id_estado_cancha: 'disponible',
+          tipo_cancha_id:'',
+          imagen: '',
+        }
+      ],
 
     };
   });
@@ -126,20 +134,10 @@ export default function FormEmpresa() {
     const updatedCanchas = [...formData.canchas];
     updatedCanchas[index][field] = value;
     setFormData((prev) => ({ ...prev, canchas: updatedCanchas }));
-  };
 
-  // Manejar cambios en la información adicional
-  const handleAdicionalChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      adicional: {
-        ...prev.adicional,
-        [field]: value,
-      },
-    }));
     console.log(formData)
-
   };
+
 
   // Preparar datos para enviar al backend
   const prepareDataForSubmission = () => {
@@ -186,7 +184,7 @@ export default function FormEmpresa() {
       // Solo incluir los campos necesarios
       return {
         nombre: cancha.nombre,
-        id_tipo_cancha: cancha.id_tipo_cancha,
+        tipo_cancha_id: cancha.tipo_cancha_id,
         id_estado_cancha: cancha.id_estado_cancha,
         imagen: cancha.imagen,
         NIT: formData.empresa.NIT,
@@ -214,6 +212,7 @@ export default function FormEmpresa() {
       const image = dataToSubmit.propietario.imagen;
       const logo = dataToSubmit.empresa.logo;
       const imagenes = dataToSubmit.empresa.imagenes;
+
       const subirImagenPropietario = await cloudinaryServicio.subirImagen(image);
       console.log('subirImagenPropietario', subirImagenPropietario)
       const subirImagenLogo = await cloudinaryServicio.subirImagen(logo);
@@ -221,9 +220,12 @@ export default function FormEmpresa() {
       const subirImagenes = await cloudinaryServicio.subirImagenes(imagenes);
       console.log('subirImagenes', subirImagenes)
       console.log('subirImagenes', subirImagenes.data.data)
+
+
       const { url, public_id } = subirImagenPropietario.data.data;
 
       const { url: urlLogo, public_id: publicIdLogo } = subirImagenLogo.data.data;
+
 
 
 
@@ -231,6 +233,7 @@ export default function FormEmpresa() {
       dataToSubmit.propietario.imagen = { url, public_id };
       dataToSubmit.empresa.logo = { url: urlLogo, public_id: publicIdLogo };
       dataToSubmit.empresa.imagenes = subirImagenes.data.data
+
 
       // 1. Crear el propietario
       const propietarioResponse = await propietarioServicio.crear(dataToSubmit.propietario);
@@ -244,19 +247,32 @@ export default function FormEmpresa() {
       const empresaResponse = await empresaServicio.crear(dataToSubmit.empresa);
       console.log('Empresa creada:', empresaResponse.data);
 
-      // // 4. Crear las canchas (si hay)
-      // if (dataToSubmit.canchas.length > 0) {
-      //   for (const cancha of dataToSubmit.canchas) {
-      //     await canchasServicio.agregar(cancha);
-      //   }
-      // }
+      for (const cancha of dataToSubmit.canchas) {
+        const formData = new FormData();
+        formData.append('nombre', cancha.nombre);
+        formData.append('precio', cancha.precio);
+        formData.append('NIT', dataToSubmit.empresa.NIT);
+        formData.append('id_estado_cancha', cancha.id_estado_cancha);
+        formData.append('tipo_cancha_id', cancha.tipo_cancha_id);
+        
+        // ✅ Ahora cancha.imagen será un File
+        if (cancha.imagen instanceof File) {
+          formData.append('imagen', cancha.imagen);
+        }
+        
+        await canchasServicio.agregar(formData);
+      }
 
-      // // Limpiar almacenamiento local
-      // localStorage.removeItem('formEmpresaData');
-      // localStorage.removeItem('formEmpresaStep');
+      guardarToken(propietarioResponse.data.data.token);
+      setUser(propietarioResponse.data.data.usuario);
+      setIsAuthenticated(true);
 
-      // // Redirigir
-      // window.location.href = '/InterfazPropietario';
+      // Limpiar almacenamiento local
+      localStorage.removeItem('formEmpresaData');
+      localStorage.removeItem('formEmpresaStep');
+
+      // Redirigir
+      window.location.href = '/InterfazPropietario';
 
     } catch (error) {
       console.error('Error al crear:', error);

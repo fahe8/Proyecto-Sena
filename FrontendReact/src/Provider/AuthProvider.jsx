@@ -14,18 +14,21 @@ export const AuthProvider = ({ children }) => {
       const storedToken = obtenerToken();
 
       if (storedToken) {
+
         try {
-          const response = await authServicio.verificarToken(storedToken);
+          // Cambiar a obtenerUsuario en lugar de verificarToken
+          const response = await authServicio.obtenerUsuario();
           setToken(storedToken);
           setIsAuthenticated(true);
-          setUser(response.data.data.usuario); // Estás guardando los datos del usuario
+          setUser(response.data.data.usuario);
         } catch (error) {
           console.error("Token inválido o expirado:", error);
           cerrarSesion();
-
-        }finally {
+        } finally {
           setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
     };
 
@@ -47,7 +50,12 @@ export const AuthProvider = ({ children }) => {
 
   const obtenerToken = () => {
     return localStorage.getItem('authToken');
-  }
+  };
+
+  const obtenerRol = () => {
+    console.log('usuario', user);
+    return user?.rol_actual;
+  };
 
   return (
     <AuthContext.Provider
@@ -59,7 +67,8 @@ export const AuthProvider = ({ children }) => {
         guardarToken,
         cerrarSesion,
         setUser,
-        setIsAuthenticated
+        setIsAuthenticated,
+        obtenerRol
       }}
     >
       {children}

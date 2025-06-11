@@ -279,7 +279,7 @@ const Perfil = () => {
                 <div className="flex flex-col gap-4">
                   {empresa?.servicios.map((servicio, index) => {
                     // Remove accents and convert to lowercase
-                    const key = servicio.tipo
+                    const key = servicio
                       .normalize("NFD")
                       .replace(/[\u0300-\u036f]/g, "")
                       .toLowerCase();

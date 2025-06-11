@@ -12,7 +12,7 @@ const apiClient = axios.create({
 });
 
 export const authServicio = {
-    obtenerUsuario: (token) => apiClient.get('/user', {
+    obtenerUsuario: () => apiClient.get('/user', {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
@@ -31,7 +31,7 @@ export const authServicio = {
     }),
     verificarToken: (token) => apiClient.get('/verificar-token', {
         headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+            Authorization: `Bearer ${token}`
         }
     }),
 
@@ -98,11 +98,20 @@ export const reservaServicio = {
 
 export const canchasServicio = {
     obtenerTodosEmpresa: (nit) => apiClient.get(`/canchas/empresa/${nit}`),
-    tiposCanchas: () => apiClient.get(`/tipocanchas`),
-    estadoCanchas: () => apiClient.get(`/estadocanchas`),
+    tiposCanchas: () => apiClient.get(`/tipos-canchas`),
+    estadoCanchas: () => apiClient.get(`/estados-canchas`),
     actualizar: (id, data) => apiClient.put(`/canchas/${id}`, data),
     eliminar: (id) => apiClient.delete(`/canchas/${id}`),
-    agregar: (data) => apiClient.post('/canchas', data),
+    agregar: (data) => {
+        // Si data es FormData, cambiar headers
+        const config = data instanceof FormData ? {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        } : {};
+        
+        return apiClient.post('/canchas', data, config);
+    }
 }
 
 export const ServiciosServicio = {

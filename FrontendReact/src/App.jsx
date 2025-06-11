@@ -9,7 +9,7 @@ import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
 import Reservas from "./pages/Reservas/ReservasActivas";
-import RutasProtegidas from "./utils/RutasProtegidas";
+import RutasProtegidas, { RutasProtegidasPropietario, RutasProtegidasAdmin } from "./utils/RutasProtegidas";
 import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
@@ -20,8 +20,6 @@ import { ProfileIcon } from "./assets/IconosSVG/iconos";
 import InterfazAdministrador from "./pages/PanelAdministrador/InterfazAdministrador";
 import ListaUsuarios from "./pages/PanelAdministrador/ListaUsuarios";
 import ListaEmpresas from "./pages/PanelAdministrador/ListaEmpresas";
-
-
 
 import iconoCorazon from "./assets/Perfil/corazon.svg";
 import iconoArchivo from "./assets/Perfil/archive.svg";
@@ -42,7 +40,6 @@ function App() {
       icono: IconoHome,
       url: "/",
     },
-
     {
       nombre: "Información Personal",
       icono: iconoPerfil,
@@ -63,7 +60,6 @@ function App() {
       icono: iconoCorazon,
       url: "/favoritos",
     },
-
   ]
 
   const opcionesEmpresario = [
@@ -72,7 +68,6 @@ function App() {
       icono: IconoHome,
       url: "/interfazpropietario",
     },
-
     {
       nombre: "Tu perfil ",
       icono: iconoPerfil,
@@ -88,7 +83,6 @@ function App() {
       icono: iconoReciente,
       url: "/reservaspendientes",
     },
-    
   ]
 
   const opcionesAdminitrador = [
@@ -128,16 +122,12 @@ function App() {
         <Route path="/recuperar-contrasena/:token" element={<ResetPassword/>}/>
         <Route path="/recuperar-contrasena" element={<ForgotPassword/>}/>
 
-        {/* Rutas protegidas */}
-        {/* Rutas de USUARIO */}
+        {/* Rutas protegidas para USUARIOS */}
         <Route element={<RutasProtegidas />}>
-          {/* Subrutas protegidas que usan SideBarPerfil */}
           <Route
             element={
               <SideBarPerfil
-              opciones={
-                opcionesUsuario
-                }
+                opciones={opcionesUsuario}
               />
             }
           >
@@ -145,40 +135,40 @@ function App() {
             <Route path="/perfil" element={<PerfilPage />} />
             <Route path="/reservasactivas" element={<Reservas />} />
             <Route path="/historialreservas" element={<HistorialReservas />} />
-            {/* <Route path="/norecomendadas" element={<NoRecomendadas />} /> */}
           </Route>
+        </Route>
 
-        <Route element={<SideBarPerfil
-              opciones={
-                opcionesEmpresario
-                }
+        {/* Rutas protegidas para PROPIETARIOS */}
+        <Route element={<RutasProtegidasPropietario />}>
+          <Route
+            element={
+              <SideBarPerfil
+                opciones={opcionesEmpresario}
               />
             }
           >
-            <Route path="/" element={<Inicio/>} />
             <Route path="/interfazpropietario" element={<InterfazPropietario />} />
             <Route path="/perfiladministrador" element={<PerfilAdministrador />} />
             <Route path="/reservaspendientes" element={<ReservasPendientes />} />
             <Route path="/reservaspasadas" element={<ReservasPasadas />} />
-          
+          </Route>
         </Route>
         
-        <Route element={<SideBarPerfil
-              opciones={
-                opcionesAdminitrador
-                }
+        {/* Rutas protegidas para ADMINISTRADORES */}
+        <Route element={<RutasProtegidasAdmin />}>
+          <Route
+            element={
+              <SideBarPerfil
+                opciones={opcionesAdminitrador}
               />
             }
           >
-            <Route path="/" element={<Inicio/>} />
             <Route path="/InterfazAdministrador" element={<InterfazAdministrador />} />
             <Route path="/ListaUsuarios" element={<ListaUsuarios />} />
             <Route path="/ListaEmpresas" element={<ListaEmpresas />} />
-            
-          
+          </Route>
         </Route>
 
-        </Route>
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
       </Routes>
     </Router>

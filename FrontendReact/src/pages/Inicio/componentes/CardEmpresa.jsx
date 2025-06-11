@@ -137,7 +137,7 @@ const CardEmpresa = ({ empresa, mostrarFavorito }) => {
             {empresa?.imagenes?.map((imagen, index) => (
               <div key={index} className="w-full h-42">
                 <LazyImage
-            src={imagen}
+            src={imagen.url}
             alt={`Imagen ${index + 1} de ${empresa?.nombre}`}
             className="object-cover w-68 h-42 "
                 />

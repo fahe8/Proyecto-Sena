@@ -39,45 +39,45 @@ const Calendario = ({empresa}) => {
   const [infoReserva, setInfoReserva] = useState({});
   const {user} = useAuth();
 
-  useEffect(() => {
-   const obtenerReservas = async () => {
-    setCanchaSeleccionada(empresa?.canchas[0]);
-    try {
-      const reservas = await reservaServicio.obtenerPorEmpresa(empresa?.NIT);
-      const {data} = reservas.data;
-      console.log(data)
-      const fechasAgrupadasPorCancha = {}
+  // useEffect(() => {
+  //  const obtenerReservas = async () => {
+  //   setCanchaSeleccionada(empresa?.canchas[0]);
+  //   try {
+  //     const reservas = await reservaServicio.obtenerPorEmpresa(empresa?.NIT);
+  //     const {data} = reservas.data;
+  //     console.log(data)
+  //     const fechasAgrupadasPorCancha = {}
 
       
-      // data.filter((reserva) => (
+  //     // data.filter((reserva) => (
         
 
-      // ))
+  //     // ))
 
 
-      data.forEach(reserva => {
+  //     data.forEach(reserva => {
         
-        if (!fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha]) {
-          fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha] = []
-        }
+  //       if (!fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha]) {
+  //         fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha] = []
+  //       }
 
         
-      });
-      console.log(fechasAgrupadasPorCancha)
+  //     });
+  //     console.log(fechasAgrupadasPorCancha)
 
 
 
      
-    } catch (error) {
-      if(error.response && error.response.data){
-        console.log(error.response.data.message)
+  //   } catch (error) {
+  //     if(error.response && error.response.data){
+  //       console.log(error.response.data.message)
   
-        }
-        console.log(error)
-    }
-   }
-   obtenerReservas();
-  }, [empresa]);
+  //       }
+  //       console.log(error)
+  //   }
+  //  }
+  //  obtenerReservas();
+  // }, [empresa]);
 
   // Función para calcular la duración en horas entre dos fechas
   const calcularDuracionHoras = (inicio, fin) => {
