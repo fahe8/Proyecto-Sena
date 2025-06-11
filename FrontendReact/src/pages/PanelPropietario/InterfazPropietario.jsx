@@ -5,6 +5,7 @@ import { canchasServicio, empresaServicio, propietarioServicio } from '../../ser
 import ModificarCancha from './Componentes/ModificarCancha';
 import CardSkeleton from './Componentes/cardskeleton';
 import { useNavigate } from 'react-router-dom'; 
+import { useAuth } from '../../Provider/AuthProvider';
 
 const InterfazPropietario = () => {
   // Estado para controlar la visibilidad del modal de modificar cancha
@@ -24,17 +25,20 @@ const InterfazPropietario = () => {
   const [datosPropietario, setDatosPropietario] = useState({})
   const [datosListos, setDatosListos] = useState(false);
 
+  const {user} = useAuth();
+
   useEffect(() => {
     // Función para cargar todos los datos necesarios
     const cargarDatos = async () => {
+      console.log(user)
       try {
         // Realizar todas las peticiones en paralelo
         const [canchasResponse, tiposResponse, estadosResponse, EmpresaReponse, propietarioResponse] = await Promise.all([
-          canchasServicio.obtenerTodosEmpresa('987654321'),
-          canchasServicio.tiposCanchas(),
-          canchasServicio.estadoCanchas(),
-          empresaServicio.obtenerPorId('987654321'),
-          propietarioServicio.obtenerPorEmpresa('987654321'),
+          canchasServicio.obtenerTodosEmpresa(user.NIT),
+          // canchasServicio.tiposCanchas(),
+          // canchasServicio.estadoCanchas(),
+          // empresaServicio.obtenerPorId('987654321'),
+          // propietarioServicio.obtenerPorEmpresa('987654321'),
         ]);
         
         // Procesar los resultados

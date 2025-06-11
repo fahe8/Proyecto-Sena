@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { empresaServicio, propietarioServicio, canchasServicio, ServiciosServicio, cloudinaryServicio } from '../../services/api';
+import { empresaServicio, propietarioServicio, canchasServicio } from '../../services/api';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 import StepIndicator from './StepIndicator';
 import InfoRepresentante from './InfoRepresentante';
@@ -151,21 +151,21 @@ export default function FormEmpresa() {
       hora_cierre,
       id_estado_empresa,
       servicios, } = formData.empresa;
-
+  
     const empresaData = {
       NIT: NIT,
       nombre: formData.empresa.nombre,
       direccion: direccion,
       descripcion: descripcion,
-      logo: logo,
-      imagenes: imagenes, // Asegurarse de que sea un array o null
+      logo: logo, // Mantener como File
+      imagenes: imagenes, // Mantener como array de Files
       hora_apertura: hora_apertura,
       hora_cierre: hora_cierre,
       id_estado_empresa: id_estado_empresa,
       servicios: servicios && servicios.length > 0 ? servicios : null, // Asegurarse de que sea un array o null
       // imagenes: formData.empresa.imagenes && formData.empresa.imagenes.length > 0 ? formData.empresa.imagenes : null
     };
-
+  
     // Actualizar los datos del propietario
     const { email, password, nombre, apellido, telefono, imagen, id_tipoDocumento, num_documento } = formData.representante;
     const propietarioData = {
@@ -174,11 +174,11 @@ export default function FormEmpresa() {
       nombre,
       apellido,
       telefono,
-      imagen,
+      imagen, // Mantener como File
       tipo_documento_id: id_tipoDocumento,
       numero_documento: num_documento,
     };
-
+  
     // Actualizar las canchas con el NIT de la empresa
     const canchasData = formData.canchas.map(cancha => {
       // Solo incluir los campos necesarios
@@ -186,17 +186,17 @@ export default function FormEmpresa() {
         nombre: cancha.nombre,
         tipo_cancha_id: cancha.tipo_cancha_id,
         id_estado_cancha: cancha.id_estado_cancha,
-        imagen: cancha.imagen,
+        imagen: cancha.imagen, // Mantener como File
         NIT: formData.empresa.NIT,
         precio: cancha.precio
       };
     });
-
+  
     return {
       propietario: propietarioData,
       empresa: { ...empresaData },
       canchas: canchasData,
-
+  
     };
   };
 
@@ -209,74 +209,100 @@ export default function FormEmpresa() {
       const dataToSubmit = prepareDataForSubmission();
       console.log('Datos a enviar:', dataToSubmit);
 
-      const image = dataToSubmit.propietario.imagen;
-      const logo = dataToSubmit.empresa.logo;
-      const imagenes = dataToSubmit.empresa.imagenes;
-
-      const subirImagenPropietario = await cloudinaryServicio.subirImagen(image);
-      console.log('subirImagenPropietario', subirImagenPropietario)
-      const subirImagenLogo = await cloudinaryServicio.subirImagen(logo);
-      console.log('subirImagenLogo', subirImagenLogo)
-      const subirImagenes = await cloudinaryServicio.subirImagenes(imagenes);
-      console.log('subirImagenes', subirImagenes)
-      console.log('subirImagenes', subirImagenes.data.data)
-
-
-      const { url, public_id } = subirImagenPropietario.data.data;
-
-      const { url: urlLogo, public_id: publicIdLogo } = subirImagenLogo.data.data;
-
-
-
-
-      // ✅ Envía como objeto, no como string
-      dataToSubmit.propietario.imagen = { url, public_id };
-      dataToSubmit.empresa.logo = { url: urlLogo, public_id: publicIdLogo };
-      dataToSubmit.empresa.imagenes = subirImagenes.data.data
-
-
-      // 1. Crear el propietario
-      const propietarioResponse = await propietarioServicio.crear(dataToSubmit.propietario);
-      const propietarioId = propietarioResponse.data.data.propietario.id; // ✅ Asegúrate que sea 'id' (depende del backend)
-      console.log('Propietario creado:', propietarioResponse.data);
-
-      // // 2. Agregar el id del propietario a la empresa
-      dataToSubmit.empresa.propietario_id = propietarioId;
-
-      // // 3. Crear la empresa con el id del propietario incluido
-      const empresaResponse = await empresaServicio.crear(dataToSubmit.empresa);
-      console.log('Empresa creada:', empresaResponse.data);
-
-      for (const cancha of dataToSubmit.canchas) {
-        const formData = new FormData();
-        formData.append('nombre', cancha.nombre);
-        formData.append('precio', cancha.precio);
-        formData.append('NIT', dataToSubmit.empresa.NIT);
-        formData.append('id_estado_cancha', cancha.id_estado_cancha);
-        formData.append('tipo_cancha_id', cancha.tipo_cancha_id);
-        
-        // ✅ Ahora cancha.imagen será un File
-        if (cancha.imagen instanceof File) {
-          formData.append('imagen', cancha.imagen);
-        }
-        
-        await canchasServicio.agregar(formData);
+      // 1. Crear FormData para el propietario
+      const propietarioFormData = new FormData();
+      propietarioFormData.append('email', dataToSubmit.propietario.email);
+      propietarioFormData.append('password', dataToSubmit.propietario.password);
+      propietarioFormData.append('nombre', dataToSubmit.propietario.nombre);
+      propietarioFormData.append('apellido', dataToSubmit.propietario.apellido);
+      propietarioFormData.append('telefono', dataToSubmit.propietario.telefono);
+      propietarioFormData.append('tipo_documento_id', dataToSubmit.propietario.tipo_documento_id);
+      propietarioFormData.append('numero_documento', dataToSubmit.propietario.numero_documento);
+      
+      // Agregar imagen del propietario si existe
+      if (dataToSubmit.propietario.imagen instanceof File) {
+        propietarioFormData.append('imagen', dataToSubmit.propietario.imagen);
       }
 
-      guardarToken(propietarioResponse.data.data.token);
-      setUser(propietarioResponse.data.data.usuario);
-      setIsAuthenticated(true);
+      // Crear el propietario
+      const propietarioResponse = await propietarioServicio.crear(propietarioFormData);
+      const propietarioId = propietarioResponse.data.data.propietario.id;
+      console.log('Propietario creado:', propietarioResponse.data);
 
-      // Limpiar almacenamiento local
+      // 2. Crear FormData para la empresa
+      const empresaFormData = new FormData();
+      empresaFormData.append('NIT', dataToSubmit.empresa.NIT);
+      empresaFormData.append('nombre', dataToSubmit.empresa.nombre);
+      empresaFormData.append('direccion', dataToSubmit.empresa.direccion);
+      empresaFormData.append('descripcion', dataToSubmit.empresa.descripcion);
+      empresaFormData.append('hora_apertura', dataToSubmit.empresa.hora_apertura);
+      empresaFormData.append('hora_cierre', dataToSubmit.empresa.hora_cierre);
+      empresaFormData.append('propietario_id', propietarioId);
+      
+      // Agregar logo si existe
+      if (dataToSubmit.empresa.logo instanceof File) {
+        empresaFormData.append('logo', dataToSubmit.empresa.logo);
+      }
+      
+      // Agregar imágenes múltiples si existen
+      if (dataToSubmit.empresa.imagenes && dataToSubmit.empresa.imagenes.length > 0) {
+        dataToSubmit.empresa.imagenes.forEach((imagen, index) => {
+          if (imagen instanceof File) {
+            empresaFormData.append('imagenes[]', imagen);
+          }
+        });
+      }
+      
+      // Agregar servicios si existen
+      if (dataToSubmit.empresa.servicios && dataToSubmit.empresa.servicios.length > 0) {
+        dataToSubmit.empresa.servicios.forEach((servicio, index) => {
+          empresaFormData.append('servicios[]', servicio);
+        });
+      }
+
+      // Crear la empresa
+      const empresaResponse = await empresaServicio.crear(empresaFormData);
+      console.log('Empresa creada:', empresaResponse.data);
+
+      // 3. Crear las canchas (mantener el código existente)
+      for (const cancha of dataToSubmit.canchas) {
+        const canchaFormData = new FormData();
+        canchaFormData.append('nombre', cancha.nombre);
+        canchaFormData.append('precio', cancha.precio);
+        canchaFormData.append('NIT', dataToSubmit.empresa.NIT);
+        canchaFormData.append('id_estado_cancha', cancha.id_estado_cancha);
+        canchaFormData.append('tipo_cancha_id', cancha.tipo_cancha_id);
+        
+        // Agregar imagen de la cancha si existe
+        if (cancha.imagen instanceof File) {
+          canchaFormData.append('imagen', cancha.imagen);
+        }
+
+        const canchaResponse = await canchasServicio.agregar(canchaFormData);
+        console.log('Cancha creada:', canchaResponse.data);
+      }
+
+      // Guardar token y usuario si el registro fue exitoso
+      if (propietarioResponse.data.data.token) {
+        guardarToken(propietarioResponse.data.data.token);
+        setUser(propietarioResponse.data.data.propietario);
+        setIsAuthenticated(true);
+      }
+
+      setRegistrado(true);
+      
+      // Limpiar localStorage después del registro exitoso
       localStorage.removeItem('formEmpresaData');
       localStorage.removeItem('formEmpresaStep');
 
-      // Redirigir
-      window.location.href = '/InterfazPropietario';
-
+      // Redirigir a la interfaz de propietario
+      window.location.href = '/interfazpropietario';
+      
     } catch (error) {
-      console.error('Error al crear:', error);
-      alert('Hubo un error al crear: ' + (error.response?.data?.message || error.message));
+      console.error('Error al enviar datos:', error);
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors);
+      }
     } finally {
       setIsLoading(false);
     }

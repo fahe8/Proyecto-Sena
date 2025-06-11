@@ -9,7 +9,10 @@ import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
 import Reservas from "./pages/Reservas/ReservasActivas";
-import RutasProtegidas, { RutasProtegidasPropietario, RutasProtegidasAdmin } from "./utils/RutasProtegidas";
+import RutasProtegidas, {
+  RutasProtegidasPropietario,
+  RutasProtegidasAdmin,
+} from "./utils/RutasProtegidas";
 import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
@@ -33,7 +36,6 @@ import ResetPassword from "./pages/Login/components/ResetPassword";
 import LoginEmpresa from "./pages/LoginEmpresa/LoginEmpresa";
 
 function App() {
-
   const opcionesUsuario = [
     {
       nombre: "Inicio",
@@ -60,7 +62,7 @@ function App() {
       icono: iconoCorazon,
       url: "/favoritos",
     },
-  ]
+  ];
 
   const opcionesEmpresario = [
     {
@@ -83,7 +85,7 @@ function App() {
       icono: iconoReciente,
       url: "/reservaspendientes",
     },
-  ]
+  ];
 
   const opcionesAdminitrador = [
     {
@@ -106,7 +108,7 @@ function App() {
       icono: business,
       url: "/ListaEmpresas",
     },
-  ]
+  ];
 
   return (
     <Router>
@@ -118,52 +120,49 @@ function App() {
         <Route path="/empresa/:id" element={<Cliente />} />
         <Route path="/loginEmpresa" element={<LoginEmpresa />} />
         <Route path="/registro-empresa" element={<FormularioEmpresa />} />
-        <Route path="/formulario-canchas" element={<AgregarCancha/>}/>
-        <Route path="/recuperar-contrasena/:token" element={<ResetPassword/>}/>
-        <Route path="/recuperar-contrasena" element={<ForgotPassword/>}/>
+        <Route
+          path="/recuperar-contrasena/:token"
+          element={<ResetPassword />}
+        />
+        <Route path="/recuperar-contrasena" element={<ForgotPassword />} />
 
         {/* Rutas protegidas para USUARIOS */}
         <Route element={<RutasProtegidas />}>
-          <Route
-            element={
-              <SideBarPerfil
-                opciones={opcionesUsuario}
-              />
-            }
-          >
+          <Route element={<SideBarPerfil opciones={opcionesUsuario} />}>
             <Route path="/favoritos" element={<Favoritos />} />
             <Route path="/perfil" element={<PerfilPage />} />
             <Route path="/reservasactivas" element={<Reservas />} />
             <Route path="/historialreservas" element={<HistorialReservas />} />
+            <Route path="/formulario-canchas" element={<AgregarCancha />} />
           </Route>
         </Route>
 
         {/* Rutas protegidas para PROPIETARIOS */}
         <Route element={<RutasProtegidasPropietario />}>
-          <Route
-            element={
-              <SideBarPerfil
-                opciones={opcionesEmpresario}
-              />
-            }
-          >
-            <Route path="/interfazpropietario" element={<InterfazPropietario />} />
-            <Route path="/perfiladministrador" element={<PerfilAdministrador />} />
-            <Route path="/reservaspendientes" element={<ReservasPendientes />} />
+          <Route element={<SideBarPerfil opciones={opcionesEmpresario} />}>
+            <Route
+              path="/interfazpropietario"
+              element={<InterfazPropietario />}
+            />
+            <Route
+              path="/perfiladministrador"
+              element={<PerfilAdministrador />}
+            />
+            <Route
+              path="/reservaspendientes"
+              element={<ReservasPendientes />}
+            />
             <Route path="/reservaspasadas" element={<ReservasPasadas />} />
           </Route>
         </Route>
-        
+
         {/* Rutas protegidas para ADMINISTRADORES */}
         <Route element={<RutasProtegidasAdmin />}>
-          <Route
-            element={
-              <SideBarPerfil
-                opciones={opcionesAdminitrador}
-              />
-            }
-          >
-            <Route path="/InterfazAdministrador" element={<InterfazAdministrador />} />
+          <Route element={<SideBarPerfil opciones={opcionesAdminitrador} />}>
+            <Route
+              path="/InterfazAdministrador"
+              element={<InterfazAdministrador />}
+            />
             <Route path="/ListaUsuarios" element={<ListaUsuarios />} />
             <Route path="/ListaEmpresas" element={<ListaEmpresas />} />
           </Route>

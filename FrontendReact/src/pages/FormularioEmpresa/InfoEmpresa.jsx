@@ -43,7 +43,7 @@ export default function InfoEmpresa({ data, onChange, errors }) {
         </div>
         <div className="w-50 h-full md:w-32 ml-4 text-center">
           <label className="block text-sm text-[#003044] mb-1 ">Logo</label>
-          <CloudinaryUploader onUploadSuccess={handleLogoUpload} folder='empresas/logo' />
+          <CloudinaryUploader onUploadSuccess={handleLogoUpload} folder='empresas/logo' returnFile={true} />
         </div>
 
       </div>

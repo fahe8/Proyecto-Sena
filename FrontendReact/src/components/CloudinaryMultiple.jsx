@@ -16,20 +16,26 @@ const CloudinaryMultiple = ({
       file,
     }));
 
-    setFiles((prev) => [...prev, ...selectedFiles]);
-    setPreviews((prev) => [...prev, ...newPreviews]);
+    const updatedFiles = [...files, ...selectedFiles];
+    const updatedPreviews = [...previews, ...newPreviews];
+    
+    setFiles(updatedFiles);
+    setPreviews(updatedPreviews);
 
-    // Si deseas subir automáticamente al seleccionar
-    const formData = new FormData();
-    selectedFiles.forEach((file) => formData.append("images[]", file));
-    formData.append("folder", folder);
-    console.log("folder: ",folder)
-    onUploadSuccess(formData);
+    // Retornar array de archivos File en lugar de FormData
+    console.log("folder: ", folder);
+    onUploadSuccess(updatedFiles);
   };
 
   const handleRemoveImage = (indexToRemove) => {
-    setPreviews((prev) => prev.filter((_, index) => index !== indexToRemove));
-    setFiles((prev) => prev.filter((_, index) => index !== indexToRemove));
+    const updatedPreviews = previews.filter((_, index) => index !== indexToRemove);
+    const updatedFiles = files.filter((_, index) => index !== indexToRemove);
+    
+    setPreviews(updatedPreviews);
+    setFiles(updatedFiles);
+    
+    // Actualizar el callback con la lista actualizada de archivos
+    onUploadSuccess(updatedFiles);
   };
 
 
@@ -86,7 +92,6 @@ const CloudinaryMultiple = ({
           </div>
         ))}
       </div>
-
     </div>
   );
 };

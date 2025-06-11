@@ -57,30 +57,34 @@ export const propietarioServicio = {
     obtenerTodos: () => apiClient.get('/propietarios'),
     obtenerPorId: (id) => apiClient.get(`/propietarios/${id}`),
     obtenerPorEmpresa: (NIT) => apiClient.get(`/propietarios/empresa/${NIT}`),
-    crear: (data) => apiClient.post('/propietarios', data),
+    crear: (data) => {
+        // Si data es FormData, cambiar headers
+        const config = data instanceof FormData ? {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        } : {};
+        
+        return apiClient.post('/propietarios', data, config);
+    },
     actualizar: (id, data) => apiClient.put(`/propietarios/${id}`, data),
     eliminar: (id) => apiClient.delete(`/propietarios/${id}`),
     obtenerTiposDocumentos: () => apiClient.get('/tipos-documentos'),
 };
 
-export const cloudinaryServicio = {
-  subirImagen: (data) =>
-    apiClient.post("/upload-image", data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }),
-  subirImagenes: (data) =>
-    apiClient.post("/upload-multiple-images", data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }),
-};
 export const empresaServicio = {
     obtenerTodos: () => apiClient.get('/empresas'),
     obtenerPorId: (id) => apiClient.get(`/empresas/${id}`),
-    crear: (data) => apiClient.post('/empresas', data),
+    crear: (data) => {
+        // Si data es FormData, cambiar headers
+        const config = data instanceof FormData ? {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        } : {};
+        
+        return apiClient.post('/empresas', data, config);
+    },
     actualizar: (id, data) => apiClient.put(`/empresas/${id}`, data),
     eliminar: (id) => apiClient.delete(`/empresas/${id}`)
 };
@@ -97,7 +101,7 @@ export const reservaServicio = {
 };
 
 export const canchasServicio = {
-    obtenerTodosEmpresa: (nit) => apiClient.get(`/canchas/empresa/${nit}`),
+    obtenerTodosEmpresa: (nit) => apiClient.get(`canchas/empresa/${nit}`),
     tiposCanchas: () => apiClient.get(`/tipos-canchas`),
     estadoCanchas: () => apiClient.get(`/estados-canchas`),
     actualizar: (id, data) => apiClient.put(`/canchas/${id}`, data),
