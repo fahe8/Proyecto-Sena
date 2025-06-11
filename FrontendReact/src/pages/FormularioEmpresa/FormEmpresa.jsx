@@ -316,7 +316,7 @@ export default function FormEmpresa() {
       if (currentStep < 5) {
         setCurrentStep((prevStep) => prevStep + 1);
       } else {
-        handleSubmit(); // Enviar datos al backend al finalizar
+        handleSubmit();
       }
     }
   };

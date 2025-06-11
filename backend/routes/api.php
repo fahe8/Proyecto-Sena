@@ -20,6 +20,7 @@ Route::get('canchas/empresa/{nit}', [App\Http\Controllers\Api\CanchaController::
 Route::get('propietarios/empresa/{nit}', [PropietarioController::class, 'obtenerPorEmpresa']);
 Route::get('servicios/empresa/{nit}', [ServicioController::class, 'obtenerPorEmpresa']);
 Route::post('empresas/{nit}/servicios', 'App\Http\Controllers\Api\EmpresaController@agregarServicios');
+Route::post('obtenerReseñaEmpresa/empresas/{nit}',[ResenaController::class, 'obtenerReseñaEmpresa']);
 // Then define the resource routes
 Route::apiResource('usuarios', UsuarioController::class);
 Route::apiResource('propietarios', PropietarioController::class);
