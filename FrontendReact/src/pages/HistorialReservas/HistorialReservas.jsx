@@ -702,5 +702,4 @@ const manejarEnvioResena = async () => {
     </div>
   );
 };
-
 export default HistorialReservas;

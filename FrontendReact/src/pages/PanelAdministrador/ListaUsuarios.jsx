@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import BuscarBTN from './BuscarBTn'; 
+import BuscarBTN from './BuscarBTN'; 
 
 function ListaUsuarios() {
   // Array de objetos con la información de los usuarios

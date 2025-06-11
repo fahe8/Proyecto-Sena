@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import BuscarBTN from './BuscarBTn'; 
+import BuscarBTN from './BuscarBTN';
 
 function ListaEmpresas() {
 
@@ -299,4 +299,4 @@ function ListaEmpresas() {
   )
 }
 
-export default ListaEmpresas
+export default ListaEmpresas;

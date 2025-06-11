@@ -4,7 +4,7 @@ import "./App.css";
 import Inicio from "./pages/Inicio/Inicio";
 import Login from "./pages/Login/Login";
 import ForgotPassword from "./pages/Login/components/ForgotPassword";
-import Cliente from "./pages/Cliente/PerfilUsuario";
+import Empresa from "./pages/Empresa/DatosEmpresa";
 import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
@@ -22,14 +22,13 @@ import ListaUsuarios from "./pages/PanelAdministrador/ListaUsuarios";
 import ListaEmpresas from "./pages/PanelAdministrador/ListaEmpresas";
 
 
-
 import iconoCorazon from "./assets/Perfil/corazon.svg";
 import iconoArchivo from "./assets/Perfil/archive.svg";
 import iconoReciente from "./assets/Perfil/clockIcon.svg";
 import iconoPerfil from "./assets/Perfil/iconoPerfil.svg";
 import users from "./assets/Perfil/users.svg";
 import IconoHome from "./assets/Inicio/Home.svg";
-import business from "./assets/perfil/business.svg";
+import business from "./assets/Perfil/business.svg";
 import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
 import ResetPassword from "./pages/Login/components/ResetPassword";
 
@@ -120,7 +119,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/recuperar-contrasena" element={<ForgotPassword />} />
         <Route path="/restablecer-contrasena" element={<ResetPassword />} />
-        <Route path="/empresa/:id" element={<Cliente />} />
+        <Route path="/empresa/:id" element={<Empresa />} />
         <Route path="/formulario-empresa" element={<FormularioEmpresa />} />
         <Route path="/formulario-canchas" element={<AgregarCancha/>}/>
 
