@@ -1,6 +1,6 @@
 import React from 'react'
 
-const InterfazAdministrador = () => {
+function InterfazAdministrador() {
   return (
     <div>
       

@@ -10,7 +10,7 @@ import {
   Tiempo,
 } from "../../assets/IconosSVG/iconos";
 import { reservaServicio, resenaServicio } from "../../services/api";
-
+import Loading from "../Login/components/Loading";
 const HistorialReservas = () => {
   const { user } = useAuth();
 
@@ -467,7 +467,7 @@ const manejarEnvioResena = async () => {
                 <button
                   ref={buttonRef}
                   onClick={mostraropciones}
-                  className="flex items-center justify-center px-6 py-3 bg-[#00c951] text-white rounded-r-lg hover:bg-[#00a844] transition-all duration-300 gap-2 min-w-[160px]"
+                  className="flex items-center justify-center px-6 py-[15px] bg-[#00c951] text-white rounded-r-lg hover:bg-[#00a844] transition-all duration-300 gap-2 min-w-[160px]"
                 >
                   <span>{TextoBoton}</span>
                   <OrdenarFlecha />
@@ -501,7 +501,7 @@ const manejarEnvioResena = async () => {
         {/* Lista de carga, errores o reservas*/}
         {cargando ? (
           <div className="flex justify-center items-center h-40">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+            <Loading />
           </div>
         ) : error ? (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4">
