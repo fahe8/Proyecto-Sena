@@ -62,7 +62,7 @@ const BuscarBTN = () => {
           />
           <button
             onClick={handleClick}
-            className={`flex items-center justify-center w-[50px] h-[50px] rounded-full text-2xl transition-all duration-300 ${
+            className={`flex items-center justify-center w-[50px] h-[50px] rounded-full text-2xl transition-all duration-300 cursor-pointer ${
               isOpen
                 ? "bg-green-400 text-white"
                 : "bg-green-400 text-white"
