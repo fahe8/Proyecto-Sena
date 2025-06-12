@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../Provider/AuthProvider";
-import { calendar, clock, football, gps, money } from "../../assets/IconosSVG/iconos";
+import { calendar, clock, football, Gps, money } from "../../assets/IconosSVG/iconos";
 import { canchasServicio, reservaServicio } from "../../services/api";
+import Loading from "../../pages/Login/components/Loading";
 
 const ReservasActivas = () => {
   const { user } = useAuth();
@@ -17,13 +18,13 @@ const ReservasActivas = () => {
       try {
         setCargando(true);
 
-        if (!user?.uid) {
-          console.log("No hay usuario autenticado o auth.uid no existe");
+        if (!user?.id) {
+          console.log("No hay usuario autenticado o auth.id no existe");
           setCargando(false);
           return;
         }
         
-        const response = await reservaServicio.obtenerReservasActivas(user.uid);
+        const response = await reservaServicio.obtenerReservasActivas(user.id);
         console.log("Respuesta API:", response.data);
         
         if (response.data && response.data.success) {
@@ -40,7 +41,7 @@ const ReservasActivas = () => {
       }
     };
   
-    if (user?.uid) {
+    if (user?.id) {
       cargarReservasActivas();
     }
   }, [user]);
@@ -150,16 +151,30 @@ const formatearFecha = (fechaStr) => {
         </div>
         {cargando ? (
         <div className="flex justify-center items-center h-40">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+          <Loading />
         </div>
       ) : error ? (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4">
           {error}
         </div>
-      ) : reservasActivas.length === 0 ? (
-        <div className="rounded-lg p-6 text-center py-10">
-          <p className="text-gray-600">No tienes reservas activas en este momento.</p>
-        </div>
+      ) : reservasActivas.length === 0 ? (<div className="text-center py-12 bg-white rounded-xl ">
+        <svg
+          className="mx-auto h-12 w-12 text-gray-400 mb-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <p className="text-lg text-gray-600">
+          Aún no tienes reservas activas
+        </p>
+      </div>
       ) : (
         // Lista de reservas activas
         <div className="space-y-4 p-15 grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -179,7 +194,7 @@ const formatearFecha = (fechaStr) => {
                   <div>
                     <h3 className="font-bold">{obtenerNombreEmpresa(reserva)}</h3>
                     <span className="flex">
-                      <div>{React.createElement(gps)}</div>
+                      <div>{React.createElement(Gps)}</div>
                       <p className="text-sm">{obtenerDireccionEmpresa(reserva)}</p>
                     </span>
                   </div>

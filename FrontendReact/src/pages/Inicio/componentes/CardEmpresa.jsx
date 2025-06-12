@@ -3,39 +3,47 @@ import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
 import { iconosServicios } from "../../../utils/iconosServicios";
 import LazyImage from "../../../utils/LazyImage";
+import { useAuth } from "../../../Provider/AuthProvider";
 import { Share2 } from "lucide-react";
 import { LocationIcon, StarIcon } from "../../../assets/IconosSVG/iconos";
 
 const CardEmpresa = ({ empresa, mostrarFavorito }) => {
   const navigate = useNavigate();
   const [favorito, setFavorito] = useState(false);
+  const { user } = useAuth(); // obtenemos el usuario autenticado
+
 
   // Cargar estado de favoritos del localStorage
   useEffect(() => {
-    const favoritosGuardados =
-      JSON.parse(localStorage.getItem("favoritos")) || [];
-    setFavorito(favoritosGuardados.includes(empresa?.nombre));
-  }, [empresa?.nombre]);
+  if (user?.uid) {
+    const favoritosPorUsuario =
+      JSON.parse(localStorage.getItem(`favoritos_${user.uid}`)) || [];
+    setFavorito(favoritosPorUsuario.includes(empresa?.nombre));
+  }
+}, [empresa?.nombre, user?.uid]);
+
 
   // Guardar en el local storage
   const toggleFavorito = (e) => {
-    e.stopPropagation(); // detiene la carta al darle click al corazon
+  e.stopPropagation();
+  if (!user?.uid) return;
 
-    const favoritosGuardados =
-      JSON.parse(localStorage.getItem("favoritos")) || [];
-    let nuevosFavoritos;
+  const storageKey = `favoritos_${user.uid}`;
+  const favoritosGuardados = JSON.parse(localStorage.getItem(storageKey)) || [];
+  let nuevosFavoritos;
 
-    if (favoritosGuardados.includes(empresa?.nombre)) {
-      nuevosFavoritos = favoritosGuardados.filter(
-        (fav) => fav !== empresa?.nombre
-      );
-    } else {
-      nuevosFavoritos = [...favoritosGuardados, empresa?.nombre];
-    }
+  if (favoritosGuardados.includes(empresa?.nombre)) {
+    nuevosFavoritos = favoritosGuardados.filter(
+      (fav) => fav !== empresa?.nombre
+    );
+  } else {
+    nuevosFavoritos = [...favoritosGuardados, empresa?.nombre];
+  }
 
-    localStorage.setItem("favoritos", JSON.stringify(nuevosFavoritos));
-    setFavorito(!favorito);
-  };
+  localStorage.setItem(storageKey, JSON.stringify(nuevosFavoritos));
+  setFavorito(!favorito);
+};
+
 
   // Compartir link de la empresa
   const handleShare = (e) => {
@@ -137,7 +145,7 @@ const CardEmpresa = ({ empresa, mostrarFavorito }) => {
             {empresa?.imagenes?.map((imagen, index) => (
               <div key={index} className="w-full h-42">
                 <LazyImage
-            src={imagen}
+            src={imagen.url}
             alt={`Imagen ${index + 1} de ${empresa?.nombre}`}
             className="object-cover w-68 h-42 "
                 />

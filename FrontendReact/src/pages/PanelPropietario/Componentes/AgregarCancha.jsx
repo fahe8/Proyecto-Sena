@@ -7,7 +7,7 @@ import LogPopUp from "../../Login/components/logPopUp"
 const AgregarCancha = () => {
   const [canchasData, setCanchasData] = useState([{
     nombre: '',
-    id_tipo_cancha: '',
+    tipo_cancha_id: '',
     id_estado_cancha: '',
     imagen: '',
     NIT: '987654321', // NIT por defecto, podría venir de un contexto o estado global
@@ -21,7 +21,7 @@ const AgregarCancha = () => {
   const handleAddCancha = () => {
     setCanchasData([...canchasData, {
       nombre: '',
-      id_tipo_cancha: '',
+      tipo_cancha_id: '',
       id_estado_cancha: '',
       imagen: '',
       NIT: '987654321',
@@ -66,8 +66,8 @@ const AgregarCancha = () => {
         esValido = false
       }
       
-      if (!cancha.id_tipo_cancha) {
-        erroresCancha.id_tipo_cancha = "Seleccione un tipo de cancha"
+      if (!cancha.tipo_cancha_id) {
+        erroresCancha.tipo_cancha_id = "Seleccione un tipo de cancha"
         esValido = false
       }
       

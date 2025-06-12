@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, Shield } from 'lucide-react';
 import image from "../../../assets/LogIn/background.webp"
-const ResetPassword = ({ onSubmit, token }) => {
+import { useParams, useSearchParams } from 'react-router';
+import { authServicio } from '../../../services/api';
+const ResetPassword = () => {
   const [formData, setFormData] = useState({
     password: '',
     confirmPassword: ''
   });
-  const [showPassword, setShowPassword] = useState(false);ñ
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState(null); // null, 'success', 'error'
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState({});
+  const { token } = useParams();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get('email');
 
   const validatePassword = (password) => {
     const errors = [];
@@ -19,7 +24,7 @@ const ResetPassword = ({ onSubmit, token }) => {
     if (!/[A-Z]/.test(password)) errors.push('Una letra mayúscula');
     if (!/[a-z]/.test(password)) errors.push('Una letra minúscula');
     if (!/\d/.test(password)) errors.push('Un número');
-    
+
     return errors;
   };
 
@@ -34,12 +39,12 @@ const ResetPassword = ({ onSubmit, token }) => {
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     // Limpiar errores cuando el usuario empiece a escribir
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
-    
+
     // Limpiar mensaje de estado general
     if (status) {
       setStatus(null);
@@ -49,24 +54,24 @@ const ResetPassword = ({ onSubmit, token }) => {
 
   const handleSubmit = async () => {
     const newErrors = {};
-    
+    console.log(token)
     // Validar contraseña
     const passwordErrors = validatePassword(formData.password);
     if (passwordErrors.length > 0) {
       newErrors.password = 'La contraseña no cumple con los requisitos';
     }
-    
+
     // Validar confirmación
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Las contraseñas no coinciden';
     }
-    
+
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Por favor confirma tu contraseña';
     }
 
     setErrors(newErrors);
-    
+
     if (Object.keys(newErrors).length > 0) {
       return;
     }
@@ -77,10 +82,17 @@ const ResetPassword = ({ onSubmit, token }) => {
 
     try {
       // Aquí llamarías a tu función de Firebase
-      if (onSubmit) {
-        await onSubmit(formData.password, token);
+      const dataEnviar = {
+        email: email,
+        password: formData.password,
+        password_confirmation: formData.confirmPassword,
+        token: token,
+
       }
-      
+      console.log(dataEnviar)
+      const result =await authServicio.cambiarContrasena(dataEnviar);
+      console.log(result)
+
       setStatus('success');
       setMessage('¡Contraseña actualizada exitosamente! Ya puedes iniciar sesión con tu nueva contraseña.');
     } catch (error) {
@@ -156,9 +168,8 @@ const ResetPassword = ({ onSubmit, token }) => {
                 onChange={(e) => handleInputChange('password', e.target.value)}
                 placeholder="Ingresa tu nueva contraseña"
                 disabled={isLoading}
-                className={`w-full text-sm px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all ${
-                  errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                } ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                className={`w-full text-sm px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all ${errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                  } ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
               />
               <button
                 type="button"
@@ -168,7 +179,7 @@ const ResetPassword = ({ onSubmit, token }) => {
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
-            
+
             {/* Indicador de fortaleza */}
             {formData.password && (
               <div className="mt-2">
@@ -179,12 +190,11 @@ const ResetPassword = ({ onSubmit, token }) => {
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      passwordStrength.strength >= 75 ? 'bg-green-500' :
+                  <div
+                    className={`h-2 rounded-full transition-all duration-300 ${passwordStrength.strength >= 75 ? 'bg-green-500' :
                       passwordStrength.strength >= 50 ? 'bg-blue-500' :
-                      passwordStrength.strength >= 25 ? 'bg-yellow-500' : 'bg-red-500'
-                    }`}
+                        passwordStrength.strength >= 25 ? 'bg-yellow-500' : 'bg-red-500'
+                      }`}
                     style={{ width: `${passwordStrength.strength}%` }}
                   ></div>
                 </div>
@@ -221,11 +231,10 @@ const ResetPassword = ({ onSubmit, token }) => {
                 onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
                 placeholder="Confirma tu nueva contraseña"
                 disabled={isLoading}
-                className={`w-full text-sm px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all ${
-                  errors.confirmPassword ? 'border-red-300 bg-red-50' : 
+                className={`w-full text-sm px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all ${errors.confirmPassword ? 'border-red-300 bg-red-50' :
                   formData.confirmPassword && formData.password === formData.confirmPassword ? 'border-green-300 bg-green-50' :
-                  'border-gray-300'
-                } ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    'border-gray-300'
+                  } ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
               />
               <button
                 type="button"
@@ -235,7 +244,7 @@ const ResetPassword = ({ onSubmit, token }) => {
                 {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
-            
+
             {/* Indicador de coincidencia */}
             {formData.confirmPassword && (
               <div className="mt-2 flex items-center gap-2 text-xs">
@@ -260,10 +269,9 @@ const ResetPassword = ({ onSubmit, token }) => {
 
           {/* Mensaje de estado */}
           {message && (
-            <div className={`flex items-center gap-2 p-3 rounded-lg text-sm ${
-              status === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 
+            <div className={`flex items-center gap-2 p-3 rounded-lg text-sm ${status === 'success' ? 'bg-green-50 text-green-700 border border-green-200' :
               'bg-red-50 text-red-700 border border-red-200'
-            }`}>
+              }`}>
               {status === 'success' ? (
                 <CheckCircle className="w-4 h-4 flex-shrink-0" />
               ) : (

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const API_URL = 'http://127.0.0.1:8000/api';
 
@@ -11,29 +11,80 @@ const apiClient = axios.create({
     }
 });
 
+export const authServicio = {
+    obtenerUsuario: () => apiClient.get('/user', {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
+    registroUsuario: (data) => apiClient.post('/usuarios', data),
+    loginUsuario: (data) => apiClient.post('/login', data),
+    logoutUsuario: (token) => apiClient.get('/logout', {}, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
+    enviarCorreoVerificacion: () => apiClient.post('/email/verification-notification', {}, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
+    verificarToken: (token) => apiClient.get('/verificar-token', {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }),
+
+    recuperarContrasena: (email) => apiClient.post('/forgot-password', email),
+    cambiarContrasena: (data) => apiClient.post('/reset-password', data),
+};
+
 
 
 export const usuarioServicio = {
     obtenerTodos: () => apiClient.get('/usuarios'),
     obtenerPorId: (id) => apiClient.get(`/usuarios/${id}`),
     crear: (data) => apiClient.post('/usuarios', data),
-    actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/usuarios/${id}`)   
+    actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
+    eliminar: (id) => apiClient.delete(`/usuarios/${id}`)
 };
 
 export const propietarioServicio = {
     obtenerTodos: () => apiClient.get('/propietarios'),
     obtenerPorId: (id) => apiClient.get(`/propietarios/${id}`),
     obtenerPorEmpresa: (NIT) => apiClient.get(`/propietarios/empresa/${NIT}`),
-    crear: (data) => apiClient.post('/propietarios', data),
+    crear: (data) => {
+        // Si data es FormData, cambiar headers
+        const config = data instanceof FormData ? {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        } : {};
+        
+        return apiClient.post('/propietarios', data, config);
+    },
     actualizar: (id, data) => apiClient.put(`/propietarios/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/propietarios/${id}`)
+    eliminar: (id) => apiClient.delete(`/propietarios/${id}`),
+    obtenerTiposDocumentos: () => apiClient.get('/tipos-documentos'),
 };
 
 export const empresaServicio = {
     obtenerTodos: () => apiClient.get('/empresas'),
     obtenerPorId: (id) => apiClient.get(`/empresas/${id}`),
-    crear: (data) => apiClient.post('/empresas', data),
+    crear: (data) => {
+        // Si data es FormData, cambiar headers
+        const config = data instanceof FormData ? {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        } : {};
+        
+        return apiClient.post('/empresas', data, config);
+    },
     actualizar: (id, data) => apiClient.put(`/empresas/${id}`, data),
     eliminar: (id) => apiClient.delete(`/empresas/${id}`)
 };
@@ -46,18 +97,49 @@ export const reservaServicio = {
     actualizar: (id, data) => apiClient.put(`/reservas/${id}`, data),
     eliminar: (id) => apiClient.delete(`/reservas/${id}`),
     obtenerReservasActivas: (id) => apiClient.get(`reservas/active/${id}`),
-    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`),
-    obtenerResenasEmpresa: (Nit) => apiClient.post(`obtenerReseñaEmpresa/empresas/${Nit}`),
-    crearResena:(data) => apiClient.post("/resenas", data)
+    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`)
+};
+
+// NUEVO SERVICIO PARA RESEÑAS
+export const resenaServicio = {
+    obtenerResenasEmpresa: (nit) => apiClient.get(`/resenas/empresa/${nit}`),
+    crear: (data) => apiClient.post('/resenas', data),
+    verificarResenaUsuario: (idReserva, idUsuario) => apiClient.get(`/resenas/verificar/${idReserva}/${idUsuario}`),
+    obtenerPorReserva: (idReserva) => apiClient.get(`/resenas/reserva/${idReserva}`),
+    obtenerHistorialResenas: (idUsuario) => apiClient.get(`/resenas/history/${idUsuario}`) // NUEVO MÉTODO
 };
 
 export const canchasServicio = {
-    obtenerTodosEmpresa: (nit) => apiClient.get(`/canchas/empresa/${nit}`),
-    tiposCanchas: () => apiClient.get(`/tipocanchas`),
-    estadoCanchas: () => apiClient.get(`/estadocanchas`),
-    actualizar: (id, data) => apiClient.put(`/canchas/${id}`, data),
+    obtenerTodosEmpresa: (nit) => apiClient.get(`canchas/empresa/${nit}`),
+    tiposCanchas: () => apiClient.get(`/tipos-canchas`),
+    estadoCanchas: () => apiClient.get(`/estados-canchas`),
+    actualizar: (id, data) => {
+        console.log('first, data: ', data)
+        // Si data contiene un archivo, usar FormData
+        if (data.imagen instanceof File) {
+            const formData = new FormData();
+            Object.keys(data).forEach(key => {
+                formData.append(key, data[key]);
+            });
+            return apiClient.put(`/canchas/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
+        }
+        return apiClient.put(`/canchas/${id}`, data);
+    },
     eliminar: (id) => apiClient.delete(`/canchas/${id}`),
-    agregar: (data) => apiClient.post('/canchas', data),
+    agregar: (data) => {
+        // Si data es FormData, cambiar headers
+        const config = data instanceof FormData ? {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        } : {};
+        
+        return apiClient.post('/canchas', data, config);
+    }
 }
 
 export const ServiciosServicio = {
