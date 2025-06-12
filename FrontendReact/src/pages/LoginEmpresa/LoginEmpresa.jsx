@@ -6,6 +6,7 @@ import Loading from '../Login/components/Loading';
 import LogPopUp from '../Login/components/logPopUp';
 import { authServicio } from '../../services/api.js';
 import { useAuth } from '../../Provider/AuthProvider.jsx';
+import BackToHome from '../../components/BackToHome.jsx';
 
 const LoginEmpresa = () => {
     const { guardarToken, setUser, setIsAuthenticated } = useAuth();
@@ -99,6 +100,7 @@ const LoginEmpresa = () => {
             <div className="flex absolute w-screen h-screen bg-[#00000037] items-center z-20">
                 <div className="relative w-110 p-[30px] px-10 bg-white rounded-[8px] font-[Arial] m-0 mx-auto shadow-md z-10">
                     <>
+                    <BackToHome/>
                         <div className="flex justify-start gap-3 items-center mb-[20px]">
                             <a
                                 href="/login"

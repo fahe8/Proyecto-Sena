@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../Header/Header";
 import Calendario from "./Calendario/Calendario";
 import { iconosServicios } from "../../utils/iconosServicios";
 import insignia from "./imagen/insignia.png";
-import { empresaServicio, reservaServicio } from "../../services/api";
+import { empresaServicio, resenaServicio } from "../../services/api";
 import ImageGallery from "./galeria";
+import Loading from "../Login/components/Loading";
+import BackToHome from "../../components/BackToHome";
 
-const Perfil = () => {
+const Empresa = () => {
   const [isOpen, setIsOpen] = useState(false); // Estado para verificar si la empresa está abierta
   const [showMobileCalendar, setShowMobileCalendar] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   // Reemplazar el estado estático de reseñas con un estado vacío
   const [reviews, setReviews] = useState([]);
   // Estado para estadísticas de calificaciones
@@ -28,10 +30,10 @@ const Perfil = () => {
     const obtenerEmpresa = async () => {
       if (id) {
         try {
+          setLoading(true);
           const empresa = await empresaServicio.obtenerPorId(id);   
-          console.log(empresa.data.data); 
           setEmpresa(empresa.data.data);
-          console.log(empresa)
+          console.log("Empresa: ",empresa.data.data)
           
           // Verificar si la empresa está abierta
           const ahora = new Date(); // Fecha actual
@@ -39,20 +41,23 @@ const Perfil = () => {
           const minutosActuales = ahora.getMinutes(); // Minutos actuales
           const horaActualEnMinutos = horaActual * 60 + minutosActuales; // Hora actual en minutos
 
-          const horaApertura = empresa.data.data.hora_apertura ?            
-            parseInt(empresa.data.data.hora_apertura.split(':')[0]) * 60 + // Hora de apertura en minutos
-            parseInt(empresa.data.data.hora_apertura.split(':')[1]) : 0; // Si no hay hora de apertura, se establece en 0
+          const horaApertura = empresa.data.data.horario.apertura ?            
+            parseInt(empresa.data.data.horario.apertura.split(':')[0]) * 60 + // Hora de apertura en minutos
+            parseInt(empresa.data.data.horario.apertura.split(':')[1]) : 0; // Si no hay hora de apertura, se establece en 0
 
-          const horaCierre = empresa.data.data.hora_cierre ? 
-            parseInt(empresa.data.data.hora_cierre.split(':')[0]) * 60 + // Hora de cierre en minutos
-            parseInt(empresa.data.data.hora_cierre.split(':')[1]) : 0; // Si no hay hora de cierre, se establece en 0
+          const horaCierre = empresa.data.data.horario.cierre ? 
+            parseInt(empresa.data.data.horario.cierre.split(':')[0]) * 60 + // Hora de cierre en minutos
+            parseInt(empresa.data.data.horario.cierre.split(':')[1]) : 0; // Si no hay hora de cierre, se establece en 0
 
           setIsOpen(horaActualEnMinutos >= horaApertura && horaActualEnMinutos <= horaCierre); // Verificar si la empresa está abierta
           
-          // Una vez que tenemos la empresa, obtenemos sus reseñas
+          // // Una vez que tenemos la empresa, obtenemos sus reseñas
           obtenerResenasEmpresa(empresa.data.data.NIT);
         } catch (error) {
           setEmpresa([]);
+        }
+        finally {
+          setLoading(false);
         }
       }
     };
@@ -62,7 +67,9 @@ const Perfil = () => {
   // Función para obtener las reseñas de la empresa
   const obtenerResenasEmpresa = async (nit) => {
     try {
+      console.log(nit)
       const response = await resenaServicio.obtenerResenasEmpresa(nit); // Cambiar de reservaServicio a resenaServicio
+      console.log("Obtener reseñas",response)
       if (response.data && response.data.success) {
         const resenasData = response.data.data;
         
@@ -115,12 +122,13 @@ const Perfil = () => {
     return (cantidad / ratingStats.total) * 100;
   };
 
+
+
   return (
     <div className="min-h-screen bg-white ">
       {/* Encabezado de navegación */}
       <Header />
-
-      {/* Contenedor padre principal con márgenes alineados al header */}
+      {loading ? <Loading/> : (<>      {/* Contenedor padre principal con márgenes alineados al header */}
       <div className="container mx-auto px-4 py-6">
         {/* Primer contenedor: Info a la izquierda y calendario a la derecha */}
         <div className="flex flex-col md:flex-row gap-6 mb-6 lg:px-25">
@@ -128,6 +136,7 @@ const Perfil = () => {
           <div className="flex-1  lg:mr-15">
             <div>
               {/* Venue header */}
+              <BackToHome/>
               <div className="flex flex-col sm:flex-row items-start mb-4">
                 <div className="flex items-start mb-4 sm:mb-0"> 
                   <div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center mr-3">
@@ -209,7 +218,7 @@ const Perfil = () => {
               <div className="mb-6 w-70">
                 <h3 className="font-medium mb-3">Servicios adicionales:</h3>
                 <div className="flex flex-col gap-4">
-                  {empresa?.servicios.map((servicio, index) => {
+                  {empresa?.servicios?.map((servicio, index) => {
                     // Remove accents and convert to lowercase
                     const key = servicio
                       .normalize("NFD")
@@ -414,9 +423,10 @@ const Perfil = () => {
             </div>
           </div>
         </div>
-      )}
+      )}</>)} 
+
     </div>
   );
 };
 
-export default Perfil;
+export default Empresa;

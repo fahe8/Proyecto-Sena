@@ -33,34 +33,36 @@ const InterfazPropietario = () => {
       console.log(user)
       try {
         // Realizar todas las peticiones en paralelo
-        const [canchasResponse, tiposResponse, estadosResponse, EmpresaReponse, propietarioResponse] = await Promise.all([
+        const [canchasResponse, tiposResponse, estadosResponse  ] = await Promise.all([
           canchasServicio.obtenerTodosEmpresa(user.NIT),
-          // canchasServicio.tiposCanchas(),
-          // canchasServicio.estadoCanchas(),
+          canchasServicio.tiposCanchas(),
+          canchasServicio.estadoCanchas(),
           // empresaServicio.obtenerPorId('987654321'),
           // propietarioServicio.obtenerPorEmpresa('987654321'),
         ]);
         
         // Procesar los resultados
         setListaCanchas(canchasResponse.data.data);
-        
-        if (tiposResponse.data.success && tiposResponse.data.data.tipos) {
-          setTiposCanchas(tiposResponse.data.data.tipos);
+
+        if (tiposResponse.data.success && tiposResponse.data.data) {
+          setTiposCanchas(tiposResponse.data.data);
         }
         
-        if (estadosResponse.data.success && estadosResponse.data.data.estados) {
-          setEstadoCanchas(estadosResponse.data.data.estados);
+        if (estadosResponse.data.success && estadosResponse.data.data) {
+          setEstadoCanchas(estadosResponse.data.data);
         }
         
-        if (EmpresaReponse.data.success && EmpresaReponse.data.data) {
-          setDatosEmpresa(EmpresaReponse.data.data);
-        }
+        console.log("tipos",tiposResponse.data.data)
+        console.log("estados",estadosResponse.data.data)
+        // if (EmpresaReponse.data.success && EmpresaReponse.data.data) {
+        //   setDatosEmpresa(EmpresaReponse.data.data);
+        // }
         
-        if (propietarioResponse.data.success && propietarioResponse.data.data) {
-          setDatosPropietario(propietarioResponse.data.data);
-        }
+        // if (propietarioResponse.data.success && propietarioResponse.data.data) {
+        //   setDatosPropietario(propietarioResponse.data.data);
+        // }
         
-        console.log("Datos de empresa:", EmpresaReponse.data);
+        // console.log("Datos de empresa:", EmpresaReponse.data);
         setDatosListos(true);
         setCargando(false);
       } catch (error) {
@@ -176,7 +178,7 @@ const InterfazPropietario = () => {
                     <div className="w-full">
                       <img
                         className="w-full h-48 object-cover rounded-t-xl"
-                        src={cancha.imagen}
+                        src={cancha.imagen.url}
                         alt={cancha.nombre}
                       />
                     </div>

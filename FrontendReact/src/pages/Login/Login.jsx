@@ -18,11 +18,11 @@ import LoginFooter from "./components/LoginFooter";
 import Divider from "./components/Divider";
 import axios from "axios";
 import { useAuth } from "../../Provider/AuthProvider.jsx";
-
+import BackToHome from "../../components/BackToHome.jsx";
 
 // Definición del componente Login
 const Login = () => {
-  const {guardarToken, setUser, setIsAuthenticated} = useAuth();
+  const { guardarToken, setUser, setIsAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [register, setRegister] = useState(true);
@@ -49,9 +49,7 @@ const Login = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const stayThere = () => {
-
-  };
+  const stayThere = () => {};
   const goToHome = () => {
     navigate("/");
   };
@@ -82,7 +80,7 @@ const Login = () => {
       setLoading(false);
       console.log(error);
     }
-  }
+  };
 
   // Función para manejar el registro de usuarios
   const handleRegistration = async () => {
@@ -93,15 +91,19 @@ const Login = () => {
       password,
     };
     try {
-      const response = await authServicio.registroUsuario(JSON.stringify(userData));
+      const response = await authServicio.registroUsuario(
+        JSON.stringify(userData)
+      );
       guardarToken(response.data.data.token);
       setUser(response.data.data.usuario);
       setIsAuthenticated(true);
-      showSuccessMessage("Registro exitoso", "Ahora confirma tu correo electrónico para completar el registro.");
+      showSuccessMessage(
+        "Registro exitoso",
+        "Ahora confirma tu correo electrónico para completar el registro."
+      );
       console.log("Registro exitoso:", response.data);
     } catch (error) {
       handleError(error);
-
     }
   };
 
@@ -116,7 +118,9 @@ const Login = () => {
     };
 
     try {
-      const response = await authServicio.loginUsuario(JSON.stringify(userData));
+      const response = await authServicio.loginUsuario(
+        JSON.stringify(userData)
+      );
       guardarToken(response.data.data.token);
       setUser(response.data.data.usuario);
       setIsAuthenticated(true);
@@ -125,7 +129,7 @@ const Login = () => {
     } catch (error) {
       handleError(error);
     }
-  }
+  };
 
   // Función para mostrar mensajes de éxito
   const showSuccessMessage = (title, message) => {
@@ -134,8 +138,8 @@ const Login = () => {
       state: {
         showPopup: true,
         popupMessage: title,
-        popupSubText: message
-      }
+        popupSubText: message,
+      },
     });
   };
 
@@ -144,7 +148,7 @@ const Login = () => {
     setPopup({
       show: true,
       message: "Error",
-      subText: message
+      subText: message,
     });
   };
 
@@ -158,12 +162,15 @@ const Login = () => {
     showErrorMessage(mensajeError);
   };
 
-
-
   return (
-    <LazyBackground imageUrl="/src/assets/LogIn/background.webp" className="p-0 m-0 relative bg-cover w-screen h-screen">
+    <LazyBackground
+      imageUrl="/src/assets/LogIn/background.webp"
+      className="p-0 m-0 relative bg-cover w-screen h-screen"
+    >
       <div className="flex absolute w-screen h-screen bg-[#00000037] items-center z-20">
         <div className="relative w-110 p-[30px] px-10 bg-white rounded-[8px] font-[Arial] m-0 mx-auto shadow-md z-10">
+          <BackToHome />
+
           <LoginHeader register={register} />
           <AuthForm
             register={register}
@@ -198,6 +205,6 @@ const Login = () => {
       </div>
     </LazyBackground>
   );
-}
+};
 
 export default Login;
