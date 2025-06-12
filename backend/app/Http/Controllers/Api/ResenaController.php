@@ -8,19 +8,19 @@ use Illuminate\Support\Facades\Validator;
 
 class ResenaController extends ApiController
 {
-    public function index()
+    public function index() 
     {
         // Implementar si es necesario
     }
-
+    
     // Método para verificar si un usuario ya tiene reseña para una reserva
     public function verificarResenaUsuario($idReserva, $idUsuario)
     {
         try {
             $resena = Resena::where('id_reserva', $idReserva)
-                ->where('id_usuario', $idUsuario)
-                ->first();
-
+                           ->where('usuario_id', $idUsuario)
+                           ->first();
+    
             return response()->json([
                 'success' => true,
                 'tiene_resena' => $resena ? true : false,
@@ -34,7 +34,7 @@ class ResenaController extends ApiController
             ], 500);
         }
     }
-
+    
     // Método mejorado para crear reseñas con validación
     public function store(Request $request)
     {
@@ -45,35 +45,36 @@ class ResenaController extends ApiController
                 'NIT' => 'required|exists:empresa,NIT',
                 'comentario' => 'required|string|min:10|max:500',
                 'calificacion' => 'required|numeric|min:1|max:5',
-                'id_usuario' => 'required|exists:usuario,id_usuario'
+                'usuario_id' => 'required|exists:usuario,id'
             ]);
-
+    
             // Verificar si ya existe una reseña para esta reserva y usuario
             $resenaExistente = Resena::where('id_reserva', $request->id_reserva)
-                ->where('id_usuario', $request->id_usuario)
-                ->first();
-
+                                   ->where('usuario_id', $request->usuario_id)
+                                   ->first();
+    
             if ($resenaExistente) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Ya has creado una reseña para esta reserva'
                 ], 409);
             }
-
+    
             // Crear la nueva reseña
             $resena = Resena::create([
                 'id_reserva' => $request->id_reserva,
                 'NIT' => $request->NIT,
                 'comentario' => $request->comentario,
                 'calificacion' => $request->calificacion,
-                'id_usuario' => $request->id_usuario
+                'usuario_id' => $request->usuario_id
             ]);
-
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Reseña creada exitosamente',
                 'data' => $resena
             ], 201);
+            
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -94,13 +95,13 @@ class ResenaController extends ApiController
     {
         try {
             $resenas = Resena::where('NIT', $nit)
-                ->with(['usuario', 'reserva.cancha'])
-                ->orderBy('created_at', 'desc')
-                ->get();
+                           ->with(['usuario', 'reserva.cancha'])
+                           ->orderBy('created_at', 'desc')
+                           ->get();
 
             // Calcular estadísticas
             $promedioCalificacion = $resenas->avg('calificacion') ?: 0;
-
+            
             $distribucionCalificaciones = [];
             for ($i = 1; $i <= 5; $i++) {
                 $distribucionCalificaciones[$i] = $resenas->where('calificacion', $i)->count();
@@ -146,16 +147,18 @@ class ResenaController extends ApiController
     public function obtenerReseñaEmpresa($nit)
     {
         try {
-            // Obtener todas las reseñas asociadas a la empresa con el NIT proporcionado
-            $resenas = Resena::where('NIT', $nit)
-                ->select(
+            // Obtener reseñas a través de la relación reserva->empresa
+            $resenas = Resena::select(
                     'id_resena as id',
                     'calificacion',
                     'comentario',
                     'created_at as fecha_resena',
-                    'id_usuario'
+                    'usuario_id'
                 )
-                ->with(['usuario:id_usuario,nombre,apellido'])
+                ->with(['usuario:id,nombre,apellido'])
+                ->whereHas('reserva', function($query) use ($nit) {
+                    $query->where('NIT', $nit);
+                })
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -185,16 +188,16 @@ class ResenaController extends ApiController
             ], 500);
         }
     }
-
+    
     // Nuevo método para obtener historial de reseñas por usuario
     public function obtenerHistorialResenas($idUsuario)
     {
         try {
-            $resenas = Resena::where('id_usuario', $idUsuario)
-                ->with(['reserva.cancha.empresa', 'reserva.cancha'])
-                ->orderBy('created_at', 'desc')
-                ->get();
-
+            $resenas = Resena::where('usuario_id', $idUsuario)
+                       ->with(['reserva.cancha.empresa', 'reserva.cancha'])
+                       ->orderBy('created_at', 'desc')
+                       ->get();
+    
             return response()->json([
                 'success' => true,
                 'data' => $resenas

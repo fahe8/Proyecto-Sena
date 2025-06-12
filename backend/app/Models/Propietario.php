@@ -7,31 +7,33 @@ use Illuminate\Database\Eloquent\Model;
 class Propietario extends Model
 {
     protected $table = 'propietario';
-    protected $primaryKey = 'id_propietario';
-    public $incrementing = false;
-    protected $keyType = 'string';
+
     protected $fillable = [
-        'id_propietario',
+        'user_id',
         'nombre',
         'apellido',
         'telefono',
-        'email',
-        'num_documento',
-        'bloqueado',
-        'id_tipoDocumento'
+        'imagen',
+        'tipo_documento_id',
+        'numero_documento'
+    ];
+    
+    protected $casts = [
+        'imagen' => 'array'
     ];
 
-    protected $casts = [
-        'bloqueado' => 'boolean'
-    ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function tipoDocumento()
     {
-        return $this->belongsTo(TipoDocumento::class, 'id_tipoDocumento');
+        return $this->belongsTo(TipoDocumento::class, 'tipo_documento_id', 'tipo_documento_id');
     }
 
     public function empresas()
     {
-        return $this->hasMany(Empresa::class, 'id_propietario');
+        return $this->hasMany(Empresa::class, 'propietario_id', 'id');
     }
 }

@@ -1,13 +1,10 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-
 class EstadoCancha extends Model
 {
-    
     protected $table = 'estado_cancha';
     protected $primaryKey = 'id_estado_cancha';
     public $incrementing = false;
@@ -20,11 +17,6 @@ class EstadoCancha extends Model
 
     public function canchas()
     {
-        return $this->hasMany(Cancha::class, 'id_estado_cancha');
-
-    }
-    public function estado(){
-        return $this->belongsTo(EstadoCancha::class,'id_estado_cancha','id_estado_cancha');
+        return $this->hasMany(Cancha::class, 'id_estado_cancha', 'id_estado_cancha');
     }
 }
-
