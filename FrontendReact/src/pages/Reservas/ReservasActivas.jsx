@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../Provider/AuthProvider";
-import { calendar, clock, football, gps, money } from "../../assets/IconosSVG/iconos";
+import { calendar, clock, football, Gps, money } from "../../assets/IconosSVG/iconos";
 import { canchasServicio, reservaServicio } from "../../services/api";
 import Loading from "../../pages/Login/components/Loading";
 
@@ -18,13 +18,13 @@ const ReservasActivas = () => {
       try {
         setCargando(true);
 
-        if (!user?.uid) {
-          console.log("No hay usuario autenticado o auth.uid no existe");
+        if (!user?.id) {
+          console.log("No hay usuario autenticado o auth.id no existe");
           setCargando(false);
           return;
         }
         
-        const response = await reservaServicio.obtenerReservasActivas(user.uid);
+        const response = await reservaServicio.obtenerReservasActivas(user.id);
         console.log("Respuesta API:", response.data);
         
         if (response.data && response.data.success) {
@@ -41,7 +41,7 @@ const ReservasActivas = () => {
       }
     };
   
-    if (user?.uid) {
+    if (user?.id) {
       cargarReservasActivas();
     }
   }, [user]);
@@ -194,7 +194,7 @@ const formatearFecha = (fechaStr) => {
                   <div>
                     <h3 className="font-bold">{obtenerNombreEmpresa(reserva)}</h3>
                     <span className="flex">
-                      <div>{React.createElement(gps)}</div>
+                      <div>{React.createElement(Gps)}</div>
                       <p className="text-sm">{obtenerDireccionEmpresa(reserva)}</p>
                     </span>
                   </div>

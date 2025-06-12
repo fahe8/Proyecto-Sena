@@ -5,6 +5,7 @@ import { canchasServicio, empresaServicio, propietarioServicio } from '../../ser
 import ModificarCancha from './Componentes/ModificarCancha';
 import CardSkeleton from './Componentes/cardskeleton';
 import { useNavigate } from 'react-router-dom'; 
+import { useAuth } from '../../Provider/AuthProvider';
 
 const InterfazPropietario = () => {
   // Estado para controlar la visibilidad del modal de modificar cancha
@@ -24,39 +25,44 @@ const InterfazPropietario = () => {
   const [datosPropietario, setDatosPropietario] = useState({})
   const [datosListos, setDatosListos] = useState(false);
 
+  const {user} = useAuth();
+
   useEffect(() => {
     // Función para cargar todos los datos necesarios
     const cargarDatos = async () => {
+      console.log(user)
       try {
         // Realizar todas las peticiones en paralelo
-        const [canchasResponse, tiposResponse, estadosResponse, EmpresaReponse, propietarioResponse] = await Promise.all([
-          canchasServicio.obtenerTodosEmpresa('987654321'),
+        const [canchasResponse, tiposResponse, estadosResponse  ] = await Promise.all([
+          canchasServicio.obtenerTodosEmpresa(user.NIT),
           canchasServicio.tiposCanchas(),
           canchasServicio.estadoCanchas(),
-          empresaServicio.obtenerPorId('987654321'),
-          propietarioServicio.obtenerPorEmpresa('987654321'),
+          // empresaServicio.obtenerPorId('987654321'),
+          // propietarioServicio.obtenerPorEmpresa('987654321'),
         ]);
         
         // Procesar los resultados
         setListaCanchas(canchasResponse.data.data);
-        
-        if (tiposResponse.data.success && tiposResponse.data.data.tipos) {
-          setTiposCanchas(tiposResponse.data.data.tipos);
+
+        if (tiposResponse.data.success && tiposResponse.data.data) {
+          setTiposCanchas(tiposResponse.data.data);
         }
         
-        if (estadosResponse.data.success && estadosResponse.data.data.estados) {
-          setEstadoCanchas(estadosResponse.data.data.estados);
+        if (estadosResponse.data.success && estadosResponse.data.data) {
+          setEstadoCanchas(estadosResponse.data.data);
         }
         
-        if (EmpresaReponse.data.success && EmpresaReponse.data.data) {
-          setDatosEmpresa(EmpresaReponse.data.data);
-        }
+        console.log("tipos",tiposResponse.data.data)
+        console.log("estados",estadosResponse.data.data)
+        // if (EmpresaReponse.data.success && EmpresaReponse.data.data) {
+        //   setDatosEmpresa(EmpresaReponse.data.data);
+        // }
         
-        if (propietarioResponse.data.success && propietarioResponse.data.data) {
-          setDatosPropietario(propietarioResponse.data.data);
-        }
+        // if (propietarioResponse.data.success && propietarioResponse.data.data) {
+        //   setDatosPropietario(propietarioResponse.data.data);
+        // }
         
-        console.log("Datos de empresa:", EmpresaReponse.data);
+        // console.log("Datos de empresa:", EmpresaReponse.data);
         setDatosListos(true);
         setCargando(false);
       } catch (error) {
@@ -172,7 +178,7 @@ const InterfazPropietario = () => {
                     <div className="w-full">
                       <img
                         className="w-full h-48 object-cover rounded-t-xl"
-                        src={cancha.imagen}
+                        src={cancha.imagen.url}
                         alt={cancha.nombre}
                       />
                     </div>

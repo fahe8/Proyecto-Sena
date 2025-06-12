@@ -6,6 +6,11 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+    protected $policies = [
+        \App\Models\Usuario::class => \App\Policies\UsuarioPolicy::class,
+    ];
+
     /**
      * Register any application services.
      */

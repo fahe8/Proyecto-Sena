@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { canchasServicio } from "../../../services/api";
-
+import CloudinaryUploader from "../../../components/CloudinaryUploader";
 const ModificarCancha = ({
   isOpen,
   onClose,
@@ -11,29 +11,25 @@ const ModificarCancha = ({
 }) => {
   const [canchaData, setCanchaData] = useState({
     nombre: "",
-    id_tipo_cancha: "",
+    tipo_cancha_id: "",
     id_estado_cancha: "",
     precio: "",
     imagen: "",
   });
 
   const [errors, setErrors] = useState({});
-  const [imagePreview, setImagePreview] = useState("");
 
   useEffect(() => {
     if (infoCancha && isOpen) {
       setCanchaData({
         nombre: infoCancha.nombre || "",
-        id_tipo_cancha: infoCancha.id_tipo_cancha || "",
+        tipo_cancha_id: infoCancha.tipo_cancha_id || "",
         id_estado_cancha: infoCancha.id_estado_cancha || "",
         precio: infoCancha.precio || "",
         imagen: infoCancha.imagen || infoCancha.image || "",
       });
-
-      // Establecer la vista previa de la imagen
-      if (infoCancha.imagen || infoCancha.image) {
-        setImagePreview(infoCancha.imagen || infoCancha.image);
-      }
+      console.log(infoCancha);
+      
     }
   }, [infoCancha, isOpen]);
 
@@ -50,41 +46,10 @@ const ModificarCancha = ({
         [field]: null,
       });
     }
+    console.log(canchaData)
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Aquí normalmente enviarías el archivo a Cloudinary y obtendrías una URL
-      // Para este ejemplo, solo crearemos una URL local para la vista previa
-      const fileURL = URL.createObjectURL(file);
-      setImagePreview(fileURL);
 
-      // En una implementación real, deberías subir el archivo a Cloudinary y
-      // luego actualizar canchaData.imagen con la URL que devuelve Cloudinary
-      handleChange("imagen", "");
-
-      // Ejemplo de cómo podría verse la subida a Cloudinary:
-      /*
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', 'tu_upload_preset');
-      
-      fetch('https://api.cloudinary.com/v1_1/tu_cloud_name/image/upload', {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        handleChange('imagen', data.secure_url);
-      })
-      .catch(error => {
-        console.error('Error al subir la imagen:', error);
-        setErrors({...errors, imagen: "Error al subir la imagen"});
-      });
-      */
-    }
-  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -93,8 +58,8 @@ const ModificarCancha = ({
       newErrors.nombre = "El nombre de la cancha es obligatorio";
     }
 
-    if (!canchaData.id_tipo_cancha) {
-      newErrors.id_tipo_cancha = "Seleccione un tipo de cancha";
+    if (!canchaData.tipo_cancha_id) {
+      newErrors.tipo_cancha_id = "Seleccione un tipo de cancha";
     }
 
     if (!canchaData.id_estado_cancha) {
@@ -122,11 +87,9 @@ const ModificarCancha = ({
     try {
       // Evitar enviar la imagen si está vacía
       const dataToSend = { ...canchaData };
-      if (dataToSend.imagen === "") {
-        delete dataToSend.imagen;
-      }
+      
 
-      await canchasServicio.actualizar(infoCancha.id_cancha, dataToSend);
+      await canchasServicio.actualizar(infoCancha.id, dataToSend);
       console.log("se actualizo");
       onConfirm(dataToSend);
     } catch (error) {
@@ -190,14 +153,14 @@ const ModificarCancha = ({
               </label>
               <select
                 className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
-                value={canchaData.id_tipo_cancha}
-                onChange={(e) => handleChange("id_tipo_cancha", e.target.value)}
+                value={canchaData.tipo_cancha_id}
+                onChange={(e) => handleChange("tipo_cancha_id", e.target.value)}
               >
                 <option value="">Seleccione</option>
-                {tiposCanchas?.map((tipo) => (
-                  <option key={tipo} value={tipo}>
-                    {tipo}
-                  </option>
+                {tiposCanchas?.map((tipo, index) => (
+                  <option key={`tipo-${index}`} value={tipo.id}>
+                    {tipo.tipo}
+                  </option> 
                 ))}
               </select>
               {errors.tipo && (
@@ -215,10 +178,9 @@ const ModificarCancha = ({
                   handleChange("id_estado_cancha", e.target.value)
                 }
               >
-                <option value="">Seleccione el estado</option>
-                {estadoCanchas?.map((estado) => (
-                  <option key={estado} value={estado}>
-                    {estado}
+                {estadoCanchas?.map((estado, index) => (
+                  <option key={`estado-${index}`} value={estado.id_estado_cancha}>
+                    {estado.id_estado_cancha}
                   </option>
                 ))}
               </select>
@@ -248,23 +210,11 @@ const ModificarCancha = ({
             <label className="block text-sm text-gray-600 mb-1">
               Imagen de la cancha
             </label>
-            <div className="flex items-center space-x-4">
-              {imagePreview && (
-                <div className="w-20 h-20 relative">
-                  <img
-                    src={imagePreview}
-                    alt="Vista previa"
-                    className="w-full h-full object-cover rounded"
-                  />
-                </div>
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="w-full border border-gray-300 rounded-md p-2 text-[14px]"
-              />
-            </div>
+            <CloudinaryUploader 
+              onUploadSuccess={(url) => handleChange("imagen", url)}
+              folder="canchas"
+              returnFile={true}
+            />
             {errors.imagen && (
               <p className="text-red-500 text-sm">{errors.imagen}</p>
             )}

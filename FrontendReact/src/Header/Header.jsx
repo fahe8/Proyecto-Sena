@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"; // Importamos React y hooks necesarios
+import React, { use, useEffect, useRef, useState } from "react"; // Importamos React y hooks necesarios
 import { Link, useNavigate, useLocation } from "react-router-dom"; // Importamos Link para la navegación entre páginas y useNavigate para redirecciones
 import { useAuth } from "../Provider/AuthProvider"; // Importamos el contexto de autenticación
 import { signOut } from "firebase/auth"; // Importamos la función para cerrar sesión en Firebase
@@ -11,7 +11,6 @@ import logo from "../assets/logo.png"; // Importamos el logo de la aplicación
 const Header = () => {
   const navigate = useNavigate(); // Hook para redireccionar a diferentes rutas
   const location = useLocation(); // <-- get current location
-
   // Check if the current path matches /empresa/:id
   const hideBusquedaFiltros = /^\/empresa\/[^/]+$/.test(location.pathname);
 
@@ -47,7 +46,7 @@ export const BotonPerfil = () => {
   const [isOpen, setIsOpen] = useState(false); // Estado para mostrar/ocultar el menú
   const dropdownRef = useRef(null); // Referencia para detectar clics fuera del menú
 
-  const { isAuthenticated } = useAuth(); // Obtenemos el estado de autenticación del usuario
+  const { isAuthenticated, cerrarSesion } = useAuth(); // Obtenemos el estado de autenticación del usuario
 
   useEffect(() => {
     // Función para detectar clics fuera del menú y cerrarlo
@@ -70,16 +69,9 @@ export const BotonPerfil = () => {
   };
 
   // Función para cerrar sesión
-  const handleLogout = async () => {
-    try {
-      await signOut(auth); // Cierra sesión en Firebase
-      window.localStorage.removeItem("auth"); // Elimina datos de autenticación almacenados en localStorage
-      console.log("Cierre de sesión exitoso");
+  const handleLogout =  () => {
+    cerrarSesion(); // Llamamos a la función de cerrar sesión del contexto de autenticación
 
-      window.location.href = "/login"; // Redirige a la página de inicio de sesión
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-    }
   };
 
   return (

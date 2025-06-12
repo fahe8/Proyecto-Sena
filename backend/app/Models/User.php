@@ -2,47 +2,51 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\CustomResetPassword;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
-        'name',
         'email',
         'password',
+        'roles',  // Changed from 'role' to 'roles' to store multiple roles
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'roles' => 'array',  // Cast roles as array
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function admin()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasOne(Administrador::class);
     }
+
+    public function usuario()
+    {
+        return $this->hasOne(Usuario::class);
+    }
+
+    public function propietario()
+    {
+        return $this->hasOne(Propietario::class);
+    }
+
+    public function hasRole($role)
+    {
+        return in_array($role, $this->roles ?? []);
+    }
+
+    public function sendPasswordResetNotification($token)
+{
+    $this->notify(new CustomResetPassword($token));
+}
 }

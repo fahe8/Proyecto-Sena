@@ -1,10 +1,14 @@
 import React from 'react';
 import CloudinaryUploader from '../../components/CloudinaryUploader';
+import CloudinaryMultiple from '../../components/CloudinaryMultiple';
 
 export default function InfoEmpresa({ data, onChange, errors }) {
   // Manejar subida de imágenes
   const handleLogoUpload = (url) => {
     onChange('logo', url);
+  };
+  const handleImagenesUpload = (url) => {
+    onChange('imagenes', url);
   };
 
   return (
@@ -24,7 +28,7 @@ export default function InfoEmpresa({ data, onChange, errors }) {
             />
             {errors?.nombre && <p className="text-red-500 text-sm">{errors.nombre}</p>}
           </div>
-          
+
           <div className="mb-6">
             <label className="block text-sm text-gray-600 mb-1">NIT / Identificación fiscal</label>
             <input
@@ -34,15 +38,16 @@ export default function InfoEmpresa({ data, onChange, errors }) {
               value={data.NIT || ''} // Cambiado a NIT para coincidir con el modelo
               onChange={(e) => onChange('NIT', e.target.value)} // Actualiza el estado global
             />
-            {errors?.NIT && <p className="text-red-500 text-sm">{errors.NIT}</p>} 
+            {errors?.NIT && <p className="text-red-500 text-sm">{errors.NIT}</p>}
           </div>
         </div>
         <div className="w-50 h-full md:w-32 ml-4 text-center">
           <label className="block text-sm text-[#003044] mb-1 ">Logo</label>
-          <CloudinaryUploader onUploadSuccess={handleLogoUpload} />
+          <CloudinaryUploader onUploadSuccess={handleLogoUpload} folder='empresas/logo' returnFile={true} />
         </div>
+
       </div>
-      
+
       <div className="grid grid-cols-1 gap-4 mb-6">
         <div>
           <label className="block text-sm text-gray-600 mb-1">Dirección</label>
@@ -54,6 +59,10 @@ export default function InfoEmpresa({ data, onChange, errors }) {
             onChange={(e) => onChange('direccion', e.target.value)} // Actualiza el estado global
           />
           {errors?.direccion && <p className="text-red-500 text-sm">{errors.direccion}</p>}
+        </div>
+        <div>
+          <label className="block text-sm text-[#003044] mb-1 ">Imagenes</label>
+          <CloudinaryMultiple onUploadSuccess={handleImagenesUpload} folder={`empresas/${data.NIT}/`} />
         </div>
       </div>
     </div>

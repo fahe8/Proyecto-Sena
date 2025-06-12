@@ -14,7 +14,7 @@ class ReservaController extends ApiController
     public function index()
     {
         try {
-            $reservas = Reserva::with(['cancha', 'usuario', 'pago'])->get();
+            $reservas = Reserva::with(['cancha', 'usuario'])->get();
             return $this->sendResponse($reservas, 'Reservas obtenidas con éxito');
         } catch (\Exception $e) {
             return $this->sendError('Error obteniendo reservas', $e->getMessage());
@@ -28,12 +28,13 @@ class ReservaController extends ApiController
                 'fecha' => 'required|date',
                 'hora_inicio' => 'required|date_format:H:i:s',
                 'hora_final' => 'required|date_format:H:i:s|after:hora_inicio',
-                'id_cancha' => 'required|exists:cancha,id_cancha',
-                'id_usuario' => 'required|exists:usuario,id_usuario'
+               'cancha_id' => 'required|exists:cancha,id',
+                'usuario_id' => 'required|exists:usuario,id'
             ]);
 
             // Obtener cancha y empresa associados a la reserva
-            $cancha = Cancha::with('empresa')->findOrFail($request->id_cancha);
+            $cancha = Cancha::with('empresa')->findOrFail($request->cancha_id);
+            
             $empresa = $cancha->empresa;
 
             // Validar que hora_inicio sea mayor o igual a hora_apertura
@@ -46,8 +47,14 @@ class ReservaController extends ApiController
                 return $this->sendError('Error de validación', ['error' => 'La hora de finalización debe ser igual o antes del cierre de la empresa: ' . $empresa->hora_cierre]);
             }
 
+            // Verificar que la cancha existe
+            $cancha = Cancha::find($request->cancha_id);
+            if (!$cancha) {
+                return $this->sendError('Error de validación', ['error' => 'La cancha no existe']);
+            }
+
             // Buscar reservas existentes que se crucen
-            $existingReservation = Reserva::where('id_cancha', $request->id_cancha)
+            $existingReservation = Reserva::where('cancha_id', $request->cancha_id)
                 ->where('fecha', $request->fecha)
                 ->where('hora_inicio', '<', $request->hora_final)
                 ->where('hora_final', '>', $request->hora_inicio)
@@ -73,7 +80,7 @@ class ReservaController extends ApiController
     public function show($id)
     {
         try {
-            $reserva = Reserva::with(['cancha', 'usuario', 'pago'])->find($id);
+            $reserva = Reserva::with(['cancha', 'usuario'])->find($id);
             if (is_null($reserva)) {
                 return $this->sendError('Reserva no encontrada');
             }
@@ -95,8 +102,8 @@ class ReservaController extends ApiController
                 'fecha' => 'sometimes|date',
                 'hora_inicio' => 'sometimes|date_format:H:i',
                 'hora_final' => 'sometimes|date_format:H:i|after:hora_inicio',
-                'id_cancha' => 'sometimes|exists:cancha,id_cancha',
-                'id_usuario' => 'sometimes|exists:usuario,id_usuario'
+               'cancha_id' => 'required|exists:cancha,id',
+                'usuario_id' => 'sometimes|exists:usuario,id'
             ]);
 
             $reserva->update($request->all());
@@ -133,13 +140,13 @@ class ReservaController extends ApiController
             $currentHour = $now->format('H:i:s');
 
             
-            $activeReservations = Reserva::with(['cancha', 'usuario', 'pago', 'empresa'])
-                ->where('id_usuario', $id)
+            $activeReservations = Reserva::with(['cancha', 'usuario', 'empresa'])
+                ->where('usuario_id', $id)
                 ->where(function ($query) use ($currentDate, $currentHour) {
                     $query->where('fecha', '>', $currentDate)
                         ->orWhere(function ($q) use ($currentDate, $currentHour) {
                             $q->where('fecha', '=', $currentDate)
-                                ->where('hora_inicio', '>=', $currentHour);
+                            ->where('hora_final', '>', $currentHour);
                         });
                 })
                 ->orderBy('fecha')
@@ -168,22 +175,25 @@ class ReservaController extends ApiController
             $now = Carbon::now('America/Bogota');
             $currentDate = $now->toDateString();
             $currentHour = $now->format('H:i:s');
-            
 
-
-
-            $reservationHistory = Reserva::with(['cancha', 'usuario', 'pago', 'empresa'])
-                ->where('id_usuario', $id)
+            $reservationHistory = Reserva::with(['cancha', 'usuario', 'empresa', 'resena'])
+                ->where('usuario_id', $id)
                 ->where(function ($query) use ($currentDate, $currentHour) {
                     $query->where('fecha', '<', $currentDate)
                         ->orWhere(function ($q) use ($currentDate, $currentHour) {
                             $q->where('fecha', '=', $currentDate)
-                                ->where('hora_final', '<=', $currentHour);
+                            ->where('hora_final', '<=', $currentHour);
                         });
                 })
                 ->orderBy('fecha', 'desc')
                 ->orderBy('hora_inicio', 'desc')
                 ->get();
+
+            // Agregar información de reseña a cada reserva
+            $reservationHistory = $reservationHistory->map(function ($reserva) {
+                $reserva->tiene_resena = $reserva->resena !== null;
+                return $reserva;
+            });
 
             if ($reservationHistory->isEmpty()) {
                 return $this->sendResponse([], 'No hay reservas en el historial para este usuario');
@@ -208,7 +218,7 @@ class ReservaController extends ApiController
             }
             
             // Get reservations for this company
-            $reservas = Reserva::with(['cancha', 'usuario', 'pago'])
+            $reservas = Reserva::with(['cancha', 'usuario'])
                 ->where('NIT', $nit)
                 ->orderBy('fecha', 'desc')
                 ->orderBy('hora_inicio', 'desc')

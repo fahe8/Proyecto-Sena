@@ -2,189 +2,278 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use App\Http\Resources\EmpresaResource;
 use App\Models\Empresa;
+use Cloudinary\Api\Admin\AdminApi;
+use Cloudinary\Api\Upload\UploadApi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class EmpresaController extends ApiController
 {
+    public function __construct()
+    {
+        // Configuración de Cloudinary
+        \Cloudinary\Configuration\Configuration::instance([
+            'cloud' => [
+                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                'api_key' => env('CLOUDINARY_API_KEY'),
+                'api_secret' => env('CLOUDINARY_API_SECRET'),
+            ],
+            'url' => [
+                'secure' => true
+            ]
+        ]);
+    }
+
     public function index()
     {
-        try {
-            $empresa = Empresa::with(['propietario', 'estado', 'servicios', 'canchas.tipoCancha'])->get()
-                ->map(function ($empresa) {
-                    $empresa->servicios->makeHidden('pivot');
-                    $empresa->tiposCanchas = $empresa->canchas->pluck('tipoCancha.id_tipo_cancha')->unique()->values();
-                    if ($empresa->imagenes && is_string($empresa->imagenes)) {
-                        $empresa->imagenes = json_decode($empresa->imagenes, true);
-                    }
-                    // Generate slug from nombre
-                    $empresa->slug = Str::slug($empresa->nombre);
-                    return $empresa;
-                });
-
-            return $this->sendResponse($empresa, 'Empresas obtenidas con exito');
-        } catch (\Exception $e) {
-            return $this->sendError('Error obteniendo empresas', $e->getMessage());
-        }
+        return $this->sendResponse(
+            Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas'])->get(),
+            'Lista de empresas obtenida correctamente',
+            200
+        );
     }
 
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'NIT' => 'required|integer|unique:empresa',
-                'nombre' => 'required|string',
-                'direccion' => 'required|string',
-                'descripcion' => 'required|string',
-                'hora_apertura' => 'required|date_format:H:i',
-                'hora_cierre' => 'required|date_format:H:i',
-                'id_propietario' => 'required|exists:propietario,id_propietario',
-                'id_estado_empresa' => 'required|exists:estado_empresa,id_estado_empresa',
-                // 'logo'=> 'required|url|regex:/^https?:\/\/.*\.cloudinary\.com\/.*/',
-                'imagenes' => 'nullable|array',
-                'imagenes.*' => 'required|url|regex:/^https?:\/\/.*\.cloudinary\.com\/.*/'
-            ]);
+        $validator = Validator::make($request->all(), [
+            'NIT' => 'required|unique:empresa,NIT',
+            'nombre' => 'required|string',
+            'direccion' => 'required|string',
+            'descripcion' => 'required|string',
+            'logo' => 'required|image|max:2048', // Cambiado para recibir archivo de imagen
+            'imagenes' => 'nullable|array',
+            'imagenes.*' => 'image|max:2048', // Cambiado para recibir archivos de imagen
+            'hora_apertura' => 'required|date_format:H:i',
+            'hora_cierre' => 'required|date_format:H:i',
+            'propietario_id' => 'required|exists:propietario,id',
+            'servicios' => 'nullable|array',
+            'servicios.*' => 'exists:servicio,id'
+        ]);
 
-            $data = $request->all();
-            if ($request->has('imagenes')) {
-                // Store raw URLs without encoding
-                $data['imagenes'] = $request->imagenes;
+        if ($validator->fails()) {
+            return $this->sendError('Error de validación', $validator->errors(), 422);
+        }
+
+        try {
+            DB::beginTransaction();
+            
+            $uploadApi = new UploadApi();
+            $data = $request->except(['servicios', 'logo', 'imagenes']);
+
+            // Subir logo a Cloudinary
+            if ($request->hasFile('logo')) {
+                $result = $uploadApi->upload($request->file('logo')->getRealPath(), [
+                    'folder' => 'micanchaya/empresas/logo',
+                    'resource_type' => 'image',
+                    'transformation' => [
+                        'quality' => 'auto',
+                        'fetch_format' => 'auto'
+                    ]
+                ]);
+
+                $data['logo'] = [
+                    'url' => $result['secure_url'],
+                    'public_id' => $result['public_id']
+                ];
             }
 
+            // Subir imágenes adicionales a Cloudinary
+            if ($request->hasFile('imagenes')) {
+                $imagenesData = [];
+                foreach ($request->file('imagenes') as $imagen) {
+                    $result = $uploadApi->upload($imagen->getRealPath(), [
+                        'folder' => 'micanchaya/empresas/imagenes',
+                        'resource_type' => 'image',
+                        'transformation' => [
+                            'quality' => 'auto',
+                            'fetch_format' => 'auto'
+                        ]
+                    ]);
+
+                    $imagenesData[] = [
+                        'url' => $result['secure_url'],
+                        'public_id' => $result['public_id']
+                    ];
+                }
+                $data['imagenes'] = $imagenesData;
+            }
+
+            $data['id_estado_empresa'] = 'pendiente';
             $empresa = Empresa::create($data);
 
             if ($request->has('servicios')) {
                 $empresa->servicios()->attach($request->servicios);
             }
 
-            return $this->sendResponse($empresa, 'Empresa creada con exito');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->sendError('Error de validacion', $e->errors());
+            DB::commit();
+
+            return $this->sendResponse(
+                new EmpresaResource($empresa->load(['propietario', 'estadoEmpresa', 'servicios'])),
+                'Empresa creada correctamente',
+                201
+            );
         } catch (\Exception $e) {
-            return $this->sendError('Error creando empresa', $e->getMessage());
+            DB::rollback();
+            return $this->sendError('Error al crear la empresa', $e->getMessage(), 500);
         }
     }
 
-    public function update(Request $request, $id)
+    public function show($nit)
     {
-        try {
-            $empresa = Empresa::find($id);
-            if (is_null($empresa)) {
-                return $this->sendError('Empresa no encontrada');
-            }
-
-            $request->validate([
-                'nombre' => 'sometimes|string',
-                'direccion' => 'sometimes|string',
-                'descripcion' => 'sometimes|string',
-                'hora_apertura' => 'sometimes|date_format:H:i',
-                'hora_cierre' => 'sometimes|date_format:H:i',
-                'id_propietario' => 'sometimes|exists:propietario,id_propietario',
-                'id_estado_empresa' => 'sometimes|exists:estado_empresa,id_estado_empresa',
-                'servicios' => 'sometimes|array',
-                'servicios.*' => 'exists:servicio,id_servicio',
-                'agregar_servicios' => 'sometimes|boolean',
-                // 'logo'=> 'required|url|regex:/^https?:\/\/.*\.cloudinary\.com\/.*/',
-                'imagenes' => 'nullable|array',
-                'imagenes.*' => 'required|url|regex:/^https?:\/\/.*\.cloudinary\.com\/.*/'
-            ]);
-
-            $empresa->update($request->except(['servicios', 'agregar_servicios']));
-
-            if ($request->has('servicios')) {
-                // Si agregar_servicios es true, añadir servicios sin eliminar los existentes
-                if ($request->input('agregar_servicios', false)) {
-                    $empresa->servicios()->attach($request->servicios);
-                } else {
-                    // Comportamiento predeterminado: reemplazar todos los servicios
-                    $empresa->servicios()->sync($request->servicios);
-                }
-            }
-
-            return $this->sendResponse($empresa->load('servicios'), 'Empresa actualizada con éxito');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->sendError('Error de validación', $e->errors());
-        } catch (\Exception $e) {
-            return $this->sendError('Error actualizando la empresa', $e->getMessage());
-        }
+        $empresa = Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha'])
+            ->findOrFail($nit);
+            
+        return $this->sendResponse(
+            new EmpresaResource($empresa),
+            'Empresa obtenida correctamente',
+            200
+        );
     }
 
-
-    public function show($id)
+    public function update(Request $request, $nit)
     {
+        $validator = Validator::make($request->all(), [
+            'nombre' => 'string',
+            'direccion' => 'string',
+            'descripcion' => 'string',
+            'logo' => 'image|max:2048',
+            'imagenes.*' => 'image|max:2048',
+            'hora_apertura' => 'date_format:H:i',
+            'hora_cierre' => 'date_format:H:i',
+            'id_estado_empresa' => 'exists:estado_empresa,id_estado_empresa',
+            'propietario_id' => 'exists:propietario,id',
+            'servicios' => 'nullable|array',
+            'servicios.*' => 'exists:servicio,id'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Error de validación', $validator->errors(), 422);
+        }
+
         try {
-            $empresa = Empresa::with(['propietario', 'estado', 'servicios', 'canchas.tipoCancha'])->find($id);
-            if (is_null($empresa)) {
-                return $this->sendError('Empresa no encontrada');
-            }
-            
-            // Process services to hide pivot data
-            $empresa->servicios->makeHidden('pivot');
-            
-            // Add field for court types and their counts
-            $tiposCanchaCount = [];
-            foreach ($empresa->canchas as $cancha) {
-                $tipoNombre = $cancha->tipoCancha->id_tipo_cancha ?? 'Sin tipo';
-                if (!isset($tiposCanchaCount[$tipoNombre])) {
-                    $tiposCanchaCount[$tipoNombre] = 0;
+            DB::beginTransaction();
+
+            $empresa = Empresa::findOrFail($nit);
+            $data = $request->except(['servicios', 'logo', 'imagenes']);
+            $cloudinary = new UploadApi();
+
+            // Manejar el logo
+            // En el método update
+            if ($request->hasFile('logo')) {
+                // Subir el nuevo logo
+                $result = $cloudinary->upload($request->file('logo')->getRealPath(), [
+                    'folder' => "micanchaya/empresas/logo"
+                ]);
+
+                // Eliminar el logo anterior
+                if ($empresa->logo) {
+                    $adminApi = new AdminApi();
+                    $adminApi->deleteAssets([$empresa->logo['public_id']]);
                 }
-                $tiposCanchaCount[$tipoNombre]++;
-            }
-            
-            // Convert to array format for response
-            $tiposCanchaArray = [];
-            foreach ($tiposCanchaCount as $tipo => $count) {
-                $tiposCanchaArray[] = [
-                    'tipo' => $tipo,
-                    'cantidad' => $count
+
+                $data['logo'] = [
+                    'url' => $result['secure_url'],
+                    'public_id' => $result['public_id']
                 ];
             }
-            
-            $empresa->tipos_cancha = $tiposCanchaArray;
-            
-            return $this->sendResponse($empresa, 'Empresa obtenida con exito');
+
+            // Manejar las imágenes múltiples
+            // Para las imágenes múltiples
+            if ($request->hasFile('imagenes')) {
+                foreach ($request->file('imagenes') as $imagen) {
+                    $result = $cloudinary->upload($imagen->getRealPath(), [
+                        'folder' => "micanchaya/empresas/{$nit}"
+                    ]);
+                    
+                    $nuevasImagenes[] = [
+                        'url' => $result['secure_url'],
+                        'public_id' => $result['public_id']
+                    ];
+                }
+
+                // Eliminar las imágenes anteriores
+                if ($empresa->imagenes) {
+                    $adminApi = new AdminApi();
+                    $oldPublicIds = array_column($empresa->imagenes, 'public_id');
+                    if (!empty($oldPublicIds)) {
+                        $adminApi->deleteAssets($oldPublicIds);
+                    }
+                }
+
+                $data['imagenes'] = $nuevasImagenes;
+            }
+
+            $empresa->update($data);
+
+            if ($request->has('servicios')) {
+                $empresa->servicios()->sync($request->servicios);
+            }
+
+            DB::commit();
+
+            return $this->sendResponse(
+                $empresa->load(['propietario', 'estadoEmpresa', 'servicios']),
+                'Empresa actualizada correctamente',
+                200
+            );
         } catch (\Exception $e) {
-            return $this->sendError('Error obteniendo empresa', $e->getMessage());
+            DB::rollback();
+            return $this->sendError('Error al actualizar la empresa', $e->getMessage(), 500);
         }
     }
 
-    public function destroy($id)
+    public function destroy($nit)
     {
         try {
-            $empresa = Empresa::find($id);
-            if (is_null($empresa)) {
-                return $this->sendError('Empresa no encontrada');
+            DB::beginTransaction();
+            
+            $empresa = Empresa::findOrFail($nit);
+            
+            // Eliminar imágenes de Cloudinary
+            $adminApi = new AdminApi();
+            
+            if ($empresa->logo) {
+                $adminApi->deleteAssets([$empresa->logo['public_id']]);
             }
+
+            if ($empresa->imagenes) {
+                $publicIds = array_column($empresa->imagenes, 'public_id');
+                if (!empty($publicIds)) {
+                    $adminApi->deleteAssets($publicIds);
+                }
+            }
+
             $empresa->delete();
-            return $this->sendResponse(null, 'Empresa eliminada con exito');
+            
+            DB::commit();
+
+            return $this->sendResponse(
+                [],
+                'Empresa eliminada correctamente',
+                200
+            );
         } catch (\Exception $e) {
-            return $this->sendError('Error eliminando empresa', $e->getMessage());
+            DB::rollback();
+            return $this->sendError('Error al eliminar la empresa', $e->getMessage(), 500);
         }
     }
 
-    // Agregar un nuevo método para añadir servicios a una empresa
-    public function agregarServicios(Request $request, $nit)
+    public function findByPropietarioId($propietarioId)
     {
-        try {
-            $empresa = Empresa::find($nit);
-            if (is_null($empresa)) {
-                return $this->sendError('Empresa no encontrada');
-            }
-    
-            $request->validate([
-                'servicios' => 'required|array',
-                'servicios.*' => 'exists:servicio,id_servicio'
-            ]);
-    
-            // Agregar los servicios a la empresa
-            $empresa->servicios()->attach($request->servicios);
-    
-            return $this->sendResponse($empresa->load('servicios'), 'Servicios agregados con éxito');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->sendError('Error de validación', $e->errors());
-        } catch (\Exception $e) {
-            return $this->sendError('Error al agregar servicios', $e->getMessage());
+        $empresa = Empresa::where('propietario_id', $propietarioId)->first();
+
+        if (!$empresa) {
+            return $this->sendError('Empresa no encontrada', [], 404);
         }
+
+        return $this->sendResponse(
+            new EmpresaResource($empresa),
+            'Empresa obtenida correctamente',
+            200
+        );
     }
 }
