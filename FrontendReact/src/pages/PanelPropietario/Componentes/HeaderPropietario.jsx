@@ -37,46 +37,48 @@ const HeaderPropietario = ({ empresa, propietario }) => {
           </div>
           <span className="text-white text-base lg:text-lg">{empresa?.nombre || "Mi Empresa"}</span>
         </div>
+        <div className="flex items-center gap-4">
+          <Link to="/formulario-canchas" className="text-[#034] bg-white rounded-full py-1 px-4 transition">Agregar Cancha</Link>
 
-          {/* <Link to="/formulario-canchas" className="text-white hover:text-[#003344] transition">Agregar Cancha</Link> */}
-
-        {/* Botón de perfil propietario */}
-        <div className="relative" ref={dropdownRef}>
-          <button
-            className="flex items-center gap-2 py-1 px-4 h-[40px] text-[#003344] bg-white hover:bg-[#fefefe] border-0 rounded-2xl relative z-10 transition-all duration-200 ease-in-out shadow-md cursor-pointer"
-            onClick={toggleDropdown}
-            aria-expanded={isOpen}
-            aria-haspopup="true"
-          >
-            <span className="material-icons">account_circle</span>
-            <span>{propietario?.nombre || "Propietario"}</span>
-            <span className={`material-icons transition-transform duration-500 ease-in-out ${isOpen ? 'rotate-180' : ''}`}>
-              expand_more
-            </span>
-          </button>
-          {/* Menú desplegable */}
-          <div
-            className={`absolute right-0 top-[45px] w-[200px] bg-[#005571] rounded-[8px] overflow-hidden z-[50] transition-all duration-500 ease-in-out origin-top-right ${
-              isOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-0 invisible'
-            }`}
-          >
-            <Link to="/perfiladministrador" className="block px-4 py-2 text-white hover:bg-[#37616e] text-sm text-center rounded-t-lg">
-              Perfil
-            </Link>
-            <Link to="/reservaspasadas" className="block px-4 py-2 text-white hover:bg-[#37616e] text-sm text-center">
-              Reservas pasadas
-            </Link>
-            <Link to="/reservaspendientes" className="block px-4 py-2 text-white hover:bg-[#37616e] text-sm text-center">
-              Reservas pendientes
-            </Link>
+          {/* Botón de perfil propietario */}
+          <div className="relative" ref={dropdownRef}>
             <button
-              onClick={handleLogout}
-              className="w-full block px-4 py-2 text-white hover:bg-[#37616e] text-sm rounded-b-lg cursor-pointer"
+              className="flex items-center gap-2 py-1 px-4 h-[40px] text-[#003344] bg-white hover:bg-[#fefefe] border-0 rounded-2xl relative z-10 transition-all duration-200 ease-in-out shadow-md cursor-pointer"
+              onClick={toggleDropdown}
+              aria-expanded={isOpen}
+              aria-haspopup="true"
             >
-              Cerrar Sesión
+              <span className="material-icons">account_circle</span>
+              <span>{propietario?.nombre || "Propietario"}</span>
+              <span className={`material-icons transition-transform duration-500 ease-in-out ${isOpen ? 'rotate-180' : ''}`}>
+                expand_more
+              </span>
             </button>
+            {/* Menú desplegable */}
+            <div
+              className={`absolute right-0 top-[45px] w-[200px] bg-[#005571] rounded-lg overflow-hidden z-[50] transition-all duration-500 ease-in-out origin-top-right ${
+                isOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-0 invisible'
+              }`}
+            >
+              <Link to="/perfiladministrador" className="block px-4 py-2 text-white hover:bg-[#233343] text-sm text-center rounded-t-lg">
+                Perfil
+              </Link>
+              <Link to="/reservaspasadas" className="block px-4 py-2 text-white hover:bg-[#233343] text-sm text-center">
+                Reservas pasadas
+              </Link>
+              <Link to="/reservaspendientes" className="block px-4 py-2 text-white hover:bg-[#233343] text-sm text-center">
+                Reservas pendientes
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full block px-4 py-2 text-white hover:bg-red-500 text-sm rounded-b-lg cursor-pointer"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
           </div>
-        </div>
+          </div>
+        
       </div>
     </header>
   );

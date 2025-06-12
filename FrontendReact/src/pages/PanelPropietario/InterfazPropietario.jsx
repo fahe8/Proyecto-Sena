@@ -133,7 +133,7 @@ const InterfazPropietario = () => {
         
       <div className="w-full max-w-5xl mx-auto py-3 sm:py-5 px-3 sm:px-0">
         <div className="canchas_container flex-grow px-10 md:px-6">
-          <h2 className="text-xl sm:text-lg font-bold mb-3 sm:mb-4 pb-2 sm:pb-2.5 font-sans">Tus canchas</h2>
+          <h2 className="text-3xl sm:text-lg font-bold mb-3 sm:mb-4 pb-2 sm:pb-2.5 font-sans">Tus canchas</h2>
 
           {cargando ? (
             <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4">
@@ -142,10 +142,10 @@ const InterfazPropietario = () => {
           ) : listaCanchas?.length === 0 ? (
             <p className="text-center text-black text-xl sm:text-2xl p-3 sm:p-5">No tienes ninguna cancha registrada</p>
           ) : (
-            <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4 ">
+            <div className="flex  justify-center sm:justify-start gap-3 sm:gap-4 flex-col ">
               {listaCanchas?.map((cancha) => (
-                <div key={cancha.id} className="w-60 lg:w-68 bg-[#fdfdfd] p-5 rounded-xl shadow-md overflow-hidden">
-                  <div className="flex flex-col justify-between items-start mb-2 sm:mb-4">
+                <div key={cancha.id} className="flex bg-[#fdfdfd] rounded-xl shadow-md overflow-hidden">
+                  <div className="flex justify-between rounn items-start bg-amber-200 w-90">
                     <div className="w-full">
                       <img
                         className="w-full h-48 object-cover rounded-t-xl"
@@ -154,12 +154,13 @@ const InterfazPropietario = () => {
                       />
                     </div>
                   </div>
-                  <div className="flex justify-between items-center px-2.5 pb-5">
+                  <div className=''>
+                    <div className="flex justify-between items-center px-2.5 pb-5">
                     <h3 className="text-lg">{cancha.nombre}</h3>
                     <div className="flex items-center mt-1 bg-amber-100 px-3 py-1 rounded-lg text-xs">
-                  <StarIcon />
-                  <span className="ml-1 font-bold">4.4</span>
-                </div>
+                      <StarIcon />
+                      <span className="ml-1 font-bold">4.4</span>
+                    </div>
                   </div>
                   <div className="flex gap-5 px-2.5 pb-2.5">
                     <button 
@@ -175,6 +176,8 @@ const InterfazPropietario = () => {
                       Eliminar
                     </button>
                   </div>
+                  </div>
+                  
                 </div>
               ))}
             </div>

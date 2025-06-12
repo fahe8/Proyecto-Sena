@@ -49,7 +49,7 @@ const SideBarPerfil = ({opciones = [], bgClass = "bg-[#003044]"}) => {
     <div className="flex flex-row relative min-h-screen">
       <div
         ref={sidebarRef}
-        className={`fixed h-screen w-auto group-hover:max-w-xs flex flex-col z-20 ${bgClass}`}
+        className={`fixed h-screen w-auto group-hover:max-w-xs group flex flex-col z-20 ${bgClass}`}
       >
         <div className="flex items-center pt-5 justify-center cursor-pointer mb-5" onClick={() => navigate("/")}>
           <img src={logo} className="w-8 h-auto mx-auto" alt="Logo-MiCanchaYa" />

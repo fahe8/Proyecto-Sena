@@ -118,22 +118,22 @@ export const BotonPerfil = () => {
       {/* Menú desplegable */}
       {isAuthenticated && (
         <div 
-          className={`absolute right-0 top-[45px] w-[200px] bg-[#2fc92c] rounded-[8px] overflow-hidden z-[50] transition-all duration-500 ease-in-out origin-top-right ${
+          className={`absolute right-0 top-[45px] w-[200px] bg-[#16bb13] rounded-lg overflow-hidden z-[50] transition-all duration-500 ease-in-out origin-top-right ${
             isOpen 
               ? 'opacity-100 scale-100 visible' 
               : 'opacity-0 scale-0 invisible'
           }`}
         >
-              <Link to={"/perfil"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center rounded-t-lg">
+              <Link to={"/perfil"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center rounded-t-lg">
                   Mi Perfil
                 </Link>
-                <Link to={"/historialreservas"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center ">
+                <Link to={"/historialreservas"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center ">
                   Historial de reservas
                 </Link>
-                <Link to={"/reservasactivas"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center">
+                <Link to={"/reservasactivas"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center">
                   Reservas activas
                 </Link>
-                <Link to={"/favoritos"} className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center">
+                <Link to={"/favoritos"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center">
                   Mis favoritos
                 </Link>
                 {/* <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center">
@@ -141,7 +141,7 @@ export const BotonPerfil = () => {
                 </Link> */}
                 <button
                   onClick={handleLogout}
-                  className="w-full block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm rounded-b-lg cursor-pointer"
+                  className="w-full block px-4 py-2 text-white hover:bg-green-700 text-sm rounded-b-lg cursor-pointer"
                 >
                   Cerrar Sesión
             </button>

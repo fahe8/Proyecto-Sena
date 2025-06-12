@@ -62,7 +62,7 @@ const BuscarBTN = () => {
           />
           <button
             onClick={handleClick}
-            className={`flex items-center justify-center w-[50px] h-[50px] rounded-full text-2xl transition-all duration-300 ${
+            className={`flex items-center justify-center w-9 h-9 rounded-full text-2xl transition-all duration-300 ${
               isOpen
                 ? "bg-green-400 text-white"
                 : "bg-green-400 text-white"
@@ -90,7 +90,7 @@ const BuscarBTN = () => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="size-6"
+                className="size-5"
               >
                 <path
                   strokeLinecap="round"
