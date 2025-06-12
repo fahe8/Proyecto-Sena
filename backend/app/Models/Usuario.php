@@ -7,17 +7,28 @@ use Illuminate\Database\Eloquent\Model;
 class Usuario extends Model
 {
     protected $table = 'usuario';
-    protected $primaryKey = 'id_usuario';
-    public $incrementing = false;
-    protected $keyType = 'string';
 
     protected $fillable = [
-        'id_usuario',
+        'user_id',
         'nombre',
         'apellido',
         'telefono',
-        'email',
-        'bloqueado',
-        'imagen'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Relación con Reservas
+    public function reservas()
+    {
+        return $this->hasMany(Reserva::class, 'usuario_id', 'id');
+    }
+
+    // Relación con Reseñas
+    public function resenas()
+    {
+        return $this->hasMany(Resena::class, 'usuario_id', 'id');
+    }
 }

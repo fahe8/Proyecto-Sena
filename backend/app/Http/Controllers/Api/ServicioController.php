@@ -1,85 +1,61 @@
 <?php
+
 namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
 use App\Models\Servicio;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class ServicioController extends ApiController
+class ServicioController extends Controller
 {
     public function index()
     {
-        try {
-            $servicios = Servicio::all();
-            return $this->sendResponse($servicios, 'Services retrieved successfully');
-        } catch (\Exception $e) {
-            return $this->sendError('Error retrieving services', $e->getMessage());
-        }
+        $servicios = Servicio::all();
+        return response()->json(['servicios' => $servicios], 200);
     }
 
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                'id_servicio' => 'required|integer|unique:servicio',
-                'tipo' => 'required|string'
-            ]);
+        $validator = Validator::make($request->all(), [
+            'tipo' => 'required|string|max:255'
+        ]);
 
-            $servicio = Servicio::create($request->all());
-            return $this->sendResponse($servicio, 'Service created successfully');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->sendError('Validation error', $e->errors());
-        } catch (\Exception $e) {
-            return $this->sendError('Error creating service', $e->getMessage());
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        $servicio = Servicio::create($request->all());
+        return response()->json(['servicio' => $servicio], 201);
     }
 
     public function show($id)
     {
-        try {
-            $servicio = Servicio::find($id);
-            if (is_null($servicio)) {
-                return $this->sendError('Service not found');
-            }
-            return $this->sendResponse($servicio, 'Service retrieved successfully');
-        } catch (\Exception $e) {
-            return $this->sendError('Error retrieving service', $e->getMessage());
-        }
+        $servicio = Servicio::findOrFail($id);
+        return response()->json(['servicio' => $servicio], 200);
     }
 
     public function update(Request $request, $id)
     {
-        try {
-            $servicio = Servicio::find($id);
-            if (is_null($servicio)) {
-                return $this->sendError('Service not found');
-            }
+        $validator = Validator::make($request->all(), [
+            'tipo' => 'required|string|max:255'
+        ]);
 
-            $request->validate([
-                'tipo' => 'required|string'
-            ]);
-
-            $servicio->update($request->all());
-            return $this->sendResponse($servicio, 'Service updated successfully');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->sendError('Validation error', $e->errors());
-        } catch (\Exception $e) {
-            return $this->sendError('Error updating service', $e->getMessage());
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
+
+        $servicio = Servicio::findOrFail($id);
+        $servicio->update($request->all());
+
+        return response()->json(['servicio' => $servicio], 200);
     }
 
     public function destroy($id)
     {
-        try {
-            $servicio = Servicio::find($id);
-            if (is_null($servicio)) {
-                return $this->sendError('Service not found');
-            }
-            $servicio->delete();
-            return $this->sendResponse(null, 'Service deleted successfully');
-        } catch (\Exception $e) {
-            return $this->sendError('Error deleting service', $e->getMessage());
-        }
+        $servicio = Servicio::findOrFail($id);
+        $servicio->delete();
+
+        return response()->json(null, 204);
     }
-
-
-
 }

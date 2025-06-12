@@ -9,52 +9,48 @@ class Empresa extends Model
     protected $table = 'empresa';
     protected $primaryKey = 'NIT';
     public $incrementing = false;
-    protected $keyType = 'integer';
 
     protected $fillable = [
         'NIT',
         'nombre',
         'direccion',
         'descripcion',
+        'logo',
+        'imagenes',
         'hora_apertura',
         'hora_cierre',
-        'id_propietario',
         'id_estado_empresa',
-        'logo',
-        'imagenes'
+        'propietario_id'
     ];
 
     protected $casts = [
-        'imagenes' => 'array'
+        'logo' => 'array',
+        'imagenes' => 'array',
     ];
 
     public function propietario()
     {
-        return $this->belongsTo(Propietario::class, 'id_propietario');
+        return $this->belongsTo(Propietario::class);
     }
 
-    public function estado()
+    public function estadoEmpresa()
     {
-        return $this->belongsTo(EstadoEmpresa::class, 'id_estado_empresa');
+        return $this->belongsTo(EstadoEmpresa::class, 'id_estado_empresa', 'id_estado_empresa');
     }
 
     public function servicios()
     {
-        return $this->belongsToMany(Servicio::class, 'empresa_servicio', 'NIT', 'id_servicio');
+        return $this->belongsToMany(Servicio::class, 'empresa_servicio', 'NIT', 'servicio_id');
     }
 
     public function canchas()
     {
-        return $this->hasMany(Cancha::class, 'NIT');
+        return $this->hasMany(Cancha::class, 'NIT', 'NIT');
     }
 
+    // Relación con Reservas
     public function reservas()
     {
-        return $this->hasMany(Reserva::class, 'NIT');
-    }
-
-    public function resenas()
-    {
-        return $this->hasMany(Resena::class, 'NIT');
+        return $this->hasMany(Reserva::class, 'NIT', 'NIT');
     }
 }
