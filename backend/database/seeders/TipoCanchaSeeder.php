@@ -8,12 +8,12 @@ class TipoCanchaSeeder extends Seeder
     public function run()
     {
         DB::table('tipo_cancha')->insertOrIgnore([
-            ['id_tipo_cancha' => 'Futbol 5'],
-            ['id_tipo_cancha' => 'Futbol 6'],
-            ['id_tipo_cancha' => 'Futbol 7'],
-            ['id_tipo_cancha' => 'Futbol 8'],
-            ['id_tipo_cancha' => 'Futbol 9'],
-            ['id_tipo_cancha' => 'Futbol 11']
+            ['tipo' => 'Futbol 5'],
+            ['tipo' => 'Futbol 6'],
+            ['tipo' => 'Futbol 7'],
+            ['tipo' => 'Futbol 8'],
+            ['tipo' => 'Futbol 9'],
+            ['tipo' => 'Futbol 11']
         ]);
     }
 }

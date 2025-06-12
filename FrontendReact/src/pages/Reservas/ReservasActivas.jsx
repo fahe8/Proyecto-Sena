@@ -18,13 +18,13 @@ const ReservasActivas = () => {
       try {
         setCargando(true);
 
-        if (!user?.uid) {
-          console.log("No hay usuario autenticado o auth.uid no existe");
+        if (!user?.id) {
+          console.log("No hay usuario autenticado o auth.id no existe");
           setCargando(false);
           return;
         }
         
-        const response = await reservaServicio.obtenerReservasActivas(user.uid);
+        const response = await reservaServicio.obtenerReservasActivas(user.id);
         console.log("Respuesta API:", response.data);
         
         if (response.data && response.data.success) {
@@ -41,7 +41,7 @@ const ReservasActivas = () => {
       }
     };
   
-    if (user?.uid) {
+    if (user?.id) {
       cargarReservasActivas();
     }
   }, [user]);

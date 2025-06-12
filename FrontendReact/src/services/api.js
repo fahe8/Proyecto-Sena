@@ -11,27 +11,80 @@ const apiClient = axios.create({
     }
 });
 
+export const authServicio = {
+    obtenerUsuario: () => apiClient.get('/user', {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
+    registroUsuario: (data) => apiClient.post('/usuarios', data),
+    loginUsuario: (data) => apiClient.post('/login', data),
+    logoutUsuario: (token) => apiClient.get('/logout', {}, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
+    enviarCorreoVerificacion: () => apiClient.post('/email/verification-notification', {}, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
+    verificarToken: (token) => apiClient.get('/verificar-token', {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }),
+
+    recuperarContrasena: (email) => apiClient.post('/forgot-password', email),
+    cambiarContrasena: (data) => apiClient.post('/reset-password', data),
+};
+
+
+
 export const usuarioServicio = {
     obtenerTodos: () => apiClient.get('/usuarios'),
     obtenerPorId: (id) => apiClient.get(`/usuarios/${id}`),
     crear: (data) => apiClient.post('/usuarios', data),
-    actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/usuarios/${id}`)   
+    actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
+    eliminar: (id) => apiClient.delete(`/usuarios/${id}`)
 };
 
 export const propietarioServicio = {
     obtenerTodos: () => apiClient.get('/propietarios'),
     obtenerPorId: (id) => apiClient.get(`/propietarios/${id}`),
     obtenerPorEmpresa: (NIT) => apiClient.get(`/propietarios/empresa/${NIT}`),
-    crear: (data) => apiClient.post('/propietarios', data),
+    crear: (data) => {
+        // Si data es FormData, cambiar headers
+        const config = data instanceof FormData ? {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        } : {};
+        
+        return apiClient.post('/propietarios', data, config);
+    },
     actualizar: (id, data) => apiClient.put(`/propietarios/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/propietarios/${id}`)
+    eliminar: (id) => apiClient.delete(`/propietarios/${id}`),
+    obtenerTiposDocumentos: () => apiClient.get('/tipos-documentos'),
 };
 
 export const empresaServicio = {
     obtenerTodos: () => apiClient.get('/empresas'),
     obtenerPorId: (id) => apiClient.get(`/empresas/${id}`),
-    crear: (data) => apiClient.post('/empresas', data),
+    crear: (data) => {
+        // Si data es FormData, cambiar headers
+        const config = data instanceof FormData ? {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        } : {};
+        
+        return apiClient.post('/empresas', data, config);
+    },
     actualizar: (id, data) => apiClient.put(`/empresas/${id}`, data),
     eliminar: (id) => apiClient.delete(`/empresas/${id}`)
 };
@@ -57,12 +110,36 @@ export const resenaServicio = {
 };
 
 export const canchasServicio = {
-    obtenerTodosEmpresa: (nit) => apiClient.get(`/canchas/empresa/${nit}`),
-    tiposCanchas: () => apiClient.get(`/tipocanchas`),
-    estadoCanchas: () => apiClient.get(`/estadocanchas`),
-    actualizar: (id, data) => apiClient.put(`/canchas/${id}`, data),
+    obtenerTodosEmpresa: (nit) => apiClient.get(`canchas/empresa/${nit}`),
+    tiposCanchas: () => apiClient.get(`/tipos-canchas`),
+    estadoCanchas: () => apiClient.get(`/estados-canchas`),
+    actualizar: (id, data) => {
+        console.log('first, data: ', data)
+        // Si data contiene un archivo, usar FormData
+        if (data.imagen instanceof File) {
+            const formData = new FormData();
+            Object.keys(data).forEach(key => {
+                formData.append(key, data[key]);
+            });
+            return apiClient.put(`/canchas/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
+        }
+        return apiClient.put(`/canchas/${id}`, data);
+    },
     eliminar: (id) => apiClient.delete(`/canchas/${id}`),
-    agregar: (data) => apiClient.post('/canchas', data),
+    agregar: (data) => {
+        // Si data es FormData, cambiar headers
+        const config = data instanceof FormData ? {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        } : {};
+        
+        return apiClient.post('/canchas', data, config);
+    }
 }
 
 export const ServiciosServicio = {

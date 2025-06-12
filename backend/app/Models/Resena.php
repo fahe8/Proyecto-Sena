@@ -10,29 +10,31 @@ class Resena extends Model
     protected $primaryKey = 'id_resena';
 
     protected $fillable = [
-        'id_reserva',
-        'NIT', 
         'comentario',
         'calificacion',
-        'id_usuario'
+        'usuario_id',
+        'id_reserva',
+        'NIT',
     ];
-
-    public function reserva()
-    {
-        return $this->belongsTo(Reserva::class, 'id_reserva');
-    }
 
     protected $casts = [
-        'calificacion' => 'float'
+        'calificacion' => 'integer'
     ];
+
+    // Relación con Usuario (a través de users)
+    public function usuario()
+    {
+        return $this->belongsTo(Usuario::class, 'usuario_id');
+    }
+
+    // Relación con Reserva
+    public function reserva()
+    {
+        return $this->belongsTo(Reserva::class, 'id_reserva', 'id_reserva');
+    }
 
     public function empresa()
     {
         return $this->belongsTo(Empresa::class, 'NIT');
-    }
-
-    public function usuario()
-    {
-        return $this->belongsTo(Usuario::class, 'id_usuario', 'id_usuario');
     }
 }

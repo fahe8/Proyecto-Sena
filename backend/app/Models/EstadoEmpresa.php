@@ -18,6 +18,6 @@ class EstadoEmpresa extends Model
 
     public function empresas()
     {
-        return $this->hasMany(Empresa::class, 'id_estado_empresa');
+        return $this->hasMany(Empresa::class, 'id_estado_empresa', 'id_estado_empresa');
     }
 }

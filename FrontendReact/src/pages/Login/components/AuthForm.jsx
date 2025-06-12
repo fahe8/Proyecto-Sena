@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { LetterIcon, KeyIcon, EyeIcon, EyeOffIcon } from "../../../assets/IconosSVG/iconos.jsx";
 
-const AuthForm = ({ register, formData, handleChange, handleSubmit }) => {
+const AuthForm = ({ register, formData, handleChange, handleSubmit, errors }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -28,6 +28,7 @@ const AuthForm = ({ register, formData, handleChange, handleSubmit }) => {
           required
         />
       </div>
+      {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
 
       <div className="form-group relative">
         <label htmlFor="password" className="block mb-[8px] text-[15px] text-[#555]">
@@ -46,6 +47,7 @@ const AuthForm = ({ register, formData, handleChange, handleSubmit }) => {
           className="w-full pl-10 pr-4 py-3 h-[46px] border border-gray-300 rounded-md text-[15px]"
           required
         />
+         {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
         <div
           className="absolute top-[38px] right-[15px] text-[13px] text-[#777] pt-[5px] cursor-pointer"
           onClick={togglePasswordVisibility}

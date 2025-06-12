@@ -6,18 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class TipoDocumento extends Model
 {
-    protected $table = 'tipoDocumento';
-    protected $primaryKey = 'id_tipoDocumento';
+    protected $table = 'tipo_documento';
+    protected $primaryKey = 'tipo_documento_id';
     public $incrementing = false;
     protected $keyType = 'string';
     public $timestamps = false;
 
     protected $fillable = [
-        'id_tipoDocumento'
+        'tipo_documento_id'
     ];
 
     public function propietarios()
     {
-        return $this->hasMany(Propietario::class, 'id_tipoDocumento');
+        return $this->hasMany(Propietario::class, 'tipo_documento_id');
     }
 }

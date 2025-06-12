@@ -9,7 +9,8 @@ class CreateTipoCanchaTable extends Migration
     public function up()
     {
         Schema::create("tipo_cancha", function (Blueprint $table) {
-            $table->string("id_tipo_cancha")->primary();
+            $table->id();
+            $table->string("tipo");
         });
     }
 
