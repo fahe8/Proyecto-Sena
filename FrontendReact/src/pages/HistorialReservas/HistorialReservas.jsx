@@ -581,7 +581,7 @@ const manejarEnvioResena = async () => {
                         ) : (
                           <div className="flex flex-col items-center gap-2">
                             <div className="flex items-center gap-2 text-green-600">
-                              <span>✅</span>
+                             
                               <span className="text-sm font-medium">Reseña enviada</span>
                             </div>
                             {reserva.resena_data && (
