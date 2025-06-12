@@ -34,7 +34,7 @@ function ListaUsuarios() {
       Nombre: "Michael Campbell",
       Telefono: "+7 256 52 73",
       Correo: "camp@hotmail.com",
-      Estado: "inactive",
+      status: "inactive",
     },
     {
       id: 5,
@@ -95,12 +95,42 @@ function ListaUsuarios() {
     
   ]);
 
+  const getStatusInfo = (status) => {
+    switch(status) {
+      case 'active':
+        return {
+          text: 'Activo',
+          style: 'bg-green-100 text-green-800'
+        };
+      case 'inactive':
+        return {
+          text: 'Inactivo',
+          style: 'bg-red-100 text-red-800'
+        };
+      case 'pending':
+        return {
+          text: 'En Proceso',
+          style: 'bg-yellow-100 text-yellow-800'
+        };
+      default:
+        return {
+          text: 'Desconocido',
+          style: 'bg-gray-100 text-gray-800'
+        };
+    }
+  };
+
+  const CambiarEstadoUsuario = (id, NuevoEstado) => {
+    setUsuarios(usuarios.map(usuario => 
+      usuario.id === id ? {...usuario, status: NuevoEstado } : usuario
+    ));
+  };
+
   return (
     <div className="w-full p-6 bg-gray-50 rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-2">
         <div className="flex space-x-4 rounded-lg m-2">
-          <button className="px-4 py-2 m-2 border-b-2 border-green-400 text-green-400 text-xl ">Usuarios</button>
-
+          <button className="px-4 py-1 m-2 border-b-3 border-green-400 text-green-400 text-xl ">Usuarios</button>
         </div>
         <div className="text-right text-md text-[#003044]">
           <div>Total Usuarios: {usuarios.length}</div>
@@ -143,9 +173,9 @@ function ListaUsuarios() {
                 <td className="py-3 px-4 text-[#003044]">{usuario.Telefono}</td>
                 <td className="py-3 px-4 text-[#003044]">{usuario.Correo}</td>
                 <td className="py-3 px-4">
-                  <span className={`px-2 py-1 rounded-full text-xs ${usuario.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                    {usuario.status === 'active' ? 'Active' : 'Inactive'}
-                  </span>
+                  <span className={`px-2 py-1 rounded-full text-xs ${getStatusInfo(usuario.status).style}`}>
+                        {getStatusInfo(usuario.status).text}
+                      </span>
                 </td>
                 <td className="py-3 px-4">
                   <div className="flex space-x-2 pl-2 justify-left">
@@ -168,8 +198,9 @@ function ListaUsuarios() {
                   </div>
                 </td>
                 <td className="py-3 px-4">
-                  <button className="bg-green-500 text-white px-3 py-1 rounded-md text-sm">
-                    Banear
+                  <button onClick={() => CambiarEstadoUsuario(usuario.id, usuario.status === 'active' ? 'inactive' : 'active')}
+                        className={`px-3 py-1 rounded-md text-sm ${usuario.status === 'active' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}>
+                          {usuario.status === 'active' ? 'Banear' : 'Activar'}
                   </button>
                 </td>
               </tr>
