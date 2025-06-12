@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const API_URL = 'http://127.0.0.1:8000/api';
 
@@ -97,16 +97,38 @@ export const reservaServicio = {
     actualizar: (id, data) => apiClient.put(`/reservas/${id}`, data),
     eliminar: (id) => apiClient.delete(`/reservas/${id}`),
     obtenerReservasActivas: (id) => apiClient.get(`reservas/active/${id}`),
-    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`),
-    obtenerResenasEmpresa: (Nit) => apiClient.post(`obtenerReseñaEmpresa/empresas/${Nit}`),
-    crearResena:(data) => apiClient.post("/resenas", data)
+    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`)
+};
+
+// NUEVO SERVICIO PARA RESEÑAS
+export const resenaServicio = {
+    obtenerResenasEmpresa: (nit) => apiClient.get(`/resenas/empresa/${nit}`),
+    crear: (data) => apiClient.post('/resenas', data),
+    verificarResenaUsuario: (idReserva, idUsuario) => apiClient.get(`/resenas/verificar/${idReserva}/${idUsuario}`),
+    obtenerPorReserva: (idReserva) => apiClient.get(`/resenas/reserva/${idReserva}`),
+    obtenerHistorialResenas: (idUsuario) => apiClient.get(`/resenas/history/${idUsuario}`) // NUEVO MÉTODO
 };
 
 export const canchasServicio = {
     obtenerTodosEmpresa: (nit) => apiClient.get(`canchas/empresa/${nit}`),
     tiposCanchas: () => apiClient.get(`/tipos-canchas`),
     estadoCanchas: () => apiClient.get(`/estados-canchas`),
-    actualizar: (id, data) => apiClient.put(`/canchas/${id}`, data),
+    actualizar: (id, data) => {
+        console.log('first, data: ', data)
+        // Si data contiene un archivo, usar FormData
+        if (data.imagen instanceof File) {
+            const formData = new FormData();
+            Object.keys(data).forEach(key => {
+                formData.append(key, data[key]);
+            });
+            return apiClient.put(`/canchas/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
+        }
+        return apiClient.put(`/canchas/${id}`, data);
+    },
     eliminar: (id) => apiClient.delete(`/canchas/${id}`),
     agregar: (data) => {
         // Si data es FormData, cambiar headers

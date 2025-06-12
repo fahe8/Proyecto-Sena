@@ -44,4 +44,10 @@ class Reserva extends Model
     {
         return $this->hasOne(Pago::class, 'id_reserva');
     }
+    
+    public function resena()
+    {
+        // Cambiar la relación para usar id_reserva en lugar de NIT
+        return $this->hasOne(Resena::class, 'id_reserva', 'id_reserva');
+    }
 }

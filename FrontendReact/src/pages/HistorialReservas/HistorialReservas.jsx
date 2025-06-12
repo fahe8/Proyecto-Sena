@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../Provider/AuthProvider";
 import {
-  calendar,
-  clock,
-  football,
-  gps,
-  money,
+  Alvertencia,
+  Calendario,
+  Cerrar,
+  Gps,
+  Lupa,
+  OrdenarFlecha,
+  Tiempo,
 } from "../../assets/IconosSVG/iconos";
-import { reservaServicio } from "../../services/api";
+import { reservaServicio, resenaServicio } from "../../services/api";
 import Loading from "../Login/components/Loading";
-
 const HistorialReservas = () => {
   const { user } = useAuth();
 
@@ -24,7 +25,7 @@ const HistorialReservas = () => {
 
   // Estados para el modal de reseña
   const [mostrarModalResena, setMostrarModalResena] = useState(false);
-  const [reservaParaResenar, setReservaParaResenar] = useState(null);
+  const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
   const [enviandoResena, setEnviandoResena] = useState(false);
 
   // Estados del formulario de reseña
@@ -37,48 +38,131 @@ const HistorialReservas = () => {
   const buttonRef = useRef(null);
 
   // Estados para mostrar más/menos reservas
-  const [reservasMostradas, setReservasMostradas] = useState(5); // Inicialmente mostrar 5
+  const [reservasMostradas, setReservasMostradas] = useState(5);
   const [mostrarTodas, setMostrarTodas] = useState(false);
 
-  // Cargar historial de reservas desde el backend
+  // Cargar historial de reservas y verificar reseñas
   useEffect(() => {
-    const cargarHistorialReservas = async () => {
-      try {
-        setCargando(true);
+    const cargarHistorialYVerificarResenas = async () => {
+        try {
+            setCargando(true);
 
-        if (!user?.uid) {
-          console.log("No hay usuario autenticado");
-          setCargando(false);
-          return;
+            if (!user?.uid) {
+                console.log("No hay usuario autenticado");
+                setCargando(false);
+                return;
+            }
+
+            // Obtener historial de reservas
+            const response = await reservaServicio.obtenerHistorialReservas(user.uid);
+            console.log("Respuesta historial:", response.data);
+
+            if (response.data && response.data.success) {
+                const reservasCompletadas = response.data.data || [];
+                
+                // Verificar reseñas para cada reserva
+                const reservasConEstadoResena = await Promise.all(
+                    reservasCompletadas.map(async (reserva) => {
+                        try {
+                            // Usar los parámetros correctos para la verificación
+                            const resenaResponse = await resenaServicio.verificarResenaUsuario(
+                                reserva.id_reserva,
+                                user.uid
+                            );
+                            
+                            return {
+                                ...reserva,
+                                tiene_resena: resenaResponse.data.tiene_resena || false,
+                                resena_data: resenaResponse.data.resena || null
+                            };
+                        } catch (error) {
+                            console.error(`Error verificando reseña para reserva ${reserva.id_reserva}:`, error);
+                            return {
+                                ...reserva,
+                                tiene_resena: false,
+                                resena_data: null
+                            };
+                        }
+                    })
+                );
+
+                setHistorialReservas(reservasConEstadoResena);
+                setReservaFiltrada(reservasConEstadoResena);
+            } else {
+                throw new Error("No se pudieron cargar las reservas");
+            }
+        } catch (error) {
+            console.error("Error al cargar historial:", error);
+            setError("No se pudieron cargar las reservas");
+        } finally {
+            setCargando(false);
         }
-
-        // Llamada al backend para obtener reservas completadas/pasadas
-        const response = await reservaServicio.obtenerHistorialReservas(
-          user?.uid
-        );
-        console.log("Respuesta historial:", response.data);
-
-        if (response.data && response.data.success) {
-          const reservasCompletadas = response.data.data || [];
-          setHistorialReservas(reservasCompletadas);
-          setReservaFiltrada(reservasCompletadas);
-          console.log("Historial de reservas:", reservasCompletadas);
-        } else {
-          throw new Error("No se pudo cargar el historial de reservas");
-        }
-      } catch (error) {
-        console.error("Error al cargar historial:", error);
-        setError("No se pudo cargar el historial de reservas");
-      } finally {
-        setCargando(false);
-      }
     };
 
     if (user?.uid) {
-      cargarHistorialReservas();
+        cargarHistorialYVerificarResenas();
     }
-  }, [user]);
+}, [user]);
+// Función para manejar la creación de reseñas
+const manejarEnvioResena = async () => {
+    if (!reservaSeleccionada || calificacion === 0 || comentario.trim() === "") {
+        alert("Por favor completa todos los campos");
+        return;
+    }
 
+    try {
+        setEnviandoResena(true);
+
+        const datosResena = {
+            id_reserva: reservaSeleccionada.id_reserva,
+            NIT: reservaSeleccionada.empresa?.NIT || reservaSeleccionada.NIT,
+            comentario: comentario.trim(),
+            calificacion: calificacion,
+            id_usuario: user.uid
+        };
+
+        const response = await resenaServicio.crear(datosResena);
+
+        if (response.data.success) {
+            // Actualizar el estado local
+            setHistorialReservas(prev =>
+                prev.map(reserva =>
+                    reserva.id_reserva === reservaSeleccionada.id_reserva
+                        ? { ...reserva, tiene_resena: true, resena_data: response.data.data }
+                        : reserva
+                )
+            );
+            
+            setReservaFiltrada(prev =>
+                prev.map(reserva =>
+                    reserva.id_reserva === reservaSeleccionada.id_reserva
+                        ? { ...reserva, tiene_resena: true, resena_data: response.data.data }
+                        : reserva
+                )
+            );
+
+            // Limpiar formulario y cerrar modal
+            setCalificacion(0);
+            setComentario("");
+            setMostrarModalResena(false);
+            setReservaSeleccionada(null);
+
+            alert("¡Reseña enviada exitosamente!");
+        } else {
+            throw new Error(response.data.message || "Error al enviar la reseña");
+        }
+    } catch (error) {
+        console.error("Error al enviar reseña:", error);
+        
+        if (error.response?.status === 409) {
+            alert("Ya has creado una reseña para esta reserva");
+        } else {
+            alert("Error al enviar la reseña. Inténtalo de nuevo.");
+        }
+    } finally {
+        setEnviandoResena(false);
+    }
+};
   // Función para manejar la búsqueda
   const ManejarBusqueda = (e) => {
     const value = e.target.value;
@@ -201,7 +285,7 @@ const HistorialReservas = () => {
 
   // Función para abrir el modal de reseña
   const abrirModalResena = (reserva) => {
-    setReservaParaResenar(reserva);
+    setReservaSeleccionada(reserva);
     setCalificacion(reserva.resena?.calificacion || 0);
     setComentario(reserva.resena?.comentario || "");
     setMostrarModalResena(true);
@@ -210,13 +294,13 @@ const HistorialReservas = () => {
   // Función para cerrar el modal de reseña
   const cerrarModalResena = () => {
     setMostrarModalResena(false);
-    setReservaParaResenar(null);
+    setReservaSeleccionada(null);
     setCalificacion(0);
     setComentario("");
     setCalificacionHover(0);
   };
 
-  // Función para enviar la reseña
+  // Función enviarResena corregida
   const enviarResena = async () => {
     if (calificacion === 0) {
       alert("Por favor, selecciona una calificación");
@@ -227,34 +311,35 @@ const HistorialReservas = () => {
       alert("Por favor, escribe un comentario de al menos 10 caracteres");
       return;
     }
-
+    
     try {
       setEnviandoResena(true);
-
+      
+      // Datos corregidos para la nueva estructura
       const datosResena = {
-        id_reserva: reservaParaResenar.id_reserva || reservaParaResenar.id,
+        id_reserva: reservaSeleccionada.id_reserva,
+        NIT: reservaSeleccionada.empresa?.NIT || reservaSeleccionada.NIT,
         id_usuario: user.uid,
         calificacion: calificacion,
         comentario: comentario.trim(),
-        fecha_resena: new Date().toISOString(),
       };
-
-      // Llamada al backend para guardar la reseña
-      const response = await reservaServicio.crearResena(datosResena);
-
+      
+      console.log('Enviando reseña con datos:', datosResena);
+      
+      const response = await resenaServicio.crear(datosResena);
+      
       if (response.data && response.data.success) {
         // Actualizar la reserva local con la nueva reseña
         const reservasActualizadas = historialReservas.map((reserva) => {
-          if (
-            (reserva.id_reserva || reserva.id) ===
-            (reservaParaResenar.id_reserva || reservaParaResenar.id)
-          ) {
+          if (reserva.id_reserva === reservaSeleccionada.id_reserva) {
             return {
               ...reserva,
+              tiene_resena: true,
               resena: {
+                id_resena: response.data.data.id_resena,
                 calificacion: calificacion,
                 comentario: comentario.trim(),
-                fecha_resena: new Date().toISOString(),
+                created_at: new Date().toISOString(),
               },
             };
           }
@@ -262,6 +347,8 @@ const HistorialReservas = () => {
         });
 
         setHistorialReservas(reservasActualizadas);
+        
+        // Actualizar también las reservas filtradas
         setReservaFiltrada(
           reservasActualizadas.filter((reserva) => {
             if (BuscarTerm.length === 0) return true;
@@ -274,8 +361,12 @@ const HistorialReservas = () => {
           })
         );
 
-        alert("¡Reseña enviada exitosamente!");
+        // Limpiar formulario y cerrar modal
+        setCalificacion(0);
+        setComentario("");
         cerrarModalResena();
+        
+        alert("¡Reseña enviada exitosamente!");
       } else {
         throw new Error("No se pudo enviar la reseña");
       }
@@ -286,6 +377,7 @@ const HistorialReservas = () => {
       setEnviandoResena(false);
     }
   };
+
   // Función para mostrar más o menos reservas
   const alternarMostrarReservas = () => {
     if (mostrarTodas) {
@@ -348,7 +440,7 @@ const HistorialReservas = () => {
   return (
     <div className="min-h-screen w-screen py-8 px-30 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="max-w-5xl mx-auto rounded-lg bg-white pb-10 shadow-lg">
-        {/* Header Section */}
+        {/* encabezado */}
         <div className="text-center mb-3 bg-[#003044] rounded-t-lg p-10 ">
           <h1 className="text-2xl font-bold text-white mb-2">
             Historial de Reservas
@@ -357,10 +449,10 @@ const HistorialReservas = () => {
             Revisa tus reservas pasadas y comparte tu experiencia
           </p>
         </div>
-        {/* Search and Filter Section */}
+        {/* Sección de búsqueda y filtrado */}
         <div className="bg-white rounded-xl mt-5 mb-8 mx-10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            {/* Search Input */}
+            {/* Entrada de búsqueda */}
             <div className="relative flex-1">
               <input
                 id="buscador"
@@ -370,7 +462,7 @@ const HistorialReservas = () => {
                 placeholder="Buscar por nombre de cancha o ubicación..."
                 className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-400 focus:border-[#00c951] focus:ring-2 focus:ring-[#00c951] transition-all duration-300 outline-none"
               />
-              {/* Filter Button */}
+              {/* Botón de filtro */}
               <div className="absolute right-0 top-0">
                 <button
                   ref={buttonRef}
@@ -378,21 +470,9 @@ const HistorialReservas = () => {
                   className="flex items-center justify-center px-6 py-[15px] bg-[#00c951] text-white rounded-r-lg hover:bg-[#00a844] transition-all duration-300 gap-2 min-w-[160px]"
                 >
                   <span>{TextoBoton}</span>
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+                  <OrdenarFlecha />
                 </button>
-  
+
                 {mostrar && (
                   <div
                     ref={mostrarRef}
@@ -413,27 +493,12 @@ const HistorialReservas = () => {
                   </div>
                 )}
               </div>
-              <svg
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-              
+              <Lupa />
             </div>
-
           </div>
         </div>
 
-        {/* Loading, Error, or Reservations List */}
+        {/* Lista de carga, errores o reservas*/}
         {cargando ? (
           <div className="flex justify-center items-center h-40">
             <Loading />
@@ -443,20 +508,8 @@ const HistorialReservas = () => {
             {error}
           </div>
         ) : reservaFiltrada.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-xl ">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400 mb-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+          <div className="text-center py-12 bg-white rounded-xl shadow-md">
+            <Alvertencia />
             <p className="text-lg text-gray-600">
               Aún no tienes reservas pasadas
             </p>
@@ -472,7 +525,7 @@ const HistorialReservas = () => {
                 >
                   <div className="p-4">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
-                      {/* Field Info */}
+                      {/* Información de campo */}
                       <div className="flex items-center space-x-4 md:col-span-2">
                         <div className="w-13 h-13 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
                           {obtenerNombreEmpresa(reserva).charAt(0)}
@@ -482,62 +535,20 @@ const HistorialReservas = () => {
                             {obtenerNombreEmpresa(reserva)}
                           </h3>
                           <p className="text-gray-600 text-sm flex items-center gap-1">
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                              />
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                              />
-                            </svg>
+                            <Gps />
                             {obtenerDireccionEmpresa(reserva)}
                           </p>
                         </div>
                       </div>
 
-                      {/* Date and Time */}
+                      {/* Fecha y hora */}
                       <div className="flex flex-col space-y-2">
                         <div className="flex items-center space-x-2 text-gray-700 text-sm">
-                          <svg
-                            className="w-4 h-4 text-[#00c951]"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
+                          <Calendario />
                           <span>{formatearFecha(reserva.fecha)}</span>
                         </div>
                         <div className="flex items-center space-x-2 text-gray-700 text-sm">
-                          <svg
-                            className="w-4 h-4 text-[#00c951]"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                          </svg>
+                          <Tiempo />
                           <span>
                             {formatearHora(
                               reserva.hora_inicio || reserva.horaInicio
@@ -548,10 +559,9 @@ const HistorialReservas = () => {
                             )}
                           </span>
                         </div>
-                        
                       </div>
 
-                      {/* Review Section */}
+                      {/* Sección de revisión */}
                       <div className="flex flex-col items-center space-y-3">
                         <p className="text-lg font-semibold text-[#00c951]">
                           Total: $
@@ -560,37 +570,34 @@ const HistorialReservas = () => {
                             reserva.monto ||
                             "0.00"}
                         </p>
-                        {reserva.resena ? (
-                          <div className="text-center">
-                            <div className="flex justify-center mb-2">
-                              {[1, 2, 3, 4, 5].map((estrella) => (
-                                <EstrellaCalificacion
-                                  key={estrella}
-                                  indice={estrella}
-                                  calificacionActual={
-                                    reserva.resena.calificacion
-                                  }
-                                  readOnly={true}
-                                />
-                              ))}
-                            </div>
-                            <p className="text-sm text-gray-600">
-                              Ya has calificado
-                            </p>
-                            <button
-                              onClick={() => abrirModalResena(reserva)}
-                              className="text-xs text-[#00c951] hover:underline mt-1 cursor-pointer"
-                            >
-                              Ver/Editar reseña
-                            </button>
-                          </div>
-                        ) : (
+                        {!reserva.tiene_resena ? (
                           <button
                             onClick={() => abrirModalResena(reserva)}
-                            className="bg-[#003044] text-white px-4 py-2 rounded-lg hover:bg-[#203c48] transition-colors text-sm font-medium cursor-pointer"
+                            className="bg-[#003044] text-white px-4 py-2 rounded-lg hover:bg-[#001f2d] transition-colors duration-200 flex items-center gap-2"
                           >
+                           
                             Escribir Reseña
                           </button>
+                        ) : (
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="flex items-center gap-2 text-green-600">
+                              <span>✅</span>
+                              <span className="text-sm font-medium">Reseña enviada</span>
+                            </div>
+                            {reserva.resena_data && (
+                              <div className="flex items-center gap-1">
+                                <span className="text-xs text-gray-500">
+                                  ⭐ {reserva.resena_data.calificacion}/5
+                                </span>
+                              </div>
+                            )}
+                            <button
+                              onClick={() => abrirModalResena(reserva)}
+                              className="text-xs text-[#00c951] hover:underline cursor-pointer"
+                            >
+                              Ver reseña
+                            </button>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -602,149 +609,96 @@ const HistorialReservas = () => {
               <div className="text-center mt-8">
                 <button
                   onClick={alternarMostrarReservas}
-                  className="bg-[#1a6079] text-white px-6 py-3 rounded-lg hover:bg-[#145066] transition-all duration-300 font-medium cursor-pointer"
+                  className="bg-[#1a6079] text-white px-6 py-3 rounded-lg hover:bg-[#2a7089] transition-colors font-medium"
                 >
-                  {mostrarTodas
-                    ? "Mostrar menos"
-                    : `Mostrar más (${reservaFiltrada.length - 5} restantes)`}
+                  {mostrarTodas ? "Ver menos" : "Ver más"}
                 </button>
               </div>
             )}
           </div>
         )}
-      </div>
 
-      {/* Modal de Reseña */}
-      {mostrarModalResena && reservaParaResenar && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-          <div
-            className="absolute inset-0 bg-[#36363695] backdrop-blur-sm"
-            onClick={cerrarModalResena}
-          ></div>
-
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-auto z-10 relative">
-            {/* Header */}
-            <div className="bg-[#00c951] p-6 text-white rounded-t-lg">
-              <h3 className="text-xl font-bold">Califica tu experiencia</h3>
-              <p className="text-sm opacity-90 mt-1">
-                {obtenerNombreEmpresa(reservaParaResenar)}
-              </p>
-
-              <button
-                className="absolute top-4 right-4 text-white hover:text-gray-200 cursor-pointer"
-                onClick={cerrarModalResena}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Content */}
-            <div className="p-6">
-              {/* Información de la reserva */}
-              <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                <div className="flex items-center justify-between text-sm text-gray-600">
-                  <span>{formatearFecha(reservaParaResenar.fecha)}</span>
-                  <span>
-                    {formatearHora(
-                      reservaParaResenar.hora_inicio ||
-                        reservaParaResenar.horaInicio
-                    )}{" "}
-                    -{" "}
-                    {formatearHora(
-                      reservaParaResenar.hora_final ||
-                        reservaParaResenar.horaFin
-                    )}
-                  </span>
+        {/* Modal de reseña */}
+        {mostrarModalResena && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-bold text-[#003044]">
+                    {reservaSeleccionada?.resena ? "Editar Reseña" : "Escribir Reseña"}
+                  </h2>
+                  <button
+                    onClick={cerrarModalResena}
+                    className="text-gray-500 hover:text-gray-700 transition-colors"
+                  >
+                    <Cerrar />
+                  </button>
                 </div>
-              </div>
 
-              {/* Calificación con estrellas */}
-              <div className="text-center mb-6">
-                <h4 className="font-medium text-gray-700 mb-4">
-                  ¿Cómo fue tu experiencia?
-                </h4>
-                <div className="flex justify-center space-x-1">
-                  {[1, 2, 3, 4, 5].map((estrella) => (
-                    <EstrellaCalificacion
-                      key={estrella}
-                      indice={estrella}
-                      calificacionActual={calificacionHover || calificacion}
-                      onHover={setCalificacionHover}
-                      onClick={setCalificacion}
-                    />
-                  ))}
-                </div>
-                {calificacion > 0 && (
-                  <p className="text-sm text-gray-600 mt-2">
-                    {calificacion === 1 && "Muy malo"}
-                    {calificacion === 2 && "Malo"}
-                    {calificacion === 3 && "Regular"}
-                    {calificacion === 4 && "Bueno"}
-                    {calificacion === 5 && "Excelente"}
+                <div className="mb-6">
+                  <h3 className="font-semibold text-lg mb-2">
+                    {obtenerNombreEmpresa(reservaSeleccionada)}
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    {formatearFecha(reservaSeleccionada?.fecha)} -{" "}
+                    {formatearHora(reservaSeleccionada?.hora_inicio)}
                   </p>
-                )}
-              </div>
+                </div>
 
-              {/* Comentario */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Cuéntanos sobre tu experiencia
-                </label>
-                <textarea
-                  value={comentario}
-                  onChange={(e) => setComentario(e.target.value)}
-                  placeholder="Describe cómo fue tu experiencia en esta cancha..."
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00c951] focus:border-[#00c951] resize-none"
-                  rows="4"
-                  maxLength="500"
-                ></textarea>
-                <p className="text-xs text-gray-500 mt-1">
-                  {comentario.length}/500 caracteres
-                </p>
-              </div>
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Calificación
+                  </label>
+                  <div className="flex justify-center space-x-2">
+                    {[1, 2, 3, 4, 5].map((estrella) => (
+                      <EstrellaCalificacion
+                        key={estrella}
+                        indice={estrella}
+                        calificacionActual={calificacionHover || calificacion}
+                        onHover={setCalificacionHover}
+                        onClick={setCalificacion}
+                      />
+                    ))}
+                  </div>
+                </div>
 
-              {/* Botones */}
-              <div className="flex space-x-3">
-                <button
-                  onClick={cerrarModalResena}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={enviarResena}
-                  disabled={enviandoResena || calificacion === 0}
-                  className="flex-1 px-4 py-2 bg-[#00c951] text-white rounded-lg hover:bg-[#00a844] cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {enviandoResena ? (
-                    <div className="flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2 "></div>
-                      Enviando...
-                    </div>
-                  ) : reservaParaResenar.resena ? (
-                    "Actualizar Reseña"
-                  ) : (
-                    "Enviar Reseña"
-                  )}
-                </button>
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Comentario
+                  </label>
+                  <textarea
+                    value={comentario}
+                    onChange={(e) => setComentario(e.target.value)}
+                    placeholder="Comparte tu experiencia..."
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#00c951] focus:ring-2 focus:ring-[#00c951] transition-all duration-300 outline-none resize-none"
+                    rows={4}
+                    maxLength={500}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {comentario.length}/500 caracteres
+                  </p>
+                </div>
+
+                <div className="flex space-x-3">
+                  <button
+                    onClick={cerrarModalResena}
+                    className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={manejarEnvioResena}  // Cambiar de enviarResena a manejarEnvioResena
+                    disabled={enviandoResena || calificacion === 0}
+                    className="flex-1 px-4 py-3 bg-[#00c951] text-white rounded-lg hover:bg-[#00a844] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                    {enviandoResena ? "Enviando..." : "Enviar Reseña"}
+                    </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

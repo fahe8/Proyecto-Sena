@@ -4,7 +4,7 @@ import "./App.css";
 import Inicio from "./pages/Inicio/Inicio";
 import Login from "./pages/Login/Login";
 import ForgotPassword from "./pages/Login/components/ForgotPassword";
-import Cliente from "./pages/Cliente/PerfilUsuario";
+import Empresa from "./pages/Empresa/Empresa";
 import SideBarPerfil from "./pages/SideBarPerfil/SideBarPerfil";
 import Favoritos from "./pages/Favoritos/Favoritos";
 import PerfilPage from "./pages/Perfil/Perfil";
@@ -19,7 +19,7 @@ import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
 import PerfilAdministrador from "./pages/PanelPropietario/PerfilAdministrador";
 import ReservasPendientes from "./pages/PanelPropietario/ReservasPendientes";
 import ReservasPasadas from "./pages/PanelPropietario/ReservasPasadas";
-import { ProfileIcon } from "./assets/IconosSVG/iconos";
+// import { ProfileIcon } from "./assets/IconosSVG/iconos";
 import InterfazAdministrador from "./pages/PanelAdministrador/InterfazAdministrador";
 import ListaUsuarios from "./pages/PanelAdministrador/ListaUsuarios";
 import ListaEmpresas from "./pages/PanelAdministrador/ListaEmpresas";
@@ -30,7 +30,7 @@ import iconoReciente from "./assets/Perfil/clockIcon.svg";
 import iconoPerfil from "./assets/Perfil/iconoPerfil.svg";
 import users from "./assets/Perfil/users.svg";
 import IconoHome from "./assets/Inicio/Home.svg";
-import business from "./assets/perfil/business.svg";
+import business from "./assets/Perfil/business.svg";
 import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
 import ResetPassword from "./pages/Login/components/ResetPassword";
 import LoginEmpresa from "./pages/LoginEmpresa/LoginEmpresa";
@@ -117,7 +117,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/recuperar-contrasena" element={<ForgotPassword />} />
         <Route path="/restablecer-contrasena" element={<ResetPassword />} />
-        <Route path="/empresa/:id" element={<Cliente />} />
+        <Route path="/empresa/:id" element={<Empresa />} />
         <Route path="/loginEmpresa" element={<LoginEmpresa />} />
         <Route path="/registro-empresa" element={<FormularioEmpresa />} />
         <Route
@@ -133,7 +133,6 @@ function App() {
             <Route path="/perfil" element={<PerfilPage />} />
             <Route path="/reservasactivas" element={<Reservas />} />
             <Route path="/historialreservas" element={<HistorialReservas />} />
-            <Route path="/formulario-canchas" element={<AgregarCancha />} />
           </Route>
         </Route>
 
@@ -153,6 +152,8 @@ function App() {
               element={<ReservasPendientes />}
             />
             <Route path="/reservaspasadas" element={<ReservasPasadas />} />
+            <Route path="/formulario-canchas" element={<AgregarCancha />} />
+
           </Route>
         </Route>
 
