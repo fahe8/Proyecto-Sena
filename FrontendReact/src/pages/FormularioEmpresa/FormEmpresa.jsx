@@ -484,6 +484,7 @@ export default function FormEmpresa() {
           </button>
 
           {currentStep != '1' && <button
+          
             onClick={goToNextStep}
             className="flex items-center gap-1 px-4 py-2 bg-[#003044] text-white rounded-md hover:bg-[#002030] disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading}
