@@ -3,9 +3,8 @@ import StatCard from "../../Perfil/components/StatCard";
 
 const AdminStatsSection = ({ canchas }) => {
   // Calcular estadísticas
-  const canchasActivas = canchas.filter(cancha => cancha.id_estado_cancha === 1).length;
-  const canchasMantenimiento = canchas.filter(cancha => cancha.id_estado_cancha === 2).length;
-  
+  const canchasActivas = canchas.filter(cancha => cancha.id_estado_cancha === "disponible").length;
+  const canchasMantenimiento = canchas.filter(cancha => cancha.id_estado_cancha === "mantenimiento").length;
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
       <StatCard 

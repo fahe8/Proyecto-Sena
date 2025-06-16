@@ -30,7 +30,6 @@ const InterfazPropietario = () => {
   useEffect(() => {
     // Función para cargar todos los datos necesarios
     const cargarDatos = async () => {
-      console.log(user)
       try {
         // Realizar todas las peticiones en paralelo
         const [canchasResponse, tiposResponse, estadosResponse  ] = await Promise.all([
@@ -51,9 +50,7 @@ const InterfazPropietario = () => {
         if (estadosResponse.data.success && estadosResponse.data.data) {
           setEstadoCanchas(estadosResponse.data.data);
         }
-        
-        console.log("tipos",tiposResponse.data.data)
-        console.log("estados",estadosResponse.data.data)
+      
         // if (EmpresaReponse.data.success && EmpresaReponse.data.data) {
         //   setDatosEmpresa(EmpresaReponse.data.data);
         // }
@@ -120,7 +117,7 @@ const InterfazPropietario = () => {
   };
 
   const eliminarCancha = async () => {
-    const canchasActualizadas = listaCanchas.filter((cancha) => cancha.id_cancha !== canchaSeleccionada);
+    const canchasActualizadas = listaCanchas.filter((cancha) => cancha.id !== canchaSeleccionada);
     await canchasServicio.eliminar(canchaSeleccionada);
     setListaCanchas(canchasActualizadas);
     setModalEliminar(false);
@@ -199,7 +196,7 @@ const InterfazPropietario = () => {
                     </button>
                     <button
                       className="flex-1 px-2 sm:px-3.5 py-1.5 bg-[#e63939] text-white rounded text-sm cursor-pointer border-none"
-                      onClick={() => mostrarModalEliminar(cancha.id_cancha)}
+                      onClick={() => mostrarModalEliminar(cancha.id)}
                     >
                       Eliminar
                     </button>
