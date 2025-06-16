@@ -207,21 +207,6 @@ export default function FormEmpresa() {
     setIsLoading(true);
     try {
       const dataToSubmit = prepareDataForSubmission();
-<<<<<<< HEAD
-      // 1. Crear el propietario
-      const propietarioResponse = await propietarioServicio.crear(dataToSubmit.propietario);
-      console.log('Propietario creado:', propietarioResponse.data);
-      
-      // 2. Crear la empresa
-      const empresaResponse = await empresaServicio.crear(dataToSubmit.empresa);
-      console.log('Empresa creada:', empresaResponse.data);
-      
-      // 3. Crear las canchas (si hay)
-      if (dataToSubmit.canchas.length > 0) {
-        for (const cancha of dataToSubmit.canchas) {
-          await canchasServicio.agregar(cancha);
-        }
-=======
       console.log('Datos a enviar:', dataToSubmit);
 
       // 1. Crear FormData para el propietario
@@ -237,7 +222,6 @@ export default function FormEmpresa() {
       // Agregar imagen del propietario si existe
       if (dataToSubmit.propietario.imagen instanceof File) {
         propietarioFormData.append('imagen', dataToSubmit.propietario.imagen);
->>>>>>> b163683687ab589bd05847ec61d89c848221a080
       }
 
       // Crear el propietario
@@ -501,7 +485,8 @@ export default function FormEmpresa() {
 
           {currentStep != '1' && <button
             onClick={goToNextStep}
-            className="flex items-center gap-1 px-4 py-2 bg-[#003044] text-white rounded-md hover:bg-[#002030] disabled:opacity-50 disabled:cursor-not-allowed"
+            
+            className="flex items-center gap-1 px-4 py-2 bg-[#003044] text-white rounded-md hover:bg-[#002030] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading}
           >
             {isLoading ? 'Procesando...' : currentStep === 5 ? 'Finalizar' : 'Siguiente'}

@@ -25,7 +25,7 @@ const HeaderPropietario = ({ empresa, propietario }) => {
   };
 
   return (
-    <header className="bg-[#034] shadow-lg">
+    <header className="bg-green-800 shadow-lg">
       <div className="container flex justify-between items-center p-8 md:px-20 mx-auto">
         {/* Logo y nombre */}
         <div
@@ -38,35 +38,35 @@ const HeaderPropietario = ({ empresa, propietario }) => {
           <span className="text-white text-base lg:text-lg">{empresa?.nombre || "Mi Empresa"}</span>
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/formulario-canchas" className="text-[#034] bg-white rounded-full py-1 px-4 transition">Agregar Cancha</Link>
+          <Link to="/formulario-canchas" className=" text-white hover:bg-[#005571] bg-[#003344] rounded-full py-1.5 px-5 transition shadow-lg text-center">Agregar Cancha</Link>
 
           {/* Botón de perfil propietario */}
           <div className="relative" ref={dropdownRef}>
             <button
-              className="flex items-center gap-2 py-1 px-4 h-[40px] text-[#003344] bg-white hover:bg-[#fefefe] border-0 rounded-2xl relative z-10 transition-all duration-200 ease-in-out shadow-md cursor-pointer"
+              className="flex items-center gap-2 py-1 px-4 h-[40px] text-white hover:bg-[#005571] bg-[#003344] border-0 rounded-2xl relative z-10 transition-all duration-200 ease-in-out shadow-lg cursor-pointer"
               onClick={toggleDropdown}
               aria-expanded={isOpen}
               aria-haspopup="true"
             >
               <span className="material-icons">account_circle</span>
-              <span>{propietario?.nombre || "Propietario"}</span>
+              <span className="hidden md:block">{propietario?.nombre || "Propietario"}</span>
               <span className={`material-icons transition-transform duration-500 ease-in-out ${isOpen ? 'rotate-180' : ''}`}>
                 expand_more
               </span>
             </button>
             {/* Menú desplegable */}
             <div
-              className={`absolute right-0 top-[45px] w-[200px] bg-[#005571] rounded-lg overflow-hidden z-[50] transition-all duration-500 ease-in-out origin-top-right ${
+              className={`absolute right-0 top-[45px] w-[200px] bg-[#003344] rounded-lg overflow-hidden z-[50] transition-all duration-500 ease-in-out origin-top-right ${
                 isOpen ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-0 invisible'
               }`}
             >
-              <Link to="/perfiladministrador" className="block px-4 py-2 text-white hover:bg-[#233343] text-sm text-center rounded-t-lg">
+              <Link to="/perfiladministrador" className="block px-4 py-2 text-white hover:bg-[#005571] text-sm text-center rounded-t-lg">
                 Perfil
               </Link>
-              <Link to="/reservaspasadas" className="block px-4 py-2 text-white hover:bg-[#233343] text-sm text-center">
+              <Link to="/reservaspasadas" className="block px-4 py-2 text-white hover:bg-[#005571] text-sm text-center">
                 Reservas pasadas
               </Link>
-              <Link to="/reservaspendientes" className="block px-4 py-2 text-white hover:bg-[#233343] text-sm text-center">
+              <Link to="/reservaspendientes" className="block px-4 py-2 text-white hover:bg-[#005571] text-sm text-center">
                 Reservas pendientes
               </Link>
               <button

@@ -19,14 +19,14 @@ const AdminProfileInfo = ({
         <h3 className="text-2xl font-bold text-[#003044]">Información de la Empresa</h3>
         <button
           onClick={editando ? validarInputs : toggleEdicion}
-          className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${
+          className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 cursor-pointer ${
             editando 
             ? 'bg-[#00c951] hover:bg-[#00a844]' 
-            : 'bg-[#003044] hover:bg-[#004466]'
+            : 'bg-green-700 hover:bg-green-600'
           } text-white shadow-md hover:shadow-lg`}
         >
           <span>{editando ? "Guardar Cambios" : "Editar Información"}</span>
-          <img width={20} src={lapizIcon} alt="Editar" className="invert" />
+          <img width={20} src={lapizIcon} alt="Editar" className="" />
         </button>
       </div>
 

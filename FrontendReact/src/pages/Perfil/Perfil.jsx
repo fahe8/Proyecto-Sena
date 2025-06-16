@@ -93,8 +93,8 @@ const PerfilPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-screen  p-6 bg-gradient-to-br from-slate-50 to-blue-50">
-      <div className="max-w-5xl mx-auto px-4">
+    <div className="min-h-screen w-full p-3 pl-15 sm:pl-5 bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="max-w-5xl mx-auto ">
         {/* Header Section */}
         <ProfileHeader usuario={usuario} />
         

@@ -53,9 +53,7 @@ export default function InfoCanchas({
   }
   return (
     <div>
-      <h2 className="text-gray-600 font-medium mb-4 uppercase text-sm">
-        Canchas sintéticas
-      </h2>
+      
 
       {data.map((field, index) => (
         <div
@@ -69,7 +67,7 @@ export default function InfoCanchas({
             </h3>
             <button
               onClick={() => onRemoveCancha(index)}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
               aria-label="Eliminar cancha"
             >
               <svg
@@ -190,7 +188,7 @@ export default function InfoCanchas({
 
       <button
         onClick={onAddCancha}
-        className="w-full py-2 border border-[#9c9c9c] text-[#003044] rounded-md flex items-center justify-center gap-2 mt-2"
+        className="w-full py-2 border border-[#9c9c9c] text-[#003044] rounded-md flex items-center justify-center gap-2 mt-2 cursor-pointer"
       >
         + Agregar otra cancha
       </button>

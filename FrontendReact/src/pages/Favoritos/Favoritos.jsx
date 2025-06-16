@@ -32,7 +32,7 @@ const Favoritos = () => { // Componente para mostrar las canchas favoritas
 }, [user]); // Se ejecuta cuando el usuario cambia
 
   return (
-    <div className="w-full py-8 px-30 bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="w-full py-8 px-5 md:px-30 bg-gradient-to-b from-gray-50 to-gray-100">
       <div className="rounded-lg shadow-xl bg-white">
         <div className=" bg-[#003044] p-6 text-white rounded-t-lg">
           <h2 className="text-2xl font-bold justify-self-center text-center">CANCHAS FAVORITAS</h2>

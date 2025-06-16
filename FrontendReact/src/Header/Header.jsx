@@ -79,7 +79,7 @@ export const BotonPerfil = () => {
       {/* Botón de perfil (solo visible si el usuario está autenticado) */}
       {isAuthenticated ? (
         <button 
-          className="flex items-center gap-2.5 py-0 px-4 h-[40px] text-[#f6f6f6] bg-[#2fc92c] hover:bg-green-600 border-0 rounded-2xl relative z-10 transition-all duration-300 ease-in-out shadow-md cursor-pointer"
+          className="flex items-center gap-2.5 px-4 h-[40px] text-[#f6f6f6] bg-[#2fc92c] hover:bg-green-600 border-0 rounded-2xl relative z-10 transition-all duration-300 ease-in-out shadow-md cursor-pointer"
           onClick={toggleDropdown}
           aria-expanded={isOpen}
           aria-haspopup="true"
@@ -96,11 +96,11 @@ export const BotonPerfil = () => {
           </span>
         </button>
       ) : (
-        // Botones de iniciar sesión (cuando el usuario no está autenticado)
+        // Botón de iniciar sesión (cuando el usuario no está autenticado)
         <div className="flex gap-2 text-center items-center">
           <Link
             to="/login"
-            className="text-sm lg:text-[17px] flex justify-center items-center py-1 px-4 bg-[#2fc92c] rounded-2xl hover:bg-green-600 text-[#f6f6f6] cursor-pointer shadow-md transition-all duration-250"
+            className="text-sm lg:text-[17px] flex justify-center items-center px-5 h-8 bg-[#2fc92c] rounded-2xl hover:bg-green-600 text-[#f6f6f6] cursor-pointer shadow-md transition-all duration-250"
           >
             Ingresar
           </Link>
@@ -110,30 +110,28 @@ export const BotonPerfil = () => {
       {/* Menú desplegable */}
       {isAuthenticated && (
         <div 
-          className={`absolute right-0 top-[45px] w-[200px] bg-[#16bb13] rounded-lg overflow-hidden z-[50] transition-all duration-500 ease-in-out origin-top-right ${
+          className={`absolute right-0 top-[45px] w-[200px] bg-[#17c514] rounded-lg overflow-hidden z-[50] transition-all duration-500 ease-in-out origin-top-right ${
             isOpen 
               ? 'opacity-100 scale-100 visible' 
               : 'opacity-0 scale-0 invisible'
           }`}
         >
-              <Link to={"/perfil"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center rounded-t-lg">
+              <Link to={"/perfil"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center rounded-t-lg transition-all duration-200">
                   Mi Perfil
                 </Link>
-                <Link to={"/historialreservas"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center ">
+                <Link to={"/historialreservas"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center transition-all duration-200">
                   Historial de reservas
                 </Link>
-                <Link to={"/reservasactivas"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center">
+                <Link to={"/reservasactivas"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center transition-all duration-200">
                   Reservas activas
                 </Link>
-                <Link to={"/favoritos"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center">
+                <Link to={"/favoritos"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center transition-all duration-200">
                   Mis favoritos
                 </Link>
-                {/* <Link className="block px-4 py-2 text-gray-800 hover:bg-gray-200 text-sm text-center">
-                  Centro de ayuda
-                </Link> */}
+                
                 <button
                   onClick={handleLogout}
-                  className="w-full block px-4 py-2 text-white hover:bg-green-700 text-sm rounded-b-lg cursor-pointer"
+                  className="w-full block px-4 py-2 text-white hover:bg-green-700 text-sm rounded-b-lg cursor-pointer transition-all duration-200 text-center"
                 >
                   Cerrar Sesión
             </button>

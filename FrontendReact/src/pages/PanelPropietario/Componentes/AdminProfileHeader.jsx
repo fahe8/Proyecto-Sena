@@ -3,11 +3,11 @@ import camara from "../../../assets/Perfil/camara.svg";
 
 const AdminProfileHeader = ({ propietario, empresa }) => {
   return (
-    <div className="bg-[#016630] rounded-t-lg shadow-lg p-8 ">
+    <div className="bg-green-700 rounded-t-lg shadow-lg p-8 ">
       <div className="flex flex-col md:flex-row items-center justify-between">
         <div className="flex items-center gap-6">
           <div className="relative group">
-            <div className="w-15 h-15 rounded-full bg-indigo-600 flex items-center justify-center shadow-xl border-4 border-white overflow-hidden">
+            <div className="w-15 h-15 rounded-full bg-[#003344] flex items-center justify-center shadow-xl border-3 border-white overflow-hidden">
               {empresa?.logo ? (
                 <img 
                   src={empresa.logo} 
@@ -35,8 +35,8 @@ const AdminProfileHeader = ({ propietario, empresa }) => {
             <h2 className="text-2xl font-bold">
               {empresa?.nombre || 'Empresa'}
             </h2>
-            <p className="text-gray-300">Representante: {propietario?.nombre && propietario?.apellido ? `${propietario.nombre} ${propietario.apellido}` : 'Propietario'}</p>
-            <p className="text-gray-300">{propietario?.email}</p>
+            <p className="text-gray-200">Representante: {propietario?.nombre && propietario?.apellido ? `${propietario.nombre} ${propietario.apellido}` : 'Propietario'}</p>
+            <p className="text-gray-200">{propietario?.email}</p>
           </div>
         </div>
       </div>

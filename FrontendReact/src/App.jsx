@@ -141,12 +141,9 @@ function App() {
 
 
         {/* Rutas protegidas para PROPIETARIOS */}
-        <Route element={<RutasProtegidasPropietario />}>
-          <Route element={<SideBarPerfil opciones={opcionesEmpresario} bgClass="bg-green-800" />}>
-            <Route
-              path="/interfazpropietario"
-              element={<InterfazPropietario />}
-            />
+        {/* <Route element={<RutasProtegidasPropietario />}> */}
+          <Route element={<SideBarPerfil opciones={opcionesEmpresario} bgClass="bg-green-700" hoverClass="hover:bg-green-600" activeClass="bg-green-600" logoNavigate="/interfazpropietario"/>}>
+            
             <Route
               path="/perfiladministrador"
               element={<PerfilAdministrador />}
@@ -159,7 +156,11 @@ function App() {
             <Route path="/formulario-canchas" element={<AgregarCancha />} />
 
           </Route>
-        </Route>
+          <Route
+              path="/interfazpropietario"
+              element={<InterfazPropietario />}
+          />
+        {/* </Route> */}
 
         {/* Rutas protegidas para ADMINISTRADORES */}
         <Route element={<RutasProtegidasAdmin />}>

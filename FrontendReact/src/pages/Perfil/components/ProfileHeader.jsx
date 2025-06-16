@@ -7,7 +7,7 @@ const ProfileHeader = ({ usuario }) => {
       <div className="flex flex-col md:flex-row items-center justify-between">
         <div className="flex items-center gap-6">
           <div className="relative group">
-            <div className="w-18 h-18 rounded-full bg-gradient-to-r from-[#00c951] to-[#33ea30] flex items-center justify-center shadow-xl border-4 border-white overflow-hidden">
+            <div className="w-15 h-15 md:w-18 md:h-18  rounded-full bg-gradient-to-r from-[#00c951] to-[#33ea30] flex items-center justify-center shadow-xl border-4 border-white overflow-hidden">
               {usuario?.imagen ? (
                 <img 
                   src={usuario.imagen} 
@@ -21,7 +21,7 @@ const ProfileHeader = ({ usuario }) => {
                   }}
                 />
               ) : (
-                <p className="text-4xl font-bold text-white">
+                <p className="text-2xl md:text-4xl font-bold text-white">
                   {usuario?.nombre ? usuario.nombre[0].toLocaleUpperCase() : ''}
                 </p>
               )}

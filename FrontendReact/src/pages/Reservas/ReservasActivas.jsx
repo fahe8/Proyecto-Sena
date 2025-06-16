@@ -142,7 +142,7 @@ const formatearFecha = (fechaStr) => {
   };
 
   return (
-    <div className="w-full mx-auto p-20 px-30 bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="w-full mx-auto p-20 px-5 md:px-30 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="rounded-lg shadow-xl bg-white justify-center items-center">
         <div className="bg-[#003044] p-6 text-white rounded-t-lg">
           {/* Título de la sección */}

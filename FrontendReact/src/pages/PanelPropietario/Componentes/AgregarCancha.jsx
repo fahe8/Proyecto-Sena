@@ -128,7 +128,7 @@ const AgregarCancha = () => {
   }
 
   return (
-    <div className='w-full min-h-screen bg-white p-6  '>
+    <div className='w-full p-6 min-h-screen bg-gradient-to-br from-slate-100 to-blue-50 '>
       <div className="max-w-xl mx-auto bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-bold text-[#003044] mb-6">Agregar Canchas</h1>
         
@@ -143,13 +143,13 @@ const AgregarCancha = () => {
         <div className="mt-6 flex justify-end gap-4">
           <button 
             onClick={() => navigate('/InterfazPropietario')}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors cursor-pointer"
           >
             Cancelar
           </button>
           <button 
             onClick={guardarCanchas}
-            className="px-4 py-2 bg-[#39de02] text-black rounded-md hover:bg-green-400 transition-colors"
+            className="px-4 py-2 bg-[#39de02] text-white rounded-md hover:bg-green-400 transition-colors cursor-pointer"
           >
             Guardar Canchas
           </button>

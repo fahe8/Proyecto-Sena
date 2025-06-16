@@ -10,8 +10,9 @@ export default function InfoAdicional({ data, onChange, errors }) {
       try {
         setLoading(true);
         const serviciosResponse = await ServiciosServicio.obtenerTodos();
-        console.log(serviciosResponse.status)
+        console.log(serviciosResponse)
         if (serviciosResponse.status == '200') {
+          console.log(serviciosResponse.data.servicios)
           setListaServicios(serviciosResponse.data.servicios);
         }
       } catch (error) {
@@ -92,7 +93,7 @@ export default function InfoAdicional({ data, onChange, errors }) {
               <input
                 type="checkbox"
                 className="accent-teal-500"
-                checked={data.servicios.includes(servicio.id)} // Vinculado al estado global
+                checked={data?.servicios?.includes(servicio.id)} // Vinculado al estado global
                 onChange={() =>
                   handleCheckboxChange("servicios", servicio.id)
                 } // Actualiza el estado global

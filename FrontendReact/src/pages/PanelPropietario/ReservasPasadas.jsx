@@ -38,31 +38,18 @@ const ReservasPasadas = () => {
   }, []);
 
   return (
-    <div className=" min-h-screen w-full bg-gray-100 overflow-x-hidden">
-      <nav className="bg-[#003950] shadow-lg p-4 sm:p-6">
+    <div className=" min-h-screen w-full bg-gray-100 overflow-x-hidden p-10 md:px-30">
+      <nav className="bg-green-700 shadow-lg p-4 sm:p-6 rounded-t-lg text-center">
         <div className="w-full max-w-7xl mx-auto px-2 sm:px-15 py-[4px]">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="relative">
-                <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full bg-green-500 flex items-center justify-center border-2 sm:border-3 border-white">
-                  <span className="text-white text-lg sm:text-2xl font-bold">L</span>
-                </div>
-              </div>
-              <div className="text-white text-center sm:text-left">
-                <h2 className="text-xl sm:text-lg font-bold">Canchas La 64</h2>
-                <p className="text-lg sm:text-sm font-sans">Leider Rodriguez</p>
-              </div>
-            </div>
-           
-          </div>
+          <h2 className="text-lg md:text-2xl font-bold  pb-2 sm:pb-2.5 font-sans text-white">
+            Historial de reservas
+          </h2>
         </div>
       </nav>
 
-      <div className="w-full max-w-5xl mx-auto py-3 sm:py-5 px-3 sm:px-0">
-        <div className="bg-white rounded-lg shadow-lg flex-grow px-10 md:px-6 py-8">
-          <h2 className="text-xl sm:text-lg font-bold mb-3 sm:mb-4 pb-2 sm:pb-2.5 font-sans">
-            Historial de reservas
-          </h2>
+      <div className="w-full mx-auto px-3 sm:px-0">
+        <div className="bg-white rounded-b-lg shadow-lg flex-grow px-10 md:px-6 py-8">
+          
 
           {reservas.length === 0 ? (
             <p className="text-center text-black text-xl sm:text-2xl p-3 sm:p-5">

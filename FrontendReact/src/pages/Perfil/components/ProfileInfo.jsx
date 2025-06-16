@@ -12,18 +12,18 @@ const ProfileInfo = ({
   validarInputs 
 }) => {
   return (
-    <div className="bg-white rounded-b-lg shadow-lg py-8 px-12 relative">
+    <div className="bg-white rounded-b-lg shadow-lg py-8 px-8 relative">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-2xl font-bold text-[#003044]">Información Personal</h3>
+        <h3 className="text-lg md:text-2xl font-bold text-[#003044] ">Información Personal</h3>
         <button
           onClick={editando ? validarInputs : toggleEdicion}
-          className={`flex items-center gap-2 px-6 py-2 rounded-full transition-all duration-300 ${
+          className={`flex items-center gap-1 px-6 py-2 rounded-full transition-all duration-300 cursor-pointer ${
             editando 
             ? 'bg-[#00c951] hover:bg-[#00a844]' 
             : 'bg-[#003044] hover:bg-[#004466]'
           } text-white shadow-md hover:shadow-lg`}
         >
-          <span>{editando ? "Guardar Cambios" : "Editar Perfil"}</span>
+          <span>{editando ? "Guardar Cambios" : "Editar"}</span>
           <img width={20} src={lapizIcon} alt="Editar" className="" />
         </button>
       </div>

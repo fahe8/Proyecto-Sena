@@ -441,7 +441,7 @@ const manejarEnvioResena = async () => {
   };
 
   return (
-    <div className="min-h-screen w-screen py-8 px-30 bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen w-screen py-8 px-5 md:px-30 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="max-w-5xl mx-auto rounded-lg bg-white pb-10 shadow-lg">
         {/* encabezado */}
         <div className="text-center mb-3 bg-[#003044] rounded-t-lg p-10 ">
@@ -453,7 +453,7 @@ const manejarEnvioResena = async () => {
           </p>
         </div>
         {/* Sección de búsqueda y filtrado */}
-        <div className="bg-white rounded-xl mt-5 mb-8 mx-10">
+        <div className="bg-white rounded-xl mt-5 mb-8 mx-1 sm:mx-10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             {/* Entrada de búsqueda */}
             <div className="relative flex-1">
@@ -462,7 +462,7 @@ const manejarEnvioResena = async () => {
                 onChange={ManejarBusqueda}
                 value={BuscarTerm}
                 name="Buscar"
-                placeholder="Buscar por nombre de cancha o ubicación..."
+                placeholder="Busca una cancha..."
                 className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-400 focus:border-[#00c951] focus:ring-2 focus:ring-[#00c951] transition-all duration-300 outline-none"
               />
               {/* Botón de filtro */}
@@ -470,9 +470,9 @@ const manejarEnvioResena = async () => {
                 <button
                   ref={buttonRef}
                   onClick={mostraropciones}
-                  className="flex items-center justify-center px-6 py-[15px] bg-[#00c951] text-white rounded-r-lg hover:bg-[#00a844] transition-all duration-300 gap-2 min-w-[160px]"
+                  className="flex items-center justify-center px-1 md:px-6 py-[15px] md:py-[14px] lg:py-[15px] bg-[#00c951] text-white rounded-r-lg hover:bg-[#00a844] transition-all duration-300 gap-2 min-w-15 cursor-pointer"
                 >
-                  <span>{TextoBoton}</span>
+                  <span className="hidden md:block">{TextoBoton}</span>
                   <OrdenarFlecha />
                 </button>
 
@@ -482,13 +482,13 @@ const manejarEnvioResena = async () => {
                     className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg overflow-hidden z-20 min-w-[160px] border border-gray-100"
                   >
                     <button
-                      className="w-full px-6 py-3 text-left hover:bg-gray-50 transition-colors duration-200"
+                      className="w-full px-6 py-3 text-left hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
                       onClick={Masrecientes}
                     >
                       Más recientes
                     </button>
                     <button
-                      className="w-full px-6 py-3 text-left hover:bg-gray-50 transition-colors duration-200"
+                      className="w-full px-6 py-3 text-left hover:bg-gray-200 transition-colors duration-200 cursor-pointer "
                       onClick={MasAntiguo}
                     >
                       Más antiguos
@@ -511,7 +511,7 @@ const manejarEnvioResena = async () => {
             {error}
           </div>
         ) : reservaFiltrada.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-xl shadow-md">
+          <div className="text-center py-12 bg-white rounded-xl">
             <Alvertencia />
             <p className="text-lg text-gray-600">
               Aún no tienes reservas pasadas
