@@ -85,13 +85,25 @@ const ModificarCancha = ({
 
   const guardarCambiosCancha = async () => {
     try {
-      // Evitar enviar la imagen si está vacía
-      const dataToSend = { ...canchaData };
+      // Crear FormData para enviar los datos incluyendo la imagen
+      const formData = new FormData();
+      console.log('cancha imagen:', canchaData.imagen);
+      // Agregar todos los campos al FormData
+      formData.append('nombre', canchaData.nombre);
+      formData.append('tipo_cancha_id', canchaData.tipo_cancha_id);
+      formData.append('id_estado_cancha', canchaData.id_estado_cancha);
+      formData.append('precio', canchaData.precio);
       
-
-      await canchasServicio.actualizar(infoCancha.id, dataToSend);
+      // Agregar la imagen solo si existe y es un archivo
+      if (canchaData.imagen instanceof File) {
+        formData.append('imagen', canchaData.imagen);
+      }
+      
+      // Enviar el FormData al servicio
+      const response = await canchasServicio.actualizar(infoCancha.id, formData);
+      console.log("modifciar0", response);
       console.log("se actualizo");
-      onConfirm(dataToSend);
+      onConfirm(canchaData);
     } catch (error) {
       console.log(error);
     }
