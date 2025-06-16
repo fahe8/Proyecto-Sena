@@ -19,8 +19,11 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\URL;
 
 //Rutas Empresas
-Route::apiResource('empresas', EmpresaController::class);
-// Route::post('/empresas', [EmpresaController::class, 'store']);
+// Route::apiResource('empresas', EmpresaController::class);
+Route::post('/empresas', [EmpresaController::class, 'store']);
+Route::get('/empresas', [EmpresaController::class, 'index']);
+Route::get('/empresas/{nit}', [EmpresaController::class, 'show']);
+Route::put('/empresas/{nit}', [EmpresaController::class, 'update']);
 
 Route::get('tipos-canchas', [CanchasAdicionalController::class, 'index']);
 Route::get('estados-canchas', [CanchasAdicionalController::class, 'estadosCanchas']);
@@ -65,7 +68,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/{propietario}', [PropietarioController::class, 'show']);
         Route::put('/{propietario}', [PropietarioController::class, 'update']);
         Route::delete('/{propietario}', [PropietarioController::class, 'destroy']);
-        Route::get('/empresa/{propietario}', [CanchaController::class, 'findByPropietarioId']);
+        Route::get('/empresa/{propietario}', [EmpresaController::class, 'findByPropietarioId']);
     });
 
     // Rutas de Administradores (requiere rol 'admin')

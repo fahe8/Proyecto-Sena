@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
-class CanchaController extends ApiController
+class   CanchaController extends ApiController
 {
     public function __construct()
     {
@@ -129,9 +129,7 @@ class CanchaController extends ApiController
             'NIT' => 'exists:empresa,NIT',
             'id_estado_cancha' => 'exists:estado_cancha,id_estado_cancha',
             'tipo_cancha_id' => 'exists:tipo_cancha,id',
-            'imagen' => 'array',
-            'imagen.url' => 'required_with:imagen|string',
-            'imagen.public_id' => 'required_with:imagen|string'
+            'imagen' => 'image|max:2048' // Cambiado para recibir archivo de imagen como en store
         ]);
 
         if ($validator->fails()) {
@@ -141,17 +139,43 @@ class CanchaController extends ApiController
         try {
             DB::beginTransaction();
 
-            // Si se proporciona una nueva imagen, eliminar la anterior de Cloudinary
-            if ($request->has('imagen') && $cancha->imagen) {
-                $adminApi = new AdminApi();
-                $adminApi->deleteAssets([$cancha->imagen['public_id']]);
+            $imagenData = null;
+            
+            // Si se proporciona una nueva imagen
+            if ($request->hasFile('imagen')) {
+                // Eliminar la imagen anterior de Cloudinary si existe
+                if ($cancha->imagen && isset($cancha->imagen['public_id'])) {
+                    $adminApi = new AdminApi();
+                    $adminApi->deleteAssets([$cancha->imagen['public_id']]);
+                }
+                
+                // Subir nueva imagen a Cloudinary (misma lógica que store)
+                $uploadApi = new UploadApi();
+                
+                // Crear carpeta organizada por empresa
+                $folderPath = "micanchaya/canchas/{$cancha->NIT}";
+                
+                $result = $uploadApi->upload($request->file('imagen')->getRealPath(), [
+                    'folder' => $folderPath,
+                    'resource_type' => 'image',
+                    'transformation' => [
+                        'quality' => 'auto',
+                        'fetch_format' => 'auto'
+                    ]
+                ]);
+
+                $imagenData = [
+                    'url' => $result['secure_url'],
+                    'public_id' => $result['public_id']
+                ];
             }
 
             // Actualizar los campos proporcionados
             $data = $request->only(['nombre', 'precio', 'NIT', 'id_estado_cancha', 'tipo_cancha_id']);
             
-            if ($request->has('imagen')) {
-                $data['imagen'] = $request->imagen;
+            // Solo actualizar imagen si se proporcionó una nueva
+            if ($imagenData) {
+                $data['imagen'] = $imagenData;
             }
 
             $cancha->update($data);

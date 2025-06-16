@@ -3,14 +3,15 @@ import InfoCanchas from '../../FormularioEmpresa/InfoCanchas'
 import { canchasServicio } from '../../../services/api'
 import { useNavigate } from 'react-router-dom'
 import LogPopUp from "../../Login/components/logPopUp"
+import { useAuth } from '../../../Provider/AuthProvider'
 
 const AgregarCancha = () => {
+  const {user} = useAuth()
   const [canchasData, setCanchasData] = useState([{
     nombre: '',
     tipo_cancha_id: '',
     id_estado_cancha: '',
     imagen: '',
-    NIT: '987654321', // NIT por defecto, podría venir de un contexto o estado global
     precio: ''
   }])
   const [errors, setErrors] = useState([{}])
@@ -24,7 +25,6 @@ const AgregarCancha = () => {
       tipo_cancha_id: '',
       id_estado_cancha: '',
       imagen: '',
-      NIT: '987654321',
       precio: ''
     }])
     setErrors([...errors, {}])
@@ -58,6 +58,7 @@ const AgregarCancha = () => {
 
   const validarCanchas = () => {
     let esValido = true
+    console.log(canchasData)
     const nuevosErrores = canchasData.map(cancha => {
       const erroresCancha = {}
       
@@ -77,12 +78,10 @@ const AgregarCancha = () => {
       }
       
       if (!cancha.imagen) {
-        erroresCancha.imagen = "La URL de la imagen es obligatoria"
+        erroresCancha.imagen = "La imagen es obligatoria"
         esValido = false
-      }
-      
-      if (!cancha.NIT) {
-        erroresCancha.NIT = "El NIT es obligatorio"
+      } else if (!(cancha.imagen instanceof File)) {
+        erroresCancha.imagen = "Debe seleccionar un archivo de imagen válido"
         esValido = false
       }
       
@@ -99,14 +98,30 @@ const AgregarCancha = () => {
   }
 
   const guardarCanchas = async () => {
+    console.log(validarCanchas())
+    console.log(errors)
     if (!validarCanchas()) return
     
     try {
-      // Guardar cada cancha individualmente
-      const promesas = canchasData.map(cancha => {
-        return canchasServicio.agregar(cancha);   
-      })
-      await Promise.all(promesas)
+      console.log('Cancha a enviar', canchasData)
+      for (const cancha of canchasData) {
+        const canchaFormData = new FormData();
+        canchaFormData.append('nombre', cancha.nombre);
+        canchaFormData.append('precio', cancha.precio);
+        canchaFormData.append('NIT', user.NIT);
+        canchaFormData.append('id_estado_cancha', cancha.id_estado_cancha);
+        canchaFormData.append('tipo_cancha_id', cancha.tipo_cancha_id);
+        
+        // Agregar imagen de la cancha si existe
+        if (cancha.imagen instanceof File) {
+          canchaFormData.append('imagen', cancha.imagen);
+        }
+        for (let pair of canchaFormData.entries()) {
+          console.log(pair[0] + ':', pair[1]);
+        }
+        const canchaResponse = await canchasServicio.agregar(canchaFormData);
+        console.log('Cancha creada:', canchaResponse.data);
+      }
       
       setTextoPopUp({
         titulo: "Canchas agregadas exitosamente",

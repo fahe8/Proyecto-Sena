@@ -180,6 +180,11 @@ export default function InfoCanchas({
                   folder={"propietarios"}
                   returnFile={true} // ✅ Solicitar el archivo original
                 />
+                {errors?.[index]?.imagen && (
+                <p className="text-red-500 text-sm">
+                  {errors[index].imagen}
+                </p>
+              )}
               </div>
             </div>
           </div>

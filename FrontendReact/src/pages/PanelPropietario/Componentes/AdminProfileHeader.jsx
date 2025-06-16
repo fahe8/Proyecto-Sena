@@ -10,7 +10,7 @@ const AdminProfileHeader = ({ propietario, empresa }) => {
             <div className="w-15 h-15 rounded-full bg-[#003344] flex items-center justify-center shadow-xl border-3 border-white overflow-hidden">
               {empresa?.logo ? (
                 <img 
-                  src={empresa.logo} 
+                  src={empresa.logo?.url} 
                   alt="Logo de la empresa" 
                   className="w-full h-full object-cover"
                   onError={(e) => {
