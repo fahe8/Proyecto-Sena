@@ -43,6 +43,7 @@ const Inicio = () => {
         const response = await empresaServicio.obtenerTodos();
         if (response.data.success) {
           setEmpresas(response.data.data);
+          console.log(response.data.data)
           setFilteredOptions(response.data.data);
         }
       } catch (error) {

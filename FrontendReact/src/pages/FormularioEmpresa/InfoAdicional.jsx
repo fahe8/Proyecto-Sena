@@ -10,7 +10,7 @@ export default function InfoAdicional({ data, onChange, errors }) {
       try {
         setLoading(true);
         const serviciosResponse = await ServiciosServicio.obtenerTodos();
-        console.log(serviciosResponse.status)
+        console.log(serviciosResponse)
         if (serviciosResponse.status == '200') {
           setListaServicios(serviciosResponse.data.servicios);
         }

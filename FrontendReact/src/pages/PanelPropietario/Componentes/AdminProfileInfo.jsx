@@ -6,37 +6,41 @@ import lapizIcon from "../../../assets/Perfil/lapiz.svg";
 const AdminProfileInfo = ({ 
   propietario, 
   empresa,
-  editando, 
+  editandoEmpresa,
+  editandoPropietario,
   handleChangePropietario,
   handleChangeEmpresa, 
   errores, 
-  toggleEdicion, 
-  validarInputs 
+  toggleEdicionEmpresa,
+  toggleEdicionPropietario,
+  validarInputsEmpresa,
+  validarInputsPropietario
 }) => {
+
   return (
     <div className="bg-white rounded-lg shadow-lg p-12 relative mb-8">
-      <div className="flex justify-between items-center mb-8">
-        <h3 className="text-2xl font-bold text-[#003044]">Información de la Empresa</h3>
-        <button
-          onClick={editando ? validarInputs : toggleEdicion}
-          className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${
-            editando 
-            ? 'bg-[#00c951] hover:bg-[#00a844]' 
-            : 'bg-[#003044] hover:bg-[#004466]'
-          } text-white shadow-md hover:shadow-lg`}
-        >
-          <span>{editando ? "Guardar Cambios" : "Editar Información"}</span>
-          <img width={20} src={lapizIcon} alt="Editar" className="invert" />
-        </button>
-      </div>
+      {/* Sección de la Empresa */}
+      <div className="mb-12">
+        <div className="flex justify-between items-center mb-8">
+          <h3 className="text-2xl font-bold text-[#003044]">Información de la Empresa</h3>
+          <button
+            onClick={editandoEmpresa ? validarInputsEmpresa : toggleEdicionEmpresa}
+            className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${
+              editandoEmpresa 
+              ? 'bg-[#00c951] hover:bg-[#00a844]' 
+              : 'bg-[#003044] hover:bg-[#004466]'
+            } text-white shadow-md hover:shadow-lg`}
+          >
+            <span>{editandoEmpresa ? "Guardar Cambios" : "Editar Empresa"}</span>
+            <img width={20} src={lapizIcon} alt="Editar" className="invert" />
+          </button>
+        </div>
 
-      {!editando ? (
-        <>
-          <h4 className="text-xl font-semibold text-[#003044] mb-4">Datos de la Empresa</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        {!editandoEmpresa ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <InfoField
               label="Nombre de la Empresa"
-              value={empresa.nombre}
+              value={empresa?.nombre}
               icon="🏢"
               defaultText="No hay nombre registrado"
             />
@@ -58,9 +62,69 @@ const AdminProfileInfo = ({
               icon="📩"
               defaultText="No hay descripción registrada"
             />
+            
           </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <InputField
+              label="Nombre de la Empresa"
+              name="nombre"
+              value={empresa.nombre}
+              onChange={handleChangeEmpresa}
+              error={errores.nombreEmpresa}
+              editable={editandoEmpresa}
+              icon="🏢"
+            />
+            <InputField
+              label="NIT"
+              name="NIT"
+              value={empresa.NIT}
+              onChange={handleChangeEmpresa}
+              error={errores.NIT}
+              editable={false} // El NIT no se puede editar
+              icon="🆔"
+            />
+            <InputField
+              label="Dirección"
+              name="direccion"
+              value={empresa.direccion}
+              onChange={handleChangeEmpresa}
+              error={errores.direccionEmpresa}
+              editable={editandoEmpresa}
+              icon="📍"
+            />
+            <InputField
+              label="descripcion"
+              name="descripcion"
+              value={empresa.descripcion}
+              onChange={handleChangeEmpresa}
+              error={errores.descripcionEmpresa}
+              editable={editandoEmpresa}
+              icon="📩"
+            />
+           
+          </div>
+        )}
+      </div>
 
-          <h4 className="text-xl font-semibold text-[#003044] mb-4">Datos del Propietario</h4>
+      {/* Sección del Propietario */}
+      <div>
+        <div className="flex justify-between items-center mb-8">
+          <h3 className="text-2xl font-bold text-[#003044]">Información del Propietario</h3>
+          <button
+            onClick={editandoPropietario ? validarInputsPropietario : toggleEdicionPropietario}
+            className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${
+              editandoPropietario 
+              ? 'bg-[#00c951] hover:bg-[#00a844]' 
+              : 'bg-[#003044] hover:bg-[#004466]'
+            } text-white shadow-md hover:shadow-lg`}
+          >
+            <span>{editandoPropietario ? "Guardar Cambios" : "Editar Propietario"}</span>
+            <img width={20} src={lapizIcon} alt="Editar" className="invert" />
+          </button>
+        </div>
+
+        {!editandoPropietario ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <InfoField
               label="Nombre(s)"
@@ -88,64 +152,12 @@ const AdminProfileInfo = ({
             />
             <InfoField
               label="Número de Documento"
-              value={propietario.num_documento}
+              value={propietario.numero_documento}
               icon="🪪"
               defaultText="No hay documento registrado"
             />
           </div>
-        </>
-      ) : (
-        <>
-          <h4 className="text-xl font-semibold text-[#003044] mb-4">Datos de la Empresa</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <InputField
-              label="Nombre de la Empresa"
-              name="nombre"
-              value={empresa.nombre}
-              onChange={handleChangeEmpresa}
-              error={errores.nombreEmpresa}
-              editable={editando}
-              icon="🏢"
-            />
-            <InputField
-              label="NIT"
-              name="NIT"
-              value={empresa.NIT}
-              onChange={handleChangeEmpresa}
-              error={errores.NIT}
-              editable={false} // El NIT no se puede editar
-              icon="🆔"
-            />
-            <InputField
-              label="Dirección"
-              name="direccion"
-              value={empresa.direccion}
-              onChange={handleChangeEmpresa}
-              error={errores.direccionEmpresa}
-              editable={editando}
-              icon="📍"
-            />
-            <InputField
-              label="descripcion"
-              name="descripcion"
-              value={empresa.descripcion}
-              onChange={handleChangeEmpresa}
-              error={errores.descripcionEmpresa}
-              editable={editando}
-              icon="📩"
-            />
-            <InputField
-              label="Correo electrónico"
-              name="email"
-              value={empresa.email}
-              onChange={handleChangeEmpresa}
-              error={errores.emailEmpresa}
-              editable={editando}
-              icon="📧"
-            />
-          </div>
-
-          <h4 className="text-xl font-semibold text-[#003044] mb-4">Datos del Propietario</h4>
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <InputField
               label="Nombre(s)"
@@ -153,7 +165,7 @@ const AdminProfileInfo = ({
               value={propietario.nombre}
               onChange={handleChangePropietario}
               error={errores.nombrePropietario}
-              editable={editando}
+              editable={editandoPropietario}
               icon="👤"
             />
             <InputField
@@ -162,7 +174,7 @@ const AdminProfileInfo = ({
               value={propietario.apellido}
               onChange={handleChangePropietario}
               error={errores.apellidoPropietario}
-              editable={editando}
+              editable={editandoPropietario}
               icon="👤"
             />
             <InputField
@@ -171,7 +183,7 @@ const AdminProfileInfo = ({
               value={propietario.telefono}
               onChange={handleChangePropietario}
               error={errores.telefonoPropietario}
-              editable={editando}
+              editable={editandoPropietario}
               icon="📱"
             />
             <InputField
@@ -186,15 +198,15 @@ const AdminProfileInfo = ({
             <InputField
               label="Número de Documento"
               name="num_documento"
-              value={propietario.num_documento}
+              value={propietario.numero_documento}
               onChange={handleChangePropietario}
               error={errores.num_documentoPropietario}
               editable={false} 
               icon="🪪"
             />
           </div>
-        </>
-      )}
+        )}
+      </div>
     </div>
   );
 };

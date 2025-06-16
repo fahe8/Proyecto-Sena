@@ -8,7 +8,7 @@ const apiClient = axios.create({
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'X-Requested-With': 'XMLHttpRequest'
-    }
+    } 
 });
 
 export const authServicio = {
@@ -56,7 +56,11 @@ export const usuarioServicio = {
 export const propietarioServicio = {
     obtenerTodos: () => apiClient.get('/propietarios'),
     obtenerPorId: (id) => apiClient.get(`/propietarios/${id}`),
-    obtenerPorEmpresa: (NIT) => apiClient.get(`/propietarios/empresa/${NIT}`),
+    obtenerPorEmpresa: (NIT) => apiClient.get(`/propietarios/empresa/${NIT}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
     crear: (data) => {
         // Si data es FormData, cambiar headers
         const config = data instanceof FormData ? {
@@ -74,7 +78,7 @@ export const propietarioServicio = {
 
 export const empresaServicio = {
     obtenerTodos: () => apiClient.get('/empresas'),
-    obtenerPorId: (id) => apiClient.get(`/empresas/${id}`),
+    obtenerPorId: (nit) => apiClient.get(`/empresas/${nit}`),
     crear: (data) => {
         // Si data es FormData, cambiar headers
         const config = data instanceof FormData ? {
@@ -110,27 +114,34 @@ export const resenaServicio = {
 };
 
 export const canchasServicio = {
-    obtenerTodosEmpresa: (nit) => apiClient.get(`canchas/empresa/${nit}`),
+    obtenerTodosEmpresa: (nit) => apiClient.get(`canchas/empresa/${nit}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
     tiposCanchas: () => apiClient.get(`/tipos-canchas`),
     estadoCanchas: () => apiClient.get(`/estados-canchas`),
     actualizar: (id, data) => {
         console.log('first, data: ', data)
-        // Si data contiene un archivo, usar FormData
-        if (data.imagen instanceof File) {
-            const formData = new FormData();
-            Object.keys(data).forEach(key => {
-                formData.append(key, data[key]);
-            });
-            return apiClient.put(`/canchas/${id}`, formData, {
+        
+        // Si data es FormData, usar POST con _method spoofing
+        if (data instanceof FormData) {
+            // Agregar el método PUT como campo oculto
+            data.append('_method', 'PUT');
+            
+            return apiClient.post(`/canchas/${id}`, data, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 }
             });
         }
+        
+        // Para datos sin archivos, usar PUT normal
         return apiClient.put(`/canchas/${id}`, data);
     },
     eliminar: (id) => apiClient.delete(`/canchas/${id}`),
     agregar: (data) => {
+        console.log(data)
         // Si data es FormData, cambiar headers
         const config = data instanceof FormData ? {
             headers: {
