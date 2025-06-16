@@ -39,8 +39,7 @@ const InterfazPropietario = () => {
           canchasServicio.obtenerTodosEmpresa(user.NIT),
           canchasServicio.tiposCanchas(),
           canchasServicio.estadoCanchas(),
-          // empresaServicio.obtenerPorId('987654321'),
-          // propietarioServicio.obtenerPorEmpresa('987654321'),
+
         ]);
         
         // Procesar los resultados
