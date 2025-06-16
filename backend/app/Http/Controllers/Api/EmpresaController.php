@@ -31,7 +31,7 @@ class EmpresaController extends ApiController
     public function index()
     {
         return $this->sendResponse(
-            Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas'])->get(),
+            Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha'])->get(),
             'Lista de empresas obtenida correctamente',
             200
         );
