@@ -511,7 +511,7 @@ const manejarEnvioResena = async () => {
             {error}
           </div>
         ) : reservaFiltrada.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-xl shadow-md">
+          <div className="text-center py-12 bg-white rounded-xl">
             <Alvertencia />
             <p className="text-lg text-gray-600">
               Aún no tienes reservas pasadas

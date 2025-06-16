@@ -203,7 +203,7 @@ export default function FormEmpresa() {
   // Enviar datos al backend
   const handleSubmit = async () => {
     if (!validateStep()) return;
-
+    
     setIsLoading(true);
     try {
       const dataToSubmit = prepareDataForSubmission();
@@ -218,7 +218,7 @@ export default function FormEmpresa() {
       propietarioFormData.append('telefono', dataToSubmit.propietario.telefono);
       propietarioFormData.append('tipo_documento_id', dataToSubmit.propietario.tipo_documento_id);
       propietarioFormData.append('numero_documento', dataToSubmit.propietario.numero_documento);
-      
+
       // Agregar imagen del propietario si existe
       if (dataToSubmit.propietario.imagen instanceof File) {
         propietarioFormData.append('imagen', dataToSubmit.propietario.imagen);

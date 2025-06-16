@@ -3,23 +3,49 @@ import React, { useEffect, useRef, useState } from "react";
 const BuscarBTN = () => {
   // Estados
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobileOrTablet, setIsMobileOrTablet] = useState(false);
   const [search, setSearch] = useState("");
 
   // Referencias
   const inputRef = useRef(null);
   const containerRef = useRef(null);
 
+  // Detectar si es dispositivo móvil o tablet al cargar
+  useEffect(() => {
+    const checkDevice = () => {
+      const isMobileOrTablet = window.innerWidth <= 1000;
+      setIsMobileOrTablet(isMobileOrTablet);
+      setIsOpen(isMobileOrTablet); 
+    };
+    
+    // Verificar al inicio
+    checkDevice();
+    
+    // Verificar cuando cambie el tamaño de la ventana
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
+
   // Abrir/Cerrar el input
   const handleClick = () => {
-    setIsOpen((prev) => {
-      const nextState = !prev;
-      if (nextState) {
-        setTimeout(() => inputRef.current?.focus(), 100);
-      } else {
-        setSearch("");
-      }
-      return nextState;
-    });
+    // En dispositivos móviles/tablets, solo permitir cerrar si hay texto
+    if (isMobileOrTablet && !isOpen) {
+      setIsOpen(true);
+      setTimeout(() => inputRef.current?.focus(), 100);
+    } else if (isMobileOrTablet && search.length === 0) {
+      // No cerrar en móvil/tablet si está vacío
+      inputRef.current?.focus();
+    } else {
+      setIsOpen((prev) => {
+        const nextState = !prev;
+        if (nextState) {
+          setTimeout(() => inputRef.current?.focus(), 100);
+        } else {
+          setSearch("");
+        }
+        return nextState;
+      });
+    }
   };
 
   const handleChange = (e) => setSearch(e.target.value);
@@ -28,26 +54,31 @@ const BuscarBTN = () => {
     const handleClickOutside = (event) => {
       if (
         containerRef.current &&
-        !containerRef.current.contains(event.target)
+        !containerRef.current.contains(event.target) &&
+        (!isMobileOrTablet || (isMobileOrTablet && search.length > 0))
       ) {
-        setIsOpen(false);
-        setSearch("");
+        // En móvil/tablet solo cerrar si hay texto
+        if (!isMobileOrTablet || (isMobileOrTablet && search.length > 0)) {
+          setIsOpen(false);
+          setSearch("");
+        }
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [isMobileOrTablet, search]);
+
+  const shouldShowCloseIcon = isOpen && !isMobileOrTablet;
 
   return (
-    <div>
-      {/* Dropdown con Tailwind CSS */}
+    <div className="w-full max-w-xs sm:max-w-sm md:max-w-md">
       <div className="relative text-center">
         <div
           ref={containerRef}
-          className={` border border-green-400 relative inline-flex items-center p-1 rounded-full transition-all duration-400 ${
+          className={`border border-green-400 relative inline-flex items-center p-1 rounded-full transition-all duration-400  ${
             isOpen
               ? "bg-opacity-100 bg-white"
-              : " hover:bg-gray-50"
+              : "hover:bg-gray-50"
           }`}
         >
           <input
@@ -56,26 +87,28 @@ const BuscarBTN = () => {
             placeholder="Buscar..."
             value={search}
             type="text"
-            className={`max-w-0 p-0 outline-none bg-transparent text-gray-800 font-['Poppins'] text-lg transition-all duration-400 ${
-              isOpen ? "max-w-[300px] px-5" : ""
+            className={`max-w-0 p-0 outline-none bg-transparent text-gray-800 font-['Poppins'] text-base sm:text-lg transition-all duration-400 ${
+              isOpen 
+                ? "max-w-[300px] px-3 flex-grow" 
+                : ""
             }`}
           />
           <button
             onClick={handleClick}
-            className={`flex items-center justify-center w-[50px] h-[50px] rounded-full text-2xl transition-all duration-300 cursor-pointer ${
+            className={`flex-shrink-0 flex items-center justify-center w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] rounded-full text-xl sm:text-2xl transition-all duration-300 cursor-pointer ${
               isOpen
-                ? "bg-green-400 text-white"
+                ? "bg-green-400 text-white" 
                 : "bg-green-400 text-white"
             }`}
           >
-            {isOpen ? (
+            {shouldShowCloseIcon ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="size-6 "
+                className="w-5 h-5 sm:w-6 sm:h-6"
               >
                 <path
                   strokeLinecap="round"
@@ -90,7 +123,7 @@ const BuscarBTN = () => {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="size-6"
+                className="w-5 h-5 sm:w-6 sm:h-6"
               >
                 <path
                   strokeLinecap="round"
@@ -106,4 +139,4 @@ const BuscarBTN = () => {
   );
 };
 
-export default BuscarBTN;
+export default BuscarBTN; 
