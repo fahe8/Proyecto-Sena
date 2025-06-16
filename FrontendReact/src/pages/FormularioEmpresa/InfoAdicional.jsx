@@ -92,7 +92,7 @@ export default function InfoAdicional({ data, onChange, errors }) {
               <input
                 type="checkbox"
                 className="accent-teal-500"
-                checked={data.servicios.includes(servicio.id)} // Vinculado al estado global
+                checked={data?.servicios?.includes(servicio.id)} // Vinculado al estado global
                 onChange={() =>
                   handleCheckboxChange("servicios", servicio.id)
                 } // Actualiza el estado global

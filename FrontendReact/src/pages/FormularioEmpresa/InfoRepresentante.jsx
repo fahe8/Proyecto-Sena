@@ -107,6 +107,9 @@ export default function InfoRepresentante({ data, onChange, errors, isAuthentica
         <div className="w-50 h-full md:w-32 ml-4 text-center">
           <label className="block text-sm text-[#003044] mb-1 ">Tu Foto</label>
           <CloudinaryUploader onUploadSuccess={handleImageUpload} folder={"propietarios"} returnFile={true}/>
+          {errors?.imagen && (
+            <p className="text-red-500 text-sm mt-1">{errors.imagen}</p>
+          )}
         </div>
       </div>
 
