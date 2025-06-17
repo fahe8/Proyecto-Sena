@@ -81,6 +81,36 @@ const PerfilPage = () => {
     setMostrarModal(false);
   };
 
+  const handleImageUpload = async (formData) => {
+    try {
+      // Agregar el ID del usuario al FormData
+      formData.append('usuario_id', usuario.id);
+      
+      const response = await usuarioServicio.actualizarImagen(usuario.id, formData);
+      
+      if (response.data.success) {
+        // Actualizar el estado local con la nueva imagen
+        setUsuario(prev => ({
+          ...prev,
+          imagen: response.data.data.imagen
+        }));
+        
+        setTextoPopUp({
+          titulo: "Imagen actualizada",
+          subtitulo: "Tu foto de perfil se ha actualizado correctamente"
+        });
+        setMostrarPopUp(true);
+      }
+    } catch (error) {
+      console.error('Error al subir imagen:', error);
+      setTextoPopUp({
+        titulo: "Error al subir imagen",
+        subtitulo: "Ha ocurrido un error al actualizar tu foto de perfil"
+      });
+      setMostrarPopUp(true);
+    }
+  };
+
   const validate = () => {
     const newErrors = {};
     if (!usuario.nombre) newErrors.nombre = "El nombre es obligatorio";
@@ -96,7 +126,7 @@ const PerfilPage = () => {
     <div className="min-h-screen w-screen  p-6 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="max-w-5xl mx-auto px-4">
         {/* Header Section */}
-        <ProfileHeader usuario={usuario} />
+        <ProfileHeader usuario={usuario} onImageUpload={handleImageUpload} />
         
         {/* Main Content */}
         <ProfileInfo 

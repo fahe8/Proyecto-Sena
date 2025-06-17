@@ -1,6 +1,7 @@
 import React from "react";
 import InfoField from "../../Perfil/components/InfoField";
 import InputField from "../../Perfil/components/InputField";
+import CloudinaryUploader from "../../../components/CloudinaryUploader";
 import lapizIcon from "../../../assets/Perfil/lapiz.svg";
 
 const AdminProfileInfo = ({ 
@@ -9,7 +10,8 @@ const AdminProfileInfo = ({
   editandoEmpresa,
   editandoPropietario,
   handleChangePropietario,
-  handleChangeEmpresa, 
+  handleChangeEmpresa,
+  handleImageUpload,
   errores, 
   toggleEdicionEmpresa,
   toggleEdicionPropietario,
@@ -156,6 +158,26 @@ const AdminProfileInfo = ({
               icon="🪪"
               defaultText="No hay documento registrado"
             />
+            <div className="md:col-span-2">
+              <InfoField
+                label="Imagen del Propietario"
+                value={propietario.imagen?.url ? "Imagen cargada" : "No hay imagen"}
+                icon="🖼️"
+                defaultText="No hay imagen registrada"
+              />
+              {propietario.imagen?.url && (
+                <div className="mt-4">
+                  <img 
+                    src={propietario.imagen.url} 
+                    alt="Imagen del propietario" 
+                    className="w-32 h-32 object-cover rounded-lg border-2 border-gray-200"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -204,6 +226,36 @@ const AdminProfileInfo = ({
               editable={false} 
               icon="🪪"
             />
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                🖼️ Imagen del Propietario
+              </label>
+              <div className="flex items-start gap-4">
+                <div className="flex-1">
+                  <CloudinaryUploader
+                    onUploadSuccess={handleImageUpload}
+                    folder="micanchaya/propietarios"
+                    multiple={false}
+                  />
+                </div>
+                {propietario.imagen?.url && (
+                  <div className="flex-shrink-0">
+                    <img 
+                      src={propietario.imagen.url} 
+                      alt="Imagen actual del propietario" 
+                      className="w-24 h-24 object-cover rounded-lg border-2 border-gray-200"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                    />
+                    <p className="text-xs text-gray-500 mt-1 text-center">Imagen actual</p>
+                  </div>
+                )}
+              </div>
+              {errores.imagen && (
+                <p className="text-red-500 text-sm mt-1">{errores.imagen}</p>
+              )}
+            </div>
           </div>
         )}
       </div>

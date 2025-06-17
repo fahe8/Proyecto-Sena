@@ -45,12 +45,7 @@ export const usuarioServicio = {
     obtenerTodos: () => apiClient.get('/usuarios'),
     obtenerPorId: (id) => apiClient.get(`/usuarios/${id}`),
     crear: (data) => apiClient.post('/usuarios', data),
-    actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`
-        }
-    }),
-    eliminar: (id) => apiClient.delete(`/usuarios/${id}`)
+    actualizar: (id, data) => apiClient.put(`/propietarios/${id}`, data), 
 };
 
 export const propietarioServicio = {

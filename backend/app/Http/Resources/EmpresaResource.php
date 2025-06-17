@@ -27,6 +27,7 @@ class EmpresaResource extends JsonResource
                 'telefono' => $this->propietario->telefono ?? null,
                 'tipo_documento' => $this->propietario->tipo_documento_id ?? null,
                 'numero_documento' => $this->propietario->numero_documento ?? null,
+                'imagen' => $this->propietario->imagen ?? null,
             ],
             'servicios' => $this->servicios->pluck('tipo')->toArray(),
             'canchas' => CanchaResource::collection($this->canchas)

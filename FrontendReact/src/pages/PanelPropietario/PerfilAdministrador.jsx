@@ -4,6 +4,7 @@ import LogPopUp from "../Login/components/logPopUp";
 import { empresaServicio, propietarioServicio, canchasServicio } from "../../services/api";
 import { useAuth } from "../../Provider/AuthProvider";
 import Loading from "../Login/components/Loading";
+import CloudinaryUploader from "../../components/CloudinaryUploader";
 
 // Import components
 import AdminProfileHeader from "./Componentes/AdminProfileHeader";
@@ -20,7 +21,8 @@ const PerfilAdministrador = () => {
     telefono: "",
     num_documento: "",
     bloqueado: false,
-    id_tipoDocumento: ""
+    id_tipoDocumento: "",
+    imagen: null
   });
   const [empresa, setEmpresa] = useState({
     NIT: "",
@@ -59,14 +61,13 @@ const PerfilAdministrador = () => {
           setPropietario(user);
 
           if (empresaResponse.data.success && empresaResponse.data.data) {
-            console.log('first',empresaResponse.data.data)
+            console.log('first', empresaResponse.data.data);
             setEmpresa(empresaResponse.data.data);
           }
-          
+         
           if (canchasResponse.data.success && canchasResponse.data.data) {
-          
             setCanchas(canchasResponse.data.data);
-          }
+          }          
         } catch (error) {
           console.error("Error al cargar los datos:", error);
         } finally {
@@ -76,10 +77,15 @@ const PerfilAdministrador = () => {
     };
 
     fetchData();
-  }, []);
+  }, [user]);
 
   const handleChangePropietario = (e) => {
     setPropietario({ ...propietario, [e.target.name]: e.target.value });
+  };
+
+  // Función para manejar la carga de imagen del propietario
+  const handleImageUpload = (formData) => {
+    setPropietario({ ...propietario, imagen: formData });
   };
 
   const handleChangeEmpresa = (e) => {
@@ -121,8 +127,24 @@ const PerfilAdministrador = () => {
           subtitulo: "La información de la empresa ha sido actualizada exitosamente",
         });
       } else if (tipoGuardado === 'propietario') {
+        // Preparar datos del propietario para envío
+        const propietarioData = new FormData();
+        
+        // Agregar campos básicos
+        propietarioData.append('nombre', propietario.nombre);
+        propietarioData.append('apellido', propietario.apellido);
+        propietarioData.append('telefono', propietario.telefono);
+        
+        // Si hay una nueva imagen, agregarla
+        if (propietario.imagen && propietario.imagen instanceof FormData) {
+          const imageFile = propietario.imagen.get('image');
+          if (imageFile) {
+            propietarioData.append('imagen', imageFile);
+          }
+        }
+        
         // Actualizar datos del propietario
-        await propietarioServicio.actualizar(propietario.id_propietario, propietario);
+        await propietarioServicio.actualizar(propietario.id_propietario, propietarioData);
         setEditandoPropietario(false);
         setTextoPopUp({
           titulo: "Propietario actualizado",
@@ -149,7 +171,6 @@ const PerfilAdministrador = () => {
   // Validación separada para empresa
   const validateEmpresa = () => {
     const newErrors = {};
-    
     if (!empresa.nombre) newErrors.nombreEmpresa = "El nombre de la empresa es obligatorio";
     if (!empresa.direccion) newErrors.direccionEmpresa = "La dirección es obligatoria"; 
     setErrores(prev => ({ ...prev, ...newErrors }));
@@ -171,7 +192,7 @@ const PerfilAdministrador = () => {
   };
 
   if (loading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   return (
@@ -191,6 +212,7 @@ const PerfilAdministrador = () => {
           editandoPropietario={editandoPropietario}
           handleChangePropietario={handleChangePropietario}
           handleChangeEmpresa={handleChangeEmpresa}
+          handleImageUpload={handleImageUpload}
           errores={errores}
           toggleEdicionEmpresa={toggleEdicionEmpresa}
           toggleEdicionPropietario={toggleEdicionPropietario}
@@ -205,7 +227,7 @@ const PerfilAdministrador = () => {
       {mostrarModal && (
         <Modal
           titulo={`¿Desea actualizar la información ${tipoGuardado === 'empresa' ? 'de la empresa' : 'del propietario'}?`}
-          subtitulo="Verifica que los datos sean correctos antes de confirmar."
+          subtitulo="Verifica que los datos sean correctos antes de continuar."
           cerrarModal={cerrarModal}
           funcionEjecutar={guardarCambios}
           tipo=""
@@ -215,7 +237,7 @@ const PerfilAdministrador = () => {
       {mostrarPopUp && (
         <LogPopUp
           setShowPopUp={setMostrarPopUp}
-          message={textoPopUp.titulo}
+          mesage={textoPopUp.titulo}
           subText={textoPopUp.subtitulo}
           onClose={() => {}}
         />
@@ -225,3 +247,4 @@ const PerfilAdministrador = () => {
 };
 
 export default PerfilAdministrador;
+          

@@ -285,6 +285,14 @@ const manejarEnvioResena = async () => {
     return "Ubicación no disponible";
   };
 
+  // Función para obtener el logo de la empresa
+  const obtenerLogoEmpresa = (reserva) => {
+    if (reserva.empresa?.logo?.url) {
+      return reserva.empresa.logo.url;
+    }
+    return null;
+  };
+
   // Función para abrir el modal de reseña
   const abrirModalResena = (reserva) => {
     console.log('reserva modal', reserva)
@@ -452,8 +460,25 @@ const manejarEnvioResena = async () => {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
                       {/* Información de campo */}
                       <div className="flex items-center space-x-4 md:col-span-2">
-                        <div className="w-13 h-13 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                          {obtenerNombreEmpresa(reserva).charAt(0)}
+                        <div className="w-13 h-13 rounded-full flex items-center justify-center overflow-hidden border-2 border-gray-200">
+                          {obtenerLogoEmpresa(reserva) ? (
+                            <img
+                              src={obtenerLogoEmpresa(reserva)}
+                              alt={`Logo de ${obtenerNombreEmpresa(reserva)}`}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                          ) : null}
+                          <div 
+                            className={`w-full h-full bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl ${
+                              obtenerLogoEmpresa(reserva) ? 'hidden' : 'flex'
+                            }`}
+                          >
+                            {obtenerNombreEmpresa(reserva).charAt(0)}
+                          </div>
                         </div>
                         <div>
                           <h3 className="font-bold text-lg text-[#003044]">

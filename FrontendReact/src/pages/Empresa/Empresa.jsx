@@ -139,8 +139,24 @@ const Empresa = () => {
               <BackToHome/>
               <div className="flex flex-col sm:flex-row items-start mb-4">
                 <div className="flex items-start mb-4 sm:mb-0"> 
-                  <div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center mr-3">
-                    <span className="text-gray-600">🏟️</span> 
+                  <div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center mr-3 overflow-hidden">
+                    {empresa?.logo?.url ? (
+                      <img 
+                        src={empresa.logo.url} 
+                        alt={`Logo de ${empresa.nombre}`} 
+                        className="w-full h-full object-cover rounded-full"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <span 
+                      className="text-gray-600 text-xl" 
+                      style={{ display: empresa?.logo?.url ? 'none' : 'flex' }}
+                    >
+                      🏟️
+                    </span> 
                   </div>
                   <div className="flex-1">
                     <h2 className="font-bold text-lg">{empresa?.nombre}</h2>
@@ -176,8 +192,24 @@ const Empresa = () => {
 
               {/* Información del empresario */}
               <div className="flex items-center mb-4">
-                <div className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center mr-3">
-                  <span className="text-gray-600">👤</span>
+                <div className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center mr-3 overflow-hidden">
+                  {empresa?.propietario?.imagen?.url ? (
+                    <img 
+                      src={empresa.propietario.imagen.url} 
+                      alt={`Foto de ${empresa.propietario.nombre}`} 
+                      className="w-full h-full object-cover rounded-full"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <span 
+                    className="text-gray-600" 
+                    style={{ display: empresa?.propietario?.imagen?.url ? 'none' : 'flex' }}
+                  >
+                    👤
+                  </span>
                 </div>
                 <div>
                   <h3 className="font-medium">

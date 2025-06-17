@@ -187,8 +187,24 @@ const formatearFecha = (fechaStr) => {
               <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex items-center gap-4">
                   {/* Logo de la empresa */}
-                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
-                    {obtenerNombreEmpresa(reserva).charAt(0) || "C"}
+                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold overflow-hidden">
+                    {reserva.empresa?.logo?.url ? (
+                      <img 
+                        src={reserva.empresa.logo.url} 
+                        alt={`Logo de ${obtenerNombreEmpresa(reserva)}`} 
+                        className="w-full h-full object-cover rounded-full"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <span 
+                      className="text-white font-bold" 
+                      style={{ display: reserva.empresa?.logo?.url ? 'none' : 'flex' }}
+                    >
+                      {obtenerNombreEmpresa(reserva).charAt(0) || "C"}
+                    </span>
                   </div>
                   {/* Location info */}
                   <div>
