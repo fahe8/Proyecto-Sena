@@ -31,13 +31,14 @@ const InterfazPropietario = () => {
     // Función para cargar todos los datos necesarios
     const cargarDatos = async () => {
       try {
+        console.log("NIT del usuario:", user.NIT);        
         // Realizar todas las peticiones en paralelo
-        const [canchasResponse, tiposResponse, estadosResponse  ] = await Promise.all([
+        const [canchasResponse, tiposResponse, estadosResponse, propietarioResponse, EmpresaReponse] = await Promise.all([
           canchasServicio.obtenerTodosEmpresa(user.NIT),
           canchasServicio.tiposCanchas(),
           canchasServicio.estadoCanchas(),
-          // empresaServicio.obtenerPorId('987654321'),
-          // propietarioServicio.obtenerPorEmpresa('987654321'),
+          propietarioServicio.obtenerPorEmpresa(user.NIT),
+          empresaServicio.obtenerPorId(user.NIT),
         ]);
         
         // Procesar los resultados
@@ -51,26 +52,27 @@ const InterfazPropietario = () => {
           setEstadoCanchas(estadosResponse.data.data);
         }
       
-        // if (EmpresaReponse.data.success && EmpresaReponse.data.data) {
-        //   setDatosEmpresa(EmpresaReponse.data.data);
-        // }
+        if (EmpresaReponse.data.success && EmpresaReponse.data.data) {
+          setDatosEmpresa(EmpresaReponse.data.data);
+        }
         
-        // if (propietarioResponse.data.success && propietarioResponse.data.data) {
-        //   setDatosPropietario(propietarioResponse.data.data);
-        // }
+        if (propietarioResponse.data.success && propietarioResponse.data.data) {
+          setDatosPropietario(propietarioResponse.data.data);
+        }
         
-        // console.log("Datos de empresa:", EmpresaReponse.data);
+        console.log("Datos de empresa:", EmpresaReponse.data.data);
+
         setDatosListos(true);
         setCargando(false);
-      } catch (error) {
         
+      } catch (error) {
         console.error("Error al cargar los datos:", error);
         setCargando(false);
       }
     };
 
     cargarDatos();
-  }, []);
+  }, [user.NIT]); // Añadir user.NIT como dependencia
 
   // Función para abrir el modal de modificar y pasar la cancha seleccionada
   const abrirModalModificar = (cancha) => {
