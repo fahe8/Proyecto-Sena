@@ -358,7 +358,9 @@ const Empresa = () => {
                     <div className="flex flex-col sm:flex-row sm:justify-between mb-2">
                       <div className="flex items-center mb-2 sm:mb-0">
                         <div className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center mr-2">
-                          <span className="text-gray-600">👤</span>
+                          <span className="text-gray-600 font-semibold text-sm">
+                            {review.name.charAt(0).toUpperCase()}
+                          </span>
                         </div>
                         <span className="font-medium">{review.name}</span>
                       </div>
