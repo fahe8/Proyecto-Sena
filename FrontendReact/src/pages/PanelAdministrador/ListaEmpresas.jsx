@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import BuscarBTN from './BuscarBTN';
+import { useNavigate } from 'react-router-dom'
 
 function ListaEmpresas() {
 
+  const navigate = useNavigate();
   const [vistaActiva, setVistaActiva] = useState('empresas');
 
   const [empresas, setEmpresas] = useState([
@@ -91,12 +92,15 @@ function ListaEmpresas() {
   };
 
   
+  const manejarEdicion = (nit) => {
+    navigate(`/admin/empresas/${nit}/editar`);
+  };
+
   const cambiarEstadoEmpresa = (id, nuevoEstado) => {
     setEmpresas(empresas.map(empresa => 
       empresa.id === id ? { ...empresa, status: nuevoEstado } : empresa
     ));
   };
-
 
   const cambiarVista = (vista) => {
     setVistaActiva(vista);
@@ -141,7 +145,6 @@ function ListaEmpresas() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="pl-4 text-xl font-semibold text-green-500">Empresas Registradas</h2>
             <div className="flex space-x-4">
-              <BuscarBTN />
               <button className="border border-green-400 text-green-500 px-4 py-2 rounded-md flex items-center">
                 <span className="mr-2 cursor-pointer">Filter</span>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -186,7 +189,10 @@ function ListaEmpresas() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
                         </button>
-                        <button className="text-green-600 hover:text-green-800">
+                        <button 
+                          className="text-green-600 hover:text-green-800"
+                          onClick={() => manejarEdicion(empresa.NIT)}
+                        >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
@@ -201,7 +207,7 @@ function ListaEmpresas() {
                     <td className="py-3 px-4">
                       <button 
                         onClick={() => cambiarEstadoEmpresa(empresa.id, empresa.status === 'active' ? 'inactive' : 'active')}
-                        className={`px-3 py-1 rounded-md text-sm ${empresa.status === 'active' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}`}
+                        className={`px-3 py-1 rounded-md text-sm ${empresa.status === 'active' ? 'bg-red-500 text-white' : 'bg-green-500 text-white' }`}
                       >
                         {empresa.status === 'active' ? 'Banear' : 'Activar'}
                       </button>
@@ -217,7 +223,6 @@ function ListaEmpresas() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="pl-4 text-xl font-semibold text-green-500">Solicitudes Pendientes</h2>
             <div className="flex space-x-4">
-              <BuscarBTN />
               <button className="border border-green-400 text-green-500 px-4 py-2 rounded-md flex items-center">
                 <span className="mr-2 cursor-pointer">Filter</span>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -274,16 +279,16 @@ function ListaEmpresas() {
                         </button>
                       </div>
                     </td>
-                    <td className="flex space-x-2 pl-2 justify-left py-3">
+                    <td className="flex space-x-2 pl-2 justify-left py-3 ">
                       <button 
                         onClick={() => cambiarEstadoEmpresa(empresa.id, 'active')}
-                        className="bg-green-500 text-white px-3 py-1 rounded-md text-sm hover:bg-green-600 transition-colors"
+                        className="bg-green-500 text-white px-3 py-1 rounded-md text-sm hover:bg-green-600 transition-colors cursor-pointer"
                       >
                         Aprobar
                       </button>
                       <button 
                         onClick={() => cambiarEstadoEmpresa(empresa.id, 'inactive')}
-                        className='bg-red-600 text-white px-3 py-1 rounded-md text-sm hover:bg-red-700 transition-colors'
+                        className='bg-red-600 text-white px-3 py-1 rounded-md text-sm hover:bg-red-700 transition-colors cursor-pointer'
                       >
                         Rechazar
                       </button>

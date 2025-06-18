@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import BuscarBTN from './BuscarBTN'; 
 
 function ListaUsuarios() {
   // Array de objetos con la información de los usuarios
@@ -34,7 +33,7 @@ function ListaUsuarios() {
       Nombre: "Michael Campbell",
       Telefono: "+7 256 52 73",
       Correo: "camp@hotmail.com",
-      Estado: "inactive",
+      status: "inactive",
     },
     {
       id: 5,
@@ -110,7 +109,6 @@ function ListaUsuarios() {
       <div className="flex justify-between items-center mb-6 ">
         <h2 className="pl-4 text-xl font-semibold text-green-500 ">Usuarios Registrados</h2>
         <div className="flex space-x-4">
-          <BuscarBTN></BuscarBTN>
           <button className="border border-green-400 text-green-500 px-4 py-2 rounded-md flex items-center">
             <span className="mr-2 cursor-pointer">Filter</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

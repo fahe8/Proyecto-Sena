@@ -20,9 +20,9 @@ import PerfilAdministrador from "./pages/PanelPropietario/PerfilAdministrador";
 import ReservasPendientes from "./pages/PanelPropietario/ReservasPendientes";
 import ReservasPasadas from "./pages/PanelPropietario/ReservasPasadas";
 // import { ProfileIcon } from "./assets/IconosSVG/iconos";
-import InterfazAdministrador from "./pages/PanelAdministrador/InterfazAdministrador";
 import ListaUsuarios from "./pages/PanelAdministrador/ListaUsuarios";
 import ListaEmpresas from "./pages/PanelAdministrador/ListaEmpresas";
+import EditarEmpresa from "./pages/PanelAdministrador/EditarEmpresa";
 
 import iconoCorazon from "./assets/Perfil/corazon.svg";
 import iconoArchivo from "./assets/Perfil/archive.svg";
@@ -34,6 +34,7 @@ import business from "./assets/Perfil/business.svg";
 import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
 import ResetPassword from "./pages/Login/components/ResetPassword";
 import LoginEmpresa from "./pages/LoginEmpresa/LoginEmpresa";
+
 
 function App() {
   const opcionesUsuario = [
@@ -92,11 +93,6 @@ function App() {
       nombre: "Inicio",
       icono: IconoHome,
       url: "/",
-    },
-    {
-      nombre: "Perfil",
-      icono: iconoPerfil,
-      url: "/InterfazAdministrador",
     },
     {
       nombre: "Usuarios registrados",
@@ -158,16 +154,14 @@ function App() {
         </Route>
 
         {/* Rutas protegidas para ADMINISTRADORES */}
-        <Route element={<RutasProtegidasAdmin />}>
+        {/* <Route element={<RutasProtegidasAdmin />}> */}
           <Route element={<SideBarPerfil opciones={opcionesAdminitrador} />}>
-            <Route
-              path="/InterfazAdministrador"
-              element={<InterfazAdministrador />}
-            />
             <Route path="/ListaUsuarios" element={<ListaUsuarios />} />
             <Route path="/ListaEmpresas" element={<ListaEmpresas />} />
+            <Route path="/admin/empresas/:nit/editar" element={<EditarEmpresa />} />
+
           </Route>
-        </Route>
+        {/* </Route> */}
 
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
       </Routes>
