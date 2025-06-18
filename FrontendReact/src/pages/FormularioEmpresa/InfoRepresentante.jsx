@@ -5,6 +5,7 @@ import { propietarioServicio } from "../../services/api";
 export default function InfoRepresentante({ data, onChange, errors, isAuthenticated }) {
   const [tiposDocumentos, setTiposDocumentos] = useState([]);
   const [loading, setLoading] = useState(true);
+  
   // Función para manejar la subida de imágenes
   const handleImageUpload = (url) => {
     onChange("imagen", url);
@@ -106,7 +107,12 @@ export default function InfoRepresentante({ data, onChange, errors, isAuthentica
         </div>
         <div className="w-50 h-full md:w-32 ml-4 text-center">
           <label className="block text-sm text-[#003044] mb-1 ">Tu Foto</label>
-          <CloudinaryUploader onUploadSuccess={handleImageUpload} folder={"propietarios"} returnFile={true}/>
+          <CloudinaryUploader 
+            onUploadSuccess={handleImageUpload} 
+            folder={"propietarios"} 
+            returnFile={true}
+            initialValue={data.imagen} // Pasar la imagen guardada como valor inicial
+          />
         </div>
       </div>
 
@@ -118,9 +124,9 @@ export default function InfoRepresentante({ data, onChange, errors, isAuthentica
           <select
             className="border border-gray-300 rounded-l-md p-2 w-20 text-[14px]"
             value={data.tipo_documento_id || "CC"} // Valor predeterminado
-            onChange={(e) => onChange("id_tipoDocumento", e.target.value)}
+            onChange={(e) => onChange("tipo_documento_id", e.target.value)}
           >
-            {tiposDocumentos?.map(tipos => (<option key={tipos}>{tipos}</option>))}
+            {tiposDocumentos?.map(tipo => (<option key={tipo} value={tipo}>{tipo}</option>))}
           </select>
           <input
             type="text"

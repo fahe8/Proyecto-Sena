@@ -31,7 +31,7 @@ class EmpresaController extends ApiController
     public function index()
     {
         return $this->sendResponse(
-            Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha'])->get(),
+            Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha', 'resenas'])->get(),
             'Lista de empresas obtenida correctamente',
             200
         );
@@ -124,7 +124,7 @@ class EmpresaController extends ApiController
 
     public function show($nit)
     {
-        $empresa = Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha'])
+        $empresa = Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha', 'resenas'])
             ->findOrFail($nit);
             
         return $this->sendResponse(

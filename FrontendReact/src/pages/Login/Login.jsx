@@ -1,11 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  signInWithGoogle,
-  signUpWithEmailAndPassword,
-  iniciarSesionConEmail,
-} from "./firebaseconfig";
-
 import LogPopUp from "./components/logPopUp";
 import Loading from "./components/Loading";
 import LazyBackground from "../../utils/LazyBackground.jsx";
@@ -61,11 +55,24 @@ const Login = () => {
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+    
+    // Limpiar errores cuando el usuario empiece a escribir
+    if (error[name]) {
+      setError({
+        ...error,
+        [name]: "",
+      });
+    }
   };
+
+  // La validación de contraseña se maneja en AuthForm.jsx
 
   // Función principal para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // La validación de contraseña se maneja en AuthForm.jsx
+    
     setLoading(true);
     try {
       if (register) {

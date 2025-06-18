@@ -1,71 +1,63 @@
 import React, { useState, useEffect } from 'react';
+import { reservaServicio } from '../../services/api'; // Ajusta la ruta si es necesario
+import Loading from "../Login/components/Loading"; // Asegúrate de tener un componente de carga
 
-// Simulación de reservas pasadas (reemplaza por tu fetch real)
-const reservasEjemplo = [
-  {
-    id: 1,
-    cliente: 'Juan Pérez',
-    cancha: 'Cancha 1',
-    fecha: '2025-05-10',
-    hora: '18:00',
-    telefono: '3001234567',
-    email: 'juanperez@email.com',
-    comentario: 'Todo excelente, volveré pronto.',
-    rating: 5,
-    monto: "90.000",
-  },
-  {
-    id: 2,
-    cliente: 'Ana Gómez',
-    cancha: 'Cancha 2',
-    fecha: '2025-05-09',
-    hora: '20:00',
-    telefono: '3019876543',
-    email: 'anagomez@email.com',
-    comentario: 'Buen servicio, pero faltó iluminación.',
-    rating: 4,
-    monto: "120.000",
-  },
-];
-
-const ReservasPasadas = () => {
+const ReservasPasadas = ({ nitEmpresa }) => {
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
   const [reservas, setReservas] = useState([]);
+  const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
-    // Aquí se debe hacer la petición real al backend
-    setReservas(reservasEjemplo);
-  }, []);
+    if (!nitEmpresa) {
+      setCargando(false);
+      setReservas([]);
+      return;
+    }
+  
+    const obtenerReservas = async () => {
+      setCargando(true);
+      try {
+        const resp = await reservaServicio.obtenerPorEmpresa(nitEmpresa);
+        const reservasPasadas = (resp.data || []).filter(reserva => {
+          const fechaReserva = new Date(reserva.fecha + ' ' + reserva.hora);
+          return fechaReserva < new Date();
+        });
+        
+        // Ordenar por fecha más reciente primero
+        const reservasOrdenadas = reservasPasadas.sort((a, b) => 
+          new Date(b.fecha) - new Date(a.fecha)
+        );
+        
+        setReservas(reservasOrdenadas);
+      } catch (error) {
+        console.error('Error al cargar reservas:', error);
+        setError('No se pudieron cargar las reservas pasadas');
+        setReservas([]);
+      }
+      setCargando(false);
+    };
+  
+    obtenerReservas();
+  }, [nitEmpresa]);
 
   return (
-    <div className=" min-h-screen w-full bg-gray-100 overflow-x-hidden">
-      <nav className="bg-[#003950] shadow-lg p-4 sm:p-6">
+    <div className="min-h-screen w-full bg-gray-100 overflow-x-hidden p-10 md:px-30">
+      <nav className="bg-green-700 shadow-lg p-4 sm:p-6 rounded-t-lg text-center">
         <div className="w-full max-w-7xl mx-auto px-2 sm:px-15 py-[4px]">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="relative">
-                <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full bg-green-500 flex items-center justify-center border-2 sm:border-3 border-white">
-                  <span className="text-white text-lg sm:text-2xl font-bold">L</span>
-                </div>
-              </div>
-              <div className="text-white text-center sm:text-left">
-                <h2 className="text-xl sm:text-lg font-bold">Canchas La 64</h2>
-                <p className="text-lg sm:text-sm font-sans">Leider Rodriguez</p>
-              </div>
-            </div>
-           
-          </div>
+          <h2 className="text-lg md:text-2xl font-bold pb-2 sm:pb-2.5 font-sans text-white">
+            Historial de reservas
+          </h2>
         </div>
       </nav>
 
-      <div className="w-full max-w-5xl mx-auto py-3 sm:py-5 px-3 sm:px-0">
-        <div className="bg-white rounded-lg shadow-lg flex-grow px-10 md:px-6 py-8">
-          <h2 className="text-xl sm:text-lg font-bold mb-3 sm:mb-4 pb-2 sm:pb-2.5 font-sans">
-            Historial de reservas
-          </h2>
-
-          {reservas.length === 0 ? (
-            <p className="text-center text-black text-xl sm:text-2xl p-3 sm:p-5">
+      <div className="w-full mx-auto px-3 sm:px-0">
+        <div className="bg-white rounded-b-lg shadow-lg flex-grow px-10 md:px-6 py-8">
+          {cargando ? (
+            <div className="flex justify-center items-center h-40">
+              <Loading />
+            </div>
+          ) : reservas.length === 0 ? (
+            <p className="text-center text-black text-lg sm:text-xl p-3 sm:p-5">
               No tienes reservas finalizadas aún.
             </p>
           ) : (
@@ -77,15 +69,14 @@ const ReservasPasadas = () => {
                 >
                   <div className="flex justify-between items-start mb-2 sm:mb-4 px-4 pt-4">
                     <div className="w-full">
-                      <h3 className="font-bold text-[#003044] text-lg">{reserva.cliente}</h3>
+                      <h3 className="font-bold text-[#003044] text-lg">{reserva.cliente || reserva.usuario || "Cliente"}</h3>
                       <p className="text-sm text-gray-600">{reserva.cancha}</p>
                     </div>
                     <div className="flex items-center gap-1 text-green-500">
-                      <span className="">★</span>
-                      <span>{reserva.rating}</span>
+                      <span>★</span>
+                      <span>{reserva.rating || reserva.calificacion || "-"}</span>
                     </div>
                   </div>
-                
                   <div className="flex flex-col gap-1 px-4 pb-2 text-sm text-gray-700">
                     <div>
                       <span className="font-medium">Fecha:</span> {reserva.fecha}
@@ -119,7 +110,7 @@ const ReservasPasadas = () => {
             </button>
             <h3 className="text-xl font-bold mb-4 text-[#003044]">Datos del cliente</h3>
             <div className="mb-2">
-              <span className="font-medium">Nombre:</span> {reservaSeleccionada.cliente}
+              <span className="font-medium">Nombre:</span> {reservaSeleccionada.cliente || reservaSeleccionada.usuario}
             </div>
             <div className="mb-2">
               <span className="font-medium">Teléfono:</span> {reservaSeleccionada.telefono}
@@ -142,10 +133,10 @@ const ReservasPasadas = () => {
             <div className="mb-2 flex items-center gap-1">
               <span className="font-medium">Calificación:</span>
               <span className="text-[#003044]">★</span>
-              <span>{reservaSeleccionada.rating}</span>
+              <span>{reservaSeleccionada.rating || reservaSeleccionada.calificacion || "-"}</span>
             </div>
             <div className="mb-2">
-              <span className="font-medium">Monto cancelado</span> {reservaSeleccionada.monto}
+              <span className="font-medium">Monto cancelado:</span> {reservaSeleccionada.monto}
             </div>
           </div>
         </div>

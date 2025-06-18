@@ -79,7 +79,7 @@ const ModificarCancha = ({
 
     if (validateForm()) {
       guardarCambiosCancha();
-      onClose();
+      // No cerramos el modal aquí, dejamos que InterfazPropietario.jsx lo haga
     }
   };
 
@@ -112,7 +112,7 @@ const ModificarCancha = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-[#00000080] bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
         <div className="p-5 border-b border-gray-200">
           <div className="flex justify-between items-center">
@@ -121,7 +121,7 @@ const ModificarCancha = ({
             </h3>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -236,13 +236,13 @@ const ModificarCancha = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[#06c509] text-white rounded-md hover:bg-green-600"
+              className="px-4 py-2 bg-[#06c509] text-white rounded-md hover:bg-green-600 cursor-pointer"
             >
               Guardar cambios
             </button>
