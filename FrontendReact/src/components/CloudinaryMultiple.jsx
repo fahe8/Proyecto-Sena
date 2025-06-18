@@ -1,12 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const CloudinaryMultiple = ({
   onUploadSuccess = (files) => console.log("Archivos listos para subir", files),
   multiple = true,
   folder = "default",
+  initialValues = [], // Nuevo parámetro para mostrar imágenes iniciales
 }) => {
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
+  
+  // Efecto para mostrar las imágenes iniciales si existen
+  useEffect(() => {
+    if (initialValues && initialValues.length > 0) {
+      const initialPreviews = initialValues.map(value => {
+        // Si es un objeto File
+        if (value instanceof File) {
+          return {
+            url: URL.createObjectURL(value),
+            file: value
+          };
+        }
+        // Si es un string (URL)
+        else if (typeof value === 'string') {
+          return {
+            url: value,
+            file: null // No tenemos el archivo original
+          };
+        }
+        // Si es un objeto con url (como los que vienen de Cloudinary)
+        else if (value && value.url) {
+          return {
+            url: value.url,
+            file: null // No tenemos el archivo original
+          };
+        }
+        return null;
+      }).filter(Boolean); // Eliminar valores nulos
+      
+      setPreviews(initialPreviews);
+      
+      // Actualizar files solo si hay archivos File reales
+      const realFiles = initialValues.filter(value => value instanceof File);
+      if (realFiles.length > 0) {
+        setFiles(realFiles);
+      }
+    }
+  }, [initialValues]);
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);

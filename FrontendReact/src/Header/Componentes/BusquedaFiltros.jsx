@@ -183,11 +183,11 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
                         onClick={() => agregarFiltros("servicios", servicio)}
                         className={`px-4 py-2 rounded-full border-2 transition-all duration-200 flex items-center gap-2 cursor-pointer ${
                           filtros.servicios.includes(servicio)
-                            ? 'border-[#00c951] bg-[#00c951] text-white'
+                            ? 'border-[#00c951] bg-[#00c95110] text-gray-700'
                             : 'border-gray-300 hover:border-[#00c951] hover:bg-[#00c95110]'
                         }`}
                       >
-                        <span className={filtros.servicios.includes(servicio) ? 'text-white' : 'text-gray-700'}>
+                        <span className="text-gray-700">
                           {IconComponent && <IconComponent className="w-5 h-5" />}
                         </span>
                         <span className="capitalize">{servicio}</span>

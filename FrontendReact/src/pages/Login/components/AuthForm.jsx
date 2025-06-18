@@ -1,8 +1,32 @@
 import React, { useState } from "react";
 import { LetterIcon, KeyIcon, EyeIcon, EyeOffIcon } from "../../../assets/IconosSVG/iconos.jsx";
+import { AlertCircle, CheckCircle } from 'lucide-react';
 
 const AuthForm = ({ register, formData, handleChange, handleSubmit, errors }) => {
   const [showPassword, setShowPassword] = useState(false);
+
+  // Función para validar la contraseña
+  const validatePassword = (password) => {
+    const errors = [];
+    if (password.length < 8) errors.push('Mínimo 8 caracteres');
+    if (!/[A-Z]/.test(password)) errors.push('Una letra mayúscula');
+    if (!/[a-z]/.test(password)) errors.push('Una letra minúscula');
+    if (!/\d/.test(password)) errors.push('Un número');
+    
+    return errors;
+  };
+
+  // Función para determinar la fortaleza de la contraseña
+  const getPasswordStrength = (password) => {
+    const errors = validatePassword(password);
+    if (password.length === 0) return { strength: 0, text: '', color: '' };
+    if (errors.length === 0) return { strength: 100, text: 'Muy fuerte', color: 'text-green-600' };
+    if (errors.length <= 2) return { strength: 75, text: 'Fuerte', color: 'text-blue-600' };
+    if (errors.length <= 3) return { strength: 50, text: 'Media', color: 'text-yellow-600' };
+    return { strength: 25, text: 'Débil', color: 'text-red-600' };
+  };
+  
+  const passwordStrength = getPasswordStrength(formData.password);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -47,13 +71,49 @@ const AuthForm = ({ register, formData, handleChange, handleSubmit, errors }) =>
           className="w-full pl-10 pr-4 py-3 h-[46px] border border-gray-300 rounded-md text-[15px]"
           required
         />
-         {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
         <div
           className="absolute top-[38px] right-[15px] text-[13px] text-[#777] pt-[5px] cursor-pointer"
           onClick={togglePasswordVisibility}
         >
           {showPassword ? <EyeOffIcon /> : <EyeIcon />}
         </div>
+
+        {/* Indicador de fortaleza de contraseña */}
+        {register && formData.password && (
+          <div className="mt-2">
+            <div className="flex justify-between text-xs mb-1">
+              <span className="text-gray-600">Fortaleza de contraseña</span>
+              <span className={passwordStrength.color + ' font-medium'}>
+                {passwordStrength.text}
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className={`h-2 rounded-full transition-all duration-300 ${passwordStrength.strength >= 75 ? 'bg-green-500' :
+                  passwordStrength.strength >= 50 ? 'bg-blue-500' :
+                    passwordStrength.strength >= 25 ? 'bg-yellow-500' : 'bg-red-500'
+                  }`}
+                style={{ width: `${passwordStrength.strength}%` }}
+              ></div>
+            </div>
+          </div>
+        )}
+
+        {/* Requisitos de contraseña - mostrar en formato horizontal */}
+        {register && formData.password && (
+          <div className="mt-3">
+            <div className="flex flex-wrap gap-3">
+              {validatePassword(formData.password).map((req, index) => (
+                <div key={index} className="flex items-center gap-1 text-xs text-red-600 rounded-md">
+                  <AlertCircle className="w-3 h-3" />
+                  <span>{req}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
       </div>
 
       <div className="flex items-center justify-between mb-[22px] text-[14px] my-5">

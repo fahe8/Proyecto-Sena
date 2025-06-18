@@ -143,9 +143,9 @@ const AgregarCancha = () => {
   }
 
   return (
-    <div className='w-full p-6 min-h-screen bg-gradient-to-br from-slate-100 to-blue-50 '>
-      <div className="max-w-xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold text-[#003044] mb-6">Agregar Canchas</h1>
+    <div className='w-full px-4 py-6 min-h-screen bg-gradient-to-br from-slate-100 to-blue-50'>
+      <div className="w-full max-w-xl mx-auto bg-white rounded-lg shadow-md p-4 sm:p-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-[#003044] mb-4 sm:mb-6">Agregar Canchas</h1>
         
         <InfoCanchas 
           data={canchasData}
@@ -155,16 +155,16 @@ const AgregarCancha = () => {
           errors={errors}
         />
         
-        <div className="mt-6 flex justify-end gap-4">
+        <div className="mt-6 flex flex-col sm:flex-row sm:justify-end gap-3 sm:gap-4">
           <button 
             onClick={() => navigate('/InterfazPropietario')}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors cursor-pointer"
+            className="w-full sm:w-auto px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors cursor-pointer"
           >
             Cancelar
           </button>
           <button 
             onClick={guardarCanchas}
-            className="px-4 py-2 bg-[#39de02] text-white rounded-md hover:bg-green-400 transition-colors cursor-pointer"
+            className="w-full sm:w-auto px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors cursor-pointer"
           >
             Guardar Canchas
           </button>

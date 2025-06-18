@@ -94,11 +94,6 @@ function App() {
       url: "/",
     },
     {
-      nombre: "Perfil",
-      icono: iconoPerfil,
-      url: "/InterfazAdministrador",
-    },
-    {
       nombre: "Usuarios registrados",
       icono: users,
       url: "/ListaUsuarios",
@@ -163,7 +158,7 @@ function App() {
         {/* </Route> */}
 
         {/* Rutas protegidas para ADMINISTRADORES */}
-        <Route element={<RutasProtegidasAdmin />}>
+        {/* <Route element={<RutasProtegidasAdmin />}> */}
           <Route element={<SideBarPerfil opciones={opcionesAdminitrador} />}>
             <Route
               path="/InterfazAdministrador"
@@ -172,7 +167,7 @@ function App() {
             <Route path="/ListaUsuarios" element={<ListaUsuarios />} />
             <Route path="/ListaEmpresas" element={<ListaEmpresas />} />
           </Route>
-        </Route>
+        {/* </Route> */}
 
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
       </Routes>

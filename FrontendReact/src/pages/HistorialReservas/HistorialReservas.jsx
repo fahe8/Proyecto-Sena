@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../Provider/AuthProvider";
 import {
-  Alvertencia,
+  Advertencia,
   Calendario,
   Cerrar,
   Gps,
   Lupa,
   OrdenarFlecha,
   Tiempo,
+  StarIcon,
 } from "../../assets/IconosSVG/iconos";
 import { reservaServicio, resenaServicio } from "../../services/api";
 import Loading from "../Login/components/Loading";
@@ -434,7 +435,7 @@ const manejarEnvioResena = async () => {
           </div>
         ) : reservaFiltrada.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-xl">
-            <Alvertencia />
+            <Advertencia />
             <p className="text-lg text-gray-600">
               Aún no tienes reservas pasadas
             </p>
@@ -506,19 +507,18 @@ const manejarEnvioResena = async () => {
                         ) : (
                           <div className="flex flex-col items-center gap-2">
                             <div className="flex items-center gap-2 text-green-600">
-                              <span>✅</span>
                               <span className="text-sm font-medium">Reseña enviada</span>
                             </div>
                             {reserva.resena_data && (
                               <div className="flex items-center gap-1">
-                                <span className="text-xs text-gray-500">
-                                  ⭐ {reserva.resena_data.calificacion}/5
+                                <span className="flex text-xs gap-1 font-semibold text-gray-500">
+                                  <StarIcon/> {reserva.resena_data.calificacion}
                                 </span>
                               </div>
                             )}
                             <button
                               onClick={() => abrirModalResena(reserva)}
-                              className="text-xs text-[#00c951] hover:underline cursor-pointer"
+                              className="text-sm text-[#00c951] hover:underline cursor-pointer"
                             >
                               Ver reseña
                             </button>
@@ -545,7 +545,7 @@ const manejarEnvioResena = async () => {
 
         {/* Modal de reseña */}
         {mostrarModalResena && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 bg-[#36363695] backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
@@ -554,7 +554,7 @@ const manejarEnvioResena = async () => {
                   </h2>
                   <button
                     onClick={cerrarModalResena}
-                    className="text-gray-500 hover:text-gray-700 transition-colors"
+                    className="text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
                   >
                     <Cerrar />
                   </button>

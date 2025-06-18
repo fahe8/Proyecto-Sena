@@ -71,7 +71,7 @@ const KeyIcon = ({ className = "text-green-600" }) => (
   </svg>
 );
 
-const BathroomIcon = () => (
+const BathroomIcon = ({ className }) => (
   <svg
     fill="#11ac0e"
     version="1.1"
@@ -81,6 +81,7 @@ const BathroomIcon = () => (
     height="20px"
     viewBox="0 0 264.884 264.885"
     xml:space="preserve"
+    className={className}
   >
     <g>
       <g>
@@ -143,7 +144,7 @@ const BathroomIcon = () => (
   </svg>
 );
 
-const StoreIcon = () => (
+const StoreIcon = ({ className }) => (
   <svg
     height="20px"
     width="20px"
@@ -152,6 +153,7 @@ const StoreIcon = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 512 512"
     xml:space="preserve"
+    className={className}
   >
     <style type="text/css"></style>
     <g>
@@ -169,35 +171,36 @@ const StoreIcon = () => (
       />
       <polygon
         class="st0"
-        points="230.104,53.689 158.593,53.689 143.977,196.421 226.22,196.421 	"
+        points="230.104,53.689 158.593,53.689 143.977,196.421 226.22,196.421 "
         fill="#11ac0e"
       />
       <polygon
         class="st0"
-        points="368.026,196.421 353.408,53.689 281.896,53.689 285.781,196.421 	"
+        points="368.026,196.421 353.408,53.689 281.896,53.689 285.781,196.421 "
         fill="#11ac0e"
       />
       <polygon
         class="st0"
-        points="512,196.421 478.606,53.689 405.207,53.689 427.591,196.421 	"
+        points="512,196.421 478.606,53.689 405.207,53.689 427.591,196.421 "
         fill="#11ac0e"
       />
       <polygon
         class="st0"
-        points="106.794,53.689 33.394,53.689 0,196.421 84.409,196.421 	"
+        points="106.794,53.689 33.394,53.689 0,196.421 84.409,196.421 "
         fill="#11ac0e"
       />
     </g>
   </svg>
 );
 
-const ParkingIcon = () => (
+const ParkingIcon = ({ className }) => (
   <svg
     fill="#11ac0e"
     version="1.1"
     id="Capa_1"
     xmlns="http://www.w3.org/2000/svg"
     width="20px"
+    className={className}
     height="20px"
     viewBox="0 0 31.446 31.446"
     xml:space="preserve"
@@ -240,13 +243,14 @@ const ParkingIcon = () => (
   </svg>
 );
 
-const RefereeIcon = () => (
+const RefereeIcon = ({ className }) => (
   <svg
     version="1.1"
     id="Capa_1"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 50.191 50.191"
     xml:space="preserve"
+    className={className}
   >
     <g>
       <g>
@@ -270,12 +274,13 @@ const RefereeIcon = () => (
     </g>
   </svg>
 );
-const BarIcon = () => (
+const BarIcon = ({ className }) => (
   <svg
     width="20px"
     height="20px"
     viewBox="0 0 1024 1024"
     xmlns="http://www.w3.org/2000/svg"
+    className={className}
   >
     <path
       fill="#19df15"
@@ -284,7 +289,7 @@ const BarIcon = () => (
   </svg>
 );
 
-const WifiIcon = () => (
+const WifiIcon = ({ className }) => (
   <svg
     fill="#11ac0e"
     height="20px"
@@ -294,6 +299,7 @@ const WifiIcon = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 365.892 365.892"
     xml:space="preserve"
+    className={className}
   >
     <g>
       <circle cx="182.945" cy="286.681" r="41.494" />
@@ -459,8 +465,8 @@ const RestaurantIcon = () => (
 
 const CheckIcon = () => (
   <svg
-    width="800px"
-    height="800px"
+    width="40px"
+    height="40px"
     viewBox="0 0 24 24"
     id="_24x24_On_Light_Checkmark"
     data-name="24x24/On Light/Checkmark"
@@ -690,7 +696,7 @@ const Gps = () => (
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="size-5"
+    className="size-4"
   >
     <path
       strokeLinecap="round"
@@ -710,8 +716,8 @@ const LocationIcon = () => (
     fill="none"
     viewBox="0 0 24 24"
     stroke-width="1.5"
-    stroke="currentColor"
-    class="size-4"
+    stroke="#11ac0e"
+    class="size-5"
   >
     <path
       stroke-linecap="round"
@@ -792,7 +798,7 @@ const EmailIcon = () => (
 );
 const BallIcon = () => (
   <svg
-    fill="#000000"
+    fill="#003344"
     height="40px"
     width="40px"
     version="1.1"
@@ -848,7 +854,7 @@ const Lupa = () => (
     />
   </svg>
 );
-const Alvertencia = () => (
+const Advertencia = () => (
   <svg
     className="mx-auto h-12 w-12 text-gray-400 mb-4"
     fill="none"
@@ -910,6 +916,49 @@ const Cerrar = () => (
   </svg>
 );
 
+const ImageIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#11ac0e" class="size-5">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+</svg>
+);
+
+const DocumentIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#11ac0e" class="size-5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z" />
+  </svg>
+);
+
+const IdICon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#11ac0e" class="size-5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+  </svg>
+
+);
+
+const CompanyIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#11ac0e" class="size-5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
+  </svg>
+);
+
+const DescriptionIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#11ac0e" class="size-5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+  </svg>
+);
+
+const MaintenanceIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#003344" class="size-" height="40px" width="40px">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+  </svg>
+);
+
+const AvailableIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#003344" class="" height="45px" width="45px">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+  </svg>
+);
+
 export {
   EyeIcon,
   EyeOffIcon,
@@ -944,8 +993,15 @@ export {
   BallIcon,
   OrdenarFlecha,
   Lupa,
-  Alvertencia,
+  Advertencia,
   Calendario,
   Tiempo,
   Cerrar,
+  ImageIcon,
+  DocumentIcon,
+  IdICon,
+  CompanyIcon,
+  DescriptionIcon,
+  MaintenanceIcon,
+  AvailableIcon,
 };

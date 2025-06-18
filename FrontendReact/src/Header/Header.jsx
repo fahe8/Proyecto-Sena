@@ -13,7 +13,7 @@ const Header = () => {
   const location = useLocation(); // <-- get current location
   // Check if the current path matches /empresa/:id
   const hideBusquedaFiltros = /^\/empresa\/[^/]+$/.test(location.pathname);
-
+  
   return (
     <header className="bg-[#003044] shadow-lg">
       {/* Contenedor del header con estilos */}
@@ -46,7 +46,8 @@ export const BotonPerfil = () => {
   const [isOpen, setIsOpen] = useState(false); // Estado para mostrar/ocultar el menú
   const dropdownRef = useRef(null); // Referencia para detectar clics fuera del menú
 
-  const { isAuthenticated, cerrarSesion } = useAuth(); // Obtenemos el estado de autenticación del usuario
+  const { isAuthenticated, cerrarSesion, user } = useAuth(); // Obtenemos el estado de autenticación del usuario
+  // Dentro de BotonPerfil
 
   useEffect(() => {
     // Función para detectar clics fuera del menú y cerrarlo
@@ -79,7 +80,7 @@ export const BotonPerfil = () => {
       {/* Botón de perfil (solo visible si el usuario está autenticado) */}
       {isAuthenticated ? (
         <button 
-          className="flex items-center gap-2.5 px-4 h-[40px] text-[#f6f6f6] bg-[#2fc92c] hover:bg-green-600 border-0 rounded-2xl relative z-10 transition-all duration-300 ease-in-out shadow-md cursor-pointer"
+          className="flex items-center gap-2.5 px-4 h-[40px] text-[#f6f6f6] bg-[#2fc92c] hover:bg-green-600 border-0 rounded-2xl relative transition-all duration-300 ease-in-out shadow-md cursor-pointer"
           onClick={toggleDropdown}
           aria-expanded={isOpen}
           aria-haspopup="true"
@@ -116,22 +117,59 @@ export const BotonPerfil = () => {
               : 'opacity-0 scale-0 invisible'
           }`}
         >
-              <Link to={"/perfil"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center rounded-t-lg transition-all duration-200">
-                  Mi Perfil
-                </Link>
-                <Link to={"/historialreservas"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center transition-all duration-200">
-                  Historial de reservas
-                </Link>
-                <Link to={"/reservasactivas"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center transition-all duration-200">
-                  Reservas activas
-                </Link>
-                <Link to={"/favoritos"} className="block px-4 py-2 text-white hover:bg-green-700 text-sm text-center transition-all duration-200">
-                  Mis favoritos
-                </Link>
+         {/* Opciones para USUARIO */}
+    {user?.rol_actual === "usuario" && (
+      <>
+        <Link to="/perfil" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center rounded-t-lg transition-all duration-200">
+          Mi Perfil
+        </Link>
+        <Link to="/historialreservas" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
+          Historial de reservas
+        </Link>
+        <Link to="/reservasactivas" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
+          Reservas activas
+        </Link>
+        <Link to="/favoritos" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
+          Mis favoritos
+        </Link>
+      </>
+    )}
+
+    {/* Opciones para PROPIETARIO */}
+    {user?.rol_actual === "propietario" && (
+      <>
+        <Link to="/interfazpropietario" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center rounded-t-lg transition-all duration-200">
+          Panel Propietario
+        </Link>
+        <Link to="/perfiladministrador" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
+          Perfil propietario
+        </Link>
+        <Link to="/reservaspasadas" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
+          Reservas pasadas
+        </Link>
+        <Link to="/reservaspendientes" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
+          Reservas pendientes
+        </Link>
+      </>
+    )}
+
+    {/* Opciones para ADMINISTRADOR */}
+    {user?.rol_actual === "admin" && (
+      <>
+        
+        <Link to="/ListaUsuarios" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
+          Lista de usuarios
+        </Link>
+        <Link to="/ListaEmpresas" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
+          Lista de empresas
+        </Link>
+        
+      </>
+    )}
                 
                 <button
                   onClick={handleLogout}
-                  className="w-full block px-4 py-2 text-white hover:bg-green-700 text-sm rounded-b-lg cursor-pointer transition-all duration-200 text-center"
+                  className="w-full block px-4 py-2 text-white hover:bg-green-600 text-sm rounded-b-lg cursor-pointer transition-all duration-200 text-center"
                 >
                   Cerrar Sesión
             </button>

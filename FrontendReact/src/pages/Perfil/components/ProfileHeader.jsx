@@ -25,10 +25,7 @@ const ProfileHeader = ({ usuario }) => {
                   {usuario?.nombre ? usuario.nombre[0].toLocaleUpperCase() : ''}
                 </p>
               )}
-              <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 rounded-full transition-opacity duration-300" />
-              <div className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-lg cursor-pointer transform translate-y-1/4 translate-x-1/4 hover:bg-gray-100">
-                <img className="w-5 h-5" src={camara} alt="Cambiar foto" />
-              </div>
+             
             </div>
           </div>
           <div className="text-white mt-4 md:mt-0">

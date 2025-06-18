@@ -1,35 +1,47 @@
-import React, { useState, useEffect } from "react"; // Importamos el estado y el efecto
-import CardEmpresa from "../Inicio/componentes/CardEmpresa"; // Asegúrate de importar correctamente el componente
-import { useAuth } from "../../Provider/AuthProvider"; // Importamos el provider de autenticación
-import { empresaServicio } from "../../services/api"; // Importamos el servicio de empresas
-import { CloudCog } from "lucide-react"; // Importamos el icono de la nube
+import React, { useState, useEffect } from "react";
+import CardEmpresa from "../Inicio/componentes/CardEmpresa";
+import { useAuth } from "../../Provider/AuthProvider";
+import { empresaServicio } from "../../services/api";
+import Loading from "../Login/components/Loading";
 
-const Favoritos = () => { // Componente para mostrar las canchas favoritas
-  const [favoritos, setFavoritos] = useState([]); // Estado para almacenar las canchas favoritas
-  const { user } = useAuth(); // Estado para almacenar el usuario
+const Favoritos = () => {
+  const [favoritos, setFavoritos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const { user } = useAuth();
 
-  useEffect(() => { // Efecto para obtener las canchas favoritas
-  const obtenerFavoritos = async () => { // Función para obtener las canchas favoritas
-    if (!user?.uid) return; // Si no hay usuario, no se obtiene las canchas favoritas
+  useEffect(() => {
+    const obtenerFavoritos = async () => {
+      if (!user?.id) {
+        setCargando(false);
+        return;
+      }
 
-    try {
-      const empresas = await empresaServicio.obtenerTodos(); // Se obtiene todas las empresas
-      const favoritosGuardados = JSON.parse( // Se obtiene las canchas favoritas guardadas
-        localStorage.getItem(`favoritos_${user.uid}`) // Se obtiene las canchas favoritas guardadas
-      ) || []; // Si no hay canchas favoritas guardadas, se inicializa como un array vacío
+      try {
+        setCargando(true);
+        const empresas = await empresaServicio.obtenerTodos();
+        const favoritosGuardados = JSON.parse(
+          localStorage.getItem(`favoritos_${user.id}`)
+        ) || [];
 
-      const empresasFavoritas = empresas.data.data.filter((empresa) => // Se filtra las canchas favoritas
-        favoritosGuardados.includes(empresa.nombre) // Se filtra las canchas favoritas
-      );
+        console.log('Obteniendo favoritos:', {
+          userId: user.id,
+          favoritosGuardados
+        });
 
-      setFavoritos(empresasFavoritas); // Se setean las canchas favoritas
-    } catch (error) { // Si hay un error, se muestra en la consola
-      console.error("Error al obtener los favoritos:", error); // Se muestra en la consola
-    }
-  };
+        const empresasFavoritas = empresas.data.data.filter((empresa) =>
+          favoritosGuardados.includes(empresa.nombre)
+        );
 
-    obtenerFavoritos(); // Se obtiene las canchas favoritas
-}, [user]); // Se ejecuta cuando el usuario cambia
+        setFavoritos(empresasFavoritas);
+      } catch (error) {
+        console.error('Error al obtener favoritos:', error);
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    obtenerFavoritos();
+  }, [user?.id]);
 
   return (
     <div className="w-full py-8 px-5 md:px-30 bg-gradient-to-b from-gray-50 to-gray-100">
@@ -39,23 +51,27 @@ const Favoritos = () => { // Componente para mostrar las canchas favoritas
           <p className="text-center text-sm p-3">Las canchas que más te han gustado</p>
         </div>
         
-      
-      {favoritos.length > 0 ? ( // Si hay canchas favoritas, se muestran
-        <div className="flex flex-wrap justify-center gap-6 mt-10 items-center">
-          {favoritos.map((empresa) => ( // Se muestran las canchas favoritas
-            <CardEmpresa
-              key={empresa.id} // Se muestra la cancha favorita
-              mostrarFavorito={true} // Se muestra la cancha favorita
-              empresa={empresa}
-            />
-          ))} // Se muestran las canchas favoritas
+        <div className="min-h-[400px] flex flex-col justify-center">
+          {cargando ? (
+            <div className="flex justify-center items-center py-10">
+              <Loading />
+            </div>
+          ) : favoritos.length > 0 ? (
+            <div className="flex flex-wrap justify-center gap-6 mt-10 items-center">
+              {favoritos.map((empresa) => (
+                <CardEmpresa
+                  key={empresa.id}
+                  mostrarFavorito={true}
+                  empresa={empresa}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-700 text-center py-10">No tienes empresas en favoritos.</p>
+          )}
         </div>
-      ) : ( // Si no hay canchas favoritas, se muestra un mensaje
-        <p className="text-gray-700 text-center py-10">No tienes empresas en favoritos.</p>
-      )} 
-      </div> 
-      
-    </div> 
+      </div>
+    </div>
   );
 };
 

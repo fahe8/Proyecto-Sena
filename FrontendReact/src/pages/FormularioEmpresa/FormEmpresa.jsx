@@ -33,7 +33,7 @@ export default function FormEmpresa() {
         nombre: '',
         apellido: '',
         tipo_documento_id: 'CC',
-        numero_documento: '',
+        num_documento: '',
         telefono: '',
         imagen: '',
       },
@@ -93,8 +93,8 @@ export default function FormEmpresa() {
       const { nombre, apellido, num_documento, telefono, email } = formData.representante;
       if (!nombre) stepErrors.nombre = 'El nombre es obligatorio';
       if (!apellido) stepErrors.apellido = 'El apellido es obligatorio';
-      if (!formData.representante.id_tipoDocumento) {
-        stepErrors.id_tipoDocumento = 'El tipo de documento es obligatorio';
+      if (!formData.representante.tipo_documento_id) {
+        stepErrors.tipo_documento_id = 'El tipo de documento es obligatorio';
       }
       if (!num_documento) stepErrors.num_documento = 'La identificación es obligatoria';
       if (!telefono) stepErrors.telefono = 'El teléfono es obligatorio';
@@ -167,7 +167,7 @@ export default function FormEmpresa() {
     };
   
     // Actualizar los datos del propietario
-    const { email, password, nombre, apellido, telefono, imagen, id_tipoDocumento, num_documento } = formData.representante;
+    const { email, password, nombre, apellido, telefono, imagen, tipo_documento_id, num_documento } = formData.representante;
     const propietarioData = {
       email,
       password,
@@ -175,8 +175,8 @@ export default function FormEmpresa() {
       apellido,
       telefono,
       imagen, // Mantener como File
-      tipo_documento_id: id_tipoDocumento,
-      numero_documento: num_documento,
+      tipo_documento_id,
+      num_documento: num_documento,
     };
   
     // Actualizar las canchas con el NIT de la empresa
