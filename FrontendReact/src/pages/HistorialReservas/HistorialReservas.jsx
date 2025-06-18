@@ -457,11 +457,11 @@ const manejarEnvioResena = async () => {
                   key={reserva.id_reserva || reserva.id || index}
                   className="bg-gray-50 rounded-xl shadow-[0_0_10px_rgba(0,0,0,0.2)] transition-all duration-300 overflow-hidden"
                 >
-                  <div className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+                  <div className="p-3 sm:p-4">
+                    <div className="flex flex-col lg:grid lg:grid-cols-4 gap-4 lg:gap-6 lg:items-center">
                       {/* Información de campo */}
-                      <div className="flex items-center space-x-4 md:col-span-2">
-                        <div className="w-13 h-13 rounded-full flex items-center justify-center overflow-hidden border-2 border-gray-200">
+                      <div className="flex items-center space-x-3 sm:space-x-4 lg:col-span-2">
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center overflow-hidden border-2 border-gray-200 flex-shrink-0">
                           {obtenerLogoEmpresa(reserva) ? (
                             <img
                               src={obtenerLogoEmpresa(reserva)}
@@ -474,7 +474,7 @@ const manejarEnvioResena = async () => {
                             />
                           ) : null}
                           <div 
-                            className={`w-full h-full bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl ${
+                            className={`w-full h-full bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-xl ${
                               obtenerLogoEmpresa(reserva) ? 'hidden' : 'flex'
                             }`}
                           >

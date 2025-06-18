@@ -142,12 +142,12 @@ const formatearFecha = (fechaStr) => {
   };
 
   return (
-    <div className="w-full mx-auto p-20 px-5 md:px-30 bg-gradient-to-br from-slate-50 to-blue-50">
-      <div className="rounded-lg shadow-xl bg-white justify-center items-center">
-        <div className="bg-[#003044] p-6 text-white rounded-t-lg">
+    <div className="w-full mx-auto p-4 sm:p-6 md:p-8 lg:p-12 xl:p-20 px-3 sm:px-5 md:px-8 lg:px-16 xl:px-30 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+      <div className="rounded-lg shadow-xl bg-white justify-center items-center max-w-7xl mx-auto">
+        <div className="bg-[#003044] p-4 sm:p-6 text-white rounded-t-lg">
           {/* Título de la sección */}
-          <h2 className="font-bold text-center text-xl">RESERVAS ACTIVAS</h2>
-          <p className="text-center p-3 text-sm">Reservas que has hecho y siguen pendientes</p>
+          <h2 className="font-bold text-center text-lg sm:text-xl md:text-2xl">RESERVAS ACTIVAS</h2>
+          <p className="text-center p-2 sm:p-3 text-xs sm:text-sm md:text-base">Reservas que has hecho y siguen pendientes</p>
         </div>
         {cargando ? (
         <div className="flex justify-center items-center h-40">
@@ -177,17 +177,17 @@ const formatearFecha = (fechaStr) => {
       </div>
       ) : (
         // Lista de reservas activas
-        <div className="space-y-4 p-15 grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="h-full flex flex-col p-3 sm:p-6 md:p-8 lg:p-12 xl:p-15 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
           {reservasActivas.map((reserva) => (
             <div 
               key={reserva.id_reserva || reserva.id} 
-              className="bg-gray-100 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.2)] overflow-hidden transition-shadow p-3"
+              className="bg-gray-100 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.2)] overflow-hidden transition-shadow hover:shadow-lg p-2 sm:p-3"
             >
               {/* Información de la card principal */}
-              <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="flex items-center gap-4">
+              <div className="p-3 sm:p-4 grid grid-cols-1 gap-3 sm:gap-4">
+                <div className="flex items-center gap-3 sm:gap-4">
                   {/* Logo de la empresa */}
-                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold overflow-hidden">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-green-500 rounded-full flex items-center justify-center text-white font-bold overflow-hidden flex-shrink-0">
                     {reserva.empresa?.logo?.url ? (
                       <img 
                         src={reserva.empresa.logo.url} 
@@ -200,29 +200,29 @@ const formatearFecha = (fechaStr) => {
                       />
                     ) : null}
                     <span 
-                      className="text-white font-bold" 
+                      className="text-white font-bold text-sm sm:text-base" 
                       style={{ display: reserva.empresa?.logo?.url ? 'none' : 'flex' }}
                     >
                       {obtenerNombreEmpresa(reserva).charAt(0) || "C"}
                     </span>
                   </div>
                   {/* Location info */}
-                  <div>
-                    <h3 className="font-bold">{obtenerNombreEmpresa(reserva)}</h3>
-                    <span className="flex">
-                      <div>{React.createElement(Gps)}</div>
-                      <p className="text-sm">{obtenerDireccionEmpresa(reserva)}</p>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-sm sm:text-base md:text-lg truncate">{obtenerNombreEmpresa(reserva)}</h3>
+                    <span className="flex items-center gap-1 mt-1">
+                      <div className="flex-shrink-0">{React.createElement(Gps)}</div>
+                      <p className="text-xs sm:text-sm text-gray-600 truncate">{obtenerDireccionEmpresa(reserva)}</p>
                     </span>
                   </div>
                 </div>
 
                 {/* Botón que abre el modal de descripción */}
-                <div className="flex justify-start sm:justify-end items-center mt-2 sm:mt-0">
+                <div className="flex justify-center items-center mt-3">
                   <button
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-green-600 transition-colors w-full sm:w-auto cursor-pointer"
+                    className="bg-green-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-md hover:bg-green-600 transition-colors w-full sm:w-auto cursor-pointer text-sm sm:text-base font-medium"
                     onClick={() => abrirModal(reserva)}
                   >
-                    Detalles
+                    Ver Detalles
                   </button>
                 </div>
               </div>
@@ -245,31 +245,31 @@ const formatearFecha = (fechaStr) => {
           ></div>
           
           {/* Contenido del modal - ahora más responsive */}
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-auto z-10 relative overflow-hidden max-h-[90vh] flex flex-col">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl mx-auto z-10 relative overflow-hidden max-h-[95vh] sm:max-h-[90vh] flex flex-col">
             {/* Encabezado del modal con color de fondo */}
-            <div className="bg-green-500 p-8 text-white relative">
-              <h3 className="text-lg font-bold">
+            <div className="bg-green-500 p-4 sm:p-6 md:p-8 text-white relative">
+              <h3 className="text-base sm:text-lg md:text-xl font-bold pr-8">
                 Detalles de la Reserva
               </h3>
-              <p className="text-sm opacity-90">
+              <p className="text-xs sm:text-sm md:text-base opacity-90 mt-1">
                 {reservaSeleccionada.cancha?.nombre || obtenerNombreEmpresa(reservaSeleccionada)}
               </p>
               
               {/* Botón de cerrar */}
               <button 
-                className="absolute top-4 right-4 text-white hover:text-gray-200 cursor-pointer"
+                className="absolute top-3 sm:top-4 right-3 sm:right-4 text-white hover:text-gray-200 cursor-pointer p-1"
                 onClick={cerrarModal}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
             
             {/* Contenido principal del modal con scroll si es necesario */}
-            <div className="p-4 sm:p-6 overflow-y-auto">
+            <div className="p-3 sm:p-4 md:p-6 overflow-y-auto flex-1">
               {/* Información de la reserva */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
                 {/* Columna izquierda */}
                 <div className="space-y-4">
                   <div className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-100">
@@ -358,10 +358,10 @@ const formatearFecha = (fechaStr) => {
               </div>
               
               {/* Información de contacto */}
-              <div className=" bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-100">
-                <h4 className="font-medium text-gray-700 mb-3">Información de contacto</h4>
+              <div className="mt-4 bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-100 lg:col-span-2">
+                <h4 className="font-medium text-gray-700 mb-3 text-sm sm:text-base">Información de contacto</h4>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="flex items-center gap-3">
                     <div>
                       <span className="text-xs sm:text-sm text-gray-500">Nombre</span>
