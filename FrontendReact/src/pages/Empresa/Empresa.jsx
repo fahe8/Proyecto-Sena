@@ -3,11 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../Header/Header";
 import Calendario from "./Calendario/Calendario";
 import { iconosServicios } from "../../utils/iconosServicios";
-import insignia from "./imagen/insignia.png";
+import { Gps } from "../../assets/IconosSVG/iconos";
 import { empresaServicio, resenaServicio } from "../../services/api";
 import ImageGallery from "./galeria";
 import Loading from "../Login/components/Loading";
 import BackToHome from "../../components/BackToHome";
+import Footer from "../../components/Footer";
 
 const Empresa = () => {
   const [isOpen, setIsOpen] = useState(false); // Estado para verificar si la empresa está abierta
@@ -97,9 +98,7 @@ const Empresa = () => {
     }
   };
 
-  const toggleOpenStatus = () => {
-    setIsOpen(!isOpen);
-  };
+  
 
   const CanchasAgrupadas = useMemo(() => {
     if (!empresa?.canchas) return [];
@@ -137,7 +136,7 @@ const Empresa = () => {
             <div>
               {/* Venue header */}
               <BackToHome/>
-              <div className="flex flex-col sm:flex-row items-start mb-4">
+              <div className="flex flex-col sm:flex-row items-start mb-4 mt-4">
                 <div className="flex items-start mb-4 sm:mb-0"> 
                   <div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center mr-3 overflow-hidden">
                     {empresa?.logo?.url ? (
@@ -160,19 +159,18 @@ const Empresa = () => {
                   </div>
                   <div className="flex-1">
                     <h2 className="font-bold text-lg">{empresa?.nombre}</h2>
-                    <div className="flex"></div>
-                    <p className="text-sm text-gray-500">
-                      {empresa?.direccion}
-                    </p>
+                    <div className="flex items-center gap-1">
+                      <Gps/>
+                      <p className="text-sm text-gray-500">
+                        {empresa?.direccion}
+                      </p>
+                    </div>
+                    
                   </div>
                 </div>
 
                 <div className="flex flex-row items-center ml-auto">
-                  <div className="flex flex-col items-center text-xs mr-4">
-                    <img src={insignia} alt="insignia" className="w-8" /> 
-                    <p className="font-semibold">Preferido</p>
-                  </div>
-
+                 
                   <div className="text-sm text-gray-600">
                     <div
                       className={`px-4 py-2 w-16 rounded-md text-sm ${ // Estilo del botón de apertura/cierre
@@ -227,16 +225,16 @@ const Empresa = () => {
               </p>
 
               {/* Canchas disponibles */}
-              <div className="mb-6 w-70">
+              <div className="mb-6 max-w-50">
                 <h3 className="font-medium mb-2">Canchas disponibles:</h3>
                 <div className="space-y-2">
                   {CanchasAgrupadas.map((cancha, idx) => (
                     <div
                       key={idx}
-                      className="flex justify-between bg-gray-100 px-3 py-2 rounded-md"
+                      className="flex justify-between bg-green-500 px-3 py-2 rounded-md"
                     >
-                      <span className="text-sm">{cancha.tipo}</span>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-white">{cancha.tipo}</span>
+                      <span className="text-sm text-white">
                         ({cancha.cantidad})
                       </span>
                     </div>
@@ -258,7 +256,7 @@ const Empresa = () => {
                       .toLowerCase();
                     return (
                       <div className="flex items-center text-sm" key={index}>
-                        <span className="mr-2">
+                        <span className="mr-2 bg-green-200 p-2 rounded-xl">
                           {iconosServicios[key] && React.createElement(iconosServicios[key])}
                         </span>
                         <span>{servicio}</span>
@@ -395,9 +393,11 @@ const Empresa = () => {
                 </button>
               </div>
             )}
+          
           </div>
         </div>
       </div>
+      <Footer />
 
       {/* Botón flotante para reservar (visible solo en móvil) */}
       <div className="md:hidden fixed bottom-6 right-6">

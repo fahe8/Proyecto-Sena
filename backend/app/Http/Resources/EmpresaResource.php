@@ -9,6 +9,9 @@ class EmpresaResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        // Calcular el promedio de calificaciones
+        $promedio = $this->resenas()->avg('calificacion') ?? 0;
+
         return [
             'NIT' => $this->NIT,
             'nombre' => $this->nombre,
@@ -30,7 +33,8 @@ class EmpresaResource extends JsonResource
                 'imagen' => $this->propietario->imagen ?? null,
             ],
             'servicios' => $this->servicios->pluck('tipo')->toArray(),
-            'canchas' => CanchaResource::collection($this->canchas)
+            'canchas' => CanchaResource::collection($this->canchas),
+            'promedio_calificacion' => round($promedio, 1)
         ];
     }
 }

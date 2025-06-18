@@ -43,7 +43,12 @@ export default function InfoEmpresa({ data, onChange, errors }) {
         </div>
         <div className="w-50 h-full md:w-32 ml-4 text-center">
           <label className="block text-sm text-[#003044] mb-1 ">Logo</label>
-          <CloudinaryUploader onUploadSuccess={handleLogoUpload} folder='empresas/logo' returnFile={true} />
+          <CloudinaryUploader 
+            onUploadSuccess={handleLogoUpload} 
+            folder='empresas/logo' 
+            returnFile={true} 
+            initialValue={data.logo} // Pasar el logo guardado como valor inicial
+          />
         </div>
 
       </div>
@@ -62,7 +67,11 @@ export default function InfoEmpresa({ data, onChange, errors }) {
         </div>
         <div>
           <label className="block text-sm text-[#003044] mb-1 ">Imagenes</label>
-          <CloudinaryMultiple onUploadSuccess={handleImagenesUpload} folder={`empresas/${data.NIT}/`} />
+          <CloudinaryMultiple 
+            onUploadSuccess={handleImagenesUpload} 
+            folder={`empresas/${data.NIT}/`} 
+            initialValues={data.imagenes || []} // Pasar las imágenes guardadas como valores iniciales
+          />
         </div>
       </div>
     </div>

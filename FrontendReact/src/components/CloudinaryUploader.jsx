@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const CloudinaryUploader = ({
   onUploadSuccess = (url) => {
@@ -8,9 +8,28 @@ const CloudinaryUploader = ({
   multiple = false,
   folder = 'default',
   returnFile = false, // ✅ Nuevo parámetro
+  initialValue = null, // Nuevo parámetro para mostrar imagen inicial
 }) => {
   const [uploading, setUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
+  
+  // Efecto para mostrar la imagen inicial si existe
+  useEffect(() => {
+    if (initialValue) {
+      // Si initialValue es un objeto File
+      if (initialValue instanceof File) {
+        setPreviewUrl(URL.createObjectURL(initialValue));
+      } 
+      // Si initialValue es un string (URL)
+      else if (typeof initialValue === 'string') {
+        setPreviewUrl(initialValue);
+      }
+      // Si initialValue es un objeto con url (como los que vienen de Cloudinary)
+      else if (initialValue && initialValue.url) {
+        setPreviewUrl(initialValue.url);
+      }
+    }
+  }, [initialValue]);
 
   const handleFileChange = async (e) => {
     const files = e.target.files;

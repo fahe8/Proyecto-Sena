@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "./Modal";
 import LogPopUp from "../Login/components/logPopUp";
-import { usuarioServicio } from "../../services/api";
+import { usuarioServicio, reservaServicio } from "../../services/api";
 import { useAuth } from "../../Provider/AuthProvider";
 
 // Import components
@@ -23,16 +23,34 @@ const PerfilPage = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarPopUp, setMostrarPopUp] = useState(false);
   const [textoPopUp, setTextoPopUp] = useState({ titulo: "", subtitulo: "" });
-  const [reservas,] = useState([]);
+  const [reservas, setReservas] = useState([]);
+  const [historialReservas, setHistorialReservas] = useState([]);
   const [errores, setErrores] = useState({});
   
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
         try {
-          console.log(user)
+          console.log(user);
           setUsuario(user);
-          // setReservas(reservasResponse.data);
+          
+          // Obtener reservas activas
+          const reservasResponse = await reservaServicio.obtenerReservasActivas(user.id);
+          setReservas(reservasResponse.data);
+          
+          // Obtener historial de reservas
+          const historialResponse = await reservaServicio.obtenerHistorialReservas(user.id);
+          console.log('Perfil - historialResponse:', historialResponse);
+          
+          // Acceder correctamente a los datos del historial
+          if (historialResponse && historialResponse.data && historialResponse.data.data) {
+            setHistorialReservas(historialResponse.data.data);
+            console.log('Usando historialResponse.data.data:', historialResponse.data.data);
+          } else {
+            // Si no hay datos, establecer un array vacío
+            setHistorialReservas([]);
+            console.log('No hay datos de historial, estableciendo array vacío');
+          }
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -95,8 +113,8 @@ const PerfilPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-screen  p-6 bg-gradient-to-br from-slate-50 to-blue-50">
-      <div className="max-w-5xl mx-auto px-4">
+    <div className="min-h-screen w-full p-3 pl-15 sm:pl-5 bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="max-w-5xl mx-auto ">
         {/* Header Section */}
         <ProfileHeader usuario={usuario} />
         
@@ -111,7 +129,7 @@ const PerfilPage = () => {
         />
 
         {/* Stats Section */}
-        <StatsSection reservas={reservas} />
+        <StatsSection reservas={reservas} historialReservas={historialReservas} />
       </div>
 
       {mostrarModal && (

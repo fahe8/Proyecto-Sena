@@ -4,7 +4,9 @@ import LogPopUp from "../Login/components/logPopUp";
 import { canchasServicio, empresaServicio, propietarioServicio } from '../../services/api';
 import ModificarCancha from './Componentes/ModificarCancha';
 import CardSkeleton from './Componentes/cardskeleton';
-import { useNavigate } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom'; 
+import { StarIcon } from '../../assets/IconosSVG/iconos';
+import HeaderPropietario from './Componentes/HeaderPropietario';
 import { useAuth } from '../../Provider/AuthProvider';
 
 const InterfazPropietario = () => {
@@ -26,51 +28,41 @@ const InterfazPropietario = () => {
   const [datosListos, setDatosListos] = useState(false);
 
   const {user} = useAuth();
+    useEffect(() => {
+      if (!user) return;
+      const cargarDatos = async () => {
+        try {
+          const [canchasResponse, tiposResponse, estadosResponse, empresaResponse] = await Promise.all([
+            canchasServicio.obtenerTodosEmpresa(user.NIT),
+            canchasServicio.tiposCanchas(),
+            canchasServicio.estadoCanchas(),
+            empresaServicio.obtenerPorId(user.NIT), // <--- Asegúrate de tener este método
+          ]);
 
-  useEffect(() => {
-    // Función para cargar todos los datos necesarios
-    const cargarDatos = async () => {
-      try {
-        // Realizar todas las peticiones en paralelo
-        const [canchasResponse, tiposResponse, estadosResponse  ] = await Promise.all([
-          canchasServicio.obtenerTodosEmpresa(user.NIT),
-          canchasServicio.tiposCanchas(),
-          canchasServicio.estadoCanchas(),
-          // empresaServicio.obtenerPorId('987654321'),
-          // propietarioServicio.obtenerPorEmpresa('987654321'),
-        ]);
-        
-        // Procesar los resultados
-        setListaCanchas(canchasResponse.data.data);
+          setListaCanchas(canchasResponse.data.data);
 
-        if (tiposResponse.data.success && tiposResponse.data.data) {
-          setTiposCanchas(tiposResponse.data.data);
+          if (tiposResponse.data.success && tiposResponse.data.data) {
+            setTiposCanchas(tiposResponse.data.data);
+          }
+          if (estadosResponse.data.success && estadosResponse.data.data) {
+            setEstadoCanchas(estadosResponse.data.data);
+          }
+
+          if (empresaResponse.data.success && empresaResponse.data.data) {
+            setDatosEmpresa(Array.isArray(empresaResponse.data.data) ? empresaResponse.data.data[0] : empresaResponse.data.data);
+          }
+
+          setDatosListos(true);
+          setCargando(false);
+        } catch (error) {
+          console.error("Error al cargar los datos:", error);
+          setCargando(false);
         }
-        
-        if (estadosResponse.data.success && estadosResponse.data.data) {
-          setEstadoCanchas(estadosResponse.data.data);
-        }
-      
-        // if (EmpresaReponse.data.success && EmpresaReponse.data.data) {
-        //   setDatosEmpresa(EmpresaReponse.data.data);
-        // }
-        
-        // if (propietarioResponse.data.success && propietarioResponse.data.data) {
-        //   setDatosPropietario(propietarioResponse.data.data);
-        // }
-        
-        // console.log("Datos de empresa:", EmpresaReponse.data);
-        setDatosListos(true);
-        setCargando(false);
-      } catch (error) {
-        
-        console.error("Error al cargar los datos:", error);
-        setCargando(false);
-      }
-    };
+      };
 
-    cargarDatos();
-  }, []);
+      cargarDatos();
+    }, [user]);
+
 
   // Función para abrir el modal de modificar y pasar la cancha seleccionada
   const abrirModalModificar = (cancha) => {
@@ -101,8 +93,15 @@ const InterfazPropietario = () => {
     );
     
     setListaCanchas(canchasActualizadas);
+    setModalModificarVisible(false);
+    setCanchaParaModificar(null);
     
-
+    // Mostrar popup de confirmación
+    setTextoPopUp({
+      titulo: "Cancha modificada",
+      subtitulo: "Cambios guardados correctamente",
+    });
+    setMostrarPopUp(true);
   };
 
   const navigate = useNavigate(); 
@@ -127,79 +126,117 @@ const InterfazPropietario = () => {
     });
     setMostrarPopUp(true);
   };
-
+console.log("DatosEmpresa:", DatosEmpresa);
   return (
-    <div className="min-h-screen w-full bg-white overflow-x-hidden">
-      <nav className="bg-[#003950] shadow-lg p-4 sm:p-10">
-        <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 py-[4px]">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <div className="relative">
-                <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full bg-green-500 flex items-center justify-center border-2 sm:border-3 border-white">
-                  <span className="text-white text-3xl sm:text-5xl font-bold"></span>
-                </div>
-              </div>
-              <div className="text-white text-center sm:text-left">
-                <h2 className="text-xl sm:text-2xl font-bold">{DatosEmpresa.nombre ? `${DatosEmpresa.nombre}` : 'Empresa'} </h2>
-                <p className="text-lg sm:text-xl font-sans">{datosPropietario.nombre ? `${datosPropietario.nombre} ${datosPropietario.apellido}` : 'Propietario'}</p>
-              </div>
-            </div>
-            
-            <div className="relative mt-2 sm:mt-0">
-              <button 
-                onClick={AgregarCancha}
-                className="flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 bg-[#39de02] text-black rounded-lg hover:bg-green-400 transition-colors text-xs sm:text-base"
-              >
-                Agregar canchas
-              </button>
-            </div>
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-blue-50 overflow-x-hidden">
+      <HeaderPropietario empresa={DatosEmpresa} propietario={datosPropietario} />
+        
+      <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-xl shadow-sm p-6 lg:px-20 mb-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">Tus canchas</h2>
+            <Link 
+              to="/formulario-canchas" 
+              className="inline-flex items-center gap-2 bg-[#003344] text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors duration-300"
+            >
+              <span className="material-icons text-sm">add</span>
+              <span className='hidden sm:block'>Agregar cancha</span>
+            </Link>
           </div>
-        </div>
-      </nav>
-
-      <div className="w-full max-w-5xl mx-auto py-3 sm:py-5 px-3 sm:px-0">
-        <div className="canchas_container flex-grow px-10 md:px-6">
-          <h2 className="text-xl sm:text-lg font-bold mb-3 sm:mb-4 pb-2 sm:pb-2.5 font-sans">Tus canchas</h2>
 
           {cargando ? (
-            <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4">
-              <CardSkeleton count={6} />
+            <div className="space-y-4">
+              <CardSkeleton count={4} />
             </div>
           ) : listaCanchas?.length === 0 ? (
-            <p className="text-center text-black text-xl sm:text-2xl p-3 sm:p-5">No tienes ninguna cancha registrada</p>
+            <div className="flex flex-col items-center justify-center py-12 px-4 text-center bg-gray-50 rounded-lg border border-gray-100">
+              <span className="material-icons text-4xl text-gray-300 mb-3">sports_soccer</span>
+              <p className="text-gray-600 text-xl font-medium mb-2">No tienes ninguna cancha registrada</p>
+              <p className="text-gray-500 text-sm mb-6">Comienza agregando tu primera cancha deportiva</p>
+              <Link 
+                to="/formulario-canchas" 
+                className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors duration-300"
+              >
+                <span className="material-icons text-sm">add</span>
+                <span className='hidden sm:block'>Agregar cancha</span>
+              </Link>
+            </div>
           ) : (
-            <div className="flex flex-wrap justify-center sm:justify-start gap-3 sm:gap-4">
+            <div className="flex flex-col gap-4">
               {listaCanchas?.map((cancha) => (
-                <div key={cancha.id} className="w-full sm:w-[calc(50%-12px)] md:w-[calc(33.333%-14px)] lg:w-[255px] bg-[#f2f2f2] rounded-xl shadow-md overflow-hidden">
-                  <div className="flex flex-col justify-between items-start mb-2 sm:mb-4">
-                    <div className="w-full">
-                      <img
-                        className="w-full h-48 object-cover rounded-t-xl"
-                        src={cancha.imagen.url}
-                        alt={cancha.nombre}
-                      />
+                <div key={cancha.id} className="flex flex-col md:flex-row bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-green-200">
+                  {/* Sección de imagen */}
+                  <div className="w-full md:w-1/3 h-48 relative">
+                    <img
+                      className="w-full h-full object-cover object-center"
+                      src={cancha.imagen.url}
+                      alt={cancha.nombre}
+                    />
+                    {/* Indicador de estado con icono */}
+                    <div className="absolute top-0 left-0 w-full flex justify-between p-2">
+                      {cancha.id_estado_cancha === "disponible" ? (
+                        <div className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full flex items-center">
+                          <span className="size-3 bg-green-500 rounded-full mr-1"></span>
+                          <span>Disponible</span>
+                        </div>
+                      ) : (
+                        <div className="bg-amber-100 text-amber-700 text-xs px-2 py-1 rounded-full flex items-center">
+                          <span className="size-3 bg-amber-500 rounded-full mr-1"></span>
+                          <span>Mantenimiento</span>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <div className="flex justify-between items-center px-2.5 pb-2.5">
-                    <h3 className="font-bold">{cancha.nombre}</h3>
-                    <div className="flex items-center gap-1">
-                      <span className="text-yellow-400">★</span>
-                      <span>{cancha.rating}</span>
+                  
+                  {/* Sección de contenido */}
+                  <div className="w-full md:w-2/3 flex flex-col justify-between p-4 md:px-10">
+                    {/* Encabezado con nombre */}
+                    <div className="mb-3">
+                      <h3 className="text-lg font-semibold text-gray-800">Nombre: {cancha.nombre}</h3>
                     </div>
-                  </div>
-                  <div className="flex gap-2.5 px-2.5 pb-2.5">
-                    <button 
-                      className="flex-1 px-2 sm:px-3.5 py-1.5 bg-[#04c707] text-white rounded text-sm cursor-pointer border-none"
-                      onClick={() => abrirModalModificar(cancha)}
-                    >
-                      Modificar
-                    </button>
-                    <button
-                      className="flex-1 px-2 sm:px-3.5 py-1.5 bg-[#e63939] text-white rounded text-sm cursor-pointer border-none"
-                      onClick={() => mostrarModalEliminar(cancha.id)}
-                    >
-                      Eliminar
-                    </button>
+                    
+                    {/* Información adicional de la cancha */}
+                    <div className="text-sm text-gray-600 space-y-3">
+                      {/* Información en fila: Tipo y Precio */}
+                      <div className="flex flex-wrap gap-4 mt-1">
+                        {/* Tipo de cancha con icono */}
+                        <div className="flex items-center bg-green-200 px-3 py-1.5 rounded-lg">
+                          <span className="material-icons text-green-600 text-sm mr-2">sports_soccer</span>
+                          <p className="font-medium">
+                            {cancha.tipoCancha && cancha.tipoCancha.tipo ? cancha.tipoCancha.tipo : 
+                             (cancha.tipo_cancha_id && tiposCanchas.length > 0 ? 
+                              tiposCanchas.find(tipo => tipo.id === cancha.tipo_cancha_id)?.tipo || "Tipo no disponible" : 
+                              "Tipo no disponible")}
+                          </p>
+                        </div>
+                        
+                        {/* Precio con icono */}
+                        {cancha.precio && (
+                          <div className="flex items-center bg-green-200 px-3 py-1.5 rounded-lg">
+                            <span className="material-icons text-green-600 text-sm mr-2">payments</span>
+                            <p className="font-medium text-gray-700">${cancha.precio}/hora</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Botones de acción */}
+                    <div className="flex gap-3 mt-4">
+                      <button 
+                        className="flex-1 px-3 py-2 bg-white border border-green-500 text-green-600 rounded-md text-sm font-medium hover:bg-green-50 transition-colors duration-300 flex items-center justify-center cursor-pointer"
+                        onClick={() => abrirModalModificar(cancha)}
+                      >
+                        <span className="material-icons items-center justify-center text-sm md:mr-1">edit</span>
+                        <p className='hidden sm:block'>Modificar</p>
+                      </button>
+                      <button
+                        className="flex-1 px-3 py-2 bg-white border border-red-500 text-red-600 rounded-md text-sm font-medium hover:bg-red-50 transition-colors duration-300 flex items-center justify-center cursor-pointer"
+                        onClick={() => mostrarModalEliminar(cancha.id)}
+                      >
+                        <span className="material-icons text-sm md:mr-1">delete</span>
+                        <p className='hidden sm:block'>Eliminar</p>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

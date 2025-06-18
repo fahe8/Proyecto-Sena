@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\PropietarioResource;
+use App\Models\Usuario;
 use App\Services\CloudinaryService;
 use Cloudinary\Api\Admin\AdminApi;
 use Illuminate\Support\Facades\Hash;
@@ -122,6 +123,12 @@ class PropietarioController extends ApiController
                 'numero_documento' => $request->numero_documento
             ]);
 
+            $usuario = Usuario::create([
+            'user_id' => $user->id,
+            'nombre' => $request->nombre,
+            'apellido' => $request->apellido,
+            'telefono' => $request->telefono,
+        ]);
             DB::commit();
 
             if (!$user->hasVerifiedEmail()) {

@@ -42,7 +42,11 @@ export const authServicio = {
 
 
 export const usuarioServicio = {
-    obtenerTodos: () => apiClient.get('/usuarios'),
+    obtenerTodos: () => apiClient.get('/usuarios', {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
     obtenerPorId: (id) => apiClient.get(`/usuarios/${id}`),
     crear: (data) => apiClient.post('/usuarios', data),
     actualizar: (id, data) => apiClient.put(`/propietarios/${id}`, data), 
@@ -66,8 +70,22 @@ export const propietarioServicio = {
         
         return apiClient.post('/propietarios', data, config);
     },
-    actualizar: (id, data) => apiClient.put(`/propietarios/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/propietarios/${id}`),
+    actualizar: (id, data) => {
+        // Si data es FormData, cambiar headers pero mantener Authorization
+        const headers = data instanceof FormData ? {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        } : {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        };
+        
+        return apiClient.put(`/propietarios/${id}`, data, { headers });
+    },
+    eliminar: (id) => apiClient.delete(`/propietarios/${id}`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
     obtenerTiposDocumentos: () => apiClient.get('/tipos-documentos'),
 };
 
@@ -84,8 +102,22 @@ export const empresaServicio = {
         
         return apiClient.post('/empresas', data, config);
     },
-    actualizar: (id, data) => apiClient.put(`/empresas/${id}`, data),
-    eliminar: (id) => apiClient.delete(`/empresas/${id}`)
+    actualizar: (id, data) => {
+        // Si data es FormData, cambiar headers pero mantener Authorization
+        const headers = data instanceof FormData ? {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        } : {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        };
+        
+        return apiClient.put(`/empresas/${id}`, data, { headers });
+    },
+    eliminar: (id) => apiClient.delete(`/empresas/${id}`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+    })
 };
 
 export const reservaServicio = {
