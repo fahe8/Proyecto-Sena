@@ -8,12 +8,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\PropietarioResource;
-use App\Services\CloudinaryService;
+use App\Models\Usuario;
+use App\Models\WompiCredential;
 use Cloudinary\Api\Admin\AdminApi;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Cloudinary\Configuration\Configuration;
 use Cloudinary\Api\Upload\UploadApi;
+use Illuminate\Support\Facades\Http;
 
 class PropietarioController extends ApiController
 {
@@ -104,12 +105,14 @@ class PropietarioController extends ApiController
                 ];
             }
 
-            // Crear nuevo usuario
+            // Crear nuevo user
             $user = User::create([
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'roles' => ['usuario','propietario'],
             ]);
+
+
 
             // Crear perfil de propietario
             $propietario = Propietario::create([
@@ -121,6 +124,15 @@ class PropietarioController extends ApiController
                 'tipo_documento_id' => $request->tipo_documento_id,
                 'numero_documento' => $request->numero_documento
             ]);
+
+             // Crear registro de Usuario
+        $usuario = Usuario::create([
+            'user_id' => $user->id,
+            'nombre' => $request->nombre,
+            'apellido' => $request->apellido,
+            'telefono' => $request->telefono,
+        ]);
+
 
             DB::commit();
 
@@ -281,4 +293,106 @@ class PropietarioController extends ApiController
             return $this->sendError('Error al crear perfil de propietario', $e->getMessage(), 500);
         }
     }
+
+
+    /**
+     * Configurar credenciales de Wompi
+     */
+    public function configurarWompi(Request $request)
+    {
+        try {
+            $request->validate([
+                'public_key' => 'required|string',
+                'private_key' => 'required|string',
+                'integrity_secret' => 'required|string',
+                'environment' => 'required|in:test,production'
+            ]);
+    
+            $propietario = auth()->user();
+    
+            // Actualizar o crear credenciales de Wompi
+            $wompiCredentials = WompiCredential::updateOrCreate(
+                ['propietario_id' => $propietario->id],
+                [
+                    'public_key' => $request->public_key,
+                    'private_key' => $request->private_key,
+                    'integrity_secret' => $request->integrity_secret,
+                    'environment' => $request->environment,
+                    'active' => true,
+                    'configured_at' => now()
+                ]
+            );
+    
+            return $this->sendResponse(
+                $wompiCredentials->only(['public_key', 'environment', 'active', 'configured_at']),
+                'Credenciales de Wompi configuradas exitosamente'
+            );
+    
+        } catch (\Exception $e) {
+            Log::error('Error configurando Wompi: ' . $e->getMessage());
+            return $this->sendError('Error interno', [
+                'error' => 'Error interno del servidor'
+            ]);
+        }
+    }
+    
+    /**
+     * Obtener estado de configuración de Wompi
+     */
+    public function estadoWompi()
+    {
+        $propietario = auth()->user()->propietario;
+        $credentials = $propietario->wompiCredentials;
+    
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'configurado' => $propietario->tieneWompiConfigurado(),
+                'public_key' => $credentials?->public_key,
+                'environment' => $credentials?->environment,
+                'configured_at' => $credentials?->configured_at
+            ]
+        ]);
+    }
+    
+    /**
+     * Revocar credenciales de Wompi
+     */
+    public function revocarWompi()
+    {
+        $propietario = auth()->user()->propietario;
+        
+        if ($propietario->wompiCredentials) {
+            $propietario->wompiCredentials->delete();
+        }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Credenciales de Wompi revocadas correctamente'
+        ]);
+    }
+    
+    /**
+     * Validar credenciales de Wompi
+     */
+    private function validarCredencialesWompi($publicKey, $privateKey, $environment)
+    {
+        try {
+            $baseUrl = $environment === 'production' 
+                ? 'https://production.wompi.co/v1' 
+                : 'https://sandbox.wompi.co/v1';
+    
+            // Hacer una petición de prueba para validar las credenciales
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $privateKey,
+                'Content-Type' => 'application/json'
+            ])->get($baseUrl . '/merchants/' . $publicKey);
+    
+            return $response->successful();
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    
 }

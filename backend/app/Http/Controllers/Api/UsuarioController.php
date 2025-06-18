@@ -61,13 +61,13 @@ class UsuarioController extends ApiController
                 ]);
             } else {
                 // Si el usuario ya existe, verificamos si se proporcionó una contraseña
-                if ($request->has('password')) {
-                    return $this->sendError(
-                        'Usuario existente',
-                        ['error' => 'No se puede cambiar la contraseña de un usuario existente. Por favor, inicie sesión con su cuenta actual.'],
-                        422
-                    );
-                }
+                // if ($request->has('password')) {
+                //     return $this->sendError(
+                //         'Usuario existente',
+                //         ['error' => 'No se puede cambiar la contraseña de un usuario existente. Por favor, inicie sesión con su cuenta actual.'],
+                //         422
+                //     );
+                // }
                 // Add 'usuario' role if user exists
                 $roles = $user->roles;
                 if (!in_array('usuario', $roles)) {

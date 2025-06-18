@@ -9,13 +9,18 @@ class Reserva extends Model
     protected $table = 'reserva';
     protected $primaryKey = 'id_reserva';
 
+    // Agregar a los campos fillable:
     protected $fillable = [
         'fecha',
         'hora_inicio',
         'hora_final',
         'usuario_id',
         'cancha_id',
-        'NIT'
+        'NIT',
+        'wompi_transaction_id',
+        'wompi_reference',
+        'monto_pagado',
+        'estado_pago'
     ];
 
     protected $casts = [

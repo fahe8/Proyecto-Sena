@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ResenaController;
 use App\Http\Controllers\Api\ReservaController;
 use App\Http\Controllers\Api\ServicioController;
 use App\Http\Controllers\Api\TipoDocumentoController;
+use App\Http\Controllers\Api\WompiController;
 use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\URL;
@@ -63,6 +64,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{usuario}', [UsuarioController::class, 'destroy']);
     });
 
+    // Agregar después de las rutas existentes:
+    Route::middleware(['ability:usuario'])->prefix('wompi')->group(function () {
+        Route::post('/crear-transaccion', [WompiController::class, 'crearTransaccion']);
+    Route::post('/confirmar-pago', [WompiController::class, 'confirmarPago']);
+    Route::post('/webhook', [WompiController::class, 'webhook']);
+    });
+ 
+
     // Rutas de Propietarios (requiere rol 'propietario')
     Route::middleware(['ability:propietario'])->prefix('propietarios')->group(function () {
         Route::get('/{propietario}', [PropietarioController::class, 'show']);
@@ -70,6 +79,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/{propietario}', [PropietarioController::class, 'destroy']);
         Route::get('/empresa/{propietario}', [EmpresaController::class, 'findByPropietarioId']);
     });
+   
+    Route::middleware(['ability:propietario'])->prefix('propietario/wompi')->group(function () {
+        Route::get('/estado', [PropietarioController::class, 'estadoWompi']);
+        Route::post('/configurar', [PropietarioController::class, 'configurarWompi']);
+        Route::delete('/revocar', [PropietarioController::class, 'revocarWompi']);
+    });
+    
 
     // Rutas de Administradores (requiere rol 'admin')
     Route::middleware(['ability:admin'])->prefix('administradores')->group(function () {
@@ -128,3 +144,8 @@ Route::get('/resenas/empresa/{nit}', [ResenaController::class, 'obtenerReseñaEm
 Route::apiResource('resenas', ResenaController::class);
 
 Route::apiResource('reservas', ReservaController::class);
+
+
+
+
+

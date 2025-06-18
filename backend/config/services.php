@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'wompi' => [
+        'test_url' => env('WOMPI_TEST_URL', 'https://sandbox.wompi.co/v1'),
+        'production_url' => env('WOMPI_PRODUCTION_URL', 'https://production.wompi.co/v1'),
+    ],
 ];

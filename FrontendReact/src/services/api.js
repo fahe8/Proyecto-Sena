@@ -74,6 +74,30 @@ export const propietarioServicio = {
     actualizar: (id, data) => apiClient.put(`/propietarios/${id}`, data),
     eliminar: (id) => apiClient.delete(`/propietarios/${id}`),
     obtenerTiposDocumentos: () => apiClient.get('/tipos-documentos'),
+
+    estadoWompi: () => {
+        return apiClient.get('/propietario/wompi/estado', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+    },
+    
+    configurarWompi: (credenciales) => {
+        return apiClient.post('/propietario/wompi/configurar', credenciales, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+    },
+    
+    revocarWompi: () => {
+        return apiClient.delete('/propietario/wompi/revocar', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+    }
 };
 
 export const empresaServicio = {
@@ -161,5 +185,24 @@ export const ServiciosServicio = {
     actualizar: (id, data) => apiClient.put(`/servicios/${id}`, data),
     eliminar: (id) => apiClient.delete(`/servicios/${id}`)
 }
+
+// Agregar al objeto propietarioServicio:
+export const wompiServicio = {
+    crearTransaccion: (data) => {
+        return apiClient.post('/wompi/crear-transaccion', data, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+    },
+    
+    confirmarPago: (transactionId) => {
+        return apiClient.post('/wompi/confirmar-pago', { transaction_id: transactionId }, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+    }
+};
 
 export default apiClient;

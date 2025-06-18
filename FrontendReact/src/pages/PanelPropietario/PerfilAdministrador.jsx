@@ -9,6 +9,8 @@ import Loading from "../Login/components/Loading";
 import AdminProfileHeader from "./Componentes/AdminProfileHeader";
 import AdminProfileInfo from "./Componentes/AdminProfileInfo";
 import AdminStatsSection from "./Componentes/AdminStatsSection";
+import ConfiguracionMercadoPago from "../../components/ConfiguracionMercadoPago";
+import ConfiguracionWompi from "../../components/ConfiguracionWompi";
 
 const PerfilAdministrador = () => {
   const {user} = useAuth();
@@ -197,6 +199,9 @@ const PerfilAdministrador = () => {
           validarInputsEmpresa={validarInputsEmpresa}
           validarInputsPropietario={validarInputsPropietario}
         />
+
+
+<ConfiguracionWompi />
 
         {/* Stats Section */}
         <AdminStatsSection canchas={canchas} />

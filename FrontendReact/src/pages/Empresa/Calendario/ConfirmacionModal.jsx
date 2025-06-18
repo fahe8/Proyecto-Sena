@@ -7,7 +7,7 @@ const ConfirmacionModal = ({ isOpen, onClose, onConfirm, reservaInfo }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl animate-fade-in">
         <h2 className="text-2xl font-bold text-center text-green-600 mb-4">
-          Confirmar Reserva
+          Confirmar Reserva y Pago
         </h2>
         
         <div className="border-t border-b border-gray-200 py-4 my-4">
@@ -31,6 +31,12 @@ const ConfirmacionModal = ({ isOpen, onClose, onConfirm, reservaInfo }) => {
               ${reservaInfo.costoTotal} COP
             </p>
           </div>
+          
+          <div className="bg-blue-50 p-3 rounded-lg mt-2">
+            <p className="text-sm text-center text-blue-700">
+              💳 El pago se procesará a través de Wompi
+            </p>
+          </div>
         </div>
         
         <div className="flex justify-center gap-4 mt-6">
@@ -38,7 +44,7 @@ const ConfirmacionModal = ({ isOpen, onClose, onConfirm, reservaInfo }) => {
             onClick={onConfirm}
             className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300"
           >
-            Confirmar
+            Proceder al Pago
           </button>
           <button
             onClick={onClose}
