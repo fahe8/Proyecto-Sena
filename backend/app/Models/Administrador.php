@@ -6,11 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Administrador extends Model
 {
-    public $timestamps = false; 
     protected $table = 'administrador';
-    
-    protected $primaryKey = 'id_administrador';
-    public $incrementing = false;
-    protected $keyType = 'string';
-    protected $fillable = ['id_administrador', 'email'];
+
+    protected $fillable = [
+        'user_id',
+        'nombre',
+        'apellido',
+        'telefono'
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

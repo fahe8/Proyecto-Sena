@@ -1,87 +1,168 @@
 <?php
+
 namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Http\Resources\UsuarioResource;
+use App\Models\User;
 use App\Models\Usuario;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UsuarioController extends ApiController
 {
+   
+    use AuthorizesRequests;
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        try {
-            $usuarios = Usuario::get();
-            return $this->sendResponse($usuarios, 'Usuarios encontrados exitosamente');
-        } catch (\Exception $e) {
-            return $this->sendError('Error obteniendo usuarios', $e->getMessage());
-        }
+
+        return $this->sendResponse(
+            UsuarioResource::collection(Usuario::with('user')->get()),
+            'Lista de usuarios obtenida correctamente',
+            200
+        );
     }
+
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        try {
-            $request->validate([
-                "id_usuario" => 'required|unique:usuario',
-                'email' => 'email|unique:usuario'
-            ]);
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required_if:user_id,null|min:6',
+        ]);
 
-            $usuario = Usuario::create($request->all());
-            return $this->sendResponse($usuario, 'Usuario created successfully');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->sendError('Validation Error', $e->errors());
-        } catch (\Exception $e) {
-            return $this->sendError('Error creating usuario', $e->getMessage());
+        if ($validator->fails()) {
+            return $this->sendError(
+                'Validación fallida',
+                $validator->errors(),
+                422
+            );
         }
-    }
-    public function update(Request $request, $id_usuario)
-    {
+
+        DB::beginTransaction();
         try {
-            $usuario = Usuario::find($id_usuario);
-            if(is_null($usuario)) {
-                return $this->sendError('Usuario no encontrado');
+            // Check if user exists
+            $user = User::where('email', $request->email)->first();
+            
+            if (!$user) {
+                // Create new user if doesn't exist
+                $user = User::create([
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password),
+                    'roles' => ['usuario'],
+                ]);
+            } else {
+                // Si el usuario ya existe, verificamos si se proporcionó una contraseña
+                if ($request->has('password')) {
+                    return $this->sendError(
+                        'Usuario existente',
+                        ['error' => 'No se puede cambiar la contraseña de un usuario existente. Por favor, inicie sesión con su cuenta actual.'],
+                        422
+                    );
+                }
+                // Add 'usuario' role if user exists
+                $roles = $user->roles;
+                if (!in_array('usuario', $roles)) {
+                    $roles[] = 'usuario';
+                    $user->update(['roles' => $roles]);
+                }
             }
-
-            $request->validate([
-                'nombre' => 'sometimes|string',
-                'apellido' => 'sometimes|string',
-                'telefono' => 'sometimes|string',
-                'email' => 'sometimes|email|unique:usuario,email,' . $usuario->id_usuario . ',id_usuario',
-                'imagen' => 'required|url',
-                'bloqueado' => 'sometimes|boolean'
-            ]);
-
-            $usuario->update($request->all());
-            return $this->sendResponse($usuario, 'Usuario updated successfully');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return $this->sendError('Validation Error', $e->errors());
-        } catch (\Exception $e) {
-            return $this->sendError('Error updating usuario', $e->getMessage());
-        }
-    }
     
-    public function show($id)
-    {
-        try {
-            $usuario = Usuario::find($id);
-            if(is_null($usuario)) {
-                return $this->sendError('Usuario no encontrado');
+            // Check if usuario profile exists
+            $usuario = Usuario::where('user_id', $user->id)->first();
+            if (!$usuario) {
+                $usuario = Usuario::create([
+                    'user_id' => $user->id,
+                    'nombre' => $request->nombre,
+                    'apellido' => $request->apellido,
+                    'telefono' => $request->telefono,
+                ]);
             }
-            return $this->sendResponse($usuario, 'Usuario encontrado exitosamente');
+    
+            DB::commit();
+            if (!$user->hasVerifiedEmail()) {
+                $user->sendEmailVerificationNotification();
+            }
+            $token = $user->createToken('auth-token', ['usuario'])->plainTextToken;
+    
+            return $this->sendResponse(
+                [
+                    'usuario' => new UsuarioResource($usuario, "usuario"),
+                    'token' => $token,
+                ],
+                'Usuario creado/actualizado correctamente',
+                201
+            );
         } catch (\Exception $e) {
-            return $this->sendError('Error obteniendo usuario', $e->getMessage());
+            DB::rollback();
+            return $this->sendError(
+                'Error al crear/actualizar usuario',
+                $e->getMessage(),
+                500
+            );
         }
     }
 
-    public function destroy($id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(Usuario $usuario)
     {
-        try {
-            $usuario = Usuario::find($id);
-            if(is_null($usuario)) {
-                return $this->sendError('Usuario no encontrado');
-            }
-            $usuario->delete();
-            return $this->sendResponse(null, 'Usuario eliminado exitosamente');
-        } catch (\Exception $e) {
-            return $this->sendError('Error eliminando usuario', $e->getMessage());
-        }
+        $this->authorize('view', $usuario);
+
+        return $this->sendResponse(
+            new UsuarioResource($usuario->load('user'), 'usuario'),
+            'Usuario obtenido correctamente',
+            200
+        );
     }
 
-   
+    /**
+     * Update the specified resource in storage.
+     */
+ public function update(Request $request, Usuario $usuario)
+{
+    // $this->authorize('update', $usuario); // Asegura que el usuario tiene permiso para actualizar
+
+    $validator = Validator::make($request->all(), [
+        'nombre' => 'sometimes|string|max:255',
+        'apellido' => 'sometimes|string|max:255',
+        'telefono' => 'sometimes|string|max:20',
+    ]);
+
+    if ($validator->fails()) {
+        return $this->sendError('Validación fallida', $validator->errors(), 422);
+    }
+    try {
+        // Actualiza datos del modelo Usuario
+        $usuario->update($request->only(['nombre', 'apellido', 'telefono']));
+
+        return $this->sendResponse(
+            new UsuarioResource($usuario->load('user'), 'usuario'),
+            'Usuario actualizado correctamente',
+            200
+        );
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return $this->sendError('Error al actualizar usuario', $e->getMessage(), 500);
+    }
+}
+
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Usuario $usuario)
+    {
+        //
+    }
 }

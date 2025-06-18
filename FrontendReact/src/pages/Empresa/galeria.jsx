@@ -1,43 +1,43 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const ImageGallery = () => {
+const ImageGallery = ({images}) => {
   const [currentImage, setCurrentImage] = useState(0);
   
   // Imágenes de ejemplo (usando URLs de Unsplash para demostración)
-  const images = [
-    {
-      id: 1,
-      src: 'https://images.pexels.com/photos/47343/the-ball-stadion-horn-corner-47343.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      alt: 'Interior de avión',
-      title: 'Cabina de pasajeros'
-    },
-    {
-      id: 2,
-      src: 'https://images.pexels.com/photos/918798/pexels-photo-918798.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      alt: 'Playa tropical',
-      title: 'Destino paradisíaco'
-    },
-    {
-      id: 3,
-      src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
-      alt: 'Montañas',
-      title: 'Paisaje montañoso'
-    },
-    {
-      id: 4,
-      src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=600&fit=crop',
-      alt: 'Naturaleza',
-      title: 'Bosque natural'
-    },
-    {
-      id: 5,
-      src: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1f?w=800&h=600&fit=crop',
-      alt: 'Ciudad',
-      title: 'Paisaje urbano'
-    }
-  ];
-
+  // const images = [
+  //   {
+  //     id: 1,
+  //     src: 'https://images.pexels.com/photos/47343/the-ball-stadion-horn-corner-47343.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+  //     alt: 'Interior de avión',
+  //     title: 'Cabina de pasajeros'
+  //   },
+  //   {
+  //     id: 2,
+  //     src: 'https://images.pexels.com/photos/918798/pexels-photo-918798.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+  //     alt: 'Playa tropical',
+  //     title: 'Destino paradisíaco'
+  //   },
+  //   {
+  //     id: 3,
+  //     src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop',
+  //     alt: 'Montañas',
+  //     title: 'Paisaje montañoso'
+  //   },
+  //   {
+  //     id: 4,
+  //     src: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&h=600&fit=crop',
+  //     alt: 'Naturaleza',
+  //     title: 'Bosque natural'
+  //   },
+  //   {
+  //     id: 5,
+  //     src: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1f?w=800&h=600&fit=crop',
+  //     alt: 'Ciudad',
+  //     title: 'Paisaje urbano'
+  //   }
+  // ];
+// console.log('images que llegan al carrousel:', images && images[currentImage].url)
   const nextImage = () => {
     setCurrentImage((prev) => (prev + 1) % images.length);
   };
@@ -55,15 +55,15 @@ const ImageGallery = () => {
       {/* Imagen principal */}
       <div className="relative h-96 bg-black">
         <img
-          src={images[currentImage].src}
-          alt={images[currentImage].alt}
+          src={images[currentImage].url}
+          alt={"Imagen de la cancha"}
           className="w-full h-full object-cover"
         />
         
         {/* Overlay con información */}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
           <h3 className="text-white text-xl font-semibold mb-2">
-            {images[currentImage].title}
+            {images.lenght}
           </h3>
           <p className="text-gray-300 text-sm">
             {currentImage + 1} de {images.length}
@@ -100,8 +100,8 @@ const ImageGallery = () => {
               } rounded-lg overflow-hidden transition-all duration-200`}
             >
               <img
-                src={image.src}
-                alt={image.alt}
+                src={image.url}
+                alt={"previzualización de las imagenes del carrousel"}
                 className="w-20 h-16 object-cover"
               />
               {index === currentImage && (

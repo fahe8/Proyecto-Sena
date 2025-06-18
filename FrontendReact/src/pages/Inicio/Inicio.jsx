@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -8,9 +8,10 @@ import { BusquedaFiltros } from "../../Header/Componentes/BusquedaFiltros";
 import CardEmpresa from "./componentes/CardEmpresa";
 import { useEmpresas } from "../../Provider/EmpresasProvider";
 import balonroto from "../../assets/Inicio/balonRoto.png";
-import { empresaServicio } from "../../services/api";
+import { authServicio, empresaServicio } from "../../services/api";
 import CardLoader from "./componentes/CardLoader";
 import LogPopUp from "../Login/components/logPopUp";
+import { obtenerToken } from "../../utils/authLocalStorage";
 
 const Inicio = () => {
   const { filteredOptions, setFilteredOptions, setEmpresas } = useEmpresas();
@@ -30,8 +31,8 @@ const Inicio = () => {
         message: location.state.popupMessage,
         subText: location.state.popupSubText
       });
-      
-    
+
+
       window.history.replaceState({}, document.title);
     }
   }, [location]);
@@ -42,6 +43,7 @@ const Inicio = () => {
         const response = await empresaServicio.obtenerTodos();
         if (response.data.success) {
           setEmpresas(response.data.data);
+          console.log(response.data.data)
           setFilteredOptions(response.data.data);
         }
       } catch (error) {
@@ -54,6 +56,44 @@ const Inicio = () => {
     fetchEmpresas();
   }, [setEmpresas, setFilteredOptions]);
 
+
+  const enviarCorreoVerificacion = async () => {
+    try {
+      const token = obtenerToken();
+      console.log(token)
+      if (!token) {
+        setPopup({
+          show: true,
+          message: "No estás autenticado",
+          subText: "Por favor, inicia sesión para enviar el correo de verificación."
+        });
+        return;
+      }
+
+      const response = await authServicio.enviarCorreoVerificacion(token);
+      if (response.data.success) {
+        setPopup({
+          show: true,
+          message: "Correo de verificación enviado",
+          subText: "Revisa tu bandeja de entrada para verificar tu correo electrónico."
+        });
+      } else {
+        setPopup({
+          show: true,
+          message: "Error",
+          subText: response.data.message || "Por favor, intenta nuevamente más tarde."
+        });
+      }
+    } catch (error) {
+      console.error("Error enviando correo de verificación:", error);
+      setPopup({
+        show: true,
+
+        message: "Error",
+        subText: "Por favor, intenta nuevamente más tarde."
+      });
+    }
+  }
   return (
     <>
       <div className="h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -94,7 +134,7 @@ const Inicio = () => {
   );
 };
 
-const ListaEmpresas = ({ empresas}) => {
+const ListaEmpresas = ({ empresas }) => {
   return (
     <div
       className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-self-center"

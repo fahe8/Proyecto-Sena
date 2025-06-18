@@ -28,14 +28,14 @@ const obtenerHoraDesdeString = (horaStr) => {
 
 //Devuelve la hora de apertura de la empresa como objeto Date
 const getMinHoraEmpresa = () => {
-  if (!empresa?.hora_apertura) return new Date(0, 0, 0, 0, 0); // Si no hay hora, usar 00:00
-  return obtenerHoraDesdeString(empresa.hora_apertura); // Convierte y retorna la hora de apertura
+  if (!empresa?.horario.apertura) return new Date(0, 0, 0, 0, 0); // Si no hay hora, usar 00:00
+  return obtenerHoraDesdeString(empresa.horario.apertura); // Convierte y retorna la hora de apertura
 };
 
 //Devuelve la hora de cierre de la empresa como objeto Date
 const getMaxHoraEmpresa = () => {
-  if (!empresa?.hora_cierre) return new Date(0, 0, 0, 23, 59); // Si no hay hora, usar 23:59
-  return obtenerHoraDesdeString(empresa.hora_cierre); // Convierte y retorna la hora de cierre
+  if (!empresa?.horario.cierre) return new Date(0, 0, 0, 23, 59); // Si no hay hora, usar 23:59
+  return obtenerHoraDesdeString(empresa.horario.cierre); // Convierte y retorna la hora de cierre
 };  
 
 
@@ -164,10 +164,11 @@ const getMaxHoraEmpresa = () => {
         fecha: fechaFormateada,
         hora_inicio: horaInicioFormateada,
         hora_final: horaFinalFormateada,
-        id_cancha: canchaSeleccionada.id_cancha,
-        id_usuario: user?.uid,
+        cancha_id: canchaSeleccionada.id,
+        usuario_id: user?.id,
       };
 
+      console.log('reservaobj', reservaObj)
       const crearReserva = await reservaServicio.crear(
         JSON.stringify(reservaObj)
       );
@@ -344,7 +345,7 @@ const getMaxHoraEmpresa = () => {
         >
           <p>
             {canchaSeleccionada
-              ? `${canchaSeleccionada.nombre} - ${canchaSeleccionada.tipo_cancha.id_tipo_cancha}`
+              ? `${canchaSeleccionada.nombre} - ${canchaSeleccionada.tipo_cancha.tipo}`
               : "Seleccione una cancha"}
           </p>
 
@@ -371,7 +372,7 @@ const getMaxHoraEmpresa = () => {
                   className="hover:bg-gray-100 px-2 pt-1"
                   onClick={() => setCanchaSeleccionada(cancha)}
                 >
-                  {cancha.nombre} - {cancha.tipo_cancha.id_tipo_cancha}
+                  {cancha.nombre} - {cancha.tipo_cancha.tipo}
                 </li>
               ))}
             </ul>

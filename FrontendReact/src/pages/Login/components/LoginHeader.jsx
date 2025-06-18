@@ -1,6 +1,8 @@
 import React from "react";
+import { useParams } from "react-router";
 
 const LoginHeader = ({ register }) => {
+  
   return (
     <>
       <div className="flex justify-start gap-3 items-center mb-[20px]">
@@ -8,7 +10,7 @@ const LoginHeader = ({ register }) => {
           Usuario
         </div>
         <a
-          href="/formulario-empresa"
+          href="/loginEmpresa"
           className="px-4 py-[4px] hover:border-[#003044] hover:border-b-2 hover:text-[#33ea30] text-[14px]"
         >
           Empresa

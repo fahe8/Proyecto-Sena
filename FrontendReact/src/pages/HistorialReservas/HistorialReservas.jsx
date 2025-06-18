@@ -47,14 +47,14 @@ const HistorialReservas = () => {
         try {
             setCargando(true);
 
-            if (!user?.uid) {
+            if (!user?.id) {
                 console.log("No hay usuario autenticado");
                 setCargando(false);
                 return;
             }
 
             // Obtener historial de reservas
-            const response = await reservaServicio.obtenerHistorialReservas(user.uid);
+            const response = await reservaServicio.obtenerHistorialReservas(user.id);
             console.log("Respuesta historial:", response.data);
 
             if (response.data && response.data.success) {
@@ -63,13 +63,14 @@ const HistorialReservas = () => {
                 // Verificar reseñas para cada reserva
                 const reservasConEstadoResena = await Promise.all(
                     reservasCompletadas.map(async (reserva) => {
+                      console.log(reserva)
                         try {
                             // Usar los parámetros correctos para la verificación
                             const resenaResponse = await resenaServicio.verificarResenaUsuario(
                                 reserva.id_reserva,
-                                user.uid
+                                user.id
                             );
-                            
+                            console.log('resenaResponse:', resenaResponse.data)
                             return {
                                 ...reserva,
                                 tiene_resena: resenaResponse.data.tiene_resena || false,
@@ -85,7 +86,7 @@ const HistorialReservas = () => {
                         }
                     })
                 );
-
+                console.log(reservasConEstadoResena)
                 setHistorialReservas(reservasConEstadoResena);
                 setReservaFiltrada(reservasConEstadoResena);
             } else {
@@ -99,7 +100,7 @@ const HistorialReservas = () => {
         }
     };
 
-    if (user?.uid) {
+    if (user?.id) {
         cargarHistorialYVerificarResenas();
     }
 }, [user]);
@@ -112,13 +113,14 @@ const manejarEnvioResena = async () => {
 
     try {
         setEnviandoResena(true);
-
+      console.log(reservaSeleccionada.empresa?.NIT )
+      console.log(reservaSeleccionada.NIT )
         const datosResena = {
             id_reserva: reservaSeleccionada.id_reserva,
             NIT: reservaSeleccionada.empresa?.NIT || reservaSeleccionada.NIT,
             comentario: comentario.trim(),
             calificacion: calificacion,
-            id_usuario: user.uid
+            usuario_id: user.id
         };
 
         const response = await resenaServicio.crear(datosResena);
@@ -285,6 +287,7 @@ const manejarEnvioResena = async () => {
 
   // Función para abrir el modal de reseña
   const abrirModalResena = (reserva) => {
+    console.log('reserva modal', reserva)
     setReservaSeleccionada(reserva);
     setCalificacion(reserva.resena?.calificacion || 0);
     setComentario(reserva.resena?.comentario || "");
@@ -298,84 +301,6 @@ const manejarEnvioResena = async () => {
     setCalificacion(0);
     setComentario("");
     setCalificacionHover(0);
-  };
-
-  // Función enviarResena corregida
-  const enviarResena = async () => {
-    if (calificacion === 0) {
-      alert("Por favor, selecciona una calificación");
-      return;
-    }
-
-    if (comentario.trim().length < 10) {
-      alert("Por favor, escribe un comentario de al menos 10 caracteres");
-      return;
-    }
-    
-    try {
-      setEnviandoResena(true);
-      
-      // Datos corregidos para la nueva estructura
-      const datosResena = {
-        id_reserva: reservaSeleccionada.id_reserva,
-        NIT: reservaSeleccionada.empresa?.NIT || reservaSeleccionada.NIT,
-        id_usuario: user.uid,
-        calificacion: calificacion,
-        comentario: comentario.trim(),
-      };
-      
-      console.log('Enviando reseña con datos:', datosResena);
-      
-      const response = await resenaServicio.crear(datosResena);
-      
-      if (response.data && response.data.success) {
-        // Actualizar la reserva local con la nueva reseña
-        const reservasActualizadas = historialReservas.map((reserva) => {
-          if (reserva.id_reserva === reservaSeleccionada.id_reserva) {
-            return {
-              ...reserva,
-              tiene_resena: true,
-              resena: {
-                id_resena: response.data.data.id_resena,
-                calificacion: calificacion,
-                comentario: comentario.trim(),
-                created_at: new Date().toISOString(),
-              },
-            };
-          }
-          return reserva;
-        });
-
-        setHistorialReservas(reservasActualizadas);
-        
-        // Actualizar también las reservas filtradas
-        setReservaFiltrada(
-          reservasActualizadas.filter((reserva) => {
-            if (BuscarTerm.length === 0) return true;
-            const nombreCancha = obtenerNombreEmpresa(reserva).toLowerCase();
-            const direccion = obtenerDireccionEmpresa(reserva).toLowerCase();
-            return (
-              nombreCancha.includes(BuscarTerm.toLowerCase()) ||
-              direccion.includes(BuscarTerm.toLowerCase())
-            );
-          })
-        );
-
-        // Limpiar formulario y cerrar modal
-        setCalificacion(0);
-        setComentario("");
-        cerrarModalResena();
-        
-        alert("¡Reseña enviada exitosamente!");
-      } else {
-        throw new Error("No se pudo enviar la reseña");
-      }
-    } catch (error) {
-      console.error("Error al enviar reseña:", error);
-      alert("Error al enviar la reseña. Por favor, inténtalo de nuevo.");
-    } finally {
-      setEnviandoResena(false);
-    }
   };
 
   // Función para mostrar más o menos reservas

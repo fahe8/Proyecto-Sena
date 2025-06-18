@@ -8,46 +8,43 @@ class Reserva extends Model
 {
     protected $table = 'reserva';
     protected $primaryKey = 'id_reserva';
-    public $timestamps = false;
 
     protected $fillable = [
         'fecha',
         'hora_inicio',
         'hora_final',
-        'id_cancha',
-        'id_usuario',
+        'usuario_id',
+        'cancha_id',
         'NIT'
     ];
 
     protected $casts = [
         'fecha' => 'date',
-        'hora_inicio' => 'datetime',
-        'hora_final' => 'datetime'
+    // 'hora_inicio' => 'datetime',
+    // 'hora_final' => 'datetime',
     ];
 
-    public function cancha()
-    {
-        return $this->belongsTo(Cancha::class, 'id_cancha');
-    }
-
+    // Relación con Usuario (a través de users)
     public function usuario()
     {
-        return $this->belongsTo(Usuario::class, 'id_usuario');
+        return $this->belongsTo(Usuario::class, 'usuario_id');
     }
 
+    // Relación con Cancha
+    public function cancha()
+    {
+        return $this->belongsTo(Cancha::class, 'cancha_id');
+    }
+
+    // Relación con Empresa
     public function empresa()
     {
-        return $this->belongsTo(Empresa::class, 'NIT');
+        return $this->belongsTo(Empresa::class, 'NIT', 'NIT');
     }
 
-    public function pago()
-    {
-        return $this->hasOne(Pago::class, 'id_reserva');
-    }
-    
+    // Relación con Reseñas
     public function resena()
     {
-        // Cambiar la relación para usar id_reserva en lugar de NIT
-        return $this->hasOne(Resena::class, 'id_reserva', 'id_reserva');
+        return $this->hasMany(Resena::class, 'id_resena', 'id_resena');
     }
 }

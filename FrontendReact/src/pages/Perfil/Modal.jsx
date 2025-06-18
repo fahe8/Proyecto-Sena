@@ -44,7 +44,7 @@ const Modal = ({
             <div className="flex justify-center gap-4">
               <button
                 onClick={cerrarModal}
-                className={`px-6 py-3 ${tipo === 'eliminar' ? 'bg-[#04c707e6] hover:bg-[#04c707] ' : 'bg-gray-400 hover:bg-gray-300'}text-white rounded-full cursor-pointer transition-colors duration-300`}
+                className={`px-6 py-3 ${tipo === 'eliminar' ? 'bg-[#04c707e6] hover:bg-[#04c707] ' : 'bg-red-400 hover:bg-red-300'}text-white rounded-full cursor-pointer transition-colors duration-300`}
               >
                 <span>Cancelar</span>
               </button>
