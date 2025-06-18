@@ -118,7 +118,7 @@ export default function InfoRepresentante({ data, onChange, errors, isAuthentica
           <select
             className="border border-gray-300 rounded-l-md p-2 w-20 text-[14px]"
             value={data.tipo_documento_id || "CC"} // Valor predeterminado
-            onChange={(e) => onChange("id_tipoDocumento", e.target.value)}
+            onChange={(e) => onChange("tipo_documento_id", e.target.value)}
           >
             {tiposDocumentos?.map(tipos => (<option key={tipos}>{tipos}</option>))}
           </select>
