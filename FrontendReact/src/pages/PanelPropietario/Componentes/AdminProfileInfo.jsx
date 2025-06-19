@@ -19,7 +19,6 @@ const AdminProfileInfo = ({
   validarInputsEmpresa,
   validarInputsPropietario
 }) => {
-
   return (
     <div className="bg-white rounded-lg shadow-lg p-12 relative mb-8">
       {/* Sección de la Empresa */}

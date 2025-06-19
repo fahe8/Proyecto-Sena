@@ -22,8 +22,10 @@ use Illuminate\Support\Facades\URL;
 // Route::apiResource('empresas', EmpresaController::class);
 Route::post('/empresas', [EmpresaController::class, 'store']);
 Route::get('/empresas', [EmpresaController::class, 'index']);
+Route::get('/empresas/activas', [EmpresaController::class, 'getActiveEmpresas']); 
 Route::get('/empresas/{nit}', [EmpresaController::class, 'show']);
 Route::put('/empresas/{nit}', [EmpresaController::class, 'update']);
+Route::delete('/empresas/{nit}', [EmpresaController::class, 'destroy']);
 
 Route::get('tipos-canchas', [CanchasAdicionalController::class, 'index']);
 Route::get('estados-canchas', [CanchasAdicionalController::class, 'estadosCanchas']);
@@ -126,6 +128,14 @@ Route::get('reservas/history/{id}', [ReservaController::class, 'obtenerHistorial
 Route::get('reservas/empresa/{nit}', [ReservaController::class, 'obtenerReservasPorEmpresa']);
 Route::get('/resenas/verificar/{idReserva}/{idUsuario}', [ResenaController::class, 'verificarResenaUsuario']);
 Route::get('/resenas/empresa/{nit}', [ResenaController::class, 'obtenerReseñaEmpresa']);
+Route::get('/resenas/reserva/{idReserva}', [ResenaController::class, 'obtenerPorReserva']);
+Route::get('/resenas/history/{idUsuario}', [ResenaController::class, 'obtenerHistorialResenas']);
 Route::apiResource('resenas', ResenaController::class);
 
+// Rutas para reservas
+Route::get('/reservas/usuario/{id}', [ReservaController::class, 'obtenerReservasPorUsuario']);
+Route::get('/reservas/empresa/{nit}', [ReservaController::class, 'obtenerReservasPorEmpresa']);
+Route::get('/reservas/active/{id}', [ReservaController::class, 'obtenerReservasActivas']);
+Route::get('/reservas/history/{id}', [ReservaController::class, 'obtenerHistorialReservas']);
+Route::post('/reservas/horas-reservadas', [ReservaController::class, 'obtenerHorasReservadas']);
 Route::apiResource('reservas', ReservaController::class);

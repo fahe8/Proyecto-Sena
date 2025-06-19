@@ -1,6 +1,5 @@
 import React, { use, useState } from "react";
 import LazyBackground from "../../../utils/LazyBackground.jsx";
-import { recuperarContrasena } from '../firebaseconfig.js';
 import { Mail, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
 import image from '../../../assets/LogIn/background.webp';
 import { authServicio } from "../../../services/api.js";

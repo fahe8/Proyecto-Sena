@@ -20,8 +20,8 @@ class Reserva extends Model
 
     protected $casts = [
         'fecha' => 'date',
-        'hora_inicio' => 'datetime',
-        'hora_final' => 'datetime',
+       // 'hora_inicio' => 'datetime',
+       // 'hora_final' => 'datetime',
     ];
 
     // Relación con Usuario (a través de users)

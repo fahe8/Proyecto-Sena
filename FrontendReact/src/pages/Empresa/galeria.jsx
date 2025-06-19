@@ -63,7 +63,7 @@ const ImageGallery = ({images}) => {
         {/* Overlay con información */}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
           <h3 className="text-white text-xl font-semibold mb-2">
-            {images.lenght}
+            {/* Eliminado el contenido problemático */}
           </h3>
           <p className="text-gray-300 text-sm">
             {currentImage + 1} de {images.length}
@@ -91,7 +91,7 @@ const ImageGallery = ({images}) => {
         <div className="flex gap-3 justify-center overflow-x-auto">
           {images.map((image, index) => (
             <button
-              key={image.id}
+              key={index} // Cambiado de image.id a index para garantizar una key única
               onClick={() => goToImage(index)}
               className={`flex-shrink-0 relative group ${
                 index === currentImage 

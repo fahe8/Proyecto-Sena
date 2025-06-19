@@ -30,11 +30,17 @@ class EmpresaController extends ApiController
 
     public function index()
     {
+        {
+        $empresas = Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha'])
+            ->withAvg('resenas as promedio_calificacion', 'calificacion')
+            ->get();
+
         return $this->sendResponse(
-            Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha', 'resenas'])->get(),
+            Empresa::with(['propietario.user', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha', 'resenas'])->get(),
             'Lista de empresas obtenida correctamente',
             200
         );
+    }
     }
 
     public function store(Request $request)
@@ -233,6 +239,9 @@ class EmpresaController extends ApiController
             
             $empresa = Empresa::findOrFail($nit);
             
+            // Eliminar todas las canchas asociadas primero
+            $empresa->canchas()->delete();
+            
             // Eliminar imágenes de Cloudinary
             $adminApi = new AdminApi();
             
@@ -250,7 +259,7 @@ class EmpresaController extends ApiController
             $empresa->delete();
             
             DB::commit();
-
+    
             return $this->sendResponse(
                 [],
                 'Empresa eliminada correctamente',
@@ -273,6 +282,19 @@ class EmpresaController extends ApiController
         return $this->sendResponse(
             new EmpresaResource($empresa),
             'Empresa obtenida correctamente',
+            200
+        );
+    }
+
+    public function getActiveEmpresas()
+    {
+        $empresas = Empresa::with(['propietario.user', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha', 'resenas'])
+            ->where('id_estado_empresa', 'activo')
+            ->get();
+            
+        return $this->sendResponse(
+            EmpresaResource::collection($empresas),
+            'Lista de empresas activas obtenida correctamente',
             200
         );
     }

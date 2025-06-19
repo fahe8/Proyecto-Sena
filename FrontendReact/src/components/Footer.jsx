@@ -1,5 +1,6 @@
 import React from 'react';
-import { MapPin, Phone, Mail, Facebook, Instagram, Twitter, ChevronUp } from 'lucide-react';
+import { MapPin, Phone, Mail, ChevronUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Logo from '../assets/logo.png'; // Asegúrate de tener un logo en esta ruta
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -61,19 +62,8 @@ const Footer = () => {
                 </div>
                 <div className="flex items-center">
                   <Mail size={14} className="text-green-600 mr-1" />
-                  <span>info@micanchaya.com</span>
+                  <span>contactoleidev@gmail.com</span>
                 </div>
-              </div>
-              <div className="flex space-x-3">
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Facebook size={18} />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Instagram size={18} />
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  <Twitter size={18} />
-                </a>
               </div>
             </div>
           </div>
@@ -91,17 +81,17 @@ const Footer = () => {
 
             {/* Enlaces legales horizontales */}
             <div className="flex flex-wrap justify-center space-x-1 sm:space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm px-2 py-1">
+              <Link to="/politica-privacidad" className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm px-2 py-1">
                 Política de Privacidad
-              </a>
+              </Link>
               <span className="text-gray-600">|</span>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm px-2 py-1">
+              <Link to="/terminos-condiciones" className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm px-2 py-1">
                 Términos y Condiciones
-              </a>
+              </Link>
               <span className="text-gray-600">|</span>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm px-2 py-1">
+              <Link to="/politica-cookies" className="text-gray-400 hover:text-white transition-colors text-xs sm:text-sm px-2 py-1">
                 Política de Cookies
-              </a>
+              </Link>
               
             </div>
           </div>
