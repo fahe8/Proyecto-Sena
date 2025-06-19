@@ -110,8 +110,9 @@ const BotonFiltros = ({ filtros, agregarFiltros, limpiarFiltros }) => {
         className="relative bg-[#f6f6f6] w-11 lg:w-20 h-7 cursor-pointer flex shadow-md  justify-center border border-gray-300 rounded-md  hover:bg-gray-300 transition-all duration-300 ease-in-out items-center"
       >
         {contadorFiltros > 0 && (
-          <div className="absolute w-5 h-5 rounded-full bg-red-500 right-0 bottom-0 flex items-center justify-center">
-            <p className="text-sm text-white">{contadorFiltros}</p>
+          <div className="absolute top-0 w-3 h-3 rounded-full bg-red-500 right-0 bottom-0 flex items-center justify-center">
+            <p className="text-[10px] text-white">{contadorFiltros}</p>
+
           </div>
         )}
         <svg

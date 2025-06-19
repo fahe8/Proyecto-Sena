@@ -210,4 +210,49 @@ class ResenaController extends ApiController
             ], 500);
         }
     }
+    
+    // Método para actualizar reseñas
+    public function update(Request $request, $id)
+    {
+        try {
+            // Validar datos de entrada
+            $request->validate([
+                'comentario' => 'required|string|min:10|max:500',
+                'calificacion' => 'required|numeric|min:1|max:5'
+            ]);
+    
+            // Buscar la reseña
+            $resena = Resena::findOrFail($id);
+    
+            // Actualizar la reseña
+            $resena->update([
+                'comentario' => $request->comentario,
+                'calificacion' => $request->calificacion
+            ]);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Reseña actualizada exitosamente',
+                'data' => $resena
+            ]);
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Datos de validación incorrectos',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Reseña no encontrada'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar la reseña',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

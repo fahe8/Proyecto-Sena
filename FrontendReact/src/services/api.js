@@ -145,6 +145,7 @@ export const reservaServicio = {
 export const resenaServicio = {
     obtenerResenasEmpresa: (nit) => apiClient.get(`/resenas/empresa/${nit}`),
     crear: (data) => apiClient.post('/resenas', data),
+    actualizar: (id, data) => apiClient.put(`/resenas/${id}`, data),
     verificarResenaUsuario: (idReserva, idUsuario) => apiClient.get(`/resenas/verificar/${idReserva}/${idUsuario}`),
     obtenerPorReserva: (idReserva) => apiClient.get(`/resenas/reserva/${idReserva}`),
     obtenerHistorialResenas: (idUsuario) => apiClient.get(`/resenas/history/${idUsuario}`) // NUEVO MÉTODO

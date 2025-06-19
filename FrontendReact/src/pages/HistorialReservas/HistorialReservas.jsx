@@ -25,10 +25,12 @@ const HistorialReservas = () => {
   const [error, setError] = useState(null);
 
   // Estados para el modal de reseña
+  // Estados para el modal de reseña
   const [mostrarModalResena, setMostrarModalResena] = useState(false);
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
   const [enviandoResena, setEnviandoResena] = useState(false);
-
+  const [modoEdicion, setModoEdicion] = useState(false); 
+  
   // Estados del formulario de reseña
   const [calificacion, setCalificacion] = useState(0);
   const [comentario, setComentario] = useState("");
@@ -105,63 +107,65 @@ const HistorialReservas = () => {
         cargarHistorialYVerificarResenas();
     }
 }, [user]);
-// Función para manejar la creación de reseñas
+// Función para manejar la creación y actualización de reseñas
 const manejarEnvioResena = async () => {
     if (!reservaSeleccionada || calificacion === 0 || comentario.trim() === "") {
-        alert("Por favor completa todos los campos");
+        alert("Por favor, completa todos los campos");
         return;
     }
 
+    setEnviandoResena(true);
     try {
-        setEnviandoResena(true);
-      console.log(reservaSeleccionada.empresa?.NIT )
-      console.log(reservaSeleccionada.NIT )
         const datosResena = {
-            id_reserva: reservaSeleccionada.id_reserva,
-            NIT: reservaSeleccionada.empresa?.NIT || reservaSeleccionada.NIT,
             comentario: comentario.trim(),
             calificacion: calificacion,
-            usuario_id: user.id
+            id_reserva: reservaSeleccionada.id_reserva,
+            NIT: reservaSeleccionada.NIT,
+            usuario_id: user.id,
         };
 
-        const response = await resenaServicio.crear(datosResena);
+        let response;
+        let mensaje;
+
+        // Verificar si estamos en modo edición y hay datos de reseña existente
+        if (modoEdicion && reservaSeleccionada.resena_data) {
+            // Actualizar reseña existente - usar id_resena en lugar de id
+            response = await resenaServicio.actualizar(reservaSeleccionada.resena_data.id_resena, datosResena);
+            mensaje = "Reseña actualizada exitosamente";
+        } else {
+            // Crear nueva reseña
+            response = await resenaServicio.crear(datosResena);
+            mensaje = "Reseña enviada exitosamente";
+        }
 
         if (response.data.success) {
-            // Actualizar el estado local
-            setHistorialReservas(prev =>
-                prev.map(reserva =>
-                    reserva.id_reserva === reservaSeleccionada.id_reserva
-                        ? { ...reserva, tiene_resena: true, resena_data: response.data.data }
-                        : reserva
-                )
-            );
+            alert(mensaje);
             
-            setReservaFiltrada(prev =>
-                prev.map(reserva =>
-                    reserva.id_reserva === reservaSeleccionada.id_reserva
-                        ? { ...reserva, tiene_resena: true, resena_data: response.data.data }
-                        : reserva
-                )
-            );
+            // Actualizar el estado local
+            const reservasActualizadas = historialReservas.map((reserva) => {
+                if (reserva.id_reserva === reservaSeleccionada.id_reserva) {
+                    return {
+                        ...reserva,
+                        tiene_resena: true,
+                        resena_data: response.data.data || {
+                            id_resena: response.data.data?.id_resena,
+                            comentario: comentario,
+                            calificacion: calificacion,
+                        },
+                    };
+                }
+                return reserva;
+            });
 
-            // Limpiar formulario y cerrar modal
-            setCalificacion(0);
-            setComentario("");
-            setMostrarModalResena(false);
-            setReservaSeleccionada(null);
-
-            alert("¡Reseña enviada exitosamente!");
+            setHistorialReservas(reservasActualizadas);
+            setReservaFiltrada(reservasActualizadas);
+            cerrarModalResena();
         } else {
-            throw new Error(response.data.message || "Error al enviar la reseña");
+            throw new Error(response.data.message || "Error al procesar la reseña");
         }
     } catch (error) {
-        console.error("Error al enviar reseña:", error);
-        
-        if (error.response?.status === 409) {
-            alert("Ya has creado una reseña para esta reserva");
-        } else {
-            alert("Error al enviar la reseña. Inténtalo de nuevo.");
-        }
+        console.error("Error al procesar reseña:", error);
+        alert("Error al procesar la reseña: " + (error.response?.data?.message || error.message));
     } finally {
         setEnviandoResena(false);
     }
@@ -287,11 +291,14 @@ const manejarEnvioResena = async () => {
   };
 
   // Función para abrir el modal de reseña
-  const abrirModalResena = (reserva) => {
+  // Función para abrir el modal de reseña
+  const abrirModalResena = (reserva, esEdicion = false) => {
     console.log('reserva modal', reserva)
     setReservaSeleccionada(reserva);
-    setCalificacion(reserva.resena?.calificacion || 0);
-    setComentario(reserva.resena?.comentario || "");
+    // Cambiar de reserva.resena a reserva.resena_data
+    setCalificacion(reserva.resena_data?.calificacion || 0);
+    setComentario(reserva.resena_data?.comentario || "");
+    setModoEdicion(esEdicion || !reserva.resena_data); // Usar resena_data en lugar de resena
     setMostrarModalResena(true);
   };
 
@@ -302,6 +309,7 @@ const manejarEnvioResena = async () => {
     setCalificacion(0);
     setComentario("");
     setCalificacionHover(0);
+    setModoEdicion(false); // Limpiar el modo edición
   };
 
   // Función para mostrar más o menos reservas
@@ -498,10 +506,9 @@ const manejarEnvioResena = async () => {
                         </p>
                         {!reserva.tiene_resena ? (
                           <button
-                            onClick={() => abrirModalResena(reserva)}
+                            onClick={() => abrirModalResena(reserva, true)} // Modo edición para nueva reseña
                             className="bg-[#003044] text-white px-4 py-2 rounded-lg hover:bg-[#001f2d] transition-colors duration-200 flex items-center gap-2"
                           >
-                           
                             Escribir Reseña
                           </button>
                         ) : (
@@ -516,12 +523,20 @@ const manejarEnvioResena = async () => {
                                 </span>
                               </div>
                             )}
-                            <button
-                              onClick={() => abrirModalResena(reserva)}
-                              className="text-sm text-[#00c951] hover:underline cursor-pointer"
-                            >
-                              Ver reseña
-                            </button>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => abrirModalResena(reserva, false)} // Modo solo lectura
+                                className="text-sm text-[#00c951] hover:underline cursor-pointer"
+                              >
+                                Ver reseña
+                              </button>
+                              <button
+                                onClick={() => abrirModalResena(reserva, true)} // Modo edición
+                                className="text-sm text-blue-600 hover:underline cursor-pointer"
+                              >
+                                Editar
+                              </button>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -570,23 +585,26 @@ const manejarEnvioResena = async () => {
                   </p>
                 </div>
 
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                {/* Calificación con estrellas */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Calificación
                   </label>
-                  <div className="flex justify-center space-x-2">
+                  <div className="flex justify-center space-x-1">
                     {[1, 2, 3, 4, 5].map((estrella) => (
                       <EstrellaCalificacion
                         key={estrella}
                         indice={estrella}
                         calificacionActual={calificacionHover || calificacion}
-                        onHover={setCalificacionHover}
-                        onClick={setCalificacion}
+                        onHover={modoEdicion || !reservaSeleccionada?.resena_data ? setCalificacionHover : null}
+                        onClick={modoEdicion || !reservaSeleccionada?.resena_data ? setCalificacion : null}
+                        readOnly={!modoEdicion && reservaSeleccionada?.resena_data}
                       />
                     ))}
                   </div>
                 </div>
 
+                {/* Comentario */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Comentario
@@ -595,13 +613,12 @@ const manejarEnvioResena = async () => {
                     value={comentario}
                     onChange={(e) => setComentario(e.target.value)}
                     placeholder="Comparte tu experiencia..."
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#00c951] focus:ring-2 focus:ring-[#00c951] transition-all duration-300 outline-none resize-none"
                     rows={4}
-                    maxLength={500}
+                    readOnly={!modoEdicion && reservaSeleccionada?.resena_data}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#00c951] focus:border-transparent resize-none ${
+                      !modoEdicion && reservaSeleccionada?.resena_data ? 'bg-gray-100 cursor-default' : ''
+                    }`}
                   />
-                  <p className="text-xs text-gray-500 mt-1">
-                    {comentario.length}/500 caracteres
-                  </p>
                 </div>
 
                 <div className="flex space-x-3">
@@ -609,15 +626,17 @@ const manejarEnvioResena = async () => {
                     onClick={cerrarModalResena}
                     className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                   >
-                    Cancelar
+                    {modoEdicion ? "Cancelar" : "Cerrar"}
                   </button>
-                  <button
-                    onClick={manejarEnvioResena}  // Cambiar de enviarResena a manejarEnvioResena
-                    disabled={enviandoResena || calificacion === 0}
-                    className="flex-1 px-4 py-3 bg-[#00c951] text-white rounded-lg hover:bg-[#00a844] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  {modoEdicion && (
+                    <button
+                      onClick={manejarEnvioResena}
+                      disabled={enviandoResena || calificacion === 0}
+                      className="flex-1 px-4 py-3 bg-[#00c951] text-white rounded-lg hover:bg-[#00a844] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                    {enviandoResena ? "Enviando..." : "Enviar Reseña"}
+                      {enviandoResena ? "Enviando..." : (reservaSeleccionada?.resena_data ? "Actualizar Reseña" : "Enviar Reseña")}
                     </button>
+                  )}
                 </div>
               </div>
             </div>
