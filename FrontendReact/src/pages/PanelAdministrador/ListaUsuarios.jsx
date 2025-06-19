@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import BuscarBTN from './BuscarBTN'; 
 import { usuarioServicio } from '../../services/api';
 import { useAuth } from '../../Provider/AuthProvider';
 import { useNavigate } from 'react-router-dom';
@@ -139,7 +138,8 @@ function ListaUsuarios() {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      {/* Vista de tabla para desktop */}
+      <div className="hidden lg:block overflow-x-auto">
         <table className="min-w-full bg-white rounded-xl">
           <thead>
             <tr className="text-left text-[#003044]">

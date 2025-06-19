@@ -20,9 +20,9 @@ import PerfilAdministrador from "./pages/PanelPropietario/PerfilAdministrador";
 import ReservasPendientes from "./pages/PanelPropietario/ReservasPendientes";
 import ReservasPasadas from "./pages/PanelPropietario/ReservasPasadas";
 // import { ProfileIcon } from "./assets/IconosSVG/iconos";
-import InterfazAdministrador from "./pages/PanelAdministrador/InterfazAdministrador";
 import ListaUsuarios from "./pages/PanelAdministrador/ListaUsuarios";
 import ListaEmpresas from "./pages/PanelAdministrador/ListaEmpresas";
+import EditarEmpresa from "./pages/PanelAdministrador/EditarEmpresa";
 
 import iconoCorazon from "./assets/Perfil/corazon.svg";
 import iconoArchivo from "./assets/Perfil/archive.svg";
@@ -35,6 +35,8 @@ import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
 import ResetPassword from "./pages/Login/components/ResetPassword";
 import LoginEmpresa from "./pages/LoginEmpresa/LoginEmpresa";
 import LoginAdministrador from "./pages/LoginAdministrador/LoginAdministrador";
+import VerEmpresa from "./pages/PanelAdministrador/VerEmpresa";
+
 
 function App() {
   const opcionesUsuario = [
@@ -160,16 +162,16 @@ function App() {
         {/* </Route> */}
 
         {/* Rutas protegidas para ADMINISTRADORES */}
-        {/* <Route element={<RutasProtegidasAdmin />}> */}
+        <Route element={<RutasProtegidasAdmin />}>
           <Route element={<SideBarPerfil opciones={opcionesAdminitrador} />}>
-            <Route
-              path="/InterfazAdministrador"
-              element={<InterfazAdministrador />}
-            />
             <Route path="/ListaUsuarios" element={<ListaUsuarios />} />
             <Route path="/ListaEmpresas" element={<ListaEmpresas />} />
+            
           </Route>
-        {/* </Route> */}
+          <Route path="/admin/empresas/:nit/editar" element={<EditarEmpresa />} />
+          <Route path="/admin/empresas/:nit/ver" element={<VerEmpresa />} />
+
+        </Route>
 
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
       </Routes>

@@ -132,12 +132,13 @@ export default function InfoRepresentante({ data, onChange, errors, isAuthentica
             type="text"
             className="w-full border-y border-r border-gray-300 rounded-r-md p-2 text-[13px]"
             placeholder="Número"
-            value={data.num_documento || ""} // Cambiado a num_documento para coincidir con el modelo
-            onChange={(e) => onChange("num_documento", e.target.value)} // Actualiza el estado global
+            // Si el backend espera 'numero_documento'
+            value={data.numero_documento || ""}
+            onChange={(e) => onChange("numero_documento", e.target.value)} // Actualiza el estado global
           />
         </div>
-        {errors?.num_documento && (
-          <p className="text-red-500 text-sm">{errors.num_documento}</p>
+        {errors?.numero_documento && (
+          <p className="text-red-500 text-sm">{errors.numero_documento}</p>
         )}
       </div>
 

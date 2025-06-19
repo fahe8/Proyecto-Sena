@@ -133,6 +133,7 @@ export const propietarioServicio = {
 
 export const empresaServicio = {
     obtenerTodos: () => apiClient.get('/empresas'),
+    obtenerEmpresasActivas: () => apiClient.get('/empresas/activas'),
     obtenerPorId: (nit) => apiClient.get(`/empresas/${nit}`),
     crear: (data) => {
         // Si data es FormData, cambiar headers

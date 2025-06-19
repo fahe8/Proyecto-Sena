@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "./Calendario.css";
 import "react-datepicker/dist/react-datepicker.css";
@@ -18,7 +19,6 @@ import PagoModal from "./PagoModal";
 import WompiWidget from "../../../components/WompiWidget";
 import { reservaServicio, wompiServicio } from "../../../services/api";
 import { useAuth } from "../../../Provider/AuthProvider";
-import { useNavigate } from "react-router";
 
 const Calendario = ({ empresa }) => {
   const navigate = useNavigate();
@@ -81,6 +81,39 @@ const Calendario = ({ empresa }) => {
   const [infoReserva, setInfoReserva] = useState({});
   const { user } = useAuth();
 
+  // Función para validar si el perfil está completo
+  const validarPerfilCompleto = () => {
+    if (!user) {
+      setMostrarPopUp(true);
+      setConfigPopUp({
+        mensaje: "Error",
+        subTexto: "Debe iniciar sesión para realizar una reserva",
+      });
+      return false;
+    }
+
+    // Verificar que todos los campos obligatorios estén completos
+    const camposObligatorios = ['nombre', 'apellido', 'telefono', 'email'];
+    const camposIncompletos = camposObligatorios.filter(campo => !user[campo] || user[campo].trim() === '');
+    
+    if (camposIncompletos.length > 0) {
+      setMostrarPopUp(true);
+      setConfigPopUp({
+        mensaje: "Error",
+        subTexto: "Debe completar su información de perfil antes de realizar una reserva",
+      });
+      
+      // Redireccionar al perfil después de cerrar el popup
+      setTimeout(() => {
+        navigate('/perfil');
+      }, 4000);
+      
+      return false;
+    }
+    
+    return true;
+  };
+
   useEffect(() => {
     const obtenerReservas = async () => {
       setCanchaSeleccionada(empresa?.canchas[0]);
@@ -127,6 +160,11 @@ const Calendario = ({ empresa }) => {
 
   // Función para mostrar el modal de confirmación
   const mostrarModalConfirmacion = () => {
+    // Validar perfil completo primero
+    if (!validarPerfilCompleto()) {
+      return;
+    }
+
     // Validar que se haya seleccionado una cancha
     if (!canchaSeleccionada) {
       setMostrarPopUp(true);
@@ -309,8 +347,39 @@ const Calendario = ({ empresa }) => {
   };
 
   const manejarCierrePopUp = () => {
-    setMostrarPopUp(false);
-    setConfigPopUp({ mensaje: "", subTexto: "" });
+    // Lógica adicional después de cerrar el popup si es necesario
+    // Función para validar si el perfil está completo
+    const validarPerfilCompleto = () => {
+      if (!user) {
+        setMostrarPopUp(true);
+        setConfigPopUp({
+          mensaje: "Error",
+          subTexto: "Debe iniciar sesión para realizar una reserva",
+        });
+        return false;
+      }
+    
+      // Verificar que todos los campos obligatorios estén completos
+      const camposObligatorios = ['nombre', 'apellido', 'telefono', 'email'];
+      const camposIncompletos = camposObligatorios.filter(campo => !user[campo] || user[campo].trim() === '');
+      
+      if (camposIncompletos.length > 0) {
+        setMostrarPopUp(true);
+        setConfigPopUp({
+          mensaje: "Perfil incompleto",
+          subTexto: "Debe completar su información de perfil antes de realizar una reserva",
+        });
+        
+        // Redireccionar al perfil después de cerrar el popup
+        setTimeout(() => {
+          navigate('/perfil');
+        }, 3000);
+        
+        return false;
+      }
+      
+      return true;
+    };
   };
 
   const manejarCambioFecha = (fecha, campo) => {

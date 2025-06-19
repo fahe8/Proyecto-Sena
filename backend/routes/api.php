@@ -23,8 +23,10 @@ use Illuminate\Support\Facades\URL;
 // Route::apiResource('empresas', EmpresaController::class);
 Route::post('/empresas', [EmpresaController::class, 'store']);
 Route::get('/empresas', [EmpresaController::class, 'index']);
+Route::get('/empresas/activas', [EmpresaController::class, 'getActiveEmpresas']); 
 Route::get('/empresas/{nit}', [EmpresaController::class, 'show']);
 Route::put('/empresas/{nit}', [EmpresaController::class, 'update']);
+Route::delete('/empresas/{nit}', [EmpresaController::class, 'destroy']);
 
 Route::get('tipos-canchas', [CanchasAdicionalController::class, 'index']);
 Route::get('estados-canchas', [CanchasAdicionalController::class, 'estadosCanchas']);
