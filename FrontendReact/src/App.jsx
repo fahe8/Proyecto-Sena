@@ -15,7 +15,7 @@ import RutasProtegidas, {
 } from "./utils/RutasProtegidas";
 import TerminosCondiciones from "./pages/TerminosCondiciones/TerminosCondiciones";
 import PoliticaPrivacidad from "./pages/PoliticaPrivacidad/PoliticaPrivacidad";
-import PoliticaCookies from "./pages/PoliticaCookies/PoliticaCookies";
+// import PoliticaCookies from "./pages/PoliticaCookies/PoliticaCookies";
 import FormularioEmpresa from "./pages/FormularioEmpresa/FormEmpresa";
 import HistorialReservas from "./pages/HistorialReservas/HistorialReservas";
 import InterfazPropietario from "./pages/PanelPropietario/InterfazPropietario";
@@ -135,7 +135,7 @@ function App() {
         <Route path="/recuperar-contrasena" element={<ForgotPassword />} />
         <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
         <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
-        <Route path="/politica-cookies" element={<PoliticaCookies />} />
+        {/* <Route path="/politica-cookies" element={<PoliticaCookies />} /> */}
 
         {/* Rutas protegidas para USUARIOS */}
         <Route element={<RutasProtegidas />}>

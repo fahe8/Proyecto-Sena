@@ -286,6 +286,14 @@ const manejarEnvioResena = async () => {
     return "Ubicación no disponible";
   };
 
+  // Función para obtener el logo de la empresa
+  const obtenerLogoEmpresa = (reserva) => {
+    if (reserva.empresa?.logo?.url) {
+      return reserva.empresa.logo.url;
+    }
+    return null;
+  };
+
   // Función para abrir el modal de reseña
   const abrirModalResena = (reserva) => {
     console.log('reserva modal', reserva)
@@ -449,20 +457,37 @@ const manejarEnvioResena = async () => {
                   key={reserva.id_reserva || reserva.id || index}
                   className="bg-gray-50 rounded-xl shadow-[0_0_10px_rgba(0,0,0,0.2)] transition-all duration-300 overflow-hidden"
                 >
-                  <div className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+                  <div className="p-3 sm:p-4">
+                    <div className="flex flex-col lg:grid lg:grid-cols-4 gap-4 lg:gap-6 lg:items-center">
                       {/* Información de campo */}
-                      <div className="flex items-center space-x-4 md:col-span-2">
-                        <div className="w-13 h-13 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                          {obtenerNombreEmpresa(reserva).charAt(0)}
+                      <div className="flex items-start space-x-3 sm:space-x-4 lg:col-span-2">
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center overflow-hidden border-2 border-gray-200 flex-shrink-0 mt-1">
+                          {obtenerLogoEmpresa(reserva) ? (
+                            <img
+                              src={obtenerLogoEmpresa(reserva)}
+                              alt={`Logo de ${obtenerNombreEmpresa(reserva)}`}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                          ) : null}
+                          <div 
+                            className={`w-full h-full bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg sm:text-xl ${
+                              obtenerLogoEmpresa(reserva) ? 'hidden' : 'flex'
+                            }`}
+                          >
+                            {obtenerNombreEmpresa(reserva).charAt(0)}
+                          </div>
                         </div>
-                        <div>
+                        <div className="flex-1 min-w-0">
                           <h3 className="font-bold text-lg text-[#003044]">
                             {obtenerNombreEmpresa(reserva)}
                           </h3>
-                          <p className="text-gray-600 text-sm flex items-center gap-1">
-                            <Gps />
-                            {obtenerDireccionEmpresa(reserva)}
+                          <p className="text-gray-600 text-sm flex items-center gap-1 w-full">
+                            <Gps className="flex-shrink-0" />
+                            <span className="flex-1">{obtenerDireccionEmpresa(reserva)}</span>
                           </p>
                         </div>
                       </div>

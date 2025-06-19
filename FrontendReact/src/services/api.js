@@ -53,16 +53,7 @@ export const usuarioServicio = {
         }
     }),
     crear: (data) => apiClient.post('/usuarios', data),
-    actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`
-        }
-    }),
-    eliminar: (id) => apiClient.delete(`/usuarios/${id}`, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`
-        }
-    })
+    actualizar: (id, data) => apiClient.put(`/propietarios/${id}`, data), 
 };
 
 export const propietarioServicio = {
