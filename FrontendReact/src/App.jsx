@@ -26,6 +26,8 @@ import ReservasPasadas from "./pages/PanelPropietario/ReservasPasadas";
 import ListaUsuarios from "./pages/PanelAdministrador/ListaUsuarios";
 import ListaEmpresas from "./pages/PanelAdministrador/ListaEmpresas";
 import editarIcon from "./assets/Inicio/editar.svg";
+import EditarEmpresa from "./pages/PanelAdministrador/EditarEmpresa";
+
 import iconoCorazon from "./assets/Perfil/corazon.svg";
 import iconoArchivo from "./assets/Perfil/archive.svg";
 import iconoReciente from "./assets/Perfil/clockIcon.svg";
@@ -37,6 +39,8 @@ import EditarServicios from "./pages/PanelPropietario/EditarServicios";
 import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
 import ResetPassword from "./pages/Login/components/ResetPassword";
 import LoginEmpresa from "./pages/LoginEmpresa/LoginEmpresa";
+import VerEmpresa from "./pages/PanelAdministrador/VerEmpresa";
+
 
 function App() {
   const opcionesUsuario = [
@@ -175,7 +179,11 @@ function App() {
           <Route element={<SideBarPerfil opciones={opcionesAdminitrador} />}>
             <Route path="/ListaUsuarios" element={<ListaUsuarios />} />
             <Route path="/ListaEmpresas" element={<ListaEmpresas />} />
+            
           </Route>
+          <Route path="/admin/empresas/:nit/editar" element={<EditarEmpresa />} />
+          <Route path="/admin/empresas/:nit/ver" element={<VerEmpresa />} />
+
         {/* </Route> */}
 
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />

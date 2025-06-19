@@ -24,12 +24,21 @@ class EmpresaResource extends JsonResource
                 'cierre' => $this->hora_cierre,
             ],
             'estado' => $this->estadoEmpresa->id_estado_empresa ?? null,
+            'id_estado_empresa' => $this->id_estado_empresa,
             'propietario' => [
+                'id' => $this->propietario->id ?? null,
                 'nombre' => $this->propietario->nombre ?? null,
                 'apellido' => $this->propietario->apellido ?? null,
                 'telefono' => $this->propietario->telefono ?? null,
-                'tipo_documento' => $this->propietario->tipo_documento_id ?? null,
+                'tipo_documento_id' => $this->propietario->tipo_documento_id ?? null,
                 'numero_documento' => $this->propietario->numero_documento ?? null,
+                'imagen' => $this->propietario->imagen ?? null,
+                'user' => [
+                    'id' => $this->propietario->user->id ?? null,
+                    'email' => $this->propietario->user->email ?? null,
+                    'roles' => $this->propietario->user->roles ?? null,
+                    'email_verified_at' => $this->propietario->user->email_verified_at ?? null,
+                ]
             ],
             'servicios' => $this->servicios->map(function($servicio) {
                 return [
