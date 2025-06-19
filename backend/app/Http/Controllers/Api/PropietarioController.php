@@ -9,12 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\PropietarioResource;
 use App\Models\Usuario;
+use App\Models\WompiCredential;
 use App\Services\CloudinaryService;
 use Cloudinary\Api\Admin\AdminApi;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Cloudinary\Api\Upload\UploadApi;
+use Exception;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PropietarioController extends ApiController
 {
@@ -161,7 +164,6 @@ class PropietarioController extends ApiController
             'telefono' => 'sometimes|string|max:20',
             'tipo_documento_id' => 'sometimes|exists:tipo_documento,tipo_documento_id',
             'numero_documento' => 'sometimes|string',
-            'imagen' => 'sometimes|image|max:2048'
         ]);
     
         if ($validator->fails()) {
@@ -169,36 +171,17 @@ class PropietarioController extends ApiController
         }
     
         try {
-            if ($request->hasFile('imagen')) {
-                // Subir la nueva imagen a Cloudinary
-                $cloudinary = new UploadApi();
-                $result = $cloudinary->upload($request->file('imagen')->getRealPath(), [
-                    'folder' => 'micanchaya/propietarios'
-                ]);
-    
-                // Eliminar la imagen anterior de Cloudinary si existe
-                if ($propietario->imagen) {
-                    $adminApi = new AdminApi();
-                    $adminApi->deleteAssets([$propietario->imagen['public_id']]);
-                }
-    
-                // Actualizar con la nueva imagen
-                $request->merge([
-                    'imagen' => [
-                        'url' => $result['secure_url'],
-                        'public_id' => $result['public_id']
-                    ]
-                ]);
-            }
-    
-            $propietario->update($request->only([
+            $updateData = $request->only([
                 'nombre',
                 'apellido',
                 'telefono',
                 'tipo_documento_id',
-                'numero_documento',
-                'imagen'
-            ]));
+                'numero_documento'
+            ]);
+
+
+
+            $propietario->update($updateData);
     
             return $this->sendResponse(
                 new PropietarioResource($propietario->load('user')),
@@ -207,6 +190,69 @@ class PropietarioController extends ApiController
             );
         } catch (\Exception $e) {
             return $this->sendError('Error al actualizar propietario', $e->getMessage(), 500);
+        }
+    }
+
+    public function updateImage(Request $request, Propietario $propietario)
+    {
+        if ($request->isMethod('put') || $request->isMethod('patch')) {
+            $request->request->add($request->all());
+        }
+        // Validar la imagen
+        $validator = Validator::make($request->all(), [
+            'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+    
+        if ($validator->fails()) {
+            return $this->sendError('Validación fallida', $validator->errors(), 422);
+        }
+       
+        try {
+            if (!$request->hasFile('imagen')) {
+                return $this->sendError('No se proporcionó una imagen', [], 422);
+            }
+    
+            $uploadApi = new UploadApi();
+            $adminApi = new AdminApi();
+    
+            // Subir la nueva imagen a Cloudinary
+            $result = $uploadApi->upload($request->file('imagen')->getRealPath(), [
+                'folder' => 'micanchaya/propietarios',
+                'resource_type' => 'image',
+                'transformation' => [
+                    'quality' => 'auto',
+                    'fetch_format' => 'auto'
+                ]
+            ]);
+    
+            // Eliminar la imagen anterior de Cloudinary si existe
+            if ($propietario->imagen && isset($propietario->imagen['public_id'])) {
+                try {
+                    $adminApi->deleteAssets([$propietario->imagen['public_id']]);
+                } catch (\Exception $e) {
+                    // Log del error pero continúa con la actualización
+                    Log::warning('Error al eliminar imagen anterior: ' . $e->getMessage());
+                }
+            }
+    
+            // Actualizar el propietario con la nueva imagen
+            $imagenData = [
+                'url' => $result['secure_url'],
+                'public_id' => $result['public_id']
+            ];
+            
+            $propietario->update(['imagen' => $imagenData]);
+    
+            // Retornar respuesta exitosa
+            return $this->sendResponse(
+                new PropietarioResource($propietario->load('user')),
+                'Imagen actualizada correctamente',
+                200
+            );
+    
+        } catch (\Exception $e) {
+            Log::error('Error al actualizar imagen: ' . $e->getMessage());
+            return $this->sendError('Error al procesar la imagen', $e->getMessage(), 500);
         }
     }
 
@@ -300,12 +346,17 @@ class PropietarioController extends ApiController
         try {
             $request->validate([
                 'public_key' => 'required|string',
-                'private_key' => 'required|string',
+                'private_key' => 'required|string', 
                 'integrity_secret' => 'required|string',
                 'environment' => 'required|in:test,production'
             ]);
     
-            $propietario = auth()->user();
+            $user = auth()->user();
+            $propietario = $user->propietario;
+            
+            if (!$propietario) {
+                return $this->sendError('No se encontró el perfil de propietario', [], 404);
+            }
     
             // Actualizar o crear credenciales de Wompi
             $wompiCredentials = WompiCredential::updateOrCreate(

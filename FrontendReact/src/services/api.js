@@ -90,6 +90,15 @@ export const propietarioServicio = {
         
         return apiClient.put(`/propietarios/${id}`, data, { headers });
     },
+    // Nueva función específica para actualizar imagen
+    actualizarImagen: (id, formData) => {
+        return apiClient.post(`/propietarios/${id}/imagen`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+    },
     eliminar: (id) => apiClient.delete(`/propietarios/${id}`, {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -158,6 +167,11 @@ export const reservaServicio = {
     obtenerPorUsuario: (userId) => apiClient.get(`/reservas/usuario/${userId}`),
     obtenerPorEmpresa: (nit) => apiClient.get(`/reservas/empresa/${nit}`),
     crear: (data) => apiClient.post('/reservas', data),
+    // Nueva función para verificar disponibilidad
+    verificarDisponibilidad: (data) => {
+        const verificacionData = { ...data, crearReserva: false };
+        return apiClient.post('/reservas', verificacionData);
+    },
     actualizar: (id, data) => apiClient.put(`/reservas/${id}`, data),
     eliminar: (id) => apiClient.delete(`/reservas/${id}`),
     obtenerReservasActivas: (id) => apiClient.get(`reservas/active/${id}`),
@@ -222,7 +236,6 @@ export const ServiciosServicio = {
     eliminar: (id) => apiClient.delete(`/servicios/${id}`)
 }
 
-// Agregar al objeto propietarioServicio:
 export const wompiServicio = {
     crearTransaccion: (data) => {
         return apiClient.post('/wompi/crear-transaccion', data, {

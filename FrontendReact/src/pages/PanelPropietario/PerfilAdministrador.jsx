@@ -181,42 +181,19 @@ useEffect(() => {
           setMostrarPopUp(true);
           return;
         }
-        
-        // Crear un FormData para manejar correctamente los archivos
-        const propietarioData = new FormData();
-        
-        // Agregar campos básicos
-        propietarioData.append('nombre', propietario.nombre);
-        propietarioData.append('apellido', propietario.apellido);
-        propietarioData.append('telefono', propietario.telefono);
-        
-        if (propietario.tipo_documento_id) {
-          propietarioData.append('tipo_documento_id', propietario.tipo_documento_id);
-        }
-        
-        if (propietario.numero_documento) {
-          propietarioData.append('numero_documento', propietario.numero_documento);
-        }
-        
-        // Si hay una imagen, agregarla
-        if (propietario.imagen && propietario.imagen instanceof File) {
-          propietarioData.append('imagen', propietario.imagen);
-        }
-        
-        // Imprimir los datos que se están enviando para depuración
-        console.log("ID de propietario a usar:", propietarioId);
-        console.log("Datos a enviar:", Object.fromEntries(propietarioData));
+      
+        const propietarioData = {
+          nombre: propietario.nombre,
+          apellido: propietario.apellido,
+          telefono: propietario.telefono,
+        };
+
         
         try {
           // Actualizar datos del propietario con FormData usando el ID correcto
           const response = await propietarioServicio.actualizar(propietarioId, propietarioData);
           
           if (response.data.success) {
-            // Actualizar el estado local con los datos actualizados
-            console.log("Datos recibidos del servidor:", response.data.data);
-            console.log("ID de propietario a usar:", propietarioId);
-            console.log("Datos a enviar:", Object.fromEntries(propietarioData));
-            console.log("Datos recibidos del servidor:", response.data.data);
             
             setPropietario(prevState => ({
               ...prevState,
@@ -350,6 +327,39 @@ useEffect(() => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleImageChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append('imagen', file);
+  
+    try {
+      setLoading(true);
+      // Usar la nueva función específica para actualizar imagen
+      const response = await propietarioServicio.actualizarImagen(propietario.id, formData);
+      
+      if (response.data.success) {
+        setPropietario(response.data.data);
+        setTextoPopUp({
+          titulo: "Imagen actualizada",
+          subtitulo: "La imagen ha sido actualizada correctamente"
+        });
+        setMostrarPopUp(true);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setTextoPopUp({
+        titulo: "Error al actualizar imagen",
+        subtitulo: error.response?.data?.message || "No se pudo actualizar la imagen"
+      });
+      setMostrarPopUp(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   if (loading) {
     return <Loading/>;
   }
@@ -376,6 +386,7 @@ useEffect(() => {
           toggleEdicionPropietario={toggleEdicionPropietario}
           validarInputsEmpresa={validarInputsEmpresa}
           validarInputsPropietario={validarInputsPropietario}
+          handleImageChange={handleImageChange}
         />
 
 

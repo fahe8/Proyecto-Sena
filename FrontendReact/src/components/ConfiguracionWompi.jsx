@@ -40,6 +40,7 @@ const ConfiguracionWompi = () => {
         setCargando(true);
         
         try {
+            console.log("formulario de wompi",formulario)
             const response = await propietarioServicio.configurarWompi(formulario);
             if (response.data.success) {
                alert('Credenciales de Wompi configuradas correctamente');

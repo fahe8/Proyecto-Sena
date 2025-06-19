@@ -34,6 +34,7 @@ import business from "./assets/Perfil/business.svg";
 import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
 import ResetPassword from "./pages/Login/components/ResetPassword";
 import LoginEmpresa from "./pages/LoginEmpresa/LoginEmpresa";
+import LoginAdministrador from "./pages/LoginAdministrador/LoginAdministrador";
 
 function App() {
   const opcionesUsuario = [
@@ -115,6 +116,7 @@ function App() {
         <Route path="/empresa/:id" element={<Empresa />} />
         <Route path="/loginEmpresa" element={<LoginEmpresa />} />
         <Route path="/registro-empresa" element={<FormularioEmpresa />} />
+        <Route path="/loginAdministrador" element={<LoginAdministrador />} />
         <Route
           path="/recuperar-contrasena/:token"
           element={<ResetPassword />}

@@ -18,8 +18,10 @@ import PagoModal from "./PagoModal";
 import WompiWidget from "../../../components/WompiWidget";
 import { reservaServicio, wompiServicio } from "../../../services/api";
 import { useAuth } from "../../../Provider/AuthProvider";
+import { useNavigate } from "react-router";
 
 const Calendario = ({ empresa }) => {
+  const navigate = useNavigate();
   // Función para redondear a la siguiente hora completa
   const redondearSiguienteHora = (fecha) => {
     const nuevaFecha = new Date(fecha);
@@ -45,6 +47,12 @@ const Calendario = ({ empresa }) => {
   //Devuelve la hora de cierre de la empresa como objeto Date
   const getMaxHoraEmpresa = () => {
     if (!empresa?.horario.cierre) return new Date(0, 0, 0, 23, 59); // Si no hay hora, usar 23:59
+    
+    // Si la hora de cierre es 00:00, significa medianoche (final del día)
+    if (empresa.horario.cierre === "00:00" || empresa.horario.cierre === "00:00:00") {
+      return new Date(0, 0, 0, 23, 59); // Usar 23:59 en lugar de 00:00
+    }
+    
     return obtenerHoraDesdeString(empresa.horario.cierre); // Convierte y retorna la hora de cierre
   };
 
@@ -169,22 +177,45 @@ const Calendario = ({ empresa }) => {
     try {
       setProcesandoPago(true);
 
-      // Formatear datos para el pago
+      // Formatear datos para la verificación
       const fechaFormateada = format(reserva.fecha, "yyyy-MM-dd");
       const horaInicioFormateada = format(reserva.horaInicio, "HH:mm:ss");
       const horaFinalFormateada = format(reserva.horaFinal, "HH:mm:ss");
-      console.log(horaInicioFormateada);
-      console.log(horaFinalFormateada);
-      const pagoData = {
-        cancha_id: canchaSeleccionada.id,
-        fecha: fechaFormateada,
-        hora_inicio: horaInicioFormateada,
-        hora_final: horaFinalFormateada,
-        usuario_id: user?.id,
-        customer_email: user?.email,
-        customer_phone: user?.telefono || "3001234567",
-        customer_name: `${user?.nombre} ${user?.apellido}`,
+      
+      const datosVerificacion = {
+          cancha_id: canchaSeleccionada.id,
+          fecha: fechaFormateada,
+          hora_inicio: horaInicioFormateada,
+          hora_final: horaFinalFormateada,
+          usuario_id: user?.id,
       };
+
+      // PASO 1: Verificar disponibilidad antes del pago
+      console.log("Verificando disponibilidad...");
+      const verificacionResponse = await reservaServicio.verificarDisponibilidad(datosVerificacion);
+      
+      if (!verificacionResponse.data.success) {
+          // Mostrar error de disponibilidad
+          setMostrarPopUp(true);
+          setConfigPopUp({
+              mensaje: "Error de Disponibilidad",
+              subTexto: verificacionResponse.data.data.error || "La cancha no está disponible en el horario seleccionado",
+          });
+          setProcesandoPago(false);
+          setMostrarConfirmacion(false);
+          return;
+      }
+
+      // PASO 2: Si está disponible, proceder con el pago
+      console.log("Cancha disponible, iniciando proceso de pago...");
+      
+      const pagoData = {
+          ...datosVerificacion,
+          customer_email: user?.email,
+          customer_phone: user?.telefono || "3001234567",
+          customer_name: `${user?.nombre} ${user?.apellido}`,
+      };
+      
       console.log(pagoData);
 
       // Crear transacción en Wompi
@@ -192,18 +223,30 @@ const Calendario = ({ empresa }) => {
       console.log("Crear transaccion", response.data.data);
 
       if (response.data.success) {
-        console.log("entro y sale el widget");
-        setTransactionData(response.data.data);
-        setShowWompiWidget(true); // Mostrar el widget
-        setMostrarConfirmacion(false);
+          console.log("entro y sale el widget");
+          setTransactionData(response.data.data);
+          setShowWompiWidget(true); // Mostrar el widget
+          setMostrarConfirmacion(false);
       }
     } catch (error) {
-      console.error("Error creando transacción:", error);
+      console.error("Error en el proceso de reserva:", error);
+      
+      let mensajeError = "Error procesando la reserva";
+      
+      // Manejar diferentes tipos de errores
+
+      if (error.response?.data?.data?.error){
+        mensajeError = error.response.data.data.error;
+      } else {
+          mensajeError = error.response?.data?.message || "Error desconocido";
+      }
+  
       setMostrarPopUp(true);
       setConfigPopUp({
-        mensaje: "Error",
-        subTexto: error.response?.data?.message || "Error procesando el pago",
+          mensaje: "Error",
+          subTexto: mensajeError,
       });
+      setMostrarConfirmacion(false);
     } finally {
       setProcesandoPago(false);
     }
@@ -297,28 +340,8 @@ const Calendario = ({ empresa }) => {
         reservaInfo={infoReserva}
       />
 
-      <WompiWidget
-        transactionData={transactionData}
-        onSuccess={handlePaymentSuccess}
-        onError={handlePaymentError}
-        onClose={handlePaymentClose}
-        isVisible={showWompiWidget}
-      />
 
-      {/* {showWompiWidget && (
-        <form>
-          <script
-            src="https://checkout.wompi.co/widget.js"
-            data-render="button"
-            data-public-key="pub_test_X0zDA9xoKdePzhd8a0x9HAez7HgGO2fH"
-            data-currency="COP"
-            data-amount-in-cents={transactionData?.amount_in_cents}
-            data-reference="4XMPGKWWPKWQ"
-            data-signature:integrity={transactionData?.integrity_signature}
-          ></script>
-        </form>
-      )} */}
-
+     
       <div className="p-3 rounded-lg shadow-2xl flex flex-col gap-2">
         <DatePicker
           selected={reserva.fecha}
@@ -440,13 +463,44 @@ const Calendario = ({ empresa }) => {
 
         <p className="mt-3">Costo total: $ {canchaSeleccionada?.precio || 0} COP</p>
 
-        <button
-          onClick={mostrarModalConfirmacion}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg mt-3 transition-colors duration-300"
-          disabled={procesandoPago}
-        >
-          {procesandoPago ? "Procesando..." : "Confirmar Reserva"}
-        </button>
+        {!showWompiWidget ? (
+          <button
+            onClick={mostrarModalConfirmacion}
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg mt-3 transition-colors duration-300"
+            disabled={procesandoPago}
+          >
+            {procesandoPago ? "Procesando..." : "Confirmar Reserva"}
+          </button>
+        ) : (
+          <div className="mt-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <p className="text-blue-700 text-center font-medium mb-2">
+              Completa tu pago con Wompi
+            </p>
+            <p className="text-blue-600 text-sm text-center">
+              El widget de pago se abrirá automáticamente
+            </p>
+          </div>
+        )}
+        
+        <WompiWidget
+        transactionData={transactionData}
+        onSuccess={(data) => {
+          console.log('Pago completado exitosamente:', data);
+          // Aquí ya tienes la confirmación del backend
+          // Redirigir a página de éxito o mostrar mensaje
+          navigate('/reserva-confirmada');
+        }}
+        onError={(error) => {
+          console.log('Error en el pago:', error);
+          // Mostrar mensaje de error al usuario
+        }}
+        onClose={(data) => {
+          console.log('Widget cerrado:', data);
+          // Manejar cuando el usuario cierra el widget
+        }}
+        isVisible={showWompiWidget}
+         redirectUrl="/reservasactivas"
+      />
       </div>
     </div>
   );

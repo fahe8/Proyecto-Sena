@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { auth } from "../../pages/Login/firebaseconfig"; // Importamos la configuración de Firebase
 import { signOut } from "firebase/auth"; // Importamos la función para cerrar sesión en Firebase
 
 
@@ -35,8 +34,7 @@ const SideBarPerfil = ({opciones = [], bgClass = "bg-[#003044]", activeClass = "
 
   const handleLogout = async () => {
       try {
-        await signOut(auth); // Cierra sesión en Firebase
-        window.localStorage.removeItem("auth"); // Elimina datos de autenticación almacenados en localStorage
+        window.localStorage.removeItem("authToken"); // Elimina datos de autenticación almacenados en localStorage
         console.log("Cierre de sesión exitoso");
   
         window.location.href = "/login"; // Redirige a la página de inicio de sesión

@@ -83,7 +83,7 @@ class WompiController extends ApiController
             Log::info('Generando firma de integridad:', [
                 'referencia' => $referencia,
                 'monto_centavos' => $montoCentavos,
-                'cadena_integridad' => $referencia . $montoCentavos . 'COP' . '[SECRETO_OCULTO]',
+                'cadena_integridad' => $referencia . $montoCentavos . 'COP' . $wompiCredentials->integrity_secret,
                 'firma_generada' => $firmaIntegridad
             ]);
             
@@ -261,33 +261,136 @@ class WompiController extends ApiController
     public function webhook(Request $request)
     {
         try {
-            $event = $request->all();
-            Log::info('Wompi Webhook recibido:', $event);
+            Log::info('Webhook recibido de Wompi:', [
+                'headers' => $request->headers->all(),
+                'body' => $request->all(),
+                'raw_body' => $request->getContent(),
+                'ip' => $request->ip(),
+                'timestamp' => now()->toISOString()
+            ]);
 
-            if ($event['event'] === 'transaction.updated') {
-                $transactionId = $event['data']['transaction']['id'];
-                $status = $event['data']['transaction']['status'];
+            // Obtener el evento del webhook
+            $event = $request->input('event');
+            $data = $request->input('data');
 
-                // Buscar reserva por transaction_id
-                $reserva = Reserva::where('wompi_transaction_id', $transactionId)->first();
-                
-                if ($reserva) {
-                    $reserva->update([
-                        'estado_pago' => $status === 'APPROVED' ? 'PAID' : 'FAILED'
-                    ]);
-                    
-                    Log::info('Reserva actualizada via webhook:', [
-                        'reserva_id' => $reserva->id,
-                        'transaction_id' => $transactionId,
-                        'nuevo_estado' => $status
-                    ]);
-                }
+            if (!$event || !$data) {
+                Log::warning('Webhook de Wompi sin datos válidos');
+                return response()->json(['status' => 'error', 'message' => 'Datos inválidos'], 400);
             }
 
-            return response()->json(['status' => 'ok']);
+            // Procesar según el tipo de evento
+            switch ($event) {
+                case 'transaction.updated':
+                    $this->procesarActualizacionTransaccion($data);
+                    break;
+                    
+                default:
+                    Log::info('Evento de webhook no procesado: ' . $event);
+                    break;
+            }
+
+            // Responder con éxito a Wompi
+            return response()->json(['status' => 'success'], 200);
+            
         } catch (\Exception $e) {
-            Log::error('Error en webhook Wompi: ' . $e->getMessage());
-            return response()->json(['error' => 'Error procesando webhook'], 500);
+            Log::error('Error procesando webhook de Wompi: ' . $e->getMessage(), [
+                'exception' => $e->getTraceAsString(),
+                'request_data' => $request->all()
+            ]);
+            
+            return response()->json(['status' => 'error'], 500);
+        }
+    }
+
+    /**
+     * Procesar actualización de transacción
+     */
+    private function procesarActualizacionTransaccion($data)
+    {
+        try {
+            // Los datos están dentro de 'transaction'
+            $transaction = $data['transaction'] ?? null;
+            
+            if (!$transaction) {
+                Log::warning('No se encontró información de transacción en el webhook');
+                return;
+            }
+            
+            $transactionId = $transaction['id'] ?? null;
+            $status = $transaction['status'] ?? null;
+            $reference = $transaction['reference'] ?? null;
+    
+            Log::info('Procesando actualización de transacción:', [
+                'transaction_id' => $transactionId,
+                'status' => $status,
+                'reference' => $reference
+            ]);
+    
+            if ($reference) {
+                // Buscar la reserva por referencia
+                $reserva = Reserva::where('wompi_reference', $reference)->first();
+                
+                if ($reserva) {
+                    // Actualizar estado según el status de Wompi
+                    switch ($status) {
+                        case 'APPROVED':
+                            $reserva->update([
+                                'estado_pago' => 'PAID',
+                                'wompi_transaction_id' => $transactionId
+                            ]);
+                            Log::info('Reserva confirmada por webhook: ' . $reserva->id);
+                            break;
+                            
+                        case 'DECLINED':
+                        case 'ERROR':
+                            $reserva->update(['estado_pago' => 'FAILED']);
+                            Log::info('Reserva rechazada por webhook: ' . $reserva->id);
+                            break;
+                            
+                        default:
+                            Log::info('Estado de transacción no procesado: ' . $status);
+                            break;
+                    }
+                } else {
+                    // Si no existe la reserva, verificar si hay datos temporales en cache
+                    $reservaTemp = cache()->get('reserva_temp_' . $reference);
+                    
+                    if ($reservaTemp && $status === 'APPROVED') {
+                        // Crear la reserva desde los datos temporales
+                        Log::info('Creando reserva desde datos temporales para: ' . $reference);
+                        
+                        $reserva = Reserva::create([
+                            'fecha' => $reservaTemp['fecha'],
+                            'hora_inicio' => $reservaTemp['hora_inicio'],
+                            'hora_final' => $reservaTemp['hora_final'],
+                            'cancha_id' => $reservaTemp['cancha_id'],
+                            'usuario_id' => $reservaTemp['usuario_id'],
+                            'NIT' => $reservaTemp['NIT'],
+                            'wompi_transaction_id' => $transactionId,
+                            'wompi_reference' => $reference,
+                            'monto_pagado' => $reservaTemp['monto_total'],
+                            'estado_pago' => 'PAID'
+                        ]);
+                        
+                        // Limpiar cache temporal
+                        cache()->forget('reserva_temp_' . $reference);
+                        
+                        Log::info('Reserva creada exitosamente desde webhook: ' . $reserva->id);
+                    } else {
+                        Log::warning('No se encontró reserva ni datos temporales para referencia: ' . $reference);
+                        
+                        // Log adicional para debugging
+                        Log::info('Verificando cache para: reserva_temp_' . $reference);
+                        Log::info('Datos en cache: ' . json_encode($reservaTemp));
+                    }
+                }
+            } else {
+                Log::warning('Webhook sin referencia de transacción');
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Error procesando actualización de transacción: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
         }
     }
 }

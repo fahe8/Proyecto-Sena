@@ -3,38 +3,56 @@ import InfoField from "../../Perfil/components/InfoField";
 import InputField from "../../Perfil/components/InputField";
 import CloudinaryUploader from "../../../components/CloudinaryUploader";
 import lapizIcon from "../../../assets/Perfil/lapiz.svg";
-import { UserIcon, EmailIcon, PhoneIcon, ImageIcon, DocumentIcon, IdICon, CompanyIcon, DescriptionIcon, LocationIcon, clock} from "../../../assets/IconosSVG/iconos";
+import {
+  UserIcon,
+  EmailIcon,
+  PhoneIcon,
+  ImageIcon,
+  DocumentIcon,
+  IdICon,
+  CompanyIcon,
+  DescriptionIcon,
+  LocationIcon,
+  clock,
+} from "../../../assets/IconosSVG/iconos";
 
-const AdminProfileInfo = ({ 
-  propietario, 
+const AdminProfileInfo = ({
+  propietario,
   empresa,
   editandoEmpresa,
   editandoPropietario,
   handleChangePropietario,
   handleChangeEmpresa,
   handleImageUpload,
-  errores, 
+  errores,
   toggleEdicionEmpresa,
   toggleEdicionPropietario,
   validarInputsEmpresa,
-  validarInputsPropietario
+  validarInputsPropietario,
+  // Agregar nueva prop para manejar cambio de imagen
+  handleImageChange,
 }) => {
-
   return (
     <div className="bg-white rounded-lg shadow-lg p-12 relative mb-8">
       {/* Sección de la Empresa */}
       <div className="mb-12">
         <div className="flex justify-between items-center mb-8">
-          <h3 className="text-2xl font-bold text-[#003044]">Información de la Empresa</h3>
+          <h3 className="text-2xl font-bold text-[#003044]">
+            Información de la Empresa
+          </h3>
           <button
-            onClick={editandoEmpresa ? validarInputsEmpresa : toggleEdicionEmpresa}
+            onClick={
+              editandoEmpresa ? validarInputsEmpresa : toggleEdicionEmpresa
+            }
             className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 cursor-pointer ${
-              editandoEmpresa 
-              ? 'bg-[#00c951] hover:bg-[#00a844]' 
-              : 'bg-[#003044] hover:bg-[#004466]'
+              editandoEmpresa
+                ? "bg-[#00c951] hover:bg-[#00a844]"
+                : "bg-[#003044] hover:bg-[#004466]"
             } text-white shadow-md hover:shadow-lg`}
           >
-            <span>{editandoEmpresa ? "Guardar Cambios" : "Editar Empresa"}</span>
+            <span>
+              {editandoEmpresa ? "Guardar Cambios" : "Editar Empresa"}
+            </span>
             <img width={20} src={lapizIcon} alt="Editar" className="" />
           </button>
         </div>
@@ -105,7 +123,7 @@ const AdminProfileInfo = ({
               onChange={handleChangeEmpresa}
               error={errores.direccionEmpresa}
               editable={editandoEmpresa}
-              icon={<LocationIcon/>}
+              icon={<LocationIcon />}
             />
             <InputField
               label="descripcion"
@@ -143,16 +161,24 @@ const AdminProfileInfo = ({
       {/* Sección del Propietario */}
       <div>
         <div className="flex justify-between items-center mb-8">
-          <h3 className="text-2xl font-bold text-[#003044]">Información del Propietario</h3>
+          <h3 className="text-2xl font-bold text-[#003044]">
+            Información del Propietario
+          </h3>
           <button
-            onClick={editandoPropietario ? validarInputsPropietario : toggleEdicionPropietario}
+            onClick={
+              editandoPropietario
+                ? validarInputsPropietario
+                : toggleEdicionPropietario
+            }
             className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 cursor-pointer ${
-              editandoPropietario 
-              ? 'bg-[#00c951] hover:bg-[#00a844]' 
-              : 'bg-[#003044] hover:bg-[#004466]'
+              editandoPropietario
+                ? "bg-[#00c951] hover:bg-[#00a844]"
+                : "bg-[#003044] hover:bg-[#004466]"
             } text-white shadow-md hover:shadow-lg`}
           >
-            <span>{editandoPropietario ? "Guardar Cambios" : "Editar Propietario"}</span>
+            <span>
+              {editandoPropietario ? "Guardar Cambios" : "Editar Propietario"}
+            </span>
             <img width={20} src={lapizIcon} alt="Editar" className="" />
           </button>
         </div>
@@ -189,26 +215,6 @@ const AdminProfileInfo = ({
               icon={<DocumentIcon />}
               defaultText="No hay documento registrado"
             />
-            <div className="md:col-span-2">
-              <InfoField
-                label="Imagen del Propietario"
-                value={propietario.imagen?.url ? "Imagen cargada" : "No hay imagen"}
-                icon={<ImageIcon />}
-                defaultText="No hay imagen registrada"
-              />
-              {propietario.imagen?.url && (
-                <div className="mt-4">
-                  <img 
-                    src={propietario.imagen.url} 
-                    alt="Imagen del propietario" 
-                    className="w-32 h-32 object-cover rounded-lg border-2 border-gray-200"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
-            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -245,50 +251,52 @@ const AdminProfileInfo = ({
               value={propietario.email}
               onChange={handleChangePropietario}
               error={errores.emailPropietario}
-              editable={false} 
+              editable={false}
               icon={<EmailIcon />}
             />
             <InputField
               label="Número de Documento"
-              name="num_documento"
+              name="numero_documento"
               value={propietario.numero_documento}
               onChange={handleChangePropietario}
               error={errores.num_documentoPropietario}
-              editable={false} 
+              editable={false}
               icon={<DocumentIcon />}
             />
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <ImageIcon/> Imagen del Propietario
-              </label>
-              <div className="flex items-start gap-4">
-                <div className="flex-1">
-                  <CloudinaryUploader
-                    onUploadSuccess={handleImageUpload}
-                    folder="micanchaya/propietarios"
-                    multiple={false}
-                  />
-                </div>
-                {propietario.imagen?.url && (
-                  <div className="flex-shrink-0">
-                    <img 
-                      src={propietario.imagen.url} 
-                      alt="Imagen actual del propietario" 
-                      className="w-24 h-24 object-cover rounded-lg border-2 border-gray-200"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                    <p className="text-xs text-gray-500 mt-1 text-center">Imagen actual</p>
-                  </div>
-                )}
-              </div>
-              {errores.imagen && (
-                <p className="text-red-500 text-sm mt-1">{errores.imagen}</p>
-              )}
-            </div>
           </div>
         )}
+        <div className="md:col-span-2">
+          {propietario.imagen?.url && (
+            <div className="mt-4">
+              <img
+                src={propietario.imagen.url}
+                alt="Imagen del propietario"
+                className="w-32 h-32 object-cover rounded-lg border-2 border-gray-200"
+                onError={(e) => {
+                  e.target.style.display = "none";
+                }}
+              />
+            </div>
+          )}
+          
+          {/* Nuevo botón para cambiar imagen */}
+          <div className="mt-4">
+            <input
+              type="file"
+              id="imagen-propietario"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+            <label
+              htmlFor="imagen-propietario"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#003044] hover:bg-[#004466] text-white rounded-lg cursor-pointer transition-all duration-300 shadow-md hover:shadow-lg"
+            >
+              <ImageIcon />
+              <span>Cambiar Imagen Propietario</span>
+            </label>
+          </div>
+        </div>
       </div>
     </div>
   );

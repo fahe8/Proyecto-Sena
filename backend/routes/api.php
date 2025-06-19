@@ -67,25 +67,25 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Agregar después de las rutas existentes:
     Route::middleware(['ability:usuario'])->prefix('wompi')->group(function () {
         Route::post('/crear-transaccion', [WompiController::class, 'crearTransaccion']);
-    Route::post('/confirmar-pago', [WompiController::class, 'confirmarPago']);
-    Route::post('/webhook', [WompiController::class, 'webhook']);
+        Route::post('/confirmar-pago', [WompiController::class, 'confirmarPago']);
     });
- 
+
 
     // Rutas de Propietarios (requiere rol 'propietario')
     Route::middleware(['ability:propietario'])->prefix('propietarios')->group(function () {
         Route::get('/{propietario}', [PropietarioController::class, 'show']);
         Route::put('/{propietario}', [PropietarioController::class, 'update']);
+        Route::post('/{propietario}/imagen', [PropietarioController::class, 'updateImage']);
         Route::delete('/{propietario}', [PropietarioController::class, 'destroy']);
         Route::get('/empresa/{propietario}', [EmpresaController::class, 'findByPropietarioId']);
     });
-   
+
     Route::middleware(['ability:propietario'])->prefix('propietario/wompi')->group(function () {
         Route::get('/estado', [PropietarioController::class, 'estadoWompi']);
         Route::post('/configurar', [PropietarioController::class, 'configurarWompi']);
         Route::delete('/revocar', [PropietarioController::class, 'revocarWompi']);
     });
-    
+
 
     // Rutas de Administradores (requiere rol 'admin')
     Route::middleware(['ability:admin'])->prefix('administradores')->group(function () {
@@ -139,13 +139,10 @@ Route::get('canchas/tipo/{tipo}', [CanchaController::class, 'getCanchasByTipo'])
 Route::get('reservas/active/{id}', [ReservaController::class, 'obtenerReservasActivas']);
 Route::get('reservas/history/{id}', [ReservaController::class, 'obtenerHistorialReservas']);
 Route::get('reservas/empresa/{nit}', [ReservaController::class, 'obtenerReservasPorEmpresa']);
+Route::get('reservas/horas-ocupadas', [ReservaController::class, 'obtenerHorasOcupadasPorCancha']);
 Route::get('/resenas/verificar/{idReserva}/{idUsuario}', [ResenaController::class, 'verificarResenaUsuario']);
 Route::get('/resenas/empresa/{nit}', [ResenaController::class, 'obtenerReseñaEmpresa']);
 Route::apiResource('resenas', ResenaController::class);
 
 Route::apiResource('reservas', ReservaController::class);
-
-
-
-
-
+Route::post('/wompi/webhook', [WompiController::class, 'webhook']);

@@ -1,11 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
+import { wompiServicio } from "../services/api";
 
-const WompiWidget = ({ 
-  transactionData, 
-  onSuccess, 
-  onError, 
+
+const WompiWidget = ({
+  transactionData,
+  onSuccess,
+  onError,
   onClose,
-  isVisible 
+  isVisible,
+  redirectUrl = window.location.origin,
 }) => {
   const widgetRef = useRef(null);
   const checkoutRef = useRef(null);
@@ -13,93 +16,118 @@ const WompiWidget = ({
   useEffect(() => {
     if (!isVisible || !transactionData) return;
 
-    // Cargar el script de Wompi si no está cargado
-    const loadWompiScript = () => {
-      return new Promise((resolve, reject) => {
-        if (window.WidgetCheckout) {
-          resolve();
-          return;
-        }
+    const script = document.createElement("script");
+    script.src = "https://checkout.wompi.co/widget.js";
+    script.setAttribute("data-render", "button");
+    script.setAttribute("data-public-key", transactionData.public_key);
+    script.setAttribute("data-currency", transactionData.currency);
+    script.setAttribute(
+      "data-amount-in-cents",
+      transactionData.amount_in_cents.toString()
+    );
+    script.setAttribute("data-reference", transactionData.reference);
+    script.setAttribute(
+      "data-signature:integrity",
+      transactionData.integrity_signature
+    );
+    script.setAttribute("data-redirect-url", "http://localhost:5173/reservasactivas");
+    script.setAttribute("data-button-text", "Pagar Reserva");
+    script.setAttribute("data-locale", "es");
 
-        const script = document.createElement('script');
-        script.src = 'https://checkout.wompi.co/widget.js';
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
+    script.onload = () => {
+      console.log("Wompi script loaded con firma");
+      
+      // Simular click automático después de que el script se cargue
+      setTimeout(() => {
+        const wompiButton = document.querySelector('#wompi-button-container button');
+        if (wompiButton) {
+          console.log('Abriendo widget automáticamente...');
+          wompiButton.click();
+        }
+      }, 500); // Pequeño delay para asegurar que el botón esté renderizado
     };
 
-    const initializeWidget = async () => {
-      try {
-        await loadWompiScript();
+    // Event listener para capturar cuando se cierra el widget
+    const handleWidgetClose = (event) => {
+      if (event.data && event.data.type === 'WIDGET_CLOSED') {
+        console.log('Widget cerrado:', event.data);
+        if (onClose) onClose(event.data);
+      }
+    };
+
+    // Event listener para capturar respuestas del pago
+    const handlePaymentResponse = async (event) => {
+      if (event.data && event.data.type === 'PAYMENT_RESPONSE') {
+        const { status, transaction } = event.data;
         
-        if (checkoutRef.current) {
-          checkoutRef.current.close();
+        console.log('Respuesta del pago:', event.data);
+        
+        switch (status) {
+          case 'APPROVED':
+            try {
+              // Llamar al backend para confirmar el pago
+              console.log('Confirmando pago en el backend...');
+              const confirmationResult = await wompiServicio.confirmarPago(
+                transactionData.reference,
+                transaction.id
+              );
+              
+              console.log('Pago confirmado en el backend:', confirmationResult);
+              
+              if (onSuccess) {
+                onSuccess({
+                  status,
+                  transaction,
+                  reference: transactionData.reference,
+                  backendResponse: confirmationResult
+                });
+              }
+            } catch (error) {
+              console.error('Error confirmando pago en el backend:', error);
+              if (onError) {
+                onError({
+                  status: 'BACKEND_ERROR',
+                  transaction,
+                  reference: transactionData.reference,
+                  error: 'Error confirmando el pago en el servidor'
+                });
+              }
+            }
+            break;
+          case 'DECLINED':
+          case 'ERROR':
+            if (onError) {
+              onError({
+                status,
+                transaction,
+                reference: transactionData.reference,
+                error: event.data.error || 'Pago rechazado'
+              });
+            }
+            break;
+          default:
+            console.log('Estado de pago no manejado:', status);
         }
-
-        // Configurar el widget con los datos de la transacción
-        const checkout = new window.WidgetCheckout({
-            
-          currency: transactionData?.currency,
-          amountInCents: transactionData?.amount_in_cents,
-          reference: transactionData?.reference,
-          publicKey: transactionData?.public_key,
-          redirectUrl: transactionData?.redirect_url,
-          integrity: transactionData?.integrity_signature,
-          customerData: {
-            email: transactionData?.customer_email,
-            fullName: transactionData?.customer_data?.full_name,
-            phoneNumber: transactionData?.customer_data?.phone_number,
-           phoneNumberPrefix:"+57"
-          },
-          shippingAddress: {
-            addressLine1: transactionData?.shipping_address?.address_line_1,
-            city: transactionData?.shipping_address?.city,
-            phoneNumber: transactionData?.shipping_address?.phone_number,
-            region: transactionData?.shipping_address?.region,
-            country: transactionData?.shipping_address?.country
-          }
-        });
-
-        checkoutRef.current = checkout;
-
-        // Configurar eventos del widget
-        checkout.open((result) => {
-          console.log('Wompi Widget Result:', result);
-          
-          if (result.transaction && result.transaction.status === 'APPROVED') {
-            onSuccess(result);
-          } else if (result.transaction && result.transaction.status === 'DECLINED') {
-            onError(result);
-          } else {
-            onClose(result);
-          }
-        });
-
-      } catch (error) {
-        console.error('Error inicializando Wompi Widget:', error);
-        onError({ error: 'Error al cargar el widget de pago' });
       }
     };
 
-    initializeWidget();
+    // Agregar event listeners
+    window.addEventListener('message', handlePaymentResponse);
+    window.addEventListener('message', handleWidgetClose);
 
-    // Cleanup
+    const container = document.getElementById("wompi-button-container");
+    container.innerHTML = ""; // Evita duplicados
+    container.appendChild(script);
+
     return () => {
-      if (checkoutRef.current) {
-        checkoutRef.current.close();
-      }
+      // Limpieza
+      container.innerHTML = "";
+      window.removeEventListener('message', handlePaymentResponse);
+      window.removeEventListener('message', handleWidgetClose);
     };
-  }, [isVisible, transactionData, onSuccess, onError, onClose]);
+  }, [isVisible, transactionData, onSuccess, onError, onClose, redirectUrl]);
 
-  return (
-    <div 
-      ref={widgetRef}
-      style={{ display: isVisible ? 'block' : 'none' }}
-    >
-      {/* El widget se renderiza automáticamente por el script de Wompi */}
-    </div>
-  );
+  return <div id="wompi-button-container" />;
 };
 
 export default WompiWidget;
