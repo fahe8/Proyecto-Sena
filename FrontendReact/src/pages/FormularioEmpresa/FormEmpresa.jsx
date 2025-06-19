@@ -167,7 +167,7 @@ export default function FormEmpresa() {
     };
   
     // Actualizar los datos del propietario
-    const { email, password, nombre, apellido, telefono, imagen, tipo_documento_id, num_documento } = formData.representante;
+    const { email, password, nombre, apellido, telefono, imagen, tipo_documento_id, numero_documento } = formData.representante;
     const propietarioData = {
       email,
       password,
@@ -176,7 +176,7 @@ export default function FormEmpresa() {
       telefono,
       imagen, // Mantener como File
       tipo_documento_id,
-      num_documento: num_documento,
+      numero_documento:numero_documento,
     };
   
     // Actualizar las canchas con el NIT de la empresa
@@ -203,7 +203,7 @@ export default function FormEmpresa() {
   // Enviar datos al backend
   const handleSubmit = async () => {
     if (!validateStep()) return;
-
+    
     setIsLoading(true);
     try {
       const dataToSubmit = prepareDataForSubmission();
@@ -218,7 +218,7 @@ export default function FormEmpresa() {
       propietarioFormData.append('telefono', dataToSubmit.propietario.telefono);
       propietarioFormData.append('tipo_documento_id', dataToSubmit.propietario.tipo_documento_id);
       propietarioFormData.append('numero_documento', dataToSubmit.propietario.numero_documento);
-      
+
       // Agregar imagen del propietario si existe
       if (dataToSubmit.propietario.imagen instanceof File) {
         propietarioFormData.append('imagen', dataToSubmit.propietario.imagen);
@@ -484,6 +484,7 @@ export default function FormEmpresa() {
           </button>
 
           {currentStep != '1' && <button
+          
             onClick={goToNextStep}
             
             className="flex items-center gap-1 px-4 py-2 bg-[#003044] text-white rounded-md hover:bg-[#002030] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
