@@ -47,7 +47,11 @@ export const usuarioServicio = {
             Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
     }),
-    obtenerPorId: (id) => apiClient.get(`/usuarios/${id}`),
+    obtenerPorId: (id) => apiClient.get(`/usuarios/${id}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
     crear: (data) => apiClient.post('/usuarios', data),
     actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data, {
         headers: {
@@ -138,7 +142,8 @@ export const reservaServicio = {
     actualizar: (id, data) => apiClient.put(`/reservas/${id}`, data),
     eliminar: (id) => apiClient.delete(`/reservas/${id}`),
     obtenerReservasActivas: (id) => apiClient.get(`reservas/active/${id}`),
-    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`)
+    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`),
+    obtenerHorasReservadas: (data) => apiClient.post('/reservas/horas-reservadas', data)
 };
 
 // NUEVO SERVICIO PARA RESEÑAS

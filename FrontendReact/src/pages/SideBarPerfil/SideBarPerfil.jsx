@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { auth } from "../../pages/Login/firebaseconfig"; // Importamos la configuración de Firebase
-import { signOut } from "firebase/auth"; // Importamos la función para cerrar sesión en Firebase
-
-
+import { useAuth } from "../../Provider/AuthProvider"; // Importamos el contexto de autenticación
 import logo from "../../assets/logo.png";
 import iconoCerrarSesion from "../../assets/Perfil/cerrarSesion.svg";
 
@@ -13,6 +10,7 @@ const SideBarPerfil = ({opciones = [], bgClass = "bg-[#003044]", activeClass = "
   const [urlActual, seturlActual] = useState(location.pathname);
   const sidebarRef = useRef(null);
   const [sidebarWidth, setSidebarWidth] = useState(60);
+  const { cerrarSesion } = useAuth(); // Obtenemos la función cerrarSesion del contexto de autenticación
 
   
   const cambiarRutas = (url) => {
@@ -33,13 +31,12 @@ const SideBarPerfil = ({opciones = [], bgClass = "bg-[#003044]", activeClass = "
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
       try {
-        await signOut(auth); // Cierra sesión en Firebase
-        window.localStorage.removeItem("auth"); // Elimina datos de autenticación almacenados en localStorage
+        cerrarSesion(); // Utiliza la función cerrarSesion del AuthProvider
         console.log("Cierre de sesión exitoso");
-  
-        window.location.href = "/login"; // Redirige a la página de inicio de sesión
+        
+        navigate("/login"); // Redirige a la página de inicio de sesión usando navigate en lugar de window.location
       } catch (error) {
         console.error("Error al cerrar sesión:", error);
       }

@@ -186,7 +186,7 @@ const CardEmpresa = ({ empresa, mostrarFavorito }) => {
               {mostrarFavorito && (
                 <div className="flex items-center mt-1 bg-amber-100 px-3 py-1 rounded-lg text-xs">
                   <StarIcon />
-                  <span className="ml-1 font-bold">{empresa?.promedio_calificacion || 0}</span>
+                  <span className="ml-1 font-bold">{parseFloat(empresa?.promedio_calificacion).toFixed(1) || 0}</span>
                 </div>
               )}
               

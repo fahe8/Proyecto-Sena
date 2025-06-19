@@ -1,11 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CompanyIcon } from "../../../assets/IconosSVG/iconos";
+import { useAuth } from "../../../Provider/AuthProvider";
 
 const HeaderPropietario = ({ empresa, propietario }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { cerrarSesion } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -20,8 +22,13 @@ const HeaderPropietario = ({ empresa, propietario }) => {
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   const handleLogout = () => {
-    window.localStorage.removeItem("auth");
-    window.location.href = "/login";
+    try {
+      cerrarSesion(); // Utilizamos la función cerrarSesion del AuthProvider
+      console.log("Cierre de sesión exitoso");
+      navigate("/login"); // Redirigimos a la página de login usando navigate
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
   };
 
   return (
@@ -94,6 +101,9 @@ const HeaderPropietario = ({ empresa, propietario }) => {
                 
                 <Link to="/reservaspendientes" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
                   Reservas pendientes
+                </Link>
+                <Link to="/editarservicios" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
+                  Editar servicios
                 </Link>
                 
                 <button
