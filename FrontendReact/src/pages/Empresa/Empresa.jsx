@@ -220,16 +220,15 @@ const Empresa = () => {
                 <div className="flex flex-col gap-4">
                   {empresa?.servicios?.map((servicio, index) => {
                     // Remove accents and convert to lowercase
-                    const key = servicio
-                      .normalize("NFD")
+                    const key = servicio?.tipo?.normalize("NFD")
                       .replace(/[\u0300-\u036f]/g, "")
                       .toLowerCase();
                     return (
-                      <div className="flex items-center text-sm" key={index}>
+                      <div key={index} className="flex items-center">
                         <span className="mr-2 bg-green-200 p-2 rounded-xl">
                           {iconosServicios[key] && React.createElement(iconosServicios[key])}
                         </span>
-                        <span>{servicio}</span>
+                        <span>{servicio?.tipo}</span>
                       </div>
                     );
                   })}

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "./Calendario.css";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,7 +10,6 @@ import { reservaServicio } from "../../../services/api";
 import { useAuth } from "../../../Provider/AuthProvider";
 
 const Calendario = ({ empresa }) => {
-  const navigate = useNavigate();
   // Función para redondear a la siguiente hora completa
   const redondearSiguienteHora = (fecha) => {
     const nuevaFecha = new Date(fecha);
@@ -61,41 +59,7 @@ const getMaxHoraEmpresa = () => {
   });
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
   const [infoReserva, setInfoReserva] = useState({});
-  const [horasReservadas, setHorasReservadas] = useState([]);
   const { user } = useAuth();
-
-  // Función para validar si el perfil está completo
-  const validarPerfilCompleto = () => {
-    if (!user) {
-      setMostrarPopUp(true);
-      setConfigPopUp({
-        mensaje: "Error",
-        subTexto: "Debe iniciar sesión para realizar una reserva",
-      });
-      return false;
-    }
-
-    // Verificar que todos los campos obligatorios estén completos
-    const camposObligatorios = ['nombre', 'apellido', 'telefono', 'email'];
-    const camposIncompletos = camposObligatorios.filter(campo => !user[campo] || user[campo].trim() === '');
-    
-    if (camposIncompletos.length > 0) {
-      setMostrarPopUp(true);
-      setConfigPopUp({
-        mensaje: "Error",
-        subTexto: "Debe completar su información de perfil antes de realizar una reserva",
-      });
-      
-      // Redireccionar al perfil después de cerrar el popup
-      setTimeout(() => {
-        navigate('/perfil');
-      }, 4000);
-      
-      return false;
-    }
-    
-    return true;
-  };
 
   useEffect(() => {
     const obtenerReservas = async () => {
@@ -126,29 +90,6 @@ const getMaxHoraEmpresa = () => {
     obtenerReservas();
   }, [empresa]);
 
-  // Efecto para cargar las horas reservadas cuando cambia la fecha o la cancha seleccionada
-  useEffect(() => {
-    const obtenerHorasReservadas = async () => {
-      if (!canchaSeleccionada || !reserva.fecha) return;
-      
-      try {
-        const fechaFormateada = format(reserva.fecha, "yyyy-MM-dd");
-        const response = await reservaServicio.obtenerHorasReservadas({
-          fecha: fechaFormateada,
-          cancha_id: canchaSeleccionada.id
-        });
-        
-        if (response.data && response.data.data && response.data.data.horas_reservadas) {
-          setHorasReservadas(response.data.data.horas_reservadas);
-        }
-      } catch (error) {
-        console.error("Error al obtener horas reservadas:", error);
-      }
-    };
-    
-    obtenerHorasReservadas();
-  }, [reserva.fecha, canchaSeleccionada]);
-
   // Función para calcular la duración en horas entre dos fechas
   const calcularDuracionHoras = (inicio, fin) => {
     const duracionMs = new Date(fin) - new Date(inicio);
@@ -166,11 +107,6 @@ const getMaxHoraEmpresa = () => {
 
   // Función para mostrar el modal de confirmación
   const mostrarModalConfirmacion = () => {
-    // Validar perfil completo primero
-    if (!validarPerfilCompleto()) {
-      return;
-    }
-
     // Validar que se haya seleccionado una cancha
     if (!canchaSeleccionada) {
       setMostrarPopUp(true);
@@ -244,16 +180,6 @@ const getMaxHoraEmpresa = () => {
           subTexto:
             "Pronto nos comunicaremos contigo para confirmar la reserva",
         });
-        
-        // Actualizar las horas reservadas después de crear una nueva reserva
-        const response = await reservaServicio.obtenerHorasReservadas({
-          fecha: fechaFormateada,
-          cancha_id: canchaSeleccionada.id
-        });
-        
-        if (response.data && response.data.data && response.data.data.horas_reservadas) {
-          setHorasReservadas(response.data.data.horas_reservadas);
-        }
       }
     } catch (error) {
       if (error.response && error.response.data) {
@@ -302,49 +228,8 @@ const getMaxHoraEmpresa = () => {
     }
   };
 
-  // Función para filtrar las horas no disponibles
-  const filterTime = (time) => {
-    // Convertir el objeto Date a formato HH:mm para comparar con horasReservadas
-    const timeStr = format(time, "HH:mm");
-    
-    // Verificar si la hora está en el array de horas reservadas
-    return !horasReservadas.includes(timeStr);
-  };
-
   const manejarCierrePopUp = () => {
     // Lógica adicional después de cerrar el popup si es necesario
-    // Función para validar si el perfil está completo
-    const validarPerfilCompleto = () => {
-      if (!user) {
-        setMostrarPopUp(true);
-        setConfigPopUp({
-          mensaje: "Error",
-          subTexto: "Debe iniciar sesión para realizar una reserva",
-        });
-        return false;
-      }
-    
-      // Verificar que todos los campos obligatorios estén completos
-      const camposObligatorios = ['nombre', 'apellido', 'telefono', 'email'];
-      const camposIncompletos = camposObligatorios.filter(campo => !user[campo] || user[campo].trim() === '');
-      
-      if (camposIncompletos.length > 0) {
-        setMostrarPopUp(true);
-        setConfigPopUp({
-          mensaje: "Perfil incompleto",
-          subTexto: "Debe completar su información de perfil antes de realizar una reserva",
-        });
-        
-        // Redireccionar al perfil después de cerrar el popup
-        setTimeout(() => {
-          navigate('/perfil');
-        }, 3000);
-        
-        return false;
-      }
-      
-      return true;
-    };
   };
 
   const manejarConfirmacion = (confirmado) => {
@@ -400,7 +285,6 @@ const getMaxHoraEmpresa = () => {
                 className="w-20 border rounded-lg px-2 py-2 cursor-pointer"
                 minTime={getMinHoraEmpresa()}
                 maxTime={getMaxHoraEmpresa()}
-                filterTime={filterTime}
               />
 
               <svg
@@ -435,7 +319,6 @@ const getMaxHoraEmpresa = () => {
                 className="w-20 border rounded-lg px-2 py-2 cursor-pointer"
                 minTime={getMinHoraEmpresa()}
                 maxTime={getMaxHoraEmpresa()}
-                filterTime={filterTime}
               />
 
               <svg
