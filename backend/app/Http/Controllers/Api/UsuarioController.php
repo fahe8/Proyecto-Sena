@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class UsuarioController extends ApiController
 {
@@ -157,6 +158,69 @@ class UsuarioController extends ApiController
     }
 }
 
+
+    /**
+     * Update user image.
+     */
+    public function updateImage(Request $request, Usuario $usuario)
+    {
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validación fallida', $validator->errors(), 422);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Eliminar imagen anterior si existe
+            if ($usuario->imagen) {
+                // Extraer public_id de la URL de Cloudinary
+                $publicId = $this->extractPublicIdFromUrl($usuario->imagen);
+                if ($publicId) {
+                    Cloudinary::destroy($publicId);
+                }
+            }
+
+            // Subir nueva imagen a Cloudinary
+            $uploadedFileUrl = Cloudinary::upload($request->file('image')->getRealPath(), [
+                'folder' => 'usuarios'
+            ])->getSecurePath();
+
+            // Actualizar la imagen del usuario
+            $usuario->update([
+                'imagen' => $uploadedFileUrl
+            ]);
+
+            DB::commit();
+
+            return $this->sendResponse(
+                new UsuarioResource($usuario->load('user'), 'usuario'),
+                'Imagen actualizada correctamente',
+                200
+            );
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->sendError('Error al actualizar imagen', $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Extract public_id from Cloudinary URL
+     */
+    private function extractPublicIdFromUrl($url)
+    {
+        if (!$url) return null;
+        
+        // Patrón para extraer el public_id de una URL de Cloudinary
+        $pattern = '/\/v\d+\/(.+)\.[a-zA-Z]{3,4}$/';
+        preg_match($pattern, $url, $matches);
+        
+        return isset($matches[1]) ? $matches[1] : null;
+    }
 
     /**
      * Remove the specified resource from storage.

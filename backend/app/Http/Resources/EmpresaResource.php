@@ -40,7 +40,12 @@ class EmpresaResource extends JsonResource
                     'email_verified_at' => $this->propietario->user->email_verified_at ?? null,
                 ]
             ],
-            'servicios' => $this->servicios->pluck('tipo')->toArray(),
+            'servicios' => $this->servicios->map(function($servicio) {
+                return [
+                    'id' => $servicio->id,
+                    'tipo' => $servicio->tipo
+                ];
+            })->toArray(),
             'canchas' => CanchaResource::collection($this->canchas),
             'promedio_calificacion' => round($promedio, 1)
         ];
