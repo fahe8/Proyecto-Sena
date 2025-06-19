@@ -47,7 +47,11 @@ export const usuarioServicio = {
             Authorization: `Bearer ${localStorage.getItem('authToken')}`
         }
     }),
-    obtenerPorId: (id) => apiClient.get(`/usuarios/${id}`),
+    obtenerPorId: (id) => apiClient.get(`/usuarios/${id}`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+        }
+    }),
     crear: (data) => apiClient.post('/usuarios', data),
     actualizar: (id, data) => apiClient.put(`/usuarios/${id}`, data, {
         headers: {
@@ -156,6 +160,15 @@ export const empresaServicio = {
         
         return apiClient.put(`/empresas/${id}`, data, { headers });
     },
+    // Nueva función específica para actualizar logo
+    actualizarLogo: (nit, formData) => {
+        return apiClient.post(`/empresas/${nit}/logo`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+    },
     eliminar: (id) => apiClient.delete(`/empresas/${id}`, {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -176,7 +189,8 @@ export const reservaServicio = {
     actualizar: (id, data) => apiClient.put(`/reservas/${id}`, data),
     eliminar: (id) => apiClient.delete(`/reservas/${id}`),
     obtenerReservasActivas: (id) => apiClient.get(`reservas/active/${id}`),
-    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`)
+    obtenerHistorialReservas: (userId) => apiClient.get(`reservas/history/${userId}`),
+    obtenerHorasReservadas: (data) => apiClient.post('/reservas/horas-reservadas', data)
 };
 
 // NUEVO SERVICIO PARA RESEÑAS

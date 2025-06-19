@@ -148,6 +148,9 @@ export const BotonPerfil = () => {
         <Link to="/reservaspendientes" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
           Reservas pendientes
         </Link>
+        <Link to="/editarservicios" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
+          Editar servicios
+        </Link>
       </>
     )}
 

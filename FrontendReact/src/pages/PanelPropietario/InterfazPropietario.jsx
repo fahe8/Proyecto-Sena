@@ -130,6 +130,31 @@ console.log("DatosEmpresa:", DatosEmpresa);
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-blue-50 overflow-x-hidden">
       <HeaderPropietario empresa={DatosEmpresa} propietario={datosPropietario} />
+      
+      {/* Recuadro de notificación para empresa pendiente */}
+      {DatosEmpresa && DatosEmpresa.estado === 'pendiente' && (
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-lg shadow-sm mb-6">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <span className="material-icons text-amber-400 text-xl">info</span>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-amber-800">
+                  Empresa en proceso de aprobación
+                </h3>
+                <div className="mt-2 text-sm text-amber-700">
+                  <p>
+                    Tu empresa aún no está reflejada para los usuarios hasta que un administrador 
+                    apruebe y cambie el estado diferente a "pendiente". Una vez aprobada, 
+                    tus canchas serán visibles para todos los usuarios.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
         
       <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-xl shadow-sm p-6 lg:px-20 mb-6">
@@ -153,13 +178,6 @@ console.log("DatosEmpresa:", DatosEmpresa);
               <span className="material-icons text-4xl text-gray-300 mb-3">sports_soccer</span>
               <p className="text-gray-600 text-xl font-medium mb-2">No tienes ninguna cancha registrada</p>
               <p className="text-gray-500 text-sm mb-6">Comienza agregando tu primera cancha deportiva</p>
-              <Link 
-                to="/formulario-canchas" 
-                className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors duration-300"
-              >
-                <span className="material-icons text-sm">add</span>
-                <span className='hidden sm:block'>Agregar cancha</span>
-              </Link>
             </div>
           ) : (
             <div className="flex flex-col gap-4">

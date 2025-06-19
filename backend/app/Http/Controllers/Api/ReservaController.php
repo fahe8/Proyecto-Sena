@@ -314,7 +314,7 @@ class ReservaController extends ApiController
             }
             
             // Get reservations for this company
-            $reservas = Reserva::with(['cancha', 'usuario'])
+            $reservas = Reserva::with(['cancha', 'usuario.user'])
                 ->where('NIT', $nit)
                 ->orderBy('fecha', 'desc')
                 ->orderBy('hora_inicio', 'desc')
@@ -329,64 +329,74 @@ class ReservaController extends ApiController
             return $this->sendError('Error obteniendo reservas', $e->getMessage());
         }
     }
-    public function obtenerHorasOcupadasPorCancha(Request $request)
+    
+    /**
+     * Obtener horas reservadas para una fecha y cancha específicas
+     */
+    public function obtenerHorasReservadas(Request $request)
     {
         try {
             $request->validate([
                 'fecha' => 'required|date',
-                'nit' => 'required|string'
+                'cancha_id' => 'required|exists:cancha,id'
             ]);
-    
-            // Validar que la empresa existe
-            $empresa = Empresa::find($request->nit);
-            if (is_null($empresa)) {
-                return $this->sendError('Empresa no encontrada');
-            }
-    
-            // Obtener reservas para la fecha específica
-            $reservas = Reserva::with('cancha')
-                ->where('NIT', $request->nit)
-                ->where('fecha', $request->fecha)
-                ->where('estado', 'confirmada') // Solo reservas confirmadas
-                ->get();
-    
-            $horasOcupadasPorCancha = [];
-    
+            
+            // Obtener todas las reservas para la fecha y cancha especificadas
+            $reservas = Reserva::where('fecha', $request->fecha)
+                ->where('cancha_id', $request->cancha_id)
+                ->get(['hora_inicio', 'hora_final']);
+            
+            // Formatear las horas reservadas
+            $horasReservadas = [];
             foreach ($reservas as $reserva) {
-                $canchaId = $reserva->cancha_id;
-                
-                // Inicializar array para esta cancha si no existe
-                if (!isset($horasOcupadasPorCancha[$canchaId])) {
-                    $horasOcupadasPorCancha[$canchaId] = [];
-                }
-    
-                // Convertir horas a objetos Carbon para facilitar el manejo
+                // Convertir a objetos Carbon para facilitar la manipulación
                 $horaInicio = Carbon::createFromFormat('H:i:s', $reserva->hora_inicio);
                 $horaFinal = Carbon::createFromFormat('H:i:s', $reserva->hora_final);
-    
-                // Generar todas las horas entre hora_inicio y hora_final (inclusive)
-                $horaActual = $horaInicio->copy();
-                while ($horaActual->lte($horaFinal)) {
-                    $horaFormateada = $horaActual->format('H:i:s');
-                    
-                    // Agregar la hora si no está ya en el array
-                    if (!in_array($horaFormateada, $horasOcupadasPorCancha[$canchaId])) {
-                        $horasOcupadasPorCancha[$canchaId][] = $horaFormateada;
-                    }
-                    
-                    // Avanzar una hora
-                    $horaActual->addHour();
+                
+                // Agregar cada hora reservada al array (redondeando a horas completas)
+                $hora = clone $horaInicio;
+                while ($hora < $horaFinal) {
+                    $horasReservadas[] = $hora->format('H:i');
+                    $hora->addHour();
                 }
-    
-                // Ordenar las horas para cada cancha
-                sort($horasOcupadasPorCancha[$canchaId]);
             }
-    
-            return $this->sendResponse($horasOcupadasPorCancha, 'Horas ocupadas obtenidas con éxito');
             
+            return $this->sendResponse([
+                'fecha' => $request->fecha,
+                'cancha_id' => $request->cancha_id,
+                'horas_reservadas' => array_unique($horasReservadas)
+            ], 'Horas reservadas obtenidas con éxito');
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return $this->sendError('Error de validación', $e->errors());
         } catch (\Exception $e) {
-            return $this->sendError('Error obteniendo horas ocupadas', $e->getMessage());
+            return $this->sendError('Error obteniendo horas reservadas', $e->getMessage());
         }
     }
-
+    
+    public function obtenerReservasPorUsuario($id)
+    {
+        try {
+            // Validar que el usuario existe
+            $usuario = \App\Models\Usuario::find($id);
+            if (is_null($usuario)) {
+                return $this->sendError('Usuario no encontrado');
+            }
+            
+            // Obtener reservas para este usuario
+            $reservas = Reserva::with(['cancha', 'empresa'])
+                ->where('usuario_id', $id)
+                ->orderBy('fecha', 'desc')
+                ->orderBy('hora_inicio', 'desc')
+                ->get();
+                
+            if ($reservas->isEmpty()) {
+                return $this->sendResponse([], 'No hay reservas para este usuario');
+            }
+            
+            return $this->sendResponse($reservas, 'Reservas obtenidas con éxito');
+        } catch (\Exception $e) {
+            return $this->sendError('Error obteniendo reservas', $e->getMessage());
+        }
+    }
 }

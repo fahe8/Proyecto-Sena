@@ -64,7 +64,7 @@ const LoginAdministrador = () => {
 
     const showSuccessMessage = (title, message) => {
         // ✅ Redirección a interfaz de administrador
-        navigate("/interfazAdministrador", {
+        navigate("/ListaEmpresas", {
             state: {
                 showPopup: true,
                 popupMessage: title,

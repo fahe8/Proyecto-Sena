@@ -5,7 +5,7 @@ const LoginHeader = ({ register }) => {
   
   return (
     <>
-      <div className="flex justify-start gap-3 items-center mb-[20px]">
+      <div className="flex justify-start gap-3 items-center mt-2 mb-[20px]">
         <div className="border-b-2 border-[#003044] px-4 py-[4px] text-[14px] text-[#33ea30] cursor-default">
           Usuario
         </div>

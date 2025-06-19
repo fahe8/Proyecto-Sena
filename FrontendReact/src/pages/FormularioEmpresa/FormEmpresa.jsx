@@ -33,7 +33,7 @@ export default function FormEmpresa() {
         nombre: '',
         apellido: '',
         tipo_documento_id: 'CC',
-        num_documento: '',
+        numero_documento: '',
         telefono: '',
         imagen: '',
       },
@@ -90,13 +90,13 @@ export default function FormEmpresa() {
   const validateStep = () => {
     const stepErrors = {};
     if (currentStep === 2) {
-      const { nombre, apellido, num_documento, telefono, email } = formData.representante;
+      const { nombre, apellido, numero_documento, telefono, email } = formData.representante;
       if (!nombre) stepErrors.nombre = 'El nombre es obligatorio';
       if (!apellido) stepErrors.apellido = 'El apellido es obligatorio';
       if (!formData.representante.tipo_documento_id) {
         stepErrors.tipo_documento_id = 'El tipo de documento es obligatorio';
       }
-      if (!num_documento) stepErrors.num_documento = 'La identificación es obligatoria';
+      if (!numero_documento) stepErrors.num_documento = 'La identificación es obligatoria';
       if (!telefono) stepErrors.telefono = 'El teléfono es obligatorio';
       if (!email) stepErrors.email = 'El correo es obligatorio';
     } else if (currentStep === 3) {

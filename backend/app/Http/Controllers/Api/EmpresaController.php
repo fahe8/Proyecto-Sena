@@ -30,6 +30,7 @@ class EmpresaController extends ApiController
 
     public function index()
     {
+        {
         $empresas = Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha'])
             ->withAvg('resenas as promedio_calificacion', 'calificacion')
             ->get();
@@ -39,6 +40,7 @@ class EmpresaController extends ApiController
             'Lista de empresas obtenida correctamente',
             200
         );
+    }
     }
 
     public function store(Request $request)
@@ -136,6 +138,59 @@ class EmpresaController extends ApiController
             'Empresa obtenida correctamente',
             200
         );
+    }
+
+    public function updateLogo(Request $request, $nit)
+    {
+        $validator = Validator::make($request->all(), [
+            'logo' => 'required|image|max:2048'
+        ]);
+    
+        if ($validator->fails()) {
+            return $this->sendError('Error de validación', $validator->errors(), 422);
+        }
+    
+        try {
+            DB::beginTransaction();
+    
+            $empresa = Empresa::findOrFail($nit);
+            $uploadApi = new UploadApi();
+    
+            // Subir el nuevo logo a Cloudinary
+            $result = $uploadApi->upload($request->file('logo')->getRealPath(), [
+                'folder' => 'micanchaya/empresas/logo',
+                'resource_type' => 'image',
+                'transformation' => [
+                    'quality' => 'auto',
+                    'fetch_format' => 'auto'
+                ]
+            ]);
+    
+            // Eliminar el logo anterior si existe
+            if ($empresa->logo && isset($empresa->logo['public_id'])) {
+                $adminApi = new AdminApi();
+                $adminApi->deleteAssets([$empresa->logo['public_id']]);
+            }
+    
+            // Actualizar solo el campo logo
+            $empresa->update([
+                'logo' => [
+                    'url' => $result['secure_url'],
+                    'public_id' => $result['public_id']
+                ]
+            ]);
+    
+            DB::commit();
+    
+            return $this->sendResponse(
+                new EmpresaResource($empresa->load(['propietario', 'estadoEmpresa', 'servicios'])),
+                'Logo actualizado correctamente',
+                200
+            );
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->sendError('Error al actualizar el logo', $e->getMessage(), 500);
+        }
     }
 
     public function update(Request $request, $nit)

@@ -101,16 +101,18 @@ const LoginEmpresa = () => {
                 <div className="relative w-110 p-[30px] px-10 bg-white rounded-[8px] font-[Arial] m-0 mx-auto shadow-md z-10">
                     <>
                     <BackToHome/>
-                        <div className="flex justify-start gap-3 items-center mb-[20px]">
-                            <a
-                                href="/login"
-                                className="px-4 py-[4px] hover:border-[#003044] hover:border-b-2 hover:text-[#003044] text-[14px]"
-                            >
+                        <div className="flex justify-start gap-3 items-center mt-2 mb-[20px]">
+                            <a href="/login"
+                                className="px-4 py-[4px] hover:border-[#003044] hover:border-b-2 hover:text-[#003044] text-[14px]" >
                                 Usuario
                             </a>
                             <div className="border-b-2 border-[#003044] px-4 py-[4px] text-[14px] text-[#003044] cursor-default">
                                 Empresa
                             </div>
+                            <a href="/loginAdministrador"
+                                className="px-4 py-[4px] hover:border-[#003044] hover:border-b-2 hover:text-[#003044] text-[14px]" >
+                                Administrador
+                            </a>
                         </div>
 
                         <h2 className="text-center text-lg mb-5 font-semibold text-[#333]">

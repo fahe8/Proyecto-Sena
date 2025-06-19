@@ -210,4 +210,32 @@ class ResenaController extends ApiController
             ], 500);
         }
     }
+    
+    // Método para obtener reseña por ID de reserva
+    public function obtenerPorReserva($idReserva)
+    {
+        try {
+            $resena = Resena::where('id_reserva', $idReserva)
+                      ->with(['usuario:id,nombre,apellido'])
+                      ->first();
+            
+            if (!$resena) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se encontró reseña para esta reserva'
+                ], 404);
+            }
+            
+            return response()->json([
+                'success' => true,
+                'data' => $resena
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener la reseña de la reserva',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
