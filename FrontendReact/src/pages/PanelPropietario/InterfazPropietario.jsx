@@ -153,13 +153,6 @@ console.log("DatosEmpresa:", DatosEmpresa);
               <span className="material-icons text-4xl text-gray-300 mb-3">sports_soccer</span>
               <p className="text-gray-600 text-xl font-medium mb-2">No tienes ninguna cancha registrada</p>
               <p className="text-gray-500 text-sm mb-6">Comienza agregando tu primera cancha deportiva</p>
-              <Link 
-                to="/formulario-canchas" 
-                className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors duration-300"
-              >
-                <span className="material-icons text-sm">add</span>
-                <span className='hidden sm:block'>Agregar cancha</span>
-              </Link>
             </div>
           ) : (
             <div className="flex flex-col gap-4">

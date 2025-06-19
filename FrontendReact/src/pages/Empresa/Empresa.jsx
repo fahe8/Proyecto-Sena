@@ -159,7 +159,7 @@ const Empresa = () => {
                  
                   <div className="text-sm text-gray-600">
                     <div
-                      className={`px-4 py-2 w-16 rounded-md text-sm ${ // Estilo del botón de apertura/cierre
+                      className={`px-4 py-2 w-16 rounded-md font-semibold text-sm ${ // Estilo del botón de apertura/cierre
                         isOpen ? "text-green-500" : "text-red-500" // Si la empresa está abierta, el texto es verde, si está cerrado, el texto es rojo
                       }`}
                     >

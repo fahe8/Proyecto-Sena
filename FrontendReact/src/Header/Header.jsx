@@ -1,8 +1,6 @@
 import React, { use, useEffect, useRef, useState } from "react"; // Importamos React y hooks necesarios
 import { Link, useNavigate, useLocation } from "react-router-dom"; // Importamos Link para la navegación entre páginas y useNavigate para redirecciones
 import { useAuth } from "../Provider/AuthProvider"; // Importamos el contexto de autenticación
-import { signOut } from "firebase/auth"; // Importamos la función para cerrar sesión en Firebase
-import { auth } from "../pages/Login/firebaseconfig"; // Importamos la configuración de Firebase
 import { BusquedaFiltros } from "./Componentes/BusquedaFiltros"; // Importamos el componente de búsqueda con filtros
 import logo from "../assets/logo.png"; // Importamos el logo de la aplicación
 
@@ -149,6 +147,9 @@ export const BotonPerfil = () => {
         </Link>
         <Link to="/reservaspendientes" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
           Reservas pendientes
+        </Link>
+        <Link to="/editarservicios" className="block px-4 py-2 text-white hover:bg-green-600 text-sm text-center transition-all duration-200">
+          Editar servicios
         </Link>
       </>
     )}

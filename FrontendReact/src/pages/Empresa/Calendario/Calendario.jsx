@@ -59,6 +59,7 @@ const getMaxHoraEmpresa = () => {
   });
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
   const [infoReserva, setInfoReserva] = useState({});
+  const [horasReservadas, setHorasReservadas] = useState([]);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -89,6 +90,29 @@ const getMaxHoraEmpresa = () => {
     };
     obtenerReservas();
   }, [empresa]);
+
+  // Efecto para cargar las horas reservadas cuando cambia la fecha o la cancha seleccionada
+  useEffect(() => {
+    const obtenerHorasReservadas = async () => {
+      if (!canchaSeleccionada || !reserva.fecha) return;
+      
+      try {
+        const fechaFormateada = format(reserva.fecha, "yyyy-MM-dd");
+        const response = await reservaServicio.obtenerHorasReservadas({
+          fecha: fechaFormateada,
+          cancha_id: canchaSeleccionada.id
+        });
+        
+        if (response.data && response.data.data && response.data.data.horas_reservadas) {
+          setHorasReservadas(response.data.data.horas_reservadas);
+        }
+      } catch (error) {
+        console.error("Error al obtener horas reservadas:", error);
+      }
+    };
+    
+    obtenerHorasReservadas();
+  }, [reserva.fecha, canchaSeleccionada]);
 
   // Función para calcular la duración en horas entre dos fechas
   const calcularDuracionHoras = (inicio, fin) => {
@@ -180,6 +204,16 @@ const getMaxHoraEmpresa = () => {
           subTexto:
             "Pronto nos comunicaremos contigo para confirmar la reserva",
         });
+        
+        // Actualizar las horas reservadas después de crear una nueva reserva
+        const response = await reservaServicio.obtenerHorasReservadas({
+          fecha: fechaFormateada,
+          cancha_id: canchaSeleccionada.id
+        });
+        
+        if (response.data && response.data.data && response.data.data.horas_reservadas) {
+          setHorasReservadas(response.data.data.horas_reservadas);
+        }
       }
     } catch (error) {
       if (error.response && error.response.data) {
@@ -226,6 +260,15 @@ const getMaxHoraEmpresa = () => {
       nuevaFecha.setHours(fecha.getHours(), fecha.getMinutes(), 0, 0);
       setReserva((prev) => ({ ...prev, [campo]: nuevaFecha }));
     }
+  };
+
+  // Función para filtrar las horas no disponibles
+  const filterTime = (time) => {
+    // Convertir el objeto Date a formato HH:mm para comparar con horasReservadas
+    const timeStr = format(time, "HH:mm");
+    
+    // Verificar si la hora está en el array de horas reservadas
+    return !horasReservadas.includes(timeStr);
   };
 
   const manejarCierrePopUp = () => {
@@ -285,6 +328,7 @@ const getMaxHoraEmpresa = () => {
                 className="w-20 border rounded-lg px-2 py-2 cursor-pointer"
                 minTime={getMinHoraEmpresa()}
                 maxTime={getMaxHoraEmpresa()}
+                filterTime={filterTime}
               />
 
               <svg
@@ -319,6 +363,7 @@ const getMaxHoraEmpresa = () => {
                 className="w-20 border rounded-lg px-2 py-2 cursor-pointer"
                 minTime={getMinHoraEmpresa()}
                 maxTime={getMaxHoraEmpresa()}
+                filterTime={filterTime}
               />
 
               <svg

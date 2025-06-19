@@ -31,7 +31,12 @@ class EmpresaResource extends JsonResource
                 'tipo_documento' => $this->propietario->tipo_documento_id ?? null,
                 'numero_documento' => $this->propietario->numero_documento ?? null,
             ],
-            'servicios' => $this->servicios->pluck('tipo')->toArray(),
+            'servicios' => $this->servicios->map(function($servicio) {
+                return [
+                    'id' => $servicio->id,
+                    'tipo' => $servicio->tipo
+                ];
+            })->toArray(),
             'canchas' => CanchaResource::collection($this->canchas),
             'promedio_calificacion' => round($promedio, 1)
         ];

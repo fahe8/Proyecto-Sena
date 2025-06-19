@@ -30,11 +30,17 @@ class EmpresaController extends ApiController
 
     public function index()
     {
+        {
+        $empresas = Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha'])
+            ->withAvg('resenas as promedio_calificacion', 'calificacion')
+            ->get();
+
         return $this->sendResponse(
-            Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha', 'resenas'])->get(),
+            $empresas,
             'Lista de empresas obtenida correctamente',
             200
         );
+    }
     }
 
     public function store(Request $request)
