@@ -138,7 +138,7 @@ const Empresa = () => {
               <BackToHome/>
               <div className="flex flex-col sm:flex-row items-start mb-4 mt-4">
                 <div className="flex items-start mb-4 sm:mb-0"> 
-                  <div className="bg-gray-300 rounded-full w-12 h-12 flex items-center justify-center mr-3 overflow-hidden">
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-r from-[#00c951] to-[#33ea30] flex items-center justify-center shadow-xl border-2 border-white overflow-hidden mr-3">
                     {empresa?.logo?.url ? (
                       <img 
                         src={empresa.logo.url} 
@@ -151,7 +151,7 @@ const Empresa = () => {
                       />
                     ) : null}
                     <span 
-                      className="text-gray-600 text-xl" 
+                      className="text-white text-xl" 
                       style={{ display: empresa?.logo?.url ? 'none' : 'flex' }}
                     >
                       🏟️
@@ -190,7 +190,7 @@ const Empresa = () => {
 
               {/* Información del empresario */}
               <div className="flex items-center mb-4">
-                <div className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center mr-3 overflow-hidden">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-[#00c951] to-[#33ea30] flex items-center justify-center shadow-lg border-2 border-white overflow-hidden mr-3">
                   {empresa?.propietario?.imagen?.url ? (
                     <img 
                       src={empresa.propietario.imagen.url} 
@@ -355,8 +355,8 @@ const Empresa = () => {
                   <div key={review.id} className="border-b pb-6 ">
                     <div className="flex flex-col sm:flex-row sm:justify-between mb-2">
                       <div className="flex items-center mb-2 sm:mb-0">
-                        <div className="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center mr-2">
-                          <span className="text-gray-600 font-semibold text-sm">
+                        <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-[#00c951] to-[#33ea30] flex items-center justify-center shadow-lg border-2 border-white overflow-hidden mr-2">
+                          <span className="text-white font-semibold text-sm">
                             {review.name.charAt(0).toUpperCase()}
                           </span>
                         </div>
