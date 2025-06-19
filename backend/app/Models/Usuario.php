@@ -13,6 +13,7 @@ class Usuario extends Model
         'nombre',
         'apellido',
         'telefono',
+        'imagen',
     ];
 
     public function user()

@@ -62,6 +62,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['ability:usuario'])->prefix('usuarios')->group(function () {
         Route::get('/{usuario}', [UsuarioController::class, 'show']);
         Route::put('/{usuario}', [UsuarioController::class, 'update']);
+        Route::match(['POST', 'PUT'], '/{usuario}/imagen', [UsuarioController::class, 'updateImage']);
         Route::delete('/{usuario}', [UsuarioController::class, 'destroy']);
     });
 

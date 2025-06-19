@@ -99,6 +99,8 @@ const PerfilPage = () => {
     setMostrarModal(false);
   };
 
+  
+
   const validate = () => {
     const newErrors = {};
     if (!usuario.nombre) newErrors.nombre = "El nombre es obligatorio";

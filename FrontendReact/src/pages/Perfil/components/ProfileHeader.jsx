@@ -1,5 +1,5 @@
 import React from "react";
-import camara from "../../../assets/Perfil/camara.svg";
+
 
 const ProfileHeader = ({ usuario }) => {
   return (

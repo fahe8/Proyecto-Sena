@@ -4,6 +4,7 @@ import LogPopUp from "../Login/components/logPopUp";
 import { empresaServicio, propietarioServicio, canchasServicio } from "../../services/api";
 import { useAuth } from "../../Provider/AuthProvider";
 import Loading from "../Login/components/Loading";
+import CloudinaryUploader from "../../components/CloudinaryUploader";
 
 // Import components
 import AdminProfileHeader from "./Componentes/AdminProfileHeader";
@@ -22,7 +23,8 @@ const PerfilAdministrador = () => {
     telefono: "",
     num_documento: "",
     bloqueado: false,
-    id_tipoDocumento: ""
+    id_tipoDocumento: "",
+    imagen: null
   });
   const [empresa, setEmpresa] = useState({
     NIT: "",
@@ -95,6 +97,11 @@ useEffect(() => {
 
   const handleChangePropietario = (e) => {
     setPropietario({ ...propietario, [e.target.name]: e.target.value });
+  };
+
+  // Función para manejar la carga de imagen del propietario
+  const handleImageUpload = (formData) => {
+    setPropietario({ ...propietario, imagen: formData });
   };
 
   const handleChangeEmpresa = (e) => {
@@ -306,7 +313,6 @@ useEffect(() => {
   // Validación separada para empresa
   const validateEmpresa = () => {
     const newErrors = {};
-    
     if (!empresa.nombre) newErrors.nombreEmpresa = "El nombre de la empresa es obligatorio";
     if (!empresa.direccion) newErrors.direccionEmpresa = "La dirección es obligatoria"; 
     setErrores(prev => ({ ...prev, ...newErrors }));
@@ -361,7 +367,7 @@ useEffect(() => {
 
 
   if (loading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   return (
@@ -381,6 +387,7 @@ useEffect(() => {
           editandoPropietario={editandoPropietario}
           handleChangePropietario={handleChangePropietario}
           handleChangeEmpresa={handleChangeEmpresa}
+          handleImageUpload={handleImageUpload}
           errores={errores}
           toggleEdicionEmpresa={toggleEdicionEmpresa}
           toggleEdicionPropietario={toggleEdicionPropietario}
@@ -399,7 +406,7 @@ useEffect(() => {
       {mostrarModal && (
         <Modal
           titulo={`¿Desea actualizar la información ${tipoGuardado === 'empresa' ? 'de la empresa' : 'del propietario'}?`}
-          subtitulo="Verifica que los datos sean correctos antes de confirmar."
+          subtitulo="Verifica que los datos sean correctos antes de continuar."
           cerrarModal={cerrarModal}
           funcionEjecutar={guardarCambios}
           tipo=""
@@ -409,7 +416,7 @@ useEffect(() => {
       {mostrarPopUp && (
         <LogPopUp
           setShowPopUp={setMostrarPopUp}
-          message={textoPopUp.titulo}
+          mesage={textoPopUp.titulo}
           subText={textoPopUp.subtitulo}
           onClose={() => {}}
         />
@@ -419,3 +426,4 @@ useEffect(() => {
 };
 
 export default PerfilAdministrador;
+          
