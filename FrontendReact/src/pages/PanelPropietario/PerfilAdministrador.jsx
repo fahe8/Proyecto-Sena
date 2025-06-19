@@ -45,47 +45,70 @@ const PerfilAdministrador = () => {
   const [loading, setLoading] = useState(false);
   const [tipoGuardado, setTipoGuardado] = useState(''); // 'empresa' o 'propietario'
   
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user?.id) {
-        try {
-          setLoading(true);
-          // Asumimos que el NIT está almacenado en el usuario o en algún lugar accesible
-          const NIT = user?.NIT; // Este valor debería venir de algún lugar
-          const [empresaResponse, canchasResponse] = await Promise.all([
-            // propietarioServicio.obtenerPorEmpresa(NIT),
-            empresaServicio.obtenerPorId(NIT),
-            canchasServicio.obtenerTodosEmpresa(NIT)
-          ]);
-          
-          setPropietario(user);
+// Modificar el useEffect donde se cargan los datos
+useEffect(() => {
+  const fetchData = async () => {
+    if (!user?.NIT) return;
 
-          if (empresaResponse.data.success && empresaResponse.data.data) {
-            console.log('first',empresaResponse.data.data)
-            setEmpresa(empresaResponse.data.data);
-          }
-          
-          if (canchasResponse.data.success && canchasResponse.data.data) {
-          
-            setCanchas(canchasResponse.data.data);
-          }
-        } catch (error) {
-          console.error("Error al cargar los datos:", error);
-        } finally {
-          setLoading(false);
-        }
+    const NIT = user?.NIT; 
+    try {
+      setLoading(true);
+      // Asumimos que el NIT está almacenado en el usuario o en algún lugar accesible
+      
+      const [empresaResponse, canchasResponse] = await Promise.all([
+        empresaServicio.obtenerPorId(NIT),
+        canchasServicio.obtenerTodosEmpresa(NIT)
+      ]);
+      
+      // Asegurarse de que el ID del propietario esté correctamente asignado
+      const propietarioData = {...user};
+      
+      // Asignar tanto id como id_propietario para compatibilidad
+      if (user.id) {
+        propietarioData.id = user.id;
+        propietarioData.id_propietario = user.id;
       }
-    };
+      
+      setPropietario(propietarioData);
 
-    fetchData();
-  }, []);
+      if (empresaResponse.data.success && empresaResponse.data.data) {
+        console.log(empresaResponse.data.data);
+        setEmpresa(Array.isArray(empresaResponse.data.data) ? 
+          empresaResponse.data.data[0] : 
+          empresaResponse.data.data
+        );
+      }
+      
+      if (canchasResponse.data.success && canchasResponse.data.data) {
+        setCanchas(canchasResponse.data.data);
+      }
+    } catch (error) {
+      console.error("Error al cargar los datos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [user?.NIT]);
+
 
   const handleChangePropietario = (e) => {
     setPropietario({ ...propietario, [e.target.name]: e.target.value });
   };
 
   const handleChangeEmpresa = (e) => {
-    setEmpresa({ ...empresa, [e.target.name]: e.target.value });
+    if(e.target.name.startsWith('horario.')){
+      const [, campo] = e.target.name.split('.');
+      const horario = { ...empresa.horario, [campo]: e.target.value };
+      setEmpresa({...empresa, horario });
+      console.log(empresa)
+      return;
+    } else {
+
+      setEmpresa({ ...empresa, [e.target.name]: e.target.value });
+      console.log(empresa)
+    }
   };
 
   // Funciones separadas para toggle de edición
@@ -115,31 +138,186 @@ const PerfilAdministrador = () => {
   const guardarCambios = async () => {
     try {
       if (tipoGuardado === 'empresa') {
-        // Actualizar datos de la empresa
-        await empresaServicio.actualizar(empresa.NIT, empresa);
-        setEditandoEmpresa(false);
-        setTextoPopUp({
-          titulo: "Empresa actualizada",
-          subtitulo: "La información de la empresa ha sido actualizada exitosamente",
-        });
-      } else if (tipoGuardado === 'propietario') {
-        // Actualizar datos del propietario
-        await propietarioServicio.actualizar(propietario.id_propietario, propietario);
-        setEditandoPropietario(false);
-        setTextoPopUp({
-          titulo: "Propietario actualizado",
-          subtitulo: "La información del propietario ha sido actualizada exitosamente",
-        });
+        // Verificar que NIT existe antes de actualizar
+        if (!empresa.NIT) {
+          setTextoPopUp({
+            titulo: "Error al actualizar",
+            subtitulo: "No se pudo identificar la empresa (NIT faltante)",
+          });
+          setMostrarPopUp(true);
+          return;
+        }
+        const dataActualizar = {
+          nombre: empresa.nombre,
+          direccion: empresa.direccion,
+          descripcion: empresa.descripcion,
+          hora_apertura: empresa.horario?.apertura ? empresa.horario.apertura.substring(0, 5) : null,
+          hora_cierre: empresa.horario?.cierre ? empresa.horario.cierre.substring(0, 5) : null,
+        };
+
+
+        // Actualizar datos de la empresa con FormData
+        const response = await empresaServicio.actualizar(empresa.NIT, dataActualizar);
+        console.log("Guardar empresa camibos",response);
+        if (response.data.success) {
+          setEditandoEmpresa(false);
+          setTextoPopUp({
+            titulo: "Empresa actualizada",
+            subtitulo: "La información de la empresa ha sido actualizada exitosamente",
+          });
+        } else {
+          throw new Error("La respuesta del servidor no indica éxito");
+        }
+      } // En la función guardarCambios, modificar la parte del propietario
+      else if (tipoGuardado === 'propietario') {
+        // Verificar que id_propietario existe antes de actualizar
+        const propietarioId = propietario.id || propietario.id_propietario;
+        
+        if (!propietarioId) {
+          setTextoPopUp({
+            titulo: "Error al actualizar",
+            subtitulo: "No se pudo identificar el propietario (ID faltante)",
+          });
+          setMostrarPopUp(true);
+          return;
+        }
+        
+        // Crear un FormData para manejar correctamente los archivos
+        const propietarioData = new FormData();
+        
+        // Agregar campos básicos
+        propietarioData.append('nombre', propietario.nombre);
+        propietarioData.append('apellido', propietario.apellido);
+        propietarioData.append('telefono', propietario.telefono);
+        
+        if (propietario.tipo_documento_id) {
+          propietarioData.append('tipo_documento_id', propietario.tipo_documento_id);
+        }
+        
+        if (propietario.numero_documento) {
+          propietarioData.append('numero_documento', propietario.numero_documento);
+        }
+        
+        // Si hay una imagen, agregarla
+        if (propietario.imagen && propietario.imagen instanceof File) {
+          propietarioData.append('imagen', propietario.imagen);
+        }
+        
+        // Imprimir los datos que se están enviando para depuración
+        console.log("ID de propietario a usar:", propietarioId);
+        console.log("Datos a enviar:", Object.fromEntries(propietarioData));
+        
+        try {
+          // Actualizar datos del propietario con FormData usando el ID correcto
+          const response = await propietarioServicio.actualizar(propietarioId, propietarioData);
+          
+          if (response.data.success) {
+            // Actualizar el estado local con los datos actualizados
+            console.log("Datos recibidos del servidor:", response.data.data);
+            console.log("ID de propietario a usar:", propietarioId);
+            console.log("Datos a enviar:", Object.fromEntries(propietarioData));
+            console.log("Datos recibidos del servidor:", response.data.data);
+            
+            setPropietario(prevState => ({
+              ...prevState,
+              ...response.data.data,
+              // Asegurarse de que ambos ID estén presentes
+              id: response.data.data.id || prevState.id,
+              id_propietario: response.data.data.id || prevState.id_propietario
+            }));
+            
+            setEditandoPropietario(false);
+            setTextoPopUp({
+              titulo: "Propietario actualizado",
+              subtitulo: "La información del propietario ha sido actualizada exitosamente",
+            });
+          } else {
+            throw new Error("La respuesta del servidor no indica éxito");
+          }
+        } catch (error) {
+          console.error("Error al actualizar propietario:", error);
+          
+          setTextoPopUp({
+            titulo: "Error al actualizar",
+            subtitulo: error.response?.data?.message || "No se pudo actualizar la información del propietario",
+          });
+        }
       }
       
       setMostrarModal(false);
       setMostrarPopUp(true);
     } catch (error) {
       console.error("Error al actualizar:", error);
-      setTextoPopUp({
-        titulo: "Error al actualizar",
-        subtitulo: "Ha ocurrido un error al actualizar la información",
-      });
+      
+      // Manejar diferentes tipos de errores
+      if (error.response) {
+        const { status, data } = error.response;
+        
+        // Error 401: No autorizado
+        if (status === 401) {
+          setTextoPopUp({
+            titulo: "Error de autenticación",
+            subtitulo: "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.",
+          });
+        }
+        // Error 422: Validación fallida
+        else if (status === 422) {
+          // Mostrar información detallada del error para depuración
+          console.log("Detalles del error 422:", data);
+          
+          // Extraer mensajes de validación
+          let mensajesError = "";
+          
+          // Verificar si los errores están en data.errors o en data.data
+          const errores = data.errors || (data.data && data.data) || {};
+          
+          if (Object.keys(errores).length > 0) {
+            mensajesError = Object.entries(errores)
+              .map(([campo, mensajes]) => {
+                // Asegurarse de que mensajes sea un array
+                const mensajesArray = Array.isArray(mensajes) ? mensajes : [mensajes];
+                return `${campo}: ${mensajesArray.join(', ')}`;
+              })
+              .join("\n");
+          }
+          
+          setTextoPopUp({
+            titulo: "Error de validación",
+            subtitulo: mensajesError || data.message || "Los datos proporcionados no son válidos",
+          });
+        }
+        // Error 403: Prohibido
+        else if (status === 403) {
+          setTextoPopUp({
+            titulo: "Acceso denegado",
+            subtitulo: "No tienes permisos para realizar esta acción",
+          });
+        }
+        // Error 404: No encontrado
+        else if (status === 404) {
+          setTextoPopUp({
+            titulo: "Recurso no encontrado",
+            subtitulo: tipoGuardado === 'empresa' ? 
+              "La empresa no fue encontrada" : 
+              "El propietario no fue encontrado",
+          });
+        }
+        // Otros errores
+        else {
+          setTextoPopUp({
+            titulo: "Error al actualizar",
+            subtitulo: data.message || "Ha ocurrido un error al actualizar la información",
+          });
+        }
+      } else {
+        setTextoPopUp({
+          titulo: "Error de conexión",
+          subtitulo: "No se pudo conectar con el servidor. Verifica tu conexión a internet.",
+        });
+      }
+      
+      // No cambiar el estado de edición en caso de error
+      setMostrarModal(false);
       setMostrarPopUp(true);
     }
   };

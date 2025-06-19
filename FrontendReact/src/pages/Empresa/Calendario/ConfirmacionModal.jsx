@@ -4,7 +4,7 @@ const ConfirmacionModal = ({ isOpen, onClose, onConfirm, reservaInfo }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-[#36363695] backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl animate-fade-in">
         <h2 className="text-2xl font-bold text-center text-green-600 mb-4">
           Confirmar Reserva y Pago
@@ -42,13 +42,13 @@ const ConfirmacionModal = ({ isOpen, onClose, onConfirm, reservaInfo }) => {
         <div className="flex justify-center gap-4 mt-6">
           <button
             onClick={onConfirm}
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300"
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 cursor-pointer"
           >
             Proceder al Pago
           </button>
           <button
             onClick={onClose}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300"
+            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-300 cursor-pointer"
           >
             Cancelar
           </button>

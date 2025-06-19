@@ -53,4 +53,10 @@ class Empresa extends Model
     {
         return $this->hasMany(Reserva::class, 'NIT', 'NIT');
     }
+
+    // Relación con Reseñas
+    public function resenas()
+    {
+        return $this->hasMany(Resena::class, 'NIT', 'NIT');
+    }
 }

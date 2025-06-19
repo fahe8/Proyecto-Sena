@@ -163,6 +163,28 @@ class UsuarioController extends ApiController
      */
     public function destroy(Usuario $usuario)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $user = $usuario->user;
+            
+            // Eliminar el perfil de usuario
+            $usuario->delete();
+            
+            // Eliminar el usuario base si no tiene otros roles
+            if (count($user->roles) <= 1) {
+                $user->delete();
+            } else {
+                // Remover el rol de usuario
+                $roles = array_diff($user->roles, ['usuario']);
+                $user->update(['roles' => array_values($roles)]);
+            }
+            
+            DB::commit();
+            return $this->sendResponse([], 'Usuario eliminado correctamente', 200);
+            
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->sendError('Error al eliminar usuario', $e->getMessage(), 500);
+        }
     }
 }

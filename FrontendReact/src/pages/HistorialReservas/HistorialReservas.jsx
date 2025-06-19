@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../Provider/AuthProvider";
 import {
-  Alvertencia,
+  Advertencia,
   Calendario,
   Cerrar,
   Gps,
   Lupa,
   OrdenarFlecha,
   Tiempo,
+  StarIcon,
 } from "../../assets/IconosSVG/iconos";
 import { reservaServicio, resenaServicio } from "../../services/api";
 import Loading from "../Login/components/Loading";
@@ -363,7 +364,7 @@ const manejarEnvioResena = async () => {
   };
 
   return (
-    <div className="min-h-screen w-screen py-8 px-30 bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen w-screen py-8 px-5 md:px-30 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="max-w-5xl mx-auto rounded-lg bg-white pb-10 shadow-lg">
         {/* encabezado */}
         <div className="text-center mb-3 bg-[#003044] rounded-t-lg p-10 ">
@@ -375,7 +376,7 @@ const manejarEnvioResena = async () => {
           </p>
         </div>
         {/* Sección de búsqueda y filtrado */}
-        <div className="bg-white rounded-xl mt-5 mb-8 mx-10">
+        <div className="bg-white rounded-xl mt-5 mb-8 mx-1 sm:mx-10">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             {/* Entrada de búsqueda */}
             <div className="relative flex-1">
@@ -384,7 +385,7 @@ const manejarEnvioResena = async () => {
                 onChange={ManejarBusqueda}
                 value={BuscarTerm}
                 name="Buscar"
-                placeholder="Buscar por nombre de cancha o ubicación..."
+                placeholder="Busca una cancha..."
                 className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-400 focus:border-[#00c951] focus:ring-2 focus:ring-[#00c951] transition-all duration-300 outline-none"
               />
               {/* Botón de filtro */}
@@ -392,9 +393,9 @@ const manejarEnvioResena = async () => {
                 <button
                   ref={buttonRef}
                   onClick={mostraropciones}
-                  className="flex items-center justify-center px-6 py-[15px] bg-[#00c951] text-white rounded-r-lg hover:bg-[#00a844] transition-all duration-300 gap-2 min-w-[160px]"
+                  className="flex items-center justify-center px-1 md:px-6 py-[15px] md:py-[14px] lg:py-[15px] bg-[#00c951] text-white rounded-r-lg hover:bg-[#00a844] transition-all duration-300 gap-2 min-w-15 cursor-pointer"
                 >
-                  <span>{TextoBoton}</span>
+                  <span className="hidden md:block">{TextoBoton}</span>
                   <OrdenarFlecha />
                 </button>
 
@@ -404,13 +405,13 @@ const manejarEnvioResena = async () => {
                     className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg overflow-hidden z-20 min-w-[160px] border border-gray-100"
                   >
                     <button
-                      className="w-full px-6 py-3 text-left hover:bg-gray-50 transition-colors duration-200"
+                      className="w-full px-6 py-3 text-left hover:bg-gray-200 transition-colors duration-200 cursor-pointer"
                       onClick={Masrecientes}
                     >
                       Más recientes
                     </button>
                     <button
-                      className="w-full px-6 py-3 text-left hover:bg-gray-50 transition-colors duration-200"
+                      className="w-full px-6 py-3 text-left hover:bg-gray-200 transition-colors duration-200 cursor-pointer "
                       onClick={MasAntiguo}
                     >
                       Más antiguos
@@ -433,8 +434,8 @@ const manejarEnvioResena = async () => {
             {error}
           </div>
         ) : reservaFiltrada.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-xl shadow-md">
-            <Alvertencia />
+          <div className="text-center py-12 bg-white rounded-xl">
+            <Advertencia />
             <p className="text-lg text-gray-600">
               Aún no tienes reservas pasadas
             </p>
@@ -506,19 +507,18 @@ const manejarEnvioResena = async () => {
                         ) : (
                           <div className="flex flex-col items-center gap-2">
                             <div className="flex items-center gap-2 text-green-600">
-                              <span>✅</span>
                               <span className="text-sm font-medium">Reseña enviada</span>
                             </div>
                             {reserva.resena_data && (
                               <div className="flex items-center gap-1">
-                                <span className="text-xs text-gray-500">
-                                  ⭐ {reserva.resena_data.calificacion}/5
+                                <span className="flex text-xs gap-1 font-semibold text-gray-500">
+                                  <StarIcon/> {reserva.resena_data.calificacion}
                                 </span>
                               </div>
                             )}
                             <button
                               onClick={() => abrirModalResena(reserva)}
-                              className="text-xs text-[#00c951] hover:underline cursor-pointer"
+                              className="text-sm text-[#00c951] hover:underline cursor-pointer"
                             >
                               Ver reseña
                             </button>
@@ -545,7 +545,7 @@ const manejarEnvioResena = async () => {
 
         {/* Modal de reseña */}
         {mostrarModalResena && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 bg-[#36363695] backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
@@ -554,7 +554,7 @@ const manejarEnvioResena = async () => {
                   </h2>
                   <button
                     onClick={cerrarModalResena}
-                    className="text-gray-500 hover:text-gray-700 transition-colors"
+                    className="text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
                   >
                     <Cerrar />
                   </button>

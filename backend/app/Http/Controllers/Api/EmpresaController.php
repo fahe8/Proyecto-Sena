@@ -30,8 +30,12 @@ class EmpresaController extends ApiController
 
     public function index()
     {
+        $empresas = Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha'])
+            ->withAvg('resenas as promedio_calificacion', 'calificacion')
+            ->get();
+
         return $this->sendResponse(
-            Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha'])->get(),
+            $empresas,
             'Lista de empresas obtenida correctamente',
             200
         );
@@ -124,7 +128,7 @@ class EmpresaController extends ApiController
 
     public function show($nit)
     {
-        $empresa = Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha'])
+        $empresa = Empresa::with(['propietario', 'estadoEmpresa', 'servicios', 'canchas.tipoCancha', 'resenas'])
             ->findOrFail($nit);
             
         return $this->sendResponse(
@@ -162,7 +166,6 @@ class EmpresaController extends ApiController
             $cloudinary = new UploadApi();
 
             // Manejar el logo
-            // En el método update
             if ($request->hasFile('logo')) {
                 // Subir el nuevo logo
                 $result = $cloudinary->upload($request->file('logo')->getRealPath(), [
@@ -182,8 +185,9 @@ class EmpresaController extends ApiController
             }
 
             // Manejar las imágenes múltiples
-            // Para las imágenes múltiples
             if ($request->hasFile('imagenes')) {
+                $nuevasImagenes = []; // Inicializar la variable aquí
+                
                 foreach ($request->file('imagenes') as $imagen) {
                     $result = $cloudinary->upload($imagen->getRealPath(), [
                         'folder' => "micanchaya/empresas/{$nit}"

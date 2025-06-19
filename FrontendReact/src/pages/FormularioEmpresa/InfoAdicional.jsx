@@ -12,6 +12,7 @@ export default function InfoAdicional({ data, onChange, errors }) {
         const serviciosResponse = await ServiciosServicio.obtenerTodos();
         console.log(serviciosResponse)
         if (serviciosResponse.status == '200') {
+          console.log(serviciosResponse.data.servicios)
           setListaServicios(serviciosResponse.data.servicios);
         }
       } catch (error) {
@@ -24,9 +25,13 @@ export default function InfoAdicional({ data, onChange, errors }) {
   }, []);
 
   const handleCheckboxChange = (field, value) => {
-    const updatedArray = data[field].includes(value)
-      ? data[field].filter((item) => item !== value) // Elimina si ya está seleccionado
-      : [...data[field], value]; // Agrega si no está seleccionado
+    // Asegurarse de que data[field] sea un array
+    const currentArray = Array.isArray(data[field]) ? data[field] : [];
+    
+    const updatedArray = currentArray.includes(value)
+      ? currentArray.filter((item) => item !== value) // Elimina si ya está seleccionado
+      : [...currentArray, value]; // Agrega si no está seleccionado
+    
     onChange(field, updatedArray);
   };
 
@@ -92,7 +97,7 @@ export default function InfoAdicional({ data, onChange, errors }) {
               <input
                 type="checkbox"
                 className="accent-teal-500"
-                checked={data?.servicios?.includes(servicio.id)} // Vinculado al estado global
+                checked={Array.isArray(data?.servicios) && data.servicios.includes(servicio.id)} // Vinculado al estado global
                 onChange={() =>
                   handleCheckboxChange("servicios", servicio.id)
                 } // Actualiza el estado global

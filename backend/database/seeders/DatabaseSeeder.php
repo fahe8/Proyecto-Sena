@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             EstadoEmpresaSeeder::class,
             EstadoCanchaSeeder::class,
             TipoDocumentoSeeder::class,
+            ResenaSeeder::class,
             
         ]);
     }

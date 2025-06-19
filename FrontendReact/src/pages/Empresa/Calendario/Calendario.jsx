@@ -428,7 +428,7 @@ const Calendario = ({ empresa }) => {
               {empresa?.canchas?.map((cancha, index) => (
                 <li
                   key={index}
-                  className="hover:bg-gray-100 px-2 pt-1"
+                  className="hover:bg-gray-100 px-2 py-2 text-center"
                   onClick={() => setCanchaSeleccionada(cancha)}
                 >
                   {cancha.nombre} - {cancha.tipo_cancha.tipo}
@@ -438,11 +438,11 @@ const Calendario = ({ empresa }) => {
           )}
         </div>
 
-        <p>Costo total: $ {canchaSeleccionada?.precio || 0} COP</p>
+        <p className="mt-3">Costo total: $ {canchaSeleccionada?.precio || 0} COP</p>
 
         <button
           onClick={mostrarModalConfirmacion}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg mt-4 transition-colors duration-300"
+          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg mt-3 transition-colors duration-300"
           disabled={procesandoPago}
         >
           {procesandoPago ? "Procesando..." : "Confirmar Reserva"}
