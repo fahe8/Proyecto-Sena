@@ -35,7 +35,7 @@ class AdministradorController extends ApiController
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required_if:user_id,null|min:6',
+            'password' => 'required_if:user_id,null|min:8|regex:/^(?=.*[A-Z])(?=.*\d).*$/',
             'nombre' => 'required|string',
             'apellido' => 'required|string',
             'telefono' => 'required|string'

@@ -122,9 +122,18 @@ class AuthController extends ApiController
     {
         $user = Auth::user(); // Usuario autenticado
 
+        // En el método changePassword
         $validator = Validator::make($request->all(), [
             'current_password' => 'required',
-            'new_password' => 'required|min:6|confirmed',
+            'new_password' => 'required|min:8|confirmed|regex:/^(?=.*[A-Z])(?=.*\d).*$/',
+        ]);
+        
+        // En el método resetPassword
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed|regex:/^(?=.*[A-Z])(?=.*\d).*$/',
+            'password_confirmation' => 'required|min:8',
         ]);
 
         if ($validator->fails()) {

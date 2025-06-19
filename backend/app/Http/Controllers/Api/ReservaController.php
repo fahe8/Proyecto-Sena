@@ -234,9 +234,9 @@ class ReservaController extends ApiController
             $now = Carbon::now('America/Bogota');
             $currentDate = $now->toDateString();
             $currentHour = $now->format('H:i:s');
-
+    
             
-            $activeReservations = Reserva::with(['cancha', 'usuario', 'empresa'])
+            $activeReservations = Reserva::with(['cancha.tipoCancha', 'usuario', 'empresa'])
                 ->where('usuario_id', $id)
                 ->where(function ($query) use ($currentDate, $currentHour) {
                     $query->where('fecha', '>', $currentDate)
@@ -248,11 +248,11 @@ class ReservaController extends ApiController
                 ->orderBy('fecha')
                 ->orderBy('hora_inicio')
                 ->get();
-
+    
             if ($activeReservations->isEmpty()) {
                 return $this->sendResponse([], 'No hay reservas activas para este usuario');
             }
-
+    
             return $this->sendResponse($activeReservations, 'Reservas activas obtenidas con éxito');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return $this->sendError('Error de validación', $e->errors());
@@ -272,7 +272,7 @@ class ReservaController extends ApiController
             $currentDate = $now->toDateString();
             $currentHour = $now->format('H:i:s');
 
-            $reservationHistory = Reserva::with(['cancha', 'usuario', 'empresa', 'resena'])
+            $reservationHistory = Reserva::with(['cancha.tipoCancha', 'usuario', 'empresa', 'resena'])
                 ->where('usuario_id', $id)
                 ->where(function ($query) use ($currentDate, $currentHour) {
                     $query->where('fecha', '<', $currentDate)
@@ -399,4 +399,7 @@ class ReservaController extends ApiController
             return $this->sendError('Error obteniendo reservas', $e->getMessage());
         }
     }
+
+
+    
 }

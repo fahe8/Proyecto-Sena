@@ -37,9 +37,9 @@ class UsuarioController extends ApiController
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required_if:user_id,null|min:6',
+            'password' => 'required_if:user_id,null|min:8|regex:/^(?=.*[A-Z])(?=.*\d).*$/', // ✅ Validación actualizada
         ]);
-
+    
         if ($validator->fails()) {
             return $this->sendError(
                 'Validación fallida',
@@ -47,7 +47,7 @@ class UsuarioController extends ApiController
                 422
             );
         }
-
+    
         DB::beginTransaction();
         try {
             // Check if user exists

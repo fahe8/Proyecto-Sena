@@ -237,8 +237,10 @@ const formatearFecha = (fechaStr) => {
 
       {/* Modal de descripción mejorado y responsive */}
       {mostrarModal && reservaSeleccionada && (
+        
         <div className="fixed inset-0 flex items-center justify-center z-50 p-3">
           {/* Overlay oscuro detrás del modal */}
+          {console.log(reservaSeleccionada)}
           <div 
             className="absolute inset-0 bg-[#36363695] backdrop-blur-sm"
             onClick={cerrarModal}
@@ -301,7 +303,7 @@ const formatearFecha = (fechaStr) => {
                         <div>
                           <span className="text-xs sm:text-sm text-gray-500">Tipo de cancha</span>
                           <p className="font-medium text-sm sm:text-base">
-                            {reservaSeleccionada.cancha?.id_tipo_cancha || "Fútbol"}
+                            {reservaSeleccionada.cancha?.tipo_cancha.tipo || "Fútbol"}
                           </p>
                         </div>
                       </div>
