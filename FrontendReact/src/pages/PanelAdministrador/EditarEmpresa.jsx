@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { empresaServicio } from '../../services/api';
 import { 
   User,  
   Mail, 
@@ -9,9 +10,11 @@ import {
   Building,
   Check
 } from 'lucide-react';
+import Loading from '../Login/components/Loading';
 
 const EditarEmpresa = () => {
-  const { nit } = useParams(); // Obtener el NIT de la URL
+  const { nit } = useParams();
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
     // Empresa
@@ -20,6 +23,8 @@ const EditarEmpresa = () => {
     direccion: '',
     descripcion: '',
     logo: null,
+    hora_apertura: '',
+    hora_cierre: '',
     // Propietario
     propietario_nombre: '',
     propietario_apellido: '',
@@ -34,13 +39,14 @@ const EditarEmpresa = () => {
   const [ownerPreview, setOwnerPreview] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const documentTypes = [
     { value: '', label: 'Seleccionar tipo' },
     { value: 'CC', label: 'Cédula de Ciudadanía' },
     { value: 'CE', label: 'Cédula de Extranjería' },
-    { value: 'PA', label: 'Pasaporte' },
-    { value: 'NIT', label: 'NIT' }
+    { value: 'TI', label: 'Tarjeta de identidad' },
   ];
 
   const handleInputChange = (e) => {
@@ -64,21 +70,146 @@ const EditarEmpresa = () => {
   };
 
 
+  // Cargar datos de la empresa al montar el componente
+  useEffect(() => {
+    const cargarDatosEmpresa = async () => {
+      try {
+        setLoading(true);
+        const response = await empresaServicio.obtenerPorId(nit);
+        const empresaData = response.data.data;
+        
+        // Mapear los datos de la empresa
+        setFormData({
+          nit: empresaData.NIT || '',
+          nombre: empresaData.nombre || '',
+          direccion: empresaData.direccion || '',
+          descripcion: empresaData.descripcion || '',
+          logo: null, // Para archivos nuevos
+          // Datos del propietario
+          propietario_nombre: empresaData.propietario?.nombre || '',
+          propietario_apellido: empresaData.propietario?.apellido || '',
+          propietario_telefono: empresaData.propietario?.telefono || '',
+          propietario_email: empresaData.propietario?.user?.email || '',
+          tipo_documento: empresaData.propietario?.tipo_documento_id || '',
+          numero_documento: empresaData.propietario?.numero_documento || '',
+          propietario_imagen: null // Para archivos nuevos
+        });
+
+        // Establecer previews de imágenes existentes
+        if (empresaData.logo?.url) {
+          setLogoPreview(empresaData.logo.url);
+        }
+        if (empresaData.propietario?.imagen?.url) {
+          setOwnerPreview(empresaData.propietario.imagen.url);
+        }
+
+        setError(null);
+      } catch (err) {
+        console.error('Error al cargar empresa:', err);
+        setError('Error al cargar los datos de la empresa');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (nit) {
+      cargarDatosEmpresa();
+    }
+  }, [nit]);
+
+
+  // Actualizar función de guardado
   const handleSave = async () => {
-    setIsSaving(true);
+    setIsSaving(true); // Cambiar setIsLoading por setIsSaving
+    setError('');
     
-    // Simular guardado
-    setTimeout(() => {
-      setIsSaving(false);
+    try {
+      // Crear objeto JSON en lugar de FormData
+      const jsonData = {
+        nombre: formData.nombre,
+        direccion: formData.direccion,
+        descripcion: formData.descripcion
+      };
+      
+      // Agregar datos del propietario si existen
+      if (formData.propietario_nombre) {
+        jsonData.propietario_nombre = formData.propietario_nombre;
+      }
+      if (formData.propietario_apellido) {
+        jsonData.propietario_apellido = formData.propietario_apellido;
+      }
+      if (formData.propietario_telefono) {
+        jsonData.propietario_telefono = formData.propietario_telefono;
+      }
+      if (formData.propietario_email) {
+        jsonData.propietario_email = formData.propietario_email;
+      }
+      if (formData.tipo_documento) {
+        jsonData.tipo_documento = formData.tipo_documento;
+      }
+      if (formData.numero_documento) {
+        jsonData.numero_documento = formData.numero_documento;
+      }
+      
+      console.log('Datos JSON a enviar:', jsonData);
+      
+      // Actualizar empresa con JSON
+      const response = await empresaServicio.actualizar(nit, jsonData);
+      console.log('Respuesta del servidor:', response);
+      
       setIsSaved(true);
-      console.log('Datos guardados:', formData);
+      console.log('Empresa actualizada correctamente', jsonData);
       
       setTimeout(() => {
         setIsSaved(false);
       }, 2000);
-    }, 1500);
+      
+    } catch (error) {
+      console.error('Error completo al guardar:', error);
+      
+      // Manejo más detallado de errores
+      if (error.response) {
+        // Error del servidor
+        const errorMessage = error.response.data?.message || 'Error del servidor';
+        setError(`Error al guardar: ${errorMessage}`);
+      } else if (error.request) {
+        // Error de red
+        setError('Error de conexión. Verifica tu conexión a internet.');
+      } else {
+        // Otro tipo de error
+        setError('Error inesperado al guardar los datos.');
+      }
+    } finally {
+      setIsSaving(false); // Cambiar setIsLoading por setIsSaving
+    }
   };
 
+
+  // Mostrar loading mientras se cargan los datos
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
+
+  // Mostrar error si hay algún problema
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 text-lg mb-4">{error}</p>
+          <button
+            onClick={() => navigate(-1)}
+            className="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+          >
+            Volver
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen  p-4 flex items-center justify-center w-full">
@@ -86,14 +217,20 @@ const EditarEmpresa = () => {
         {/* Main Content */}
         <div className="p-8">
           {/* Header */}
-          <div className="flex justify-end items-center mb-8">
+          <div className="flex justify-between  items-center mb-8 ">
+            <button
+              onClick={() => navigate(-1)}
+              className="px-6 py-3 rounded-full font-semibold transition-all duration-300 bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md flex items-center gap-2"
+            >
+              ← Volver
+            </button>
             <button
               onClick={handleSave}
               disabled={isSaving}
               className={`px-8 py-3 rounded-full font-semibold transition-all duration-300 flex items-center gap-2 ${
                 isSaved 
                   ? 'bg-emerald-500 text-white' 
-                  : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700 hover:shadow-lg hover:-translate-y-0.5'
+                  : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700 hover:shadow-lg '
               }`}
             >
               {isSaving ? (
@@ -309,3 +446,4 @@ const EditarEmpresa = () => {
 };
 
 export default EditarEmpresa;
+

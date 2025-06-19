@@ -1,6 +1,6 @@
 import React from "react";
 import StatCard from "../../Perfil/components/StatCard";
-
+import  { BallIcon, MaintenanceIcon, AvailableIcon} from "../../../assets/IconosSVG/iconos";
 const AdminStatsSection = ({ canchas }) => {
   // Calcular estadísticas
   const canchasActivas = canchas.filter(cancha => cancha.id_estado_cancha === "disponible").length;
@@ -10,17 +10,17 @@ const AdminStatsSection = ({ canchas }) => {
       <StatCard 
         title="Total de Canchas" 
         value={canchas.length || '0'} 
-        icon="⚽" 
+        icon={<BallIcon />}
       />
       <StatCard 
         title="Canchas Diponibles" 
         value={canchasActivas || '0'} 
-        icon="✅" 
+        icon={<AvailableIcon />}
       />
       <StatCard 
         title="En Mantenimiento" 
         value={canchasMantenimiento || '0'} 
-        icon="🔧" 
+        icon={<MaintenanceIcon />}
       />
     </div>
   );

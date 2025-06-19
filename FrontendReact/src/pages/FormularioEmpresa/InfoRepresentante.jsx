@@ -5,6 +5,7 @@ import { propietarioServicio } from "../../services/api";
 export default function InfoRepresentante({ data, onChange, errors, isAuthenticated }) {
   const [tiposDocumentos, setTiposDocumentos] = useState([]);
   const [loading, setLoading] = useState(true);
+  
   // Función para manejar la subida de imágenes
   const handleImageUpload = (url) => {
     onChange("imagen", url);
@@ -106,7 +107,12 @@ export default function InfoRepresentante({ data, onChange, errors, isAuthentica
         </div>
         <div className="w-50 h-full md:w-32 ml-4 text-center">
           <label className="block text-sm text-[#003044] mb-1 ">Tu Foto</label>
-          <CloudinaryUploader onUploadSuccess={handleImageUpload} folder={"propietarios"} returnFile={true}/>
+          <CloudinaryUploader 
+            onUploadSuccess={handleImageUpload} 
+            folder={"propietarios"} 
+            returnFile={true}
+            initialValue={data.imagen} // Pasar la imagen guardada como valor inicial
+          />
         </div>
       </div>
 
@@ -120,18 +126,19 @@ export default function InfoRepresentante({ data, onChange, errors, isAuthentica
             value={data.tipo_documento_id || "CC"} // Valor predeterminado
             onChange={(e) => onChange("tipo_documento_id", e.target.value)}
           >
-            {tiposDocumentos?.map(tipos => (<option key={tipos}>{tipos}</option>))}
+            {tiposDocumentos?.map(tipo => (<option key={tipo} value={tipo}>{tipo}</option>))}
           </select>
           <input
             type="text"
             className="w-full border-y border-r border-gray-300 rounded-r-md p-2 text-[13px]"
             placeholder="Número"
-            value={data.num_documento || ""} // Cambiado a num_documento para coincidir con el modelo
-            onChange={(e) => onChange("num_documento", e.target.value)} // Actualiza el estado global
+            // Si el backend espera 'numero_documento'
+            value={data.numero_documento || ""}
+            onChange={(e) => onChange("numero_documento", e.target.value)} // Actualiza el estado global
           />
         </div>
-        {errors?.num_documento && (
-          <p className="text-red-500 text-sm">{errors.num_documento}</p>
+        {errors?.numero_documento && (
+          <p className="text-red-500 text-sm">{errors.numero_documento}</p>
         )}
       </div>
 

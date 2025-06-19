@@ -34,6 +34,7 @@ import business from "./assets/Perfil/business.svg";
 import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
 import ResetPassword from "./pages/Login/components/ResetPassword";
 import LoginEmpresa from "./pages/LoginEmpresa/LoginEmpresa";
+import VerEmpresa from "./pages/PanelAdministrador/VerEmpresa";
 
 
 function App() {
@@ -129,16 +130,17 @@ function App() {
             <Route path="/perfil" element={<PerfilPage />} />
             <Route path="/reservasactivas" element={<Reservas />} />
             <Route path="/historialreservas" element={<HistorialReservas />} />
+           
           </Route>
+
+
         </Route>
 
+
         {/* Rutas protegidas para PROPIETARIOS */}
-        <Route element={<RutasProtegidasPropietario />}>
-          <Route element={<SideBarPerfil opciones={opcionesEmpresario} />}>
-            <Route
-              path="/interfazpropietario"
-              element={<InterfazPropietario />}
-            />
+        {/* <Route element={<RutasProtegidasPropietario />}> */}
+          <Route element={<SideBarPerfil opciones={opcionesEmpresario} bgClass="bg-green-700" hoverClass="hover:bg-green-600" activeClass="bg-green-600" logoNavigate="/interfazpropietario"/>}>
+            
             <Route
               path="/perfiladministrador"
               element={<PerfilAdministrador />}
@@ -151,16 +153,22 @@ function App() {
             <Route path="/formulario-canchas" element={<AgregarCancha />} />
 
           </Route>
-        </Route>
+          <Route
+              path="/interfazpropietario"
+              element={<InterfazPropietario />}
+          />
+        {/* </Route> */}
 
         {/* Rutas protegidas para ADMINISTRADORES */}
         {/* <Route element={<RutasProtegidasAdmin />}> */}
           <Route element={<SideBarPerfil opciones={opcionesAdminitrador} />}>
             <Route path="/ListaUsuarios" element={<ListaUsuarios />} />
             <Route path="/ListaEmpresas" element={<ListaEmpresas />} />
-            <Route path="/admin/empresas/:nit/editar" element={<EditarEmpresa />} />
-
+            
           </Route>
+          <Route path="/admin/empresas/:nit/editar" element={<EditarEmpresa />} />
+          <Route path="/admin/empresas/:nit/ver" element={<VerEmpresa />} />
+
         {/* </Route> */}
 
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />

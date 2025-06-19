@@ -40,7 +40,7 @@ const Inicio = () => {
   useEffect(() => {
     const fetchEmpresas = async () => {
       try {
-        const response = await empresaServicio.obtenerTodos();
+        const response = await empresaServicio.obtenerEmpresasActivas();
         if (response.data.success) {
           setEmpresas(response.data.data);
           console.log(response.data.data)
@@ -52,7 +52,6 @@ const Inicio = () => {
         setIsLoading(false);
       }
     };
-
     fetchEmpresas();
   }, [setEmpresas, setFilteredOptions]);
 

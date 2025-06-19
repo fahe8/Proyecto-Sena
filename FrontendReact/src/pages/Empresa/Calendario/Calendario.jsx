@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "./Calendario.css";
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,6 +11,7 @@ import { reservaServicio } from "../../../services/api";
 import { useAuth } from "../../../Provider/AuthProvider";
 
 const Calendario = ({ empresa }) => {
+  const navigate = useNavigate();
   // Función para redondear a la siguiente hora completa
   const redondearSiguienteHora = (fecha) => {
     const nuevaFecha = new Date(fecha);
@@ -61,6 +63,39 @@ const getMaxHoraEmpresa = () => {
   const [infoReserva, setInfoReserva] = useState({});
   const { user } = useAuth();
 
+  // Función para validar si el perfil está completo
+  const validarPerfilCompleto = () => {
+    if (!user) {
+      setMostrarPopUp(true);
+      setConfigPopUp({
+        mensaje: "Error",
+        subTexto: "Debe iniciar sesión para realizar una reserva",
+      });
+      return false;
+    }
+
+    // Verificar que todos los campos obligatorios estén completos
+    const camposObligatorios = ['nombre', 'apellido', 'telefono', 'email'];
+    const camposIncompletos = camposObligatorios.filter(campo => !user[campo] || user[campo].trim() === '');
+    
+    if (camposIncompletos.length > 0) {
+      setMostrarPopUp(true);
+      setConfigPopUp({
+        mensaje: "Error",
+        subTexto: "Debe completar su información de perfil antes de realizar una reserva",
+      });
+      
+      // Redireccionar al perfil después de cerrar el popup
+      setTimeout(() => {
+        navigate('/perfil');
+      }, 4000);
+      
+      return false;
+    }
+    
+    return true;
+  };
+
   useEffect(() => {
     const obtenerReservas = async () => {
       setCanchaSeleccionada(empresa?.canchas[0]);
@@ -107,6 +142,11 @@ const getMaxHoraEmpresa = () => {
 
   // Función para mostrar el modal de confirmación
   const mostrarModalConfirmacion = () => {
+    // Validar perfil completo primero
+    if (!validarPerfilCompleto()) {
+      return;
+    }
+
     // Validar que se haya seleccionado una cancha
     if (!canchaSeleccionada) {
       setMostrarPopUp(true);
@@ -230,6 +270,38 @@ const getMaxHoraEmpresa = () => {
 
   const manejarCierrePopUp = () => {
     // Lógica adicional después de cerrar el popup si es necesario
+    // Función para validar si el perfil está completo
+    const validarPerfilCompleto = () => {
+      if (!user) {
+        setMostrarPopUp(true);
+        setConfigPopUp({
+          mensaje: "Error",
+          subTexto: "Debe iniciar sesión para realizar una reserva",
+        });
+        return false;
+      }
+    
+      // Verificar que todos los campos obligatorios estén completos
+      const camposObligatorios = ['nombre', 'apellido', 'telefono', 'email'];
+      const camposIncompletos = camposObligatorios.filter(campo => !user[campo] || user[campo].trim() === '');
+      
+      if (camposIncompletos.length > 0) {
+        setMostrarPopUp(true);
+        setConfigPopUp({
+          mensaje: "Perfil incompleto",
+          subTexto: "Debe completar su información de perfil antes de realizar una reserva",
+        });
+        
+        // Redireccionar al perfil después de cerrar el popup
+        setTimeout(() => {
+          navigate('/perfil');
+        }, 3000);
+        
+        return false;
+      }
+      
+      return true;
+    };
   };
 
   const manejarConfirmacion = (confirmado) => {
@@ -369,7 +441,7 @@ const getMaxHoraEmpresa = () => {
               {empresa?.canchas?.map((cancha, index) => (
                 <li
                   key={index}
-                  className="hover:bg-gray-100 px-2 pt-1"
+                  className="hover:bg-gray-100 px-2 py-2 text-center"
                   onClick={() => setCanchaSeleccionada(cancha)}
                 >
                   {cancha.nombre} - {cancha.tipo_cancha.tipo}
@@ -379,11 +451,11 @@ const getMaxHoraEmpresa = () => {
           )}
         </div>
 
-        <p>Costo total: $ {canchaSeleccionada?.precio || 0} COP</p>
+        <p className="mt-3">Costo total: $ {canchaSeleccionada?.precio || 0} COP</p>
 
         <button
           onClick={mostrarModalConfirmacion}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg mt-4 transition-colors duration-300"
+          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg mt-3 transition-colors duration-300 cursor-pointer"
         >
           Confirmar Reserva
         </button>
