@@ -15,6 +15,12 @@ const LoginHeader = ({ register }) => {
         >
           Empresa
         </a>
+        <a
+          href="/loginAdministrador"
+          className="px-4 py-[4px] hover:border-[#003044] hover:border-b-2 hover:text-[#33ea30] text-[14px]"
+        >
+          Administrador
+        </a>
       </div>
 
       <h2 className="text-center text-lg mb-5 font-semibold text-[#333]">

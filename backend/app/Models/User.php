@@ -25,7 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'roles' => 'array',  // Cast roles as array
     ];
 
-    public function admin()
+    public function administrador()
     {
         return $this->hasOne(Administrador::class);
     }

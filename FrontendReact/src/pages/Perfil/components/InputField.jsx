@@ -8,6 +8,7 @@ const InputField = ({
   error,
   editable,
   icon,
+  type = "text", // Agregar prop type con valor por defecto
 }) => {
   return (
     <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
@@ -28,7 +29,7 @@ const InputField = ({
             />
           ) : (
             <input
-              type={name === "email" ? "email" : "text"}
+              type={type === "time" ? "time" : (name === "email" ? "email" : type)}
               name={name}
               value={value}
               onChange={onChange}

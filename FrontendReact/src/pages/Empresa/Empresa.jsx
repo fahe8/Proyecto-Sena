@@ -335,7 +335,7 @@ const Empresa = () => {
 
           {/* Columna derecha: Calendario - Oculto en móvil */}
           <div className="hidden md:block ">
-            <div className="sticky top-26">
+            <div className="sticky top-2">
               <Calendario empresa={empresa} />
             </div>
           </div>
@@ -452,7 +452,7 @@ const Empresa = () => {
               </button>
             </div>
             <div className="p-4">
-              <Calendario />
+              <Calendario empresa={empresa} />
             </div>
           </div>
         </div>

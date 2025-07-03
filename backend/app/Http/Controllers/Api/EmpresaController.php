@@ -140,6 +140,59 @@ class EmpresaController extends ApiController
         );
     }
 
+    public function updateLogo(Request $request, $nit)
+    {
+        $validator = Validator::make($request->all(), [
+            'logo' => 'required|image|max:2048'
+        ]);
+    
+        if ($validator->fails()) {
+            return $this->sendError('Error de validación', $validator->errors(), 422);
+        }
+    
+        try {
+            DB::beginTransaction();
+    
+            $empresa = Empresa::findOrFail($nit);
+            $uploadApi = new UploadApi();
+    
+            // Subir el nuevo logo a Cloudinary
+            $result = $uploadApi->upload($request->file('logo')->getRealPath(), [
+                'folder' => 'micanchaya/empresas/logo',
+                'resource_type' => 'image',
+                'transformation' => [
+                    'quality' => 'auto',
+                    'fetch_format' => 'auto'
+                ]
+            ]);
+    
+            // Eliminar el logo anterior si existe
+            if ($empresa->logo && isset($empresa->logo['public_id'])) {
+                $adminApi = new AdminApi();
+                $adminApi->deleteAssets([$empresa->logo['public_id']]);
+            }
+    
+            // Actualizar solo el campo logo
+            $empresa->update([
+                'logo' => [
+                    'url' => $result['secure_url'],
+                    'public_id' => $result['public_id']
+                ]
+            ]);
+    
+            DB::commit();
+    
+            return $this->sendResponse(
+                new EmpresaResource($empresa->load(['propietario', 'estadoEmpresa', 'servicios'])),
+                'Logo actualizado correctamente',
+                200
+            );
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $this->sendError('Error al actualizar el logo', $e->getMessage(), 500);
+        }
+    }
+
     public function update(Request $request, $nit)
     {
         $validator = Validator::make($request->all(), [
@@ -168,7 +221,6 @@ class EmpresaController extends ApiController
             $cloudinary = new UploadApi();
 
             // Manejar el logo
-            // En el método update
             if ($request->hasFile('logo')) {
                 // Subir el nuevo logo
                 $result = $cloudinary->upload($request->file('logo')->getRealPath(), [
@@ -188,8 +240,9 @@ class EmpresaController extends ApiController
             }
 
             // Manejar las imágenes múltiples
-            // Para las imágenes múltiples
             if ($request->hasFile('imagenes')) {
+                $nuevasImagenes = []; // Inicializar la variable aquí
+                
                 foreach ($request->file('imagenes') as $imagen) {
                     $result = $cloudinary->upload($imagen->getRealPath(), [
                         'folder' => "micanchaya/empresas/{$nit}"

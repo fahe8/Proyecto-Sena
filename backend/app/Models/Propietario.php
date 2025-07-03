@@ -17,7 +17,7 @@ class Propietario extends Model
         'tipo_documento_id',
         'numero_documento'
     ];
-    
+
     protected $casts = [
         'imagen' => 'array'
     ];
@@ -35,5 +35,17 @@ class Propietario extends Model
     public function empresas()
     {
         return $this->hasMany(Empresa::class, 'propietario_id', 'id');
+    }
+
+    // Nueva relación con Wompi
+    public function wompiCredentials()
+    {
+        return $this->hasOne(WompiCredential::class);
+    }
+
+    // Verificar si tiene Wompi configurado
+    public function tieneWompiConfigurado(): bool
+    {
+        return $this->wompiCredentials && $this->wompiCredentials->isConfigured();
     }
 }

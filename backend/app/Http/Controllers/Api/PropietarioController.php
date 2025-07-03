@@ -9,12 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\PropietarioResource;
 use App\Models\Usuario;
+use App\Models\WompiCredential;
 use App\Services\CloudinaryService;
 use Cloudinary\Api\Admin\AdminApi;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Cloudinary\Configuration\Configuration;
 use Cloudinary\Api\Upload\UploadApi;
+use Exception;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class PropietarioController extends ApiController
 {
@@ -55,7 +58,7 @@ class PropietarioController extends ApiController
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required_if:user_id,null|min:6',
+            'password' => 'required_if:user_id,null|min:8|regex:/^(?=.*[A-Z])(?=.*\d).*$/',
             'nombre' => 'required|string',
             'apellido' => 'required|string',
             'imagen' => 'required|image|max:2048', // Cambiado para recibir archivo de imagen
@@ -105,12 +108,14 @@ class PropietarioController extends ApiController
                 ];
             }
 
-            // Crear nuevo usuario
+            // Crear nuevo user
             $user = User::create([
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'roles' => ['usuario','propietario'],
             ]);
+
+
 
             // Crear perfil de propietario
             $propietario = Propietario::create([
@@ -159,7 +164,6 @@ class PropietarioController extends ApiController
             'telefono' => 'sometimes|string|max:20',
             'tipo_documento_id' => 'sometimes|exists:tipo_documento,tipo_documento_id',
             'numero_documento' => 'sometimes|string',
-            'imagen' => 'sometimes|image|max:2048'
         ]);
     
         if ($validator->fails()) {
@@ -167,36 +171,17 @@ class PropietarioController extends ApiController
         }
     
         try {
-            if ($request->hasFile('imagen')) {
-                // Subir la nueva imagen a Cloudinary
-                $cloudinary = new UploadApi();
-                $result = $cloudinary->upload($request->file('imagen')->getRealPath(), [
-                    'folder' => 'micanchaya/propietarios'
-                ]);
-    
-                // Eliminar la imagen anterior de Cloudinary si existe
-                if ($propietario->imagen) {
-                    $adminApi = new AdminApi();
-                    $adminApi->deleteAssets([$propietario->imagen['public_id']]);
-                }
-    
-                // Actualizar con la nueva imagen
-                $request->merge([
-                    'imagen' => [
-                        'url' => $result['secure_url'],
-                        'public_id' => $result['public_id']
-                    ]
-                ]);
-            }
-    
-            $propietario->update($request->only([
+            $updateData = $request->only([
                 'nombre',
                 'apellido',
                 'telefono',
                 'tipo_documento_id',
-                'numero_documento',
-                'imagen'
-            ]));
+                'numero_documento'
+            ]);
+
+
+
+            $propietario->update($updateData);
     
             return $this->sendResponse(
                 new PropietarioResource($propietario->load('user')),
@@ -205,6 +190,69 @@ class PropietarioController extends ApiController
             );
         } catch (\Exception $e) {
             return $this->sendError('Error al actualizar propietario', $e->getMessage(), 500);
+        }
+    }
+
+    public function updateImage(Request $request, Propietario $propietario)
+    {
+        if ($request->isMethod('put') || $request->isMethod('patch')) {
+            $request->request->add($request->all());
+        }
+        // Validar la imagen
+        $validator = Validator::make($request->all(), [
+            'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+    
+        if ($validator->fails()) {
+            return $this->sendError('Validación fallida', $validator->errors(), 422);
+        }
+       
+        try {
+            if (!$request->hasFile('imagen')) {
+                return $this->sendError('No se proporcionó una imagen', [], 422);
+            }
+    
+            $uploadApi = new UploadApi();
+            $adminApi = new AdminApi();
+    
+            // Subir la nueva imagen a Cloudinary
+            $result = $uploadApi->upload($request->file('imagen')->getRealPath(), [
+                'folder' => 'micanchaya/propietarios',
+                'resource_type' => 'image',
+                'transformation' => [
+                    'quality' => 'auto',
+                    'fetch_format' => 'auto'
+                ]
+            ]);
+    
+            // Eliminar la imagen anterior de Cloudinary si existe
+            if ($propietario->imagen && isset($propietario->imagen['public_id'])) {
+                try {
+                    $adminApi->deleteAssets([$propietario->imagen['public_id']]);
+                } catch (\Exception $e) {
+                    // Log del error pero continúa con la actualización
+                    Log::warning('Error al eliminar imagen anterior: ' . $e->getMessage());
+                }
+            }
+    
+            // Actualizar el propietario con la nueva imagen
+            $imagenData = [
+                'url' => $result['secure_url'],
+                'public_id' => $result['public_id']
+            ];
+            
+            $propietario->update(['imagen' => $imagenData]);
+    
+            // Retornar respuesta exitosa
+            return $this->sendResponse(
+                new PropietarioResource($propietario->load('user')),
+                'Imagen actualizada correctamente',
+                200
+            );
+    
+        } catch (\Exception $e) {
+            Log::error('Error al actualizar imagen: ' . $e->getMessage());
+            return $this->sendError('Error al procesar la imagen', $e->getMessage(), 500);
         }
     }
 
@@ -288,4 +336,111 @@ class PropietarioController extends ApiController
             return $this->sendError('Error al crear perfil de propietario', $e->getMessage(), 500);
         }
     }
+
+
+    /**
+     * Configurar credenciales de Wompi
+     */
+    public function configurarWompi(Request $request)
+    {
+        try {
+            $request->validate([
+                'public_key' => 'required|string',
+                'private_key' => 'required|string', 
+                'integrity_secret' => 'required|string',
+                'environment' => 'required|in:test,production'
+            ]);
+    
+            $user = auth()->user();
+            $propietario = $user->propietario;
+            
+            if (!$propietario) {
+                return $this->sendError('No se encontró el perfil de propietario', [], 404);
+            }
+    
+            // Actualizar o crear credenciales de Wompi
+            $wompiCredentials = WompiCredential::updateOrCreate(
+                ['propietario_id' => $propietario->id],
+                [
+                    'public_key' => $request->public_key,
+                    'private_key' => $request->private_key,
+                    'integrity_secret' => $request->integrity_secret,
+                    'environment' => $request->environment,
+                    'active' => true,
+                    'configured_at' => now()
+                ]
+            );
+    
+            return $this->sendResponse(
+                $wompiCredentials->only(['public_key', 'environment', 'active', 'configured_at']),
+                'Credenciales de Wompi configuradas exitosamente'
+            );
+    
+        } catch (\Exception $e) {
+            Log::error('Error configurando Wompi: ' . $e->getMessage());
+            return $this->sendError('Error interno', [
+                'error' => 'Error interno del servidor'
+            ]);
+        }
+    }
+    
+    /**
+     * Obtener estado de configuración de Wompi
+     */
+    public function estadoWompi()
+    {
+        $propietario = auth()->user()->propietario;
+        $credentials = $propietario->wompiCredentials;
+    
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'configurado' => $propietario->tieneWompiConfigurado(),
+                'public_key' => $credentials?->public_key,
+                'environment' => $credentials?->environment,
+                'configured_at' => $credentials?->configured_at
+            ]
+        ]);
+    }
+    
+    /**
+     * Revocar credenciales de Wompi
+     */
+    public function revocarWompi()
+    {
+        $propietario = auth()->user()->propietario;
+        
+        if ($propietario->wompiCredentials) {
+            $propietario->wompiCredentials->delete();
+        }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Credenciales de Wompi revocadas correctamente'
+        ]);
+    }
+    
+    /**
+     * Validar credenciales de Wompi
+     */
+    private function validarCredencialesWompi($publicKey, $privateKey, $environment)
+    {
+        try {
+            $baseUrl = $environment === 'production' 
+                ? 'https://production.wompi.co/v1' 
+                : 'https://sandbox.wompi.co/v1';
+    
+            // Hacer una petición de prueba para validar las credenciales
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $privateKey,
+                'Content-Type' => 'application/json'
+            ])->get($baseUrl . '/merchants/' . $publicKey);
+    
+            return $response->successful();
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    
 }

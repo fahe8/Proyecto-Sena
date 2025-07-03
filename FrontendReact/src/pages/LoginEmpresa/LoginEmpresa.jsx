@@ -109,6 +109,10 @@ const LoginEmpresa = () => {
                             <div className="border-b-2 border-[#003044] px-4 py-[4px] text-[14px] text-[#003044] cursor-default">
                                 Empresa
                             </div>
+                            <a href="/loginAdministrador"
+                                className="px-4 py-[4px] hover:border-[#003044] hover:border-b-2 hover:text-[#003044] text-[14px]" >
+                                Administrador
+                            </a>
                         </div>
 
                         <h2 className="text-center text-lg mb-5 font-semibold text-[#333]">

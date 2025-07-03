@@ -3,14 +3,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import LogPopUp from "./components/logPopUp";
 import Loading from "./components/Loading";
 import LazyBackground from "../../utils/LazyBackground.jsx";
-import { manejarErroresFirebase } from "./manejarErroresFirebase";
-import { authServicio, usuarioServicio } from "../../services/api.js";
-import GoogleLoginButton from "./components/GoogleLoginButton";
+import { authServicio } from "../../services/api.js";
 import AuthForm from "./components/AuthForm";
 import LoginHeader from "./components/LoginHeader";
 import LoginFooter from "./components/LoginFooter";
-import Divider from "./components/Divider";
-import axios from "axios";
+
 import { useAuth } from "../../Provider/AuthProvider.jsx";
 import BackToHome from "../../components/BackToHome.jsx";
 

@@ -39,6 +39,7 @@ import EditarServicios from "./pages/PanelPropietario/EditarServicios";
 import AgregarCancha from "./pages/PanelPropietario/Componentes/AgregarCancha";
 import ResetPassword from "./pages/Login/components/ResetPassword";
 import LoginEmpresa from "./pages/LoginEmpresa/LoginEmpresa";
+import LoginAdministrador from "./pages/LoginAdministrador/LoginAdministrador";
 import VerEmpresa from "./pages/PanelAdministrador/VerEmpresa";
 
 
@@ -128,6 +129,7 @@ function App() {
         <Route path="/empresa/:id" element={<Empresa />} />
         <Route path="/loginEmpresa" element={<LoginEmpresa />} />
         <Route path="/registro-empresa" element={<FormularioEmpresa />} />
+        <Route path="/loginAdministrador" element={<LoginAdministrador />} />
         <Route
           path="/recuperar-contrasena/:token"
           element={<ResetPassword />}
@@ -175,7 +177,7 @@ function App() {
         {/* </Route> */}
 
         {/* Rutas protegidas para ADMINISTRADORES */}
-        {/* <Route element={<RutasProtegidasAdmin />}> */}
+        <Route element={<RutasProtegidasAdmin />}>
           <Route element={<SideBarPerfil opciones={opcionesAdminitrador} />}>
             <Route path="/ListaUsuarios" element={<ListaUsuarios />} />
             <Route path="/ListaEmpresas" element={<ListaEmpresas />} />
@@ -184,7 +186,7 @@ function App() {
           <Route path="/admin/empresas/:nit/editar" element={<EditarEmpresa />} />
           <Route path="/admin/empresas/:nit/ver" element={<VerEmpresa />} />
 
-        {/* </Route> */}
+        </Route>
 
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
       </Routes>

@@ -10,6 +10,8 @@ import CloudinaryUploader from "../../components/CloudinaryUploader";
 import AdminProfileHeader from "./Componentes/AdminProfileHeader";
 import AdminProfileInfo from "./Componentes/AdminProfileInfo";
 import AdminStatsSection from "./Componentes/AdminStatsSection";
+import ConfiguracionMercadoPago from "../../components/ConfiguracionMercadoPago";
+import ConfiguracionWompi from "../../components/ConfiguracionWompi";
 
 const PerfilAdministrador = () => {
   const {user} = useAuth();
@@ -72,6 +74,7 @@ useEffect(() => {
       setPropietario(propietarioData);
 
       if (empresaResponse.data.success && empresaResponse.data.data) {
+        console.log(empresaResponse.data.data);
         setEmpresa(Array.isArray(empresaResponse.data.data) ? 
           empresaResponse.data.data[0] : 
           empresaResponse.data.data
@@ -102,7 +105,17 @@ useEffect(() => {
   };
 
   const handleChangeEmpresa = (e) => {
-    setEmpresa({ ...empresa, [e.target.name]: e.target.value });
+    if(e.target.name.startsWith('horario.')){
+      const [, campo] = e.target.name.split('.');
+      const horario = { ...empresa.horario, [campo]: e.target.value };
+      setEmpresa({...empresa, horario });
+      console.log(empresa)
+      return;
+    } else {
+
+      setEmpresa({ ...empresa, [e.target.name]: e.target.value });
+      console.log(empresa)
+    }
   };
 
   // Funciones separadas para toggle de edición
@@ -141,44 +154,18 @@ useEffect(() => {
           setMostrarPopUp(true);
           return;
         }
-        
-        // Crear un FormData para manejar correctamente los archivos
-        const formData = new FormData();
-        
-        // Agregar campos básicos
-        formData.append('nombre', empresa.nombre);
-        formData.append('direccion', empresa.direccion);
-        formData.append('descripcion', empresa.descripcion);
-        
-        // Agregar horarios en formato correcto
-        if (empresa.horario) {
-          formData.append('hora_apertura', empresa.horario.apertura);
-          formData.append('hora_cierre', empresa.horario.cierre);
-        }
-        
-        // Agregar servicios como array
-        if (empresa.servicios && Array.isArray(empresa.servicios)) {
-          empresa.servicios.forEach((servicio, index) => {
-            formData.append(`servicios[${index}]`, servicio);
-          });
-        }
-        
-        // Agregar estado si existe
-        if (empresa.id_estado_empresa) {
-          formData.append('id_estado_empresa', empresa.id_estado_empresa);
-        }
-        
-        // Agregar propietario_id si existe
-        if (empresa.propietario_id) {
-          formData.append('propietario_id', empresa.propietario_id);
-        }
-        
-        // Imprimir los datos que se están enviando para depuración
-        console.log("Datos de empresa a enviar como FormData");
-        
+        const dataActualizar = {
+          nombre: empresa.nombre,
+          direccion: empresa.direccion,
+          descripcion: empresa.descripcion,
+          hora_apertura: empresa.horario?.apertura ? empresa.horario.apertura.substring(0, 5) : null,
+          hora_cierre: empresa.horario?.cierre ? empresa.horario.cierre.substring(0, 5) : null,
+        };
+
+
         // Actualizar datos de la empresa con FormData
-        const response = await empresaServicio.actualizar(empresa.NIT, formData);
-        
+        const response = await empresaServicio.actualizar(empresa.NIT, dataActualizar);
+        console.log("Guardar empresa camibos",response);
         if (response.data.success) {
           setEditandoEmpresa(false);
           setTextoPopUp({
@@ -201,42 +188,19 @@ useEffect(() => {
           setMostrarPopUp(true);
           return;
         }
-        
-        // Crear un FormData para manejar correctamente los archivos
-        const propietarioData = new FormData();
-        
-        // Agregar campos básicos
-        propietarioData.append('nombre', propietario.nombre);
-        propietarioData.append('apellido', propietario.apellido);
-        propietarioData.append('telefono', propietario.telefono);
-        
-        if (propietario.tipo_documento_id) {
-          propietarioData.append('tipo_documento_id', propietario.tipo_documento_id);
-        }
-        
-        if (propietario.numero_documento) {
-          propietarioData.append('numero_documento', propietario.numero_documento);
-        }
-        
-        // Si hay una imagen, agregarla
-        if (propietario.imagen && propietario.imagen instanceof File) {
-          propietarioData.append('imagen', propietario.imagen);
-        }
-        
-        // Imprimir los datos que se están enviando para depuración
-        console.log("ID de propietario a usar:", propietarioId);
-        console.log("Datos a enviar:", Object.fromEntries(propietarioData));
+      
+        const propietarioData = {
+          nombre: propietario.nombre,
+          apellido: propietario.apellido,
+          telefono: propietario.telefono,
+        };
+
         
         try {
           // Actualizar datos del propietario con FormData usando el ID correcto
           const response = await propietarioServicio.actualizar(propietarioId, propietarioData);
           
           if (response.data.success) {
-            // Actualizar el estado local con los datos actualizados
-            console.log("Datos recibidos del servidor:", response.data.data);
-            console.log("ID de propietario a usar:", propietarioId);
-            console.log("Datos a enviar:", Object.fromEntries(propietarioData));
-            console.log("Datos recibidos del servidor:", response.data.data);
             
             setPropietario(prevState => ({
               ...prevState,
@@ -369,6 +333,39 @@ useEffect(() => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleImageChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append('imagen', file);
+  
+    try {
+      setLoading(true);
+      // Usar la nueva función específica para actualizar imagen
+      const response = await propietarioServicio.actualizarImagen(propietario.id, formData);
+      
+      if (response.data.success) {
+        setPropietario(response.data.data);
+        setTextoPopUp({
+          titulo: "Imagen actualizada",
+          subtitulo: "La imagen ha sido actualizada correctamente"
+        });
+        setMostrarPopUp(true);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setTextoPopUp({
+        titulo: "Error al actualizar imagen",
+        subtitulo: error.response?.data?.message || "No se pudo actualizar la imagen"
+      });
+      setMostrarPopUp(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   if (loading) {
     return <Loading />;
   }
@@ -396,7 +393,11 @@ useEffect(() => {
           toggleEdicionPropietario={toggleEdicionPropietario}
           validarInputsEmpresa={validarInputsEmpresa}
           validarInputsPropietario={validarInputsPropietario}
+          handleImageChange={handleImageChange}
         />
+
+
+<ConfiguracionWompi />
 
         {/* Stats Section */}
         <AdminStatsSection canchas={canchas} />

@@ -2,42 +2,61 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "./Calendario.css";
 import "react-datepicker/dist/react-datepicker.css";
-import { setHours, setMinutes, format, isEqual, isAfter, isBefore, parseISO,} from "date-fns";
+import {
+  setHours,
+  setMinutes,
+  format,
+  isEqual,
+  isAfter,
+  isBefore,
+  parseISO,
+} from "date-fns";
 import { es } from "date-fns/locale";
+import { useNavigate } from "react-router-dom"; // Agregar esta importación
 import LogPopUp from "../../Login/components/logPopUp";
 import ConfirmacionModal from "./ConfirmacionModal";
-import { reservaServicio } from "../../../services/api";
+import PagoModal from "./PagoModal";
+import WompiWidget from "../../../components/WompiWidget";
+import { reservaServicio, wompiServicio } from "../../../services/api";
 import { useAuth } from "../../../Provider/AuthProvider";
 
 const Calendario = ({ empresa }) => {
+  const navigate = useNavigate(); // Agregar esta línea
+  const { user } = useAuth();
+
   // Función para redondear a la siguiente hora completa
   const redondearSiguienteHora = (fecha) => {
     const nuevaFecha = new Date(fecha);
     nuevaFecha.setMinutes(0, 0, 0);
     nuevaFecha.setHours(nuevaFecha.getHours() + 1);
-    return nuevaFecha; 
+    return nuevaFecha;
   };
-  
+
   //Convierte una hora en formato string (por ejemplo "08:00") a un objeto Date con esa hora
-const obtenerHoraDesdeString = (horaStr) => {
-  const [hora, minutos] = horaStr.split(":"); // Divide la cadena por los dos puntos → ["08", "00"]
-  const date = new Date(); // Crea un nuevo objeto Date (con fecha actual)
-  date.setHours(parseInt(hora), parseInt(minutos), 0, 0); // Establece la hora, minutos, segundos y milisegundos
-  return date; // Devuelve el objeto Date con la hora ajustada
-};
+  const obtenerHoraDesdeString = (horaStr) => {
+    const [hora, minutos] = horaStr.split(":"); // Divide la cadena por los dos puntos → ["08", "00"]
+    const date = new Date(); // Crea un nuevo objeto Date (con fecha actual)
+    date.setHours(parseInt(hora), parseInt(minutos), 0, 0); // Establece la hora, minutos, segundos y milisegundos
+    return date; // Devuelve el objeto Date con la hora ajustada
+  };
 
-//Devuelve la hora de apertura de la empresa como objeto Date
-const getMinHoraEmpresa = () => {
-  if (!empresa?.horario.apertura) return new Date(0, 0, 0, 0, 0); // Si no hay hora, usar 00:00
-  return obtenerHoraDesdeString(empresa.horario.apertura); // Convierte y retorna la hora de apertura
-};
+  //Devuelve la hora de apertura de la empresa como objeto Date
+  const getMinHoraEmpresa = () => {
+    if (!empresa?.horario.apertura) return new Date(0, 0, 0, 0, 0); // Si no hay hora, usar 00:00
+    return obtenerHoraDesdeString(empresa.horario.apertura); // Convierte y retorna la hora de apertura
+  };
 
-//Devuelve la hora de cierre de la empresa como objeto Date
-const getMaxHoraEmpresa = () => {
-  if (!empresa?.horario.cierre) return new Date(0, 0, 0, 23, 59); // Si no hay hora, usar 23:59
-  return obtenerHoraDesdeString(empresa.horario.cierre); // Convierte y retorna la hora de cierre
-};  
-
+  //Devuelve la hora de cierre de la empresa como objeto Date
+  const getMaxHoraEmpresa = () => {
+    if (!empresa?.horario.cierre) return new Date(0, 0, 0, 23, 59); // Si no hay hora, usar 23:59
+    
+    // Si la hora de cierre es 00:00, significa medianoche (final del día)
+    if (empresa.horario.cierre === "00:00" || empresa.horario.cierre === "00:00:00") {
+      return new Date(0, 0, 0, 23, 59); // Usar 23:59 en lugar de 00:00
+    }
+    
+    return obtenerHoraDesdeString(empresa.horario.cierre); // Convierte y retorna la hora de cierre
+  };
 
   const [reserva, setReserva] = useState({
     fecha: new Date(),
@@ -52,14 +71,16 @@ const getMaxHoraEmpresa = () => {
   const [canchaSeleccionada, setCanchaSeleccionada] = useState(
     empresa?.canchas[0] || null
   );
+  const [procesandoPago, setProcesandoPago] = useState(false);
+  const [transactionData, setTransactionData] = useState(null);
   const [mostrarPopUp, setMostrarPopUp] = useState(false);
   const [configPopUp, setConfigPopUp] = useState({
     mensaje: "",
     subTexto: "",
   });
+  const [showWompiWidget, setShowWompiWidget] = useState(false);
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
   const [infoReserva, setInfoReserva] = useState({});
-  const { user } = useAuth();
 
   useEffect(() => {
     const obtenerReservas = async () => {
@@ -75,13 +96,13 @@ const getMaxHoraEmpresa = () => {
         // ))
 
         data.forEach((reserva) => {
-          if (!fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha]) { 
-            fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha] = []; 
+          if (!fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha]) {
+            fechasAgrupadasPorCancha[reserva?.cancha?.id_tipo_cancha] = [];
           }
         });
         console.log(fechasAgrupadasPorCancha);
       } catch (error) {
-        if (error.response && error.response.data) { 
+        if (error.response && error.response.data) {
           console.log(error.response.data.message);
         }
         console.log(error);
@@ -107,6 +128,33 @@ const getMaxHoraEmpresa = () => {
 
   // Función para mostrar el modal de confirmación
   const mostrarModalConfirmacion = () => {
+    // Validar que el usuario esté autenticado
+    if (!user) {
+      setMostrarPopUp(true);
+      setConfigPopUp({
+        mensaje: "Autenticación requerida",
+        subTexto: "Debes iniciar sesión para realizar una reserva",
+      });
+      // Redirigir al login después de un breve delay
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+      return;
+    }
+
+    if(!user?.nombre || !user?.apellido || !user?.email || !user?.telefono) {
+      setMostrarPopUp(true);
+      setConfigPopUp({
+        mensaje: "Información incompleta",
+        subTexto: "Por favor completa tu perfil antes de reservar",
+      });
+      // Redirigir al perfil después de un breve delay
+      setTimeout(() => { 
+        navigate('/perfil');
+      }, 2000);
+      return;
+    }
+
     // Validar que se haya seleccionado una cancha
     if (!canchaSeleccionada) {
       setMostrarPopUp(true);
@@ -155,76 +203,80 @@ const getMaxHoraEmpresa = () => {
 
   const manejarReserva = async () => {
     try {
-      // Formatear la fecha y horas según el formato requerido por la API
+      setProcesandoPago(true);
+
+      // Formatear datos para la verificación
       const fechaFormateada = format(reserva.fecha, "yyyy-MM-dd");
       const horaInicioFormateada = format(reserva.horaInicio, "HH:mm:ss");
       const horaFinalFormateada = format(reserva.horaFinal, "HH:mm:ss");
-
-      const reservaObj = {
-        fecha: fechaFormateada,
-        hora_inicio: horaInicioFormateada,
-        hora_final: horaFinalFormateada,
-        cancha_id: canchaSeleccionada.id,
-        usuario_id: user?.id,
+      
+      const datosVerificacion = {
+          cancha_id: canchaSeleccionada.id,
+          fecha: fechaFormateada,
+          hora_inicio: horaInicioFormateada,
+          hora_final: horaFinalFormateada,
+          usuario_id: user?.id,
       };
 
-      console.log('reservaobj', reservaObj)
-      const crearReserva = await reservaServicio.crear(
-        JSON.stringify(reservaObj)
-      );
+      // PASO 1: Verificar disponibilidad antes del pago
+      console.log("Verificando disponibilidad...");
+      const verificacionResponse = await reservaServicio.verificarDisponibilidad(datosVerificacion);
+      
+      if (!verificacionResponse.data.success) {
+          // Mostrar error de disponibilidad
+          setMostrarPopUp(true);
+          setConfigPopUp({
+              mensaje: "Error de Disponibilidad",
+              subTexto: verificacionResponse.data.data.error || "La cancha no está disponible en el horario seleccionado",
+          });
+          setProcesandoPago(false);
+          setMostrarConfirmacion(false);
+          return;
+      }
 
-      if (crearReserva) {
-        setMostrarPopUp(true);
-        setConfigPopUp({
-          mensaje: crearReserva.data.message,
-          subTexto:
-            "Pronto nos comunicaremos contigo para confirmar la reserva",
-        });
+      // PASO 2: Si está disponible, proceder con el pago
+      console.log("Cancha disponible, iniciando proceso de pago...");
+      
+      const pagoData = {
+          ...datosVerificacion,
+          customer_email: user?.email,
+          customer_phone: user?.telefono || "3001234567",
+          customer_name: `${user?.nombre} ${user?.apellido}`,
+      };
+      
+      console.log(pagoData);
+
+      // Crear transacción en Wompi
+      const response = await wompiServicio.crearTransaccion(pagoData);
+      console.log("Crear transaccion", response.data.data);
+
+      if (response.data.success) {
+          console.log("entro y sale el widget");
+          setTransactionData(response.data.data);
+          setShowWompiWidget(true); // Mostrar el widget
+          setMostrarConfirmacion(false);
       }
     } catch (error) {
-      if (error.response && error.response.data) {
-        console.log(error.response.data.message, error.response.data.data);
-        const primeraClave = Object.keys(error.response.data.data)[0];
-        const valor = error.response.data.data[primeraClave];
-        setMostrarPopUp(true);
-        setConfigPopUp({
-          mensaje: "Error",
-          subTexto: valor || "No se pudo crear la reserva",
-        });
+      console.error("Error en el proceso de reserva:", error);
+      
+      let mensajeError = "Error procesando la reserva";
+      
+      // Manejar diferentes tipos de errores
+
+      if (error.response?.data?.data?.error){
+        mensajeError = error.response.data.data.error;
+      } else {
+          mensajeError = error.response?.data?.message || "Error desconocido";
       }
-      console.log(error);
-    }
-  };
-
-  const manejarCambioFecha = (fecha, campo) => {
-    if (campo === "fecha") {
-      // Al cambiar la fecha del calendario, actualizar también las horas manteniendo las horas seleccionadas
-      const nuevaHoraInicio = new Date(fecha);
-      nuevaHoraInicio.setHours(
-        reserva.horaInicio.getHours(),
-        reserva.horaInicio.getMinutes(),
-        0,
-        0
-      );
-
-      const nuevaHoraFinal = new Date(fecha);
-      nuevaHoraFinal.setHours(
-        reserva.horaFinal.getHours(),
-        reserva.horaFinal.getMinutes(),
-        0,
-        0
-      );
-
-      setReserva({
-        fecha: fecha,
-        horaInicio: nuevaHoraInicio,
-        horaFinal: nuevaHoraFinal,
+  
+      setMostrarPopUp(true);
+      setConfigPopUp({
+          mensaje: "Error",
+          subTexto: mensajeError,
       });
-    } else {
-      // Si se cambia la hora de inicio o final, mantener la fecha seleccionada
-      const nuevaFecha = new Date(reserva.fecha);
-      nuevaFecha.setHours(fecha.getHours(), fecha.getMinutes(), 0, 0);
-      setReserva((prev) => ({ ...prev, [campo]: nuevaFecha }));
+      setMostrarConfirmacion(false);
+    } finally {
+      setProcesandoPago(false);
     }
   };
 
@@ -232,13 +284,12 @@ const getMaxHoraEmpresa = () => {
     // Lógica adicional después de cerrar el popup si es necesario
   };
 
-  const manejarConfirmacion = (confirmado) => {
-    setMostrarConfirmacion(false);
-    if (confirmado) {
-      manejarReserva();
-    }
+  const manejarCambioFecha = (fecha, campo) => {
+    console.log(fecha);
+    const nuevaReserva = { ...reserva };
+    nuevaReserva[campo] = fecha;
+    setReserva(nuevaReserva);
   };
-
   return (
     <div className="flex flex-col">
       {mostrarPopUp && (
@@ -260,6 +311,8 @@ const getMaxHoraEmpresa = () => {
         reservaInfo={infoReserva}
       />
 
+
+     
       <div className="p-3 rounded-lg shadow-2xl flex flex-col gap-2">
         <DatePicker
           selected={reserva.fecha}
@@ -277,11 +330,11 @@ const getMaxHoraEmpresa = () => {
                 selected={reserva.horaInicio}
                 onChange={(fecha) => manejarCambioFecha(fecha, "horaInicio")}
                 showTimeSelect
-                showTimeSelectOnly 
+                showTimeSelectOnly
                 timeIntervals={60}
                 locale={es}
-                dateFormat="HH:mm" 
-                timeFormat="HH:mm" 
+                dateFormat="HH:mm"
+                timeFormat="HH:mm"
                 className="w-20 border rounded-lg px-2 py-2 cursor-pointer"
                 minTime={getMinHoraEmpresa()}
                 maxTime={getMaxHoraEmpresa()}
@@ -381,12 +434,44 @@ const getMaxHoraEmpresa = () => {
 
         <p className="mt-3">Costo total: $ {canchaSeleccionada?.precio || 0} COP</p>
 
-        <button
-          onClick={mostrarModalConfirmacion}
-          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg mt-3 transition-colors duration-300 cursor-pointer"
-        >
-          Confirmar Reserva
-        </button>
+        {!showWompiWidget ? (
+          <button
+            onClick={mostrarModalConfirmacion}
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg mt-3 transition-colors duration-300"
+            disabled={procesandoPago}
+          >
+            {procesandoPago ? "Procesando..." : "Confirmar Reserva"}
+          </button>
+        ) : (
+          <div className="mt-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <p className="text-blue-700 text-center font-medium mb-2">
+              Completa tu pago con Wompi
+            </p>
+            <p className="text-blue-600 text-sm text-center">
+              El widget de pago se abrirá automáticamente
+            </p>
+          </div>
+        )}
+        
+        <WompiWidget
+        transactionData={transactionData}
+        onSuccess={(data) => {
+          console.log('Pago completado exitosamente:', data);
+          // Aquí ya tienes la confirmación del backend
+          // Redirigir a página de éxito o mostrar mensaje
+          navigate('/reserva-confirmada');
+        }}
+        onError={(error) => {
+          console.log('Error en el pago:', error);
+          // Mostrar mensaje de error al usuario
+        }}
+        onClose={(data) => {
+          console.log('Widget cerrado:', data);
+          // Manejar cuando el usuario cierra el widget
+        }}
+        isVisible={showWompiWidget}
+         redirectUrl="/reservasactivas"
+      />
       </div>
     </div>
   );
