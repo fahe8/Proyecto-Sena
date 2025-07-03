@@ -452,7 +452,7 @@ const Empresa = () => {
               </button>
             </div>
             <div className="p-4">
-              <Calendario />
+              <Calendario empresa={empresa} />
             </div>
           </div>
         </div>

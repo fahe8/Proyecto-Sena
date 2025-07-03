@@ -37,6 +37,21 @@ const ConfirmacionModal = ({ isOpen, onClose, onConfirm, reservaInfo }) => {
               💳 El pago se procesará a través de Wompi
             </p>
           </div>
+          
+          {/* Nueva advertencia sobre política de no devolución */}
+          <div className="bg-red-50 border border-red-200 p-3 rounded-lg mt-2">
+            <div className="flex items-start">
+              <span className="text-red-500 mr-2 text-lg">⚠️</span>
+              <div>
+                <p className="text-sm font-semibold text-red-700 mb-1">
+                  Política de No Devolución
+                </p>
+                <p className="text-xs text-red-600">
+                  Una vez confirmada la reserva y procesado el pago, no se realizarán devoluciones bajo ninguna circunstancia.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div className="flex justify-center gap-4 mt-6">

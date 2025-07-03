@@ -142,6 +142,19 @@ const Calendario = ({ empresa }) => {
       return;
     }
 
+    if(!user?.nombre || !user?.apellido || !user?.email || !user?.telefono) {
+      setMostrarPopUp(true);
+      setConfigPopUp({
+        mensaje: "Información incompleta",
+        subTexto: "Por favor completa tu perfil antes de reservar",
+      });
+      // Redirigir al perfil después de un breve delay
+      setTimeout(() => { 
+        navigate('/perfil');
+      }, 2000);
+      return;
+    }
+
     // Validar que se haya seleccionado una cancha
     if (!canchaSeleccionada) {
       setMostrarPopUp(true);
@@ -265,62 +278,6 @@ const Calendario = ({ empresa }) => {
     } finally {
       setProcesandoPago(false);
     }
-  };
-
-  // Agregar las funciones que faltan para el widget
-  const handlePaymentSuccess = async (result) => {
-    console.log("Pago exitoso:", result);
-
-    try {
-      // Confirmar el pago en el backend
-      const response = await wompiServicio.confirmarPago({
-        transaction_id: result.transaction.id,
-        reference: transactionData.reference,
-      });
-
-      if (response.data.success) {
-        setMostrarPopUp(true);
-        setConfigPopUp({
-          mensaje: "¡Éxito!",
-          subTexto: "¡Reserva confirmada exitosamente!",
-        });
-        setShowWompiWidget(false);
-        setTransactionData(null);
-        // Recargar datos o redirigir
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      } else {
-        setMostrarPopUp(true);
-        setConfigPopUp({
-          mensaje: "Error",
-          subTexto: "Error al confirmar la reserva: " + response.data.message,
-        });
-      }
-    } catch (error) {
-      console.error("Error confirmando pago:", error);
-      setMostrarPopUp(true);
-      setConfigPopUp({
-        mensaje: "Error",
-        subTexto: "Error al confirmar la reserva",
-      });
-    }
-  };
-
-  const handlePaymentError = (result) => {
-    console.log("Error en el pago:", result);
-    setMostrarPopUp(true);
-    setConfigPopUp({
-      mensaje: "Pago Rechazado",
-      subTexto:
-        "El pago fue rechazado. Por favor intenta con otro método de pago.",
-    });
-    setShowWompiWidget(false);
-  };
-
-  const handlePaymentClose = (result) => {
-    console.log("Widget cerrado:", result);
-    setShowWompiWidget(false);
   };
 
   const manejarCierrePopUp = () => {
